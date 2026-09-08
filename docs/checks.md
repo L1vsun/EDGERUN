@@ -5,6 +5,14 @@ that specific check. Field names and endpoint paths were confirmed live against
 `robinhoodchain.blockscout.com` on 2026-09-08 (same Blockscout version as
 `eth.blockscout.com`) — not taken from general docs.
 
+## Reaching the explorer
+
+Blockscout sits behind Cloudflare bot protection. A `User-Agent` alone is not
+enough: verified 2026-09-08, dropping the `Referer` header turns a working 200
+into a 403 on every endpoint, which silently empties the live feed. The client
+sends a full browser XHR header set (`edgerun/blockscout.py::_browser_headers`)
+and reports a 403 as its own error rather than a generic failure.
+
 ## contract lane
 
 ### source_verified

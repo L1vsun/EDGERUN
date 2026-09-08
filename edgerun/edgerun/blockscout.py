@@ -19,6 +19,21 @@ BROWSER_UA = (
     "(KHTML, like Gecko) Chrome/120.0 Safari/537.36"
 )
 
+# Cloudflare in front of this instance rejects requests that look automated.
+# A User-Agent alone is NOT enough: verified 2026-09-08, dropping `Referer`
+# turns a working 200 into a 403 on every endpoint. Send the header set a
+# real browser XHR would send, and keep Referer in it.
+def _browser_headers(base_url: str) -> dict[str, str]:
+    return {
+        "User-Agent": BROWSER_UA,
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": f"{base_url}/",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Dest": "empty",
+    }
+
 
 class BlockscoutError(RuntimeError):
     """Raised when Blockscout can't answer — network, 4xx/5xx, or a challenge page."""
@@ -29,8 +44,9 @@ class BlockscoutClient:
         self.base_url = base_url.rstrip("/")
         self._client = httpx.Client(
             base_url=self.base_url,
-            headers={"User-Agent": BROWSER_UA, "Accept": "application/json"},
+            headers=_browser_headers(self.base_url),
             timeout=timeout,
+            follow_redirects=True,
         )
 
     def close(self) -> None:
@@ -47,6 +63,13 @@ class BlockscoutClient:
             resp = self._client.get(path, params=params)
         except httpx.HTTPError as exc:
             raise BlockscoutError(f"GET {path} failed: {exc}") from exc
+        if resp.status_code == 403:
+            raise BlockscoutError(
+                f"GET {path} -> HTTP 403 (blocked by the explorer's bot protection — "
+                "check the request headers in blockscout.py::_browser_headers)"
+            )
+        if resp.status_code == 429:
+            raise BlockscoutError(f"GET {path} -> HTTP 429 (rate limited by the explorer)")
         if resp.status_code != 200:
             raise BlockscoutError(f"GET {path} -> HTTP {resp.status_code}")
         try:

@@ -7,7 +7,14 @@ import { fetchFeed, fetchPublicConfig } from "@/lib/api";
 // watching" style filler. If a fact can't be verified against real data,
 // it doesn't go in the ticker.
 export default function Marquee() {
-  const [items, setItems] = useState<string[]>(["loading live chain data…"]);
+  // Seeded with facts that are true regardless of backend state, so the bar
+  // never renders as one repeated "loading…" across the full width.
+  const [items, setItems] = useState<string[]>([
+    "robinhood chain · chain id 4663",
+    "read-only · no wallet connection · nothing custodied",
+    "two lanes · contract safety + impersonation",
+    "unresolved is a real state — never a false pass",
+  ]);
 
   useEffect(() => {
     let cancelled = false;
@@ -30,7 +37,8 @@ export default function Marquee() {
           `read-only · no wallet connection · nothing custodied`,
         ]);
       } catch {
-        if (!cancelled) setItems(["live backend unreachable right now — retrying…"]);
+        // Keep the seeded facts rather than replacing the bar with an error —
+        // the feed section already reports backend trouble in context.
       }
     }
 

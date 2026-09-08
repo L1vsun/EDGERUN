@@ -25,6 +25,20 @@ def levenshtein(a: str, b: str) -> int:
     return prev[-1]
 
 
+def allowed_distance(a: str, b: str, threshold: int) -> int:
+    """How many edits may separate two strings before we stop calling it a
+    near-miss, scaled to the shorter string's length.
+
+    A flat threshold is wrong for short tickers: "AI" and "HD" are 2 edits
+    apart but share nothing, and flagging that as impersonation is a false
+    positive that costs the tool its credibility. Requiring the distance to
+    stay under half the shorter string keeps "H00D"~"HOOD" (2 edits of 4)
+    while dropping "AI"~"HD" (2 edits of 2).
+    """
+    shorter = min(len(a), len(b))
+    return min(threshold, shorter // 2)
+
+
 def run_impersonation_lane(
     address: str, token_symbol: str | None, token_name: str | None, config: Config
 ) -> ImpersonationLane:
@@ -57,11 +71,11 @@ def run_impersonation_lane(
 
         if token_symbol:
             d = levenshtein(token_symbol, ref.ticker)
-            if d <= threshold:
+            if d <= allowed_distance(token_symbol, ref.ticker, threshold):
                 matches.append(ImpersonationMatch(ref.ticker, ref.name, ref.contract, d, "ticker"))
         if token_name:
             d = levenshtein(token_name, ref.name)
-            if d <= threshold:
+            if d <= allowed_distance(token_name, ref.name, threshold):
                 matches.append(ImpersonationMatch(ref.ticker, ref.name, ref.contract, d, "name"))
 
     matches.sort(key=lambda m: m.edit_distance)

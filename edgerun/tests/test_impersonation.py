@@ -50,3 +50,35 @@ def test_empty_reference_list_is_unresolved():
 def test_no_token_metadata_is_unresolved():
     lane = run_impersonation_lane("0x" + "2" * 40, None, None, _config())
     assert lane.checks[0].status == "unresolved"
+
+
+# --- length-scaled threshold (regression: short-ticker false positives) ---
+
+def test_short_tickers_do_not_collide_on_flat_threshold():
+    """Regression: a live poller run flagged 'AI' as 2 edits from 'HD'.
+
+    Both are 2 chars, so a flat distance-2 threshold matches any pair of
+    2-char tickers — the strings share nothing. This must not flag.
+    """
+    cfg = _config(reference_tokens=[ReferenceToken("HD", "Hood Domains", "0x" + "1" * 40)])
+    lane = run_impersonation_lane("0x" + "2" * 40, "AI", "Artificial", cfg)
+    assert all(c.status != "fail" for c in lane.checks)
+
+
+def test_real_lookalike_still_flags():
+    """H00D vs HOOD is 2 edits of 4 chars — the exact attack we exist to catch."""
+    lane = run_impersonation_lane("0x" + "2" * 40, "H00D", "Something Else", _config())
+    assert any(c.status == "fail" for c in lane.checks)
+
+
+def test_one_edit_on_short_ticker_still_flags():
+    cfg = _config(reference_tokens=[ReferenceToken("HD", "Hood Domains", "0x" + "1" * 40)])
+    lane = run_impersonation_lane("0x" + "2" * 40, "H0", "Hood Domains", cfg)
+    assert any(c.status == "fail" for c in lane.checks)
+
+
+def test_allowed_distance_scales_with_length():
+    from edgerun.checks.impersonation import allowed_distance
+    assert allowed_distance("AI", "HD", 2) == 1      # 2 chars -> 1 edit max
+    assert allowed_distance("HOOD", "H00D", 2) == 2  # 4 chars -> full threshold
+    assert allowed_distance("CASHCAT", "CASHCA7", 2) == 2
