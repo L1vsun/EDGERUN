@@ -1,0 +1,25 @@
+{
+  "_comment": "This is the file operators actually maintain — not the code. Every address below was pulled live from robinhoodchain.blockscout.com on 2026-09-08 and is a real, currently-deployed, verified contract. IMPORTANT: there is no single 'official' $HOOD token on Robinhood Chain — GreenHood, Hoodrat, Robin Hood (FOX), Good In The Hood (GOOD) and others all independently claim hood-themed branding. Listing a token here is NOT an endorsement or a claim that it is official; it means the token is an established, already-deployed contract, which is the baseline the impersonation lane flags NEW near-miss clones against. Add entries you've manually verified; don't auto-populate this from search results.",
+  "reference_tokens": [
+    {"ticker": "HOOD", "name": "GreenHood", "contract": "0xDAA8f3f54c66E9BE2c44C1B6b566cBD07229CED3", "note": "established HOOD-ticker token on RH Chain, not an official Robinhood asset"},
+    {"ticker": "GOOD", "name": "Good In The Hood", "contract": "0x5f62C57e5C537887117EeF828b7E3Ad41C009FEb", "note": "established token, hood-themed branding"},
+    {"ticker": "HOODRAT", "name": "Hoodrat", "contract": "0x8e62F281f282686fCa6dCB39288069a93fC23F1c", "note": "established token, hood-themed branding"},
+    {"ticker": "FOX", "name": "Robin Hood", "contract": "0x2103faA9D1762e27a716C61718b3aCf3Ec1F9bf1", "note": "established token, named 'Robin Hood', ticker FOX"},
+    {"ticker": "HD", "name": "Hood Domains", "contract": "0x17c35105daB9936F113aF60f3bF74783Caf08301", "note": "established token, hood-themed branding"},
+    {"ticker": "LINK", "name": "Chainlink", "contract": "0x492641F648a4986844848E0beFE66D14817bCE34", "note": "bridged asset, high holder count"},
+    {"ticker": "CBBTC", "name": "Coinbase Wrapped BTC", "contract": "0xCEC185eB182c47d1bA1EFc84e6959e18cd620Be4", "note": "bridged asset, high holder count"}
+  ],
+  "thresholds": {
+    "max_edit_distance_flag": 2,
+    "lp_lock_warn_days_remaining": 180
+  },
+  "rpc": {
+    "explorer_base": "https://robinhoodchain.blockscout.com",
+    "rpc_url": "https://rpc.mainnet.chain.robinhood.com",
+    "chain_id": 4663
+  },
+  "dex": {
+    "factory_address": null,
+    "_comment": "Set this once a specific Robinhood Chain DEX factory address is confirmed, to enable LP pair resolution. Until then, lp_lock always reports unresolved — see ROADMAP.md."
+  }
+}

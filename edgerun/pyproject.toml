@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edgerun"
+version = "0.1.0"
+description = "Contract safety + impersonation checker for Robinhood Chain tokens"
+requires-python = ">=3.10"
+dependencies = [
+    "httpx>=0.27",
+    "click>=8.1",
+]
+
+[project.scripts]
+edgerun = "edgerun.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["edgerun*"]
+
+# known_tokens.json is deliberately NOT packaged as bundled data — it's the
+# one file operators edit directly (see README). `edgerun.config` finds it
+# next to this pyproject.toml by default, or via $EDGERUN_CONFIG / --config.

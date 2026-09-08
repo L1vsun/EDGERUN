@@ -1,0 +1,74 @@
+# Builds frontend/ as a static export and publishes it to GitHub Pages.
+#
+# One-time setup before this runs successfully:
+#   1. Settings -> Pages -> Source: "GitHub Actions"
+#   2. Settings -> Secrets and variables -> Actions -> Variables tab, add:
+#        NEXT_PUBLIC_API_BASE               (required — your deployed backend URL, see DEPLOY.md)
+#        NEXT_PUBLIC_BASE_PATH               (optional — '/<repo-name>' for a project page)
+#        NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS (optional — set once the token deploys)
+#        NEXT_PUBLIC_EDGERUN_DEX_URL          (optional — set once the token deploys)
+#        NEXT_PUBLIC_EDGERUN_TICKER           (optional — defaults to $EDGERUN)
+#        NEXT_PUBLIC_GITHUB_REPO_URL          (optional — this repo's URL, for the
+#                                               "verify it yourself" section)
+# These are all NEXT_PUBLIC_* values baked into the public client bundle anyway,
+# so plain repo Variables (not Secrets) are the right place for them.
+
+name: Deploy frontend to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ["frontend/**", ".github/workflows/deploy-pages.yml"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build static export
+        working-directory: frontend
+        env:
+          NEXT_PUBLIC_API_BASE: ${{ vars.NEXT_PUBLIC_API_BASE }}
+          NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH }}
+          NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS: ${{ vars.NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS }}
+          NEXT_PUBLIC_EDGERUN_DEX_URL: ${{ vars.NEXT_PUBLIC_EDGERUN_DEX_URL }}
+          NEXT_PUBLIC_EDGERUN_TICKER: ${{ vars.NEXT_PUBLIC_EDGERUN_TICKER }}
+          NEXT_PUBLIC_GITHUB_REPO_URL: ${{ vars.NEXT_PUBLIC_GITHUB_REPO_URL }}
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
