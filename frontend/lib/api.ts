@@ -22,7 +22,7 @@ export interface ScanResult {
   scanned_at: string;
   token_name: string | null;
   token_symbol: string | null;
-  contract: { source_verified: boolean | null; checks: CheckResult[] };
+  contract: { source_verified: boolean | null; deployer?: string | null; checks: CheckResult[] };
   impersonation: { checks: CheckResult[]; nearest_matches: ImpersonationMatch[] };
   verdict: "PASS" | "CAUTION" | "FAIL";
   facts_checked: number;
@@ -51,6 +51,26 @@ async function getJson<T>(path: string): Promise<T> {
     throw new Error(body.detail || `request failed: HTTP ${resp.status}`);
   }
   return resp.json();
+}
+
+export interface Deployer {
+  deployer: string;
+  launches: number;
+  pass: number;
+  caution: number;
+  fail: number;
+  last_seen: number;
+  tickers: string[];
+}
+
+export function fetchDeployers(limit = 25, minLaunches = 2): Promise<{ items: Deployer[] }> {
+  return getJson(`/api/deployers?limit=${limit}&min_launches=${minLaunches}`);
+}
+
+// The share link is server-rendered by the backend so it unfurls with an OG
+// card in Telegram/X — a static export can't produce per-address meta tags.
+export function shareUrl(address: string): string {
+  return `${API_BASE.replace(/\/$/, "")}/s/${address}`;
 }
 
 export interface TokenStats {

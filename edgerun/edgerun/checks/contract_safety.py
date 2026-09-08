@@ -26,10 +26,12 @@ def run_contract_lane(address: str, bs: BlockscoutClient, rpc: RpcClient, config
                                    f"Blockscout unreachable: {exc}"))
         return ContractLane(source_verified=None, checks=checks)
 
+    deployer = addr_data.get("creator_address_hash")
+
     if not addr_data.get("is_contract"):
         checks.append(CheckResult("is_contract", "is a contract", "fail",
                                    "this address is not a contract (EOA or unused address)"))
-        return ContractLane(source_verified=None, checks=checks)
+        return ContractLane(source_verified=None, checks=checks, deployer=deployer)
 
     is_verified = bool(addr_data.get("is_verified"))
     checks.append(CheckResult(
@@ -67,7 +69,7 @@ def run_contract_lane(address: str, bs: BlockscoutClient, rpc: RpcClient, config
     # --- LP lock ---
     checks.append(_lp_lock_check(config))
 
-    return ContractLane(source_verified=is_verified, checks=checks)
+    return ContractLane(source_verified=is_verified, checks=checks, deployer=deployer)
 
 
 def _mint_check(is_verified: bool, source_code: str, deployed_bytecode: str) -> CheckResult:

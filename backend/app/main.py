@@ -5,6 +5,7 @@ import logging
 import time
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from edgerun.config import load_config
@@ -14,6 +15,7 @@ from . import settings
 from .cache import ScanCache
 from .poller import run_poller, run_token_sampler
 from .rate_limit import RateLimiter
+from .receipt import render_og_image, render_receipt_page
 
 logging.basicConfig(level=logging.INFO)
 
@@ -64,6 +66,61 @@ def public_config() -> dict:
         "token_contract_address": settings.EDGERUN_CONTRACT_ADDRESS,
         "token_dex_url": settings.buy_url(),
     }
+
+
+@app.get("/api/deployers")
+def deployers(limit: int = 25, min_launches: int = 2) -> dict:
+    """Deployer reputation, worst first — serial ruggers are only visible in
+    aggregate, which is why this is its own view rather than a scan field."""
+    limit = max(1, min(limit, 100))
+    return {"items": cache.deployers(limit=limit, min_launches=max(1, min_launches))}
+
+
+@app.get("/api/deployers/{deployer}")
+def deployer_detail(deployer: str) -> dict:
+    contracts = cache.deployer_contracts(deployer)
+    if not contracts:
+        raise HTTPException(status_code=404, detail="no scanned contracts for this deployer")
+    return {"deployer": deployer, "contracts": contracts}
+
+
+def _load_for_share(address: str) -> dict:
+    """Scan on demand if we've never seen it, so any address can be shared."""
+    cached = cache.get(address, settings.SCAN_CACHE_TTL_SECONDS)
+    if cached is not None:
+        return cached
+    try:
+        result = scan_address(address, config)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    payload = result.to_dict()
+    cache.set(address, payload)
+    return payload
+
+
+@app.get("/og/{address}.png")
+def og_image(address: str) -> Response:
+    payload = _load_for_share(address)
+    png = render_og_image(payload)
+    return Response(
+        content=png,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=300"},
+    )
+
+
+@app.get("/s/{address}", response_class=HTMLResponse)
+def share_receipt(address: str, request: Request) -> HTMLResponse:
+    """The link you paste into Telegram/X. Server-rendered so it unfurls."""
+    payload = _load_for_share(address)
+    base = str(request.base_url).rstrip("/")
+    html_doc = render_receipt_page(
+        payload,
+        site_url=settings.SITE_URL,
+        og_image_url=f"{base}/og/{payload['address']}.png",
+        page_url=f"{base}/s/{payload['address']}",
+    )
+    return HTMLResponse(content=html_doc, headers={"Cache-Control": "public, max-age=120"})
 
 
 @app.get("/api/token")

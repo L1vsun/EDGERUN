@@ -22,6 +22,9 @@ class CheckResult:
 class ContractLane:
     source_verified: bool | None
     checks: list[CheckResult] = field(default_factory=list)
+    # Who deployed it. Kept on the result so a deployer's whole launch history
+    # can be assembled across scans — one contract at a time hides serial rugs.
+    deployer: str | None = None
 
 
 @dataclass
@@ -60,6 +63,7 @@ class ScanResult:
             "token_symbol": self.token_symbol,
             "contract": {
                 "source_verified": self.contract.source_verified,
+                "deployer": self.contract.deployer,
                 "checks": [c.to_dict() for c in self.contract.checks],
             },
             "impersonation": {

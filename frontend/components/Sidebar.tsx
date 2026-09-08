@@ -18,7 +18,7 @@ export default function Sidebar() {
     <div className="dash-side">
       <TokenPriceCard />
 
-      <div className="side-card glass">
+      <div className="side-card panel">
         <div className="eyebrow">
           <span className="live-dot" /> chain pulse
         </div>
@@ -44,9 +44,13 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <div className="side-card glass">
+      <div className="side-card panel">
         <div className="eyebrow" style={{ color: "var(--text-faint)" }}>the rest of the site</div>
         <div className="side-links">
+          <Link href="/deployers">
+            deployers
+            <small>wallets that keep shipping rugs</small>
+          </Link>
           <Link href="/mechanism">
             mechanism
             <small>the two checks, call by call</small>

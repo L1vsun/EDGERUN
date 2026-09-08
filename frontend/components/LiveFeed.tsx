@@ -118,7 +118,7 @@ export default function LiveFeed() {
               : "no scans yet — the poller runs every ~45s. Once it finds a new deployment, it'll appear here."}
           </div>
         ) : (
-          <div className="feed-table-wrap glass" style={{ overflowX: "auto" }}>
+          <div className="feed-table-wrap panel" style={{ overflowX: "auto" }}>
             <table className="feed-table">
               <thead>
                 <tr>

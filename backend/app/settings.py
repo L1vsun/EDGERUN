@@ -49,3 +49,4 @@ def buy_url() -> str:
     if EDGERUN_CONTRACT_ADDRESS:
         return f"{PONS_LAUNCHPAD_BASE.rstrip('/')}/{EDGERUN_CONTRACT_ADDRESS}"
     return ""
+SITE_URL = os.environ.get("SITE_URL", "https://l1vsun.github.io/EDGERUN/")

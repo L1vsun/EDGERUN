@@ -43,6 +43,16 @@ class ScanCache:
         self._lock = threading.Lock()
         with self._connect() as conn:
             conn.executescript(_SCHEMA)
+            self._migrate(conn)
+
+    @staticmethod
+    def _migrate(conn: sqlite3.Connection) -> None:
+        """CREATE TABLE IF NOT EXISTS won't add columns to a table that already
+        exists, so a database written by an earlier version needs this."""
+        existing = {row[1] for row in conn.execute("PRAGMA table_info(scans)")}
+        if "deployer" not in existing:
+            conn.execute("ALTER TABLE scans ADD COLUMN deployer TEXT")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_deployer ON scans (deployer)")
 
     def _connect(self) -> sqlite3.Connection:
         return sqlite3.connect(self._db_path, timeout=10)
@@ -62,17 +72,18 @@ class ScanCache:
     def set(self, address: str, result: dict) -> None:
         with self._lock, self._connect() as conn:
             conn.execute(
-                "INSERT INTO scans (address, result_json, verdict, ticker, scanned_at) "
-                "VALUES (?, ?, ?, ?, ?) "
+                "INSERT INTO scans (address, result_json, verdict, ticker, scanned_at, deployer) "
+                "VALUES (?, ?, ?, ?, ?, ?) "
                 "ON CONFLICT(address) DO UPDATE SET "
                 "result_json=excluded.result_json, verdict=excluded.verdict, "
-                "ticker=excluded.ticker, scanned_at=excluded.scanned_at",
+                "ticker=excluded.ticker, scanned_at=excluded.scanned_at, deployer=excluded.deployer",
                 (
                     address,
                     json.dumps(result),
                     result.get("verdict", ""),
                     result.get("token_symbol") or "",
                     time.time(),
+                    (result.get("contract") or {}).get("deployer"),
                 ),
             )
 
@@ -95,6 +106,52 @@ class ScanCache:
                 "(SELECT address FROM scans ORDER BY scanned_at DESC LIMIT ?)",
                 (max_items,),
             )
+
+    # --- deployer reputation ---
+
+    def deployers(self, limit: int = 25, min_launches: int = 2) -> list[dict]:
+        """Deployers we've seen ship more than one contract, worst first.
+
+        Ordering is by FAIL count then total launches: a wallet that keeps
+        shipping impersonations is exactly what a trader wants surfaced, and
+        it is invisible if you only ever look at one contract at a time.
+        """
+        with self._lock, self._connect() as conn:
+            rows = conn.execute(
+                "SELECT deployer, COUNT(*) AS launches, "
+                "  SUM(verdict = 'PASS') AS passes, "
+                "  SUM(verdict = 'CAUTION') AS cautions, "
+                "  SUM(verdict = 'FAIL') AS fails, "
+                "  MAX(scanned_at) AS last_seen, "
+                "  GROUP_CONCAT(ticker) AS tickers "
+                "FROM scans WHERE deployer IS NOT NULL AND deployer != '' "
+                "GROUP BY deployer HAVING launches >= ? "
+                "ORDER BY fails DESC, launches DESC, last_seen DESC LIMIT ?",
+                (min_launches, limit),
+            ).fetchall()
+
+        out = []
+        for r in rows:
+            tickers = [t for t in (r[6] or "").split(",") if t]
+            out.append({
+                "deployer": r[0],
+                "launches": r[1],
+                "pass": r[2] or 0,
+                "caution": r[3] or 0,
+                "fail": r[4] or 0,
+                "last_seen": r[5],
+                "tickers": tickers[:6],
+            })
+        return out
+
+    def deployer_contracts(self, deployer: str, limit: int = 100) -> list[dict]:
+        with self._lock, self._connect() as conn:
+            rows = conn.execute(
+                "SELECT result_json FROM scans WHERE lower(deployer) = lower(?) "
+                "ORDER BY scanned_at DESC LIMIT ?",
+                (deployer, limit),
+            ).fetchall()
+        return [json.loads(r[0]) for r in rows]
 
     # --- $EDGERUN price/holders history ---
 

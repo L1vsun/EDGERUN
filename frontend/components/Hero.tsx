@@ -81,7 +81,7 @@ export default function Hero() {
             {error ? <div className="scan-error">{error}</div> : null}
             {result ? <VerdictCard result={result} /> : null}
 
-            <div className="ca-card glass glass-hover">
+            <div className="ca-card panel panel-hover">
               <div className="ca-card-ticker">{TOKEN_TICKER}</div>
               <div className="ca-card-mid">
                 <div className="ca-card-label">contract address</div>
@@ -104,7 +104,7 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="term-card glass">
+          <div className="term-card panel">
             <div className="term-card-head">
               <span className="term-dot" />
               <span className="term-dot" />

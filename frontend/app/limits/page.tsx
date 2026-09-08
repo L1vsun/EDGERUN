@@ -37,7 +37,7 @@ export default function LimitsPage() {
         <div className="container">
           <div className="limits-list">
             {LIMITS.map((l) => (
-              <div className="limit-item glass" key={l.title}>
+              <div className="limit-item panel" key={l.title}>
                 <b>{l.title}.</b> {l.body}
               </div>
             ))}

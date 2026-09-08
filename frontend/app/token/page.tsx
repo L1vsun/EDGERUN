@@ -42,7 +42,7 @@ export default function TokenPage() {
           <div className="token-page-grid">
             <TokenPriceCard />
             <div>
-              <div className="ca-card glass" style={{ marginTop: 0 }}>
+              <div className="ca-card panel" style={{ marginTop: 0 }}>
                 <div className="ca-card-ticker">{TOKEN_TICKER}</div>
                 <div className="ca-card-mid">
                   <div className="ca-card-label">contract address</div>

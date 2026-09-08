@@ -6,6 +6,7 @@ export default function Footer() {
     <footer>
       <div className="container foot-links">
         <Link href="/">live feed</Link>
+        <Link href="/deployers">deployers</Link>
         <Link href="/mechanism">mechanism</Link>
         <Link href="/limits">limits</Link>
         <Link href="/onchain">on-chain</Link>

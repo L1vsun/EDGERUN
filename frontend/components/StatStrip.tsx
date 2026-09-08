@@ -36,7 +36,7 @@ export default function StatStrip() {
   const dash = (n: number | null | undefined) => (n === null || n === undefined ? "—" : n.toLocaleString());
 
   return (
-    <div className="stat-row glass">
+    <div className="stat-row panel">
       <div className="stat-tile">
         <div className="stat-tile-head">
           <span className="stat-tile-label">scanned</span>
