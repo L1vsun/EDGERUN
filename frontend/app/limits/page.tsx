@@ -1,3 +1,5 @@
+export const metadata = { title: "Limits — edgerun" };
+
 const LIMITS = [
   {
     title: "Team-controlled unlocked supply",
@@ -17,24 +19,31 @@ const LIMITS = [
   },
 ];
 
-export default function Limitations() {
+export default function LimitsPage() {
   return (
-    <section>
-      <div className="container">
-        <h3>say this part out loud</h3>
-        <h2>What this does not catch</h2>
-        <p>
-          A PASS verdict means the specific, listed structural checks came back clean. It does
-          not mean safe in any broader sense. Read the facts, not the color.
-        </p>
-        <div className="limits-list">
-          {LIMITS.map((l) => (
-            <div className="limit-item" key={l.title}>
-              <b>{l.title}.</b> {l.body}
-            </div>
-          ))}
+    <>
+      <section className="page-head">
+        <div className="container">
+          <div className="eyebrow">say this part out loud</div>
+          <h1>What this does not catch</h1>
+          <p>
+            A PASS verdict means the specific, listed structural checks came back clean. It does
+            not mean safe in any broader sense. Read the facts, not the color.
+          </p>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section className="block">
+        <div className="container">
+          <div className="limits-list">
+            {LIMITS.map((l) => (
+              <div className="limit-item" key={l.title}>
+                <b>{l.title}.</b> {l.body}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

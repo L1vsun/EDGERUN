@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { fetchFeed, ScanResult } from "@/lib/api";
+import VerdictCard from "./VerdictCard";
 
 const REFRESH_MS = 20000;
+type VerdictFilter = "ALL" | "PASS" | "CAUTION" | "FAIL";
 
 function timeAgo(iso: string): string {
   const seconds = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
@@ -18,13 +20,20 @@ function timeAgo(iso: string): string {
 export default function LiveFeed() {
   const [items, setItems] = useState<ScanResult[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [paused, setPaused] = useState(false);
+  const [filter, setFilter] = useState<VerdictFilter>("ALL");
+  const [query, setQuery] = useState("");
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
 
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
+      if (pausedRef.current) return;
       try {
-        const { items } = await fetchFeed(20);
+        const { items } = await fetchFeed(40);
         if (!cancelled) {
           setItems(items);
           setError(null);
@@ -42,30 +51,80 @@ export default function LiveFeed() {
     };
   }, []);
 
+  const counts = useMemo(() => {
+    const base = { PASS: 0, CAUTION: 0, FAIL: 0 };
+    for (const it of items || []) base[it.verdict]++;
+    return base;
+  }, [items]);
+
+  const filtered = useMemo(() => {
+    if (!items) return null;
+    const q = query.trim().toLowerCase();
+    return items.filter((it) => {
+      if (filter !== "ALL" && it.verdict !== filter) return false;
+      if (!q) return true;
+      return it.address.toLowerCase().includes(q) || (it.token_symbol || "").toLowerCase().includes(q) || (it.token_name || "").toLowerCase().includes(q);
+    });
+  }, [items, filter, query]);
+
   return (
-    <section id="live-feed">
-      <div className="container">
-        <h3>
-          <span className="live-dot" />
-          live feed
-        </h3>
-        <h2>Recently scanned on Robinhood Chain</h2>
+    <section id="live-feed" className="block">
+      <div className="container-wide">
+        <div className="feed-section-head">
+          <div>
+            <h3 className="eyebrow">
+              <span className="live-dot" /> live feed {paused ? "· paused" : ""}
+            </h3>
+            <h2>Recently scanned on Robinhood Chain</h2>
+          </div>
+          <button className="btn" onClick={() => setPaused((p) => !p)}>
+            {paused ? "resume" : "pause"}
+          </button>
+        </div>
         <p>
           Every new verified contract and newly-listed token is picked up by the poller and run
-          through both lanes automatically — this is the same pipeline `edgerun watch` runs.
+          through both lanes automatically — the same pipeline <code>edgerun watch</code> runs.
         </p>
+
+        <div className="scanbox" style={{ marginTop: 6 }}>
+          <input
+            className="mono"
+            placeholder="filter by ticker, name, or address…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            spellCheck={false}
+          />
+          <div style={{ display: "flex", gap: 6 }}>
+            {(["ALL", "PASS", "CAUTION", "FAIL"] as VerdictFilter[]).map((f) => (
+              <button
+                key={f}
+                className="btn"
+                style={
+                  filter === f
+                    ? { background: "var(--surface-2)", borderColor: "var(--accent-dim)", color: "var(--text)" }
+                    : undefined
+                }
+                onClick={() => setFilter(f)}
+              >
+                {f}
+                {f !== "ALL" ? ` (${counts[f]})` : ""}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {error ? (
           <div className="feed-empty">feed unavailable: {error}</div>
-        ) : items === null ? (
+        ) : filtered === null ? (
           <div className="feed-empty">loading…</div>
-        ) : items.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <div className="feed-empty">
-            no scans yet — the poller runs every ~45s. Once it finds a new deployment, it'll
-            appear here.
+            {items && items.length > 0
+              ? "nothing matches that filter."
+              : "no scans yet — the poller runs every ~45s. Once it finds a new deployment, it'll appear here."}
           </div>
         ) : (
-          <div style={{ overflowX: "auto" }}>
+          <div className="feed-table-wrap" style={{ overflowX: "auto" }}>
             <table className="feed-table">
               <thead>
                 <tr>
@@ -77,22 +136,36 @@ export default function LiveFeed() {
                 </tr>
               </thead>
               <tbody>
-                {items.map((r) => (
-                  <tr key={r.address}>
-                    <td>{timeAgo(r.scanned_at)}</td>
-                    <td>
-                      <a href={r.blockscout_url} target="_blank" rel="noreferrer">
-                        {r.address.slice(0, 6)}...{r.address.slice(-4)}
-                      </a>
-                    </td>
-                    <td>{r.token_symbol || "—"}</td>
-                    <td>
-                      <span className={`pill pill-${r.verdict}`}>{r.verdict}</span>
-                    </td>
-                    <td>
-                      {r.facts_checked}/{r.facts_checked + r.unresolved}
-                    </td>
-                  </tr>
+                {filtered.map((r) => (
+                  <Fragment key={r.address}>
+                    <tr onClick={() => setExpanded(expanded === r.address ? null : r.address)} style={{ cursor: "pointer" }}>
+                      <td>{timeAgo(r.scanned_at)}</td>
+                      <td>
+                        <a
+                          href={r.blockscout_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {r.address.slice(0, 6)}...{r.address.slice(-4)}
+                        </a>
+                      </td>
+                      <td>{r.token_symbol || "—"}</td>
+                      <td>
+                        <span className={`pill pill-${r.verdict}`}>{r.verdict}</span>
+                      </td>
+                      <td>
+                        {r.facts_checked}/{r.facts_checked + r.unresolved}
+                      </td>
+                    </tr>
+                    {expanded === r.address ? (
+                      <tr>
+                        <td colSpan={5} style={{ background: "var(--bg-alt)", padding: "0 14px 18px" }}>
+                          <VerdictCard result={r} />
+                        </td>
+                      </tr>
+                    ) : null}
+                  </Fragment>
                 ))}
               </tbody>
             </table>

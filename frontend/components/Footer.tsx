@@ -1,8 +1,25 @@
+import Link from "next/link";
+import { GITHUB_REPO_URL } from "@/lib/config";
+
 export default function Footer() {
   return (
     <footer>
-      edgerun is a verification tool, not investment advice or a signal service. It cannot
-      catch every scam — read "what this does not catch" above. Always confirm independently.
+      <div className="container foot-links">
+        <Link href="/">live feed</Link>
+        <Link href="/mechanism">mechanism</Link>
+        <Link href="/limits">limits</Link>
+        <Link href="/onchain">on-chain</Link>
+        <Link href="/token">token</Link>
+        {GITHUB_REPO_URL ? (
+          <a href={GITHUB_REPO_URL} target="_blank" rel="noreferrer">
+            github
+          </a>
+        ) : null}
+      </div>
+      <div className="container">
+        edgerun is a verification tool, not investment advice or a signal service. It cannot
+        catch every scam — see "limits" above. Always confirm independently.
+      </div>
     </footer>
   );
 }
