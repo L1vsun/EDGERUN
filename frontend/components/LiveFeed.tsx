@@ -68,9 +68,8 @@ export default function LiveFeed() {
   }, [items, filter, query]);
 
   return (
-    <section id="live-feed" className="block">
-      <div className="container-wide">
-        <div className="feed-section-head">
+    <div id="live-feed">
+      <div className="feed-section-head">
           <div>
             <h3 className="eyebrow">
               <span className="live-dot" /> live feed {paused ? "· paused" : ""}
@@ -171,7 +170,6 @@ export default function LiveFeed() {
             </table>
           </div>
         )}
-      </div>
-    </section>
+    </div>
   );
 }
