@@ -18,7 +18,7 @@ export default function MechanismPage() {
       <section className="block">
         <div className="container">
           <div className="lane-grid">
-            <div className="lane-card">
+            <div className="lane-card glass glass-hover">
               <h3>contract safety</h3>
               <ul>
                 <li>source verified on Blockscout, yes or no</li>
@@ -27,7 +27,7 @@ export default function MechanismPage() {
                 <li>LP token holder and lock status, where the pair contract resolves</li>
               </ul>
             </div>
-            <div className="lane-card">
+            <div className="lane-card glass glass-hover">
               <h3>impersonation</h3>
               <ul>
                 <li>ticker edit-distance against every entry in the maintained reference list</li>
@@ -45,7 +45,7 @@ export default function MechanismPage() {
             common trait shared by contracts already documented as scams on this chain.
           </p>
 
-          <div className="ascii-block">{`$ edgerun scan 0x1a2b3c4d5e6f...
+          <div className="ascii-block glass">{`$ edgerun scan 0x1a2b3c4d5e6f...
 
   contract
     ok    source verified on blockscout

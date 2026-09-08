@@ -4,6 +4,7 @@ import { useState } from "react";
 import { scanAddress, isAddressLike, ScanResult } from "@/lib/api";
 import { CONTRACT_ADDRESS, DEX_URL, TOKEN_TICKER } from "@/lib/config";
 import VerdictCard from "./VerdictCard";
+import StatStrip from "./StatStrip";
 
 function displayAddress(addr: string): string {
   if (addr.length <= 14) return addr;
@@ -80,7 +81,7 @@ export default function Hero() {
             {error ? <div className="scan-error">{error}</div> : null}
             {result ? <VerdictCard result={result} /> : null}
 
-            <div className="ca-card">
+            <div className="ca-card glass glass-hover">
               <div className="ca-card-ticker">{TOKEN_TICKER}</div>
               <div className="ca-card-mid">
                 <div className="ca-card-label">contract address</div>
@@ -98,12 +99,12 @@ export default function Hero() {
                   Buy {TOKEN_TICKER} ↗
                 </a>
               ) : (
-                <span className="live-pill">live on robinhood chain</span>
+                <span className="live-pill">pre-launch · CA at launch</span>
               )}
             </div>
           </div>
 
-          <div className="term-card">
+          <div className="term-card glass">
             <div className="term-card-head">
               <span className="term-dot" />
               <span className="term-dot" />
@@ -126,6 +127,8 @@ export default function Hero() {
             </div>
           </div>
         </div>
+
+        <StatStrip />
       </div>
     </section>
   );

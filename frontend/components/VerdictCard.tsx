@@ -16,7 +16,7 @@ export default function VerdictCard({ result }: { result: ScanResult }) {
   const label = result.token_symbol ? `${result.token_symbol} · ${short}` : short;
 
   return (
-    <div className="card">
+    <div className="card glass">
       <div className="card-head">
         <span className="card-addr">{label}</span>
         <span className={`verdict-badge verdict-${result.verdict}`}>{result.verdict}</span>

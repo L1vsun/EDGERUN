@@ -85,7 +85,7 @@ export default function LiveFeed() {
           through both lanes automatically — the same pipeline <code>edgerun watch</code> runs.
         </p>
 
-        <div className="scanbox" style={{ marginTop: 6 }}>
+        <div className="feed-controls">
           <input
             className="mono"
             placeholder="filter by ticker, name, or address…"
@@ -93,20 +93,15 @@ export default function LiveFeed() {
             onChange={(e) => setQuery(e.target.value)}
             spellCheck={false}
           />
-          <div style={{ display: "flex", gap: 6 }}>
+          <div className="feed-filters">
             {(["ALL", "PASS", "CAUTION", "FAIL"] as VerdictFilter[]).map((f) => (
               <button
                 key={f}
-                className="btn"
-                style={
-                  filter === f
-                    ? { background: "var(--surface-2)", borderColor: "var(--accent-dim)", color: "var(--text)" }
-                    : undefined
-                }
+                className={`chip${filter === f ? " chip-on" : ""}`}
                 onClick={() => setFilter(f)}
               >
                 {f}
-                {f !== "ALL" ? ` (${counts[f]})` : ""}
+                {f !== "ALL" ? ` ${counts[f]}` : ""}
               </button>
             ))}
           </div>
@@ -123,15 +118,16 @@ export default function LiveFeed() {
               : "no scans yet — the poller runs every ~45s. Once it finds a new deployment, it'll appear here."}
           </div>
         ) : (
-          <div className="feed-table-wrap" style={{ overflowX: "auto" }}>
+          <div className="feed-table-wrap glass" style={{ overflowX: "auto" }}>
             <table className="feed-table">
               <thead>
                 <tr>
                   <th>time</th>
                   <th>address</th>
                   <th>ticker</th>
+                  <th>source</th>
                   <th>verdict</th>
-                  <th>facts</th>
+                  <th>checks</th>
                 </tr>
               </thead>
               <tbody>
@@ -153,17 +149,35 @@ export default function LiveFeed() {
                           {r.address.slice(0, 6)}...{r.address.slice(-4)}
                         </a>
                       </td>
-                      <td>{r.token_symbol || "—"}</td>
+                      <td className="feed-ticker">{r.token_symbol || "—"}</td>
+                      <td>
+                        <span className={`src-dot${r.contract.source_verified ? " verified" : ""}`}>
+                          <i />
+                          {r.contract.source_verified ? "verified" : "unverified"}
+                        </span>
+                      </td>
                       <td>
                         <span className={`pill pill-${r.verdict}`}>{r.verdict}</span>
                       </td>
                       <td>
-                        {r.facts_checked}/{r.facts_checked + r.unresolved}
+                        <span className="bar">
+                          <span className="bar-track">
+                            <span
+                              className={`bar-fill${r.verdict === "FAIL" ? " fail" : r.verdict === "CAUTION" ? " warn" : ""}`}
+                              style={{
+                                width: `${Math.round((r.facts_checked / Math.max(1, r.facts_checked + r.unresolved)) * 100)}%`,
+                              }}
+                            />
+                          </span>
+                          <span className="bar-num">
+                            {r.facts_checked}/{r.facts_checked + r.unresolved}
+                          </span>
+                        </span>
                       </td>
                     </tr>
                     {expanded === r.address ? (
                       <tr>
-                        <td colSpan={5} style={{ background: "var(--bg-alt)", padding: "0 14px 18px" }}>
+                        <td colSpan={6} style={{ background: "var(--bg-alt)", padding: "0 14px 18px" }}>
                           <VerdictCard result={r} />
                         </td>
                       </tr>

@@ -45,7 +45,7 @@ export default function TokenPriceCard({ withChart = true }: { withChart?: boole
   const address = stats?.address || CONTRACT_ADDRESS;
 
   return (
-    <div className={`price-card${launched ? "" : " price-card-armed"}`}>
+    <div className={`price-card ${launched ? "glass-accent" : "glass price-card-armed"}`}>
       <div className="price-card-top">
         <span className="price-ticker">{TOKEN_TICKER}</span>
         {launched ? (

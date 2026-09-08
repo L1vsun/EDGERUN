@@ -41,7 +41,7 @@ export default function EasterEgg() {
 
   return (
     <div className="egg-overlay" onClick={() => setOpen(false)}>
-      <div className="egg-term" onClick={(e) => e.stopPropagation()}>
+      <div className="egg-term glass" onClick={(e) => e.stopPropagation()}>
         <div className="egg-term-head">
           <span className="egg-term-dot" />
           <span className="egg-term-dot" />
