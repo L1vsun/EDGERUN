@@ -175,7 +175,7 @@ section.block + section.block { border-top: var(--hair); }
 
 /* ================= hero ================= */
 .hero { padding: 44px 0 26px; }
-.hero-grid { display: grid; grid-template-columns: 1fr 400px; gap: 34px; align-items: start; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 38px; align-items: start; }
 @media (max-width: 1000px) { .hero-grid { grid-template-columns: 1fr; } }
 .hero-copy { min-width: 0; }
 .hero h1 { font-size: clamp(34px, 5vw, 62px); max-width: 760px; line-height: 1.12; }
@@ -210,6 +210,8 @@ section.block + section.block { border-top: var(--hair); }
   padding: 16px; font-family: var(--mono); font-size: 11.5px; line-height: 1.85; color: var(--ink-2);
   white-space: pre; overflow-x: auto; background: var(--paper);
 }
+.term-card-compact .term-card-body { padding: 14px; font-size: 10.5px; line-height: 1.75; }
+.term-card-compact .term-card-head { padding: 8px 12px; font-size: 9.5px; }
 .term-card-body .t-ok { color: var(--ok-ink); font-weight: 700; }
 .term-card-body .t-warn { color: var(--warn-ink); font-weight: 700; }
 .term-card-body .t-fail { color: var(--fail-ink); font-weight: 700; }
@@ -352,6 +354,9 @@ section.block + section.block { border-top: var(--hair); }
 
 /* ================= token price card ================= */
 .price-card { padding: 20px; }
+.hero-token .price-card { padding: 22px; }
+.hero-token .price-figure { font-size: 38px; }
+.hero-token .chart-svg { height: 168px; }
 .price-card-armed { border-style: dashed; box-shadow: none; }
 .price-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .price-ticker { font-family: var(--mono); font-size: 17px; font-weight: 800; letter-spacing: -0.03em; }

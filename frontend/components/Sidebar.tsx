@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchPublicConfig, PublicConfig } from "@/lib/api";
 import { useChainPulse } from "@/lib/chain";
-import TokenPriceCard from "./TokenPriceCard";
+import ScanPreview from "./ScanPreview";
 
 export default function Sidebar() {
   const [cfg, setCfg] = useState<PublicConfig | null>(null);
@@ -16,7 +16,7 @@ export default function Sidebar() {
 
   return (
     <div className="dash-side">
-      <TokenPriceCard />
+      <ScanPreview compact />
 
       <div className="side-card panel">
         <div className="eyebrow">
