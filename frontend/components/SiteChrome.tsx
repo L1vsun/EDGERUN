@@ -8,7 +8,6 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   return (
     <>
       <div className="grain" />
-      <div className="scanline" />
       <div className="sticky-chrome">
         <TokenBanner />
         <Header />

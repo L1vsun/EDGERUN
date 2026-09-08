@@ -137,7 +137,11 @@ export default function LiveFeed() {
               <tbody>
                 {filtered.map((r) => (
                   <Fragment key={r.address}>
-                    <tr onClick={() => setExpanded(expanded === r.address ? null : r.address)} style={{ cursor: "pointer" }}>
+                    <tr
+                      data-verdict={r.verdict}
+                      onClick={() => setExpanded(expanded === r.address ? null : r.address)}
+                      style={{ cursor: "pointer" }}
+                    >
                       <td>{timeAgo(r.scanned_at)}</td>
                       <td>
                         <a

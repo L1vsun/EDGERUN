@@ -43,7 +43,7 @@ export default function TokenPage() {
             <div className="ca-card-mid">
               <div className="ca-card-label">contract address</div>
               <div className="ca-card-value">
-                {CONTRACT_ADDRESS ? displayAddress(CONTRACT_ADDRESS) : "not deployed yet — set NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS at launch"}
+                {CONTRACT_ADDRESS ? displayAddress(CONTRACT_ADDRESS) : "not deployed yet"}
               </div>
             </div>
             {CONTRACT_ADDRESS ? (
