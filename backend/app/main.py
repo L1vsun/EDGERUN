@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +12,7 @@ from edgerun.scan import scan_address
 
 from . import settings
 from .cache import ScanCache
-from .poller import run_poller
+from .poller import run_poller, run_token_sampler
 from .rate_limit import RateLimiter
 
 logging.basicConfig(level=logging.INFO)
@@ -28,19 +29,19 @@ config = load_config(settings.EDGERUN_CONFIG)
 cache = ScanCache(settings.CACHE_DB_PATH)
 limiter = RateLimiter(settings.RATE_LIMIT_PER_MINUTE)
 
-_poller_task: asyncio.Task | None = None
+_background_tasks: list[asyncio.Task] = []
 
 
 @app.on_event("startup")
-async def _start_poller() -> None:
-    global _poller_task
-    _poller_task = asyncio.create_task(run_poller(cache, config))
+async def _start_background_tasks() -> None:
+    _background_tasks.append(asyncio.create_task(run_poller(cache, config)))
+    _background_tasks.append(asyncio.create_task(run_token_sampler(cache, config)))
 
 
 @app.on_event("shutdown")
-async def _stop_poller() -> None:
-    if _poller_task:
-        _poller_task.cancel()
+async def _stop_background_tasks() -> None:
+    for task in _background_tasks:
+        task.cancel()
 
 
 @app.get("/api/health")
@@ -61,8 +62,57 @@ def public_config() -> dict:
         "scan_cache_ttl_seconds": settings.SCAN_CACHE_TTL_SECONDS,
         "token_ticker": settings.EDGERUN_TOKEN_TICKER,
         "token_contract_address": settings.EDGERUN_CONTRACT_ADDRESS,
-        "token_dex_url": settings.EDGERUN_DEX_URL,
+        "token_dex_url": settings.buy_url(),
     }
+
+
+@app.get("/api/token")
+def token_stats() -> dict:
+    """Live $EDGERUN market state, straight from Blockscout.
+
+    `launched: false` until a contract address is configured — the frontend
+    renders an explicit pre-launch state for that rather than zeros.
+    """
+    address = settings.EDGERUN_CONTRACT_ADDRESS
+    base = {
+        "launched": bool(address),
+        "ticker": settings.EDGERUN_TOKEN_TICKER,
+        "address": address,
+        "buy_url": settings.buy_url(),
+        "explorer_url": f"{config.explorer_base}/address/{address}" if address else "",
+    }
+    if not address:
+        return {**base, "price": None, "market_cap": None, "volume_24h": None, "holders": None}
+
+    latest = cache.latest_token_sample()
+    day_ago = cache.token_sample_at_or_before(time.time() - 86400)
+
+    # A change figure is only shown when two real samples exist to compare.
+    change_24h = None
+    if latest and day_ago and latest.get("price") and day_ago.get("price"):
+        change_24h = (latest["price"] - day_ago["price"]) / day_ago["price"] * 100
+
+    return {
+        **base,
+        "price": latest.get("price") if latest else None,
+        "market_cap": latest.get("market_cap") if latest else None,
+        "volume_24h": latest.get("volume_24h") if latest else None,
+        "holders": latest.get("holders") if latest else None,
+        "updated_at": latest.get("ts") if latest else None,
+        "change_24h": change_24h,
+        "samples": len(cache.token_samples(0, limit=1000)),
+    }
+
+
+@app.get("/api/token/history")
+def token_history(range: str = "24h") -> dict:
+    """Real samples only — one point per poll cycle, nothing interpolated."""
+    windows = {"1h": 3600, "24h": 86400, "7d": 7 * 86400, "all": None}
+    if range not in windows:
+        raise HTTPException(status_code=400, detail=f"range must be one of {list(windows)}")
+    window = windows[range]
+    since = 0.0 if window is None else time.time() - window
+    return {"range": range, "points": cache.token_samples(since)}
 
 
 @app.get("/api/feed")

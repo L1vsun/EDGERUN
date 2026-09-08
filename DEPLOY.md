@@ -66,13 +66,30 @@ the default for a repo not named `<user>.github.io`), set `NEXT_PUBLIC_BASE_PATH
 before building — otherwise asset paths 404. Then commit `frontend/out` to a
 `gh-pages` branch and point Pages Settings at that branch instead of GitHub Actions.
 
-## 3. Set the token banner values for real, once the token exists
+## 3. Launch day: one variable switches everything on
 
-The banner reads `NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS` and
-`NEXT_PUBLIC_EDGERUN_DEX_URL` at **build time** (they're baked into the static
-export). When the token deploys: set both as repo Variables (automated path) or in
-your build environment (manual path), then rebuild/republish. There's no other place
-in the code these values live — see `frontend/lib/config.ts`.
+The contract address is the single switch. Set it in **both** places:
+
+- **Frontend** (repo Variable / build env): `NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS`
+  — baked in at build time, so rebuild/republish after setting it. This turns on
+  the price card, the chart, and points every buy button at
+  `https://www.ponsfamily.com/launchpad/<address>`.
+- **Backend** (Render env var): `EDGERUN_CONTRACT_ADDRESS` — this starts the price
+  sampler, which is what gives the chart data to draw.
+
+Until it's set, the site renders an explicit pre-launch state everywhere (an
+"armed" price card, a chart that says it activates at launch, and buy buttons that
+say the launchpad opens at launch) rather than dead links or a fake chart.
+
+**Why the backend matters for the chart:** Blockscout serves no price history for a
+token (verified — `/api/v2/tokens/{addr}/price-history` returns 404). So the backend
+records one real price/holders sample per minute into SQLite, and the chart plots
+exactly those samples. The series therefore starts empty at launch and fills in from
+there — it can't be backfilled, because that data doesn't exist anywhere to fetch.
+
+Optional overrides: `NEXT_PUBLIC_EDGERUN_DEX_URL` / `EDGERUN_DEX_URL` to send buy
+links somewhere other than Pons; `TOKEN_SAMPLE_INTERVAL_SECONDS` and
+`TOKEN_HISTORY_MAX_AGE_DAYS` to change sampling cadence/retention.
 
 ## Local dev (no deploy needed)
 

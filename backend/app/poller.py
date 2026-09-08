@@ -30,6 +30,58 @@ async def run_poller(cache: ScanCache, config: Config) -> None:
         bs.close()
 
 
+async def run_token_sampler(cache: ScanCache, config: Config) -> None:
+    """Own task, own client, own cadence.
+
+    Deliberately not folded into run_poller: a feed cycle can spend minutes
+    scanning new contracts, and the price chart must not go stale (or start
+    empty for minutes after a restart) just because a scan is slow.
+    """
+    bs = BlockscoutClient(config.explorer_base)
+    try:
+        while True:
+            try:
+                await _sample_token(bs, cache)
+            except Exception:
+                log.exception("token sample failed, will retry")
+            await asyncio.sleep(settings.TOKEN_SAMPLE_INTERVAL_SECONDS)
+    finally:
+        bs.close()
+
+
+async def _sample_token(bs: BlockscoutClient, cache: ScanCache) -> None:
+    """Record one real price/holders reading for $EDGERUN.
+
+    No contract address configured (pre-launch) means nothing to sample —
+    the history stays genuinely empty rather than being seeded with
+    placeholder points.
+    """
+    address = settings.EDGERUN_CONTRACT_ADDRESS
+    if not address:
+        return
+
+    try:
+        data = await asyncio.to_thread(bs.token, address)
+    except BlockscoutError as exc:
+        log.warning("token sample unavailable: %s", exc)
+        return
+
+    def _num(value) -> float | None:
+        try:
+            return float(value) if value is not None else None
+        except (TypeError, ValueError):
+            return None
+
+    holders = _num(data.get("holders_count"))
+    cache.add_token_sample(
+        price=_num(data.get("exchange_rate")),
+        market_cap=_num(data.get("circulating_market_cap")),
+        volume_24h=_num(data.get("volume_24h")),
+        holders=int(holders) if holders is not None else None,
+    )
+    cache.trim_token_samples(settings.TOKEN_HISTORY_MAX_AGE_DAYS * 86400)
+
+
 async def _poll_once(bs: BlockscoutClient, cache: ScanCache, config: Config) -> None:
     candidates: set[str] = set()
 

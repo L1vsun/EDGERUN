@@ -1,9 +1,11 @@
-"""SQLite-backed scan cache + feed store.
+"""SQLite-backed scan cache + feed store + $EDGERUN price history.
 
-One table is enough: every scan (user-triggered or from the poller) is
-upserted here. /api/scan reads it as a TTL cache; /api/feed reads it as a
-recency-ordered list. Survives backend restarts, which a pure in-memory
-cache wouldn't.
+Two tables. `scans` is the scan cache and live feed. `token_samples` is the
+price/holders history for our own token — Blockscout has no price-history
+endpoint (verified: /api/v2/tokens/{addr}/price-history returns 404), so the
+only honest way to draw a chart is to record real samples ourselves on each
+poll cycle and plot exactly those. Before launch the table is simply empty
+and the UI says so, rather than drawing invented candles.
 """
 from __future__ import annotations
 
@@ -22,6 +24,15 @@ CREATE TABLE IF NOT EXISTS scans (
     scanned_at REAL NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_scanned_at ON scans (scanned_at DESC);
+
+CREATE TABLE IF NOT EXISTS token_samples (
+    ts REAL PRIMARY KEY,
+    price REAL,
+    market_cap REAL,
+    volume_24h REAL,
+    holders INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_token_ts ON token_samples (ts DESC);
 """
 
 
@@ -84,3 +95,64 @@ class ScanCache:
                 "(SELECT address FROM scans ORDER BY scanned_at DESC LIMIT ?)",
                 (max_items,),
             )
+
+    # --- $EDGERUN price/holders history ---
+
+    def add_token_sample(
+        self,
+        price: float | None,
+        market_cap: float | None,
+        volume_24h: float | None,
+        holders: int | None,
+    ) -> None:
+        with self._lock, self._connect() as conn:
+            conn.execute(
+                "INSERT OR REPLACE INTO token_samples (ts, price, market_cap, volume_24h, holders) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (time.time(), price, market_cap, volume_24h, holders),
+            )
+
+    def token_samples(self, since_ts: float, limit: int = 500) -> list[dict]:
+        """Oldest-first, downsampled to `limit` points so a long window stays
+        cheap to draw without inventing data between real samples."""
+        with self._lock, self._connect() as conn:
+            rows = conn.execute(
+                "SELECT ts, price, market_cap, volume_24h, holders FROM token_samples "
+                "WHERE ts >= ? ORDER BY ts ASC",
+                (since_ts,),
+            ).fetchall()
+
+        if len(rows) > limit:
+            step = len(rows) / limit
+            rows = [rows[int(i * step)] for i in range(limit)]
+
+        return [
+            {"ts": r[0], "price": r[1], "market_cap": r[2], "volume_24h": r[3], "holders": r[4]}
+            for r in rows
+        ]
+
+    def latest_token_sample(self) -> dict | None:
+        with self._lock, self._connect() as conn:
+            row = conn.execute(
+                "SELECT ts, price, market_cap, volume_24h, holders FROM token_samples "
+                "ORDER BY ts DESC LIMIT 1"
+            ).fetchone()
+        if row is None:
+            return None
+        return {"ts": row[0], "price": row[1], "market_cap": row[2], "volume_24h": row[3], "holders": row[4]}
+
+    def token_sample_at_or_before(self, ts: float) -> dict | None:
+        """Used for a real change-over-window figure — never extrapolated."""
+        with self._lock, self._connect() as conn:
+            row = conn.execute(
+                "SELECT ts, price, market_cap, volume_24h, holders FROM token_samples "
+                "WHERE ts <= ? ORDER BY ts DESC LIMIT 1",
+                (ts,),
+            ).fetchone()
+        if row is None:
+            return None
+        return {"ts": row[0], "price": row[1], "market_cap": row[2], "volume_24h": row[3], "holders": row[4]}
+
+    def trim_token_samples(self, max_age_seconds: float) -> None:
+        with self._lock, self._connect() as conn:
+            conn.execute("DELETE FROM token_samples WHERE ts < ?", (time.time() - max_age_seconds,))

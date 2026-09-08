@@ -8,7 +8,22 @@ export const TOKEN_TICKER = process.env.NEXT_PUBLIC_EDGERUN_TICKER || "$EDGERUN"
 
 export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS || "";
 
-export const DEX_URL = process.env.NEXT_PUBLIC_EDGERUN_DEX_URL || "";
+// Every "buy" button on the site resolves through here. Once the contract
+// address is set, buying goes to the token's Pons launchpad page; before
+// that there is no link at all and the buttons render a pre-launch state
+// instead of pointing somewhere useless.
+export const PONS_LAUNCHPAD_BASE =
+  process.env.NEXT_PUBLIC_PONS_LAUNCHPAD_BASE || "https://www.ponsfamily.com/launchpad";
+
+const DEX_URL_OVERRIDE = process.env.NEXT_PUBLIC_EDGERUN_DEX_URL || "";
+
+export function buyUrl(): string {
+  if (DEX_URL_OVERRIDE) return DEX_URL_OVERRIDE;
+  if (CONTRACT_ADDRESS) return `${PONS_LAUNCHPAD_BASE.replace(/\/$/, "")}/${CONTRACT_ADDRESS}`;
+  return "";
+}
+
+export const DEX_URL = buyUrl();
 
 // Base URL of the FastAPI backend (see ../backend). Must be reachable from
 // the browser — set to your deployed backend's public URL. Static export

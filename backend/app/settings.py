@@ -32,4 +32,20 @@ CORS_ORIGINS = [o.strip() for o in os.environ.get("CORS_ORIGINS", "*").split(","
 # as env vars at deploy time; nothing else needs to change.
 EDGERUN_TOKEN_TICKER = os.environ.get("EDGERUN_TOKEN_TICKER", "$EDGERUN")
 EDGERUN_CONTRACT_ADDRESS = os.environ.get("EDGERUN_CONTRACT_ADDRESS", "")
+
+# Buy links resolve to the Pons launchpad entry for our own contract. Set
+# EDGERUN_DEX_URL only to override that default with a different venue.
+PONS_LAUNCHPAD_BASE = os.environ.get("PONS_LAUNCHPAD_BASE", "https://www.ponsfamily.com/launchpad")
 EDGERUN_DEX_URL = os.environ.get("EDGERUN_DEX_URL", "")
+
+# How long price/holders samples are kept, and how often one is taken.
+TOKEN_HISTORY_MAX_AGE_DAYS = int(os.environ.get("TOKEN_HISTORY_MAX_AGE_DAYS", 30))
+TOKEN_SAMPLE_INTERVAL_SECONDS = int(os.environ.get("TOKEN_SAMPLE_INTERVAL_SECONDS", 60))
+
+
+def buy_url() -> str:
+    if EDGERUN_DEX_URL:
+        return EDGERUN_DEX_URL
+    if EDGERUN_CONTRACT_ADDRESS:
+        return f"{PONS_LAUNCHPAD_BASE.rstrip('/')}/{EDGERUN_CONTRACT_ADDRESS}"
+    return ""

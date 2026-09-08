@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useChainPulse } from "@/lib/chain";
-import { GITHUB_REPO_URL, TOKEN_TICKER } from "@/lib/config";
+import { DEX_URL, GITHUB_REPO_URL, TOKEN_TICKER } from "@/lib/config";
 import LogoMark from "./LogoMark";
 
 const TABS = [
@@ -58,9 +58,18 @@ export default function Header() {
               GitHub
             </a>
           ) : null}
-          <Link href="/token" className="btn btn-accent">
-            Buy {TOKEN_TICKER}
-          </Link>
+          {/* Goes straight to the Pons launchpad once the CA is set; before
+              that there is no launchpad page to link to, so it falls back to
+              the token tab rather than a dead external link. */}
+          {DEX_URL ? (
+            <a className="btn btn-accent" href={DEX_URL} target="_blank" rel="noreferrer">
+              Buy {TOKEN_TICKER}
+            </a>
+          ) : (
+            <Link href="/token" className="btn btn-accent">
+              Buy {TOKEN_TICKER}
+            </Link>
+          )}
         </div>
       </div>
     </div>

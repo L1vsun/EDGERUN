@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CONTRACT_ADDRESS, DEX_URL, TOKEN_TICKER } from "@/lib/config";
+import { CONTRACT_ADDRESS, TOKEN_TICKER } from "@/lib/config";
+import TokenPriceCard from "@/components/TokenPriceCard";
 
 function displayAddress(addr: string): string {
   if (addr.length <= 14) return addr;
@@ -38,26 +39,34 @@ export default function TokenPage() {
 
       <section className="block">
         <div className="container">
-          <div className="ca-card">
-            <div className="ca-card-ticker">{TOKEN_TICKER}</div>
-            <div className="ca-card-mid">
-              <div className="ca-card-label">contract address</div>
-              <div className="ca-card-value">
-                {CONTRACT_ADDRESS ? displayAddress(CONTRACT_ADDRESS) : "not deployed yet"}
+          <div className="token-page-grid">
+            <TokenPriceCard />
+            <div>
+              <div className="ca-card" style={{ marginTop: 0 }}>
+                <div className="ca-card-ticker">{TOKEN_TICKER}</div>
+                <div className="ca-card-mid">
+                  <div className="ca-card-label">contract address</div>
+                  <div className="ca-card-value">
+                    {CONTRACT_ADDRESS ? displayAddress(CONTRACT_ADDRESS) : "not deployed yet"}
+                  </div>
+                </div>
+                {CONTRACT_ADDRESS ? (
+                  <button className="btn" onClick={handleCopy}>
+                    {copied ? "copied ✓" : "copy CA"}
+                  </button>
+                ) : null}
               </div>
+              <p style={{ marginTop: 16, fontSize: 14 }}>
+                Buying happens on the Pons launchpad. The price, chart and buy link on this page
+                read from the live contract — before launch there is no data to show, and this
+                page says so rather than filling the space with a placeholder chart.
+              </p>
+              <p style={{ fontSize: 14 }}>
+                Chart points are real samples recorded by the same poller that runs the scan
+                feed. Blockscout publishes no price history for a token, so the series starts
+                the moment the contract goes live and grows from there.
+              </p>
             </div>
-            {CONTRACT_ADDRESS ? (
-              <button className="btn" onClick={handleCopy}>
-                {copied ? "copied ✓" : "copy CA"}
-              </button>
-            ) : null}
-            {DEX_URL ? (
-              <a className="btn btn-accent" href={DEX_URL} target="_blank" rel="noreferrer">
-                Buy {TOKEN_TICKER} ↗
-              </a>
-            ) : (
-              <span className="live-pill">launching on robinhood chain</span>
-            )}
           </div>
         </div>
       </section>

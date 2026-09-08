@@ -53,6 +53,39 @@ async function getJson<T>(path: string): Promise<T> {
   return resp.json();
 }
 
+export interface TokenStats {
+  launched: boolean;
+  ticker: string;
+  address: string;
+  buy_url: string;
+  explorer_url: string;
+  price: number | null;
+  market_cap: number | null;
+  volume_24h: number | null;
+  holders: number | null;
+  updated_at?: number | null;
+  change_24h?: number | null;
+  samples?: number;
+}
+
+export interface TokenPoint {
+  ts: number;
+  price: number | null;
+  market_cap: number | null;
+  volume_24h: number | null;
+  holders: number | null;
+}
+
+export type HistoryRange = "1h" | "24h" | "7d" | "all";
+
+export function fetchTokenStats(): Promise<TokenStats> {
+  return getJson<TokenStats>("/api/token");
+}
+
+export function fetchTokenHistory(range: HistoryRange): Promise<{ range: string; points: TokenPoint[] }> {
+  return getJson(`/api/token/history?range=${range}`);
+}
+
 export function scanAddress(address: string): Promise<ScanResult> {
   return getJson<ScanResult>(`/api/scan/${address}`);
 }
