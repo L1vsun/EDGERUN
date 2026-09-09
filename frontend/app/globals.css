@@ -478,20 +478,23 @@ footer .foot-links a:hover { background: var(--chart); }
 .change-detail { margin-top: 8px; font-size: 12px; color: var(--ink-2); line-height: 1.55; }
 
 /* ================= brand marks ================= */
-/* Header ground is chartreuse; the lockup is the ink cut, so it sits flush. */
-.brand-lockup { height: 26px; width: auto; display: block; }
-@media (max-width: 640px) { .brand-lockup { height: 22px; } }
+/* Header ground is chartreuse; the lockup is the ink cut, so it sits flush.
+   Sized so the wordmark (48% of the lockup's height) reads larger than the
+   12px nav beside it — at 26px it rendered ~6px and vanished. */
+.brand-lockup { height: 34px; width: auto; display: block; }
+@media (max-width: 900px) { .brand-lockup { height: 28px; } }
+@media (max-width: 640px) { .brand-lockup { height: 24px; } }
 
-.banner-mark { height: 15px; width: auto; display: block; flex-shrink: 0; }
+.banner-mark { height: 19px; width: auto; display: block; flex-shrink: 0; }
 
-.foot-mark { height: 30px; width: auto; opacity: 0.5; margin: 0 auto 18px; display: block; }
+.foot-mark { height: 46px; width: auto; opacity: 0.55; margin: 0 auto 20px; display: block; }
 
 /* --- token card: the ticker is the loudest thing in the block --- */
 .price-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.price-mark { height: 30px; width: auto; flex-shrink: 0; }
-.price-ticker { font-size: 26px; letter-spacing: -0.045em; }
-.hero-token .price-mark { height: 36px; }
-.hero-token .price-ticker { font-size: 32px; }
+.price-mark { height: 34px; width: auto; flex-shrink: 0; }
+.price-ticker { font-size: 27px; letter-spacing: -0.045em; }
+.hero-token .price-mark { height: 44px; }
+.hero-token .price-ticker { font-size: 36px; }
 @media (max-width: 420px) {
   .hero-token .price-ticker { font-size: 26px; }
   .hero-token .price-mark { height: 30px; }
