@@ -33,6 +33,23 @@ CREATE TABLE IF NOT EXISTS token_samples (
     holders INTEGER
 );
 CREATE INDEX IF NOT EXISTS idx_token_ts ON token_samples (ts DESC);
+
+CREATE TABLE IF NOT EXISTS events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ts REAL NOT NULL,
+    address TEXT NOT NULL,
+    ticker TEXT,
+    check_id TEXT NOT NULL,
+    label TEXT,
+    before_status TEXT,
+    after_status TEXT,
+    severity TEXT,
+    detail TEXT,
+    verdict_before TEXT,
+    verdict_after TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_events_ts ON events (ts DESC);
+CREATE INDEX IF NOT EXISTS idx_events_addr ON events (address);
 """
 
 
@@ -105,6 +122,60 @@ class ScanCache:
                 "DELETE FROM scans WHERE address NOT IN "
                 "(SELECT address FROM scans ORDER BY scanned_at DESC LIMIT ?)",
                 (max_items,),
+            )
+
+    def stalest(self, limit: int, min_age_seconds: float) -> list[dict]:
+        """Contracts not re-checked recently, oldest first — the watchtower's
+        work queue. `min_age_seconds` stops us re-scanning something we just
+        looked at."""
+        cutoff = time.time() - min_age_seconds
+        with self._lock, self._connect() as conn:
+            rows = conn.execute(
+                "SELECT result_json FROM scans WHERE scanned_at <= ? "
+                "ORDER BY scanned_at ASC LIMIT ?",
+                (cutoff, limit),
+            ).fetchall()
+        return [json.loads(r[0]) for r in rows]
+
+    # --- watchtower events ---
+
+    def add_event(self, e: dict) -> None:
+        with self._lock, self._connect() as conn:
+            conn.execute(
+                "INSERT INTO events (ts, address, ticker, check_id, label, before_status, "
+                "after_status, severity, detail, verdict_before, verdict_after) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    time.time(), e.get("address"), e.get("ticker"), e.get("check"),
+                    e.get("label"), e.get("before"), e.get("after"), e.get("severity"),
+                    e.get("detail"), e.get("verdict_before"), e.get("verdict_after"),
+                ),
+            )
+
+    def events(self, limit: int = 50, severity: str | None = None) -> list[dict]:
+        sql = ("SELECT ts, address, ticker, check_id, label, before_status, after_status, "
+               "severity, detail, verdict_before, verdict_after FROM events")
+        params: list = []
+        if severity:
+            sql += " WHERE severity = ?"
+            params.append(severity)
+        sql += " ORDER BY ts DESC LIMIT ?"
+        params.append(limit)
+        with self._lock, self._connect() as conn:
+            rows = conn.execute(sql, params).fetchall()
+        keys = ("ts", "address", "ticker", "check", "label", "before", "after",
+                "severity", "detail", "verdict_before", "verdict_after")
+        return [dict(zip(keys, r)) for r in rows]
+
+    def event_count(self) -> int:
+        with self._lock, self._connect() as conn:
+            return conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]
+
+    def trim_events(self, max_items: int) -> None:
+        with self._lock, self._connect() as conn:
+            conn.execute(
+                "DELETE FROM events WHERE id NOT IN "
+                "(SELECT id FROM events ORDER BY ts DESC LIMIT ?)", (max_items,)
             )
 
     # --- deployer reputation ---

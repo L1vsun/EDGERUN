@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { fetchPublicConfig, PublicConfig } from "@/lib/api";
 import { useChainPulse } from "@/lib/chain";
 import ScanPreview from "./ScanPreview";
+import ChangeFeed from "./ChangeFeed";
 
 export default function Sidebar() {
   const [cfg, setCfg] = useState<PublicConfig | null>(null);
@@ -17,6 +18,13 @@ export default function Sidebar() {
   return (
     <div className="dash-side">
       <ScanPreview compact />
+
+      <div className="side-card panel">
+        <div className="eyebrow">
+          <span className="live-dot" /> watchtower
+        </div>
+        <ChangeFeed compact />
+      </div>
 
       <div className="side-card panel">
         <div className="eyebrow">
@@ -47,6 +55,10 @@ export default function Sidebar() {
       <div className="side-card panel">
         <div className="eyebrow" style={{ color: "var(--text-faint)" }}>the rest of the site</div>
         <div className="side-links">
+          <Link href="/changes">
+            changes
+            <small>contracts that turned after the scan</small>
+          </Link>
           <Link href="/deployers">
             deployers
             <small>wallets that keep shipping rugs</small>

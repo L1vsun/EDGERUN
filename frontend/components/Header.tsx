@@ -8,6 +8,7 @@ import LogoMark from "./LogoMark";
 
 const TABS = [
   { href: "/", label: "Live Feed" },
+  { href: "/changes", label: "Changes" },
   { href: "/deployers", label: "Deployers" },
   { href: "/mechanism", label: "Mechanism" },
   { href: "/limits", label: "Limits" },

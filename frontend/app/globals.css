@@ -450,3 +450,29 @@ section.block + section.block { border-top: var(--hair); }
 footer { padding: 40px 0 60px; color: var(--ink-dim); font-size: 12px; text-align: center; border-top: var(--line); margin-top: 34px; }
 footer .foot-links { display: flex; gap: 22px; justify-content: center; margin-bottom: 16px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
 footer .foot-links a:hover { background: var(--chart); }
+
+/* ================= watchtower change feed ================= */
+.change-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.change-item {
+  background: var(--paper); border: 1.5px solid var(--ink);
+  border-left-width: 8px; padding: 13px 16px;
+}
+.change-item.sev-critical { border-left-color: var(--fail); }
+.change-item.sev-warning { border-left-color: var(--warn); }
+.change-item.sev-info { border-left-color: var(--chart); }
+.change-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 7px; }
+.change-headline { font-family: var(--mono); font-size: 10.5px; font-weight: 800; letter-spacing: 0.14em; }
+.sev-critical .change-headline { color: var(--fail-ink); }
+.sev-warning .change-headline { color: var(--warn-ink); }
+.sev-info .change-headline { color: var(--ok-ink); }
+.change-time { font-family: var(--mono); font-size: 10.5px; color: var(--ink-dim); white-space: nowrap; }
+.change-body { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; font-family: var(--mono); font-size: 12.5px; }
+.change-ticker { font-weight: 800; }
+.change-transition { display: inline-flex; align-items: baseline; gap: 7px; }
+.change-transition .arrow { color: var(--ink-dim); }
+.change-transition .t-ok { color: var(--ok-ink); font-weight: 700; }
+.change-transition .t-warn { color: var(--warn-ink); font-weight: 700; }
+.change-transition .t-fail { color: var(--fail-ink); font-weight: 700; }
+.change-addr { color: var(--ink-dim); }
+.change-addr:hover { color: var(--ink); text-decoration: underline; }
+.change-detail { margin-top: 8px; font-size: 12px; color: var(--ink-2); line-height: 1.55; }

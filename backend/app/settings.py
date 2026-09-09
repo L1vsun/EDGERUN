@@ -50,3 +50,10 @@ def buy_url() -> str:
         return f"{PONS_LAUNCHPAD_BASE.rstrip('/')}/{EDGERUN_CONTRACT_ADDRESS}"
     return ""
 SITE_URL = os.environ.get("SITE_URL", "https://l1vsun.github.io/EDGERUN/")
+
+# Watchtower: how often to sweep, how many contracts per sweep, and how old a
+# scan must be before it's worth re-checking.
+WATCH_INTERVAL_SECONDS = int(os.environ.get("WATCH_INTERVAL_SECONDS", 120))
+WATCH_BATCH_SIZE = int(os.environ.get("WATCH_BATCH_SIZE", 8))
+WATCH_MIN_AGE_SECONDS = int(os.environ.get("WATCH_MIN_AGE_SECONDS", 900))
+EVENT_MAX_ITEMS = int(os.environ.get("EVENT_MAX_ITEMS", 500))

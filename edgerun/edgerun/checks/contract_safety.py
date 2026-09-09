@@ -11,6 +11,7 @@ from ..config import Config
 from ..models import CheckResult, ContractLane
 from ..rpc import RpcClient, RpcError, ZERO_ADDRESS
 from ..selectors import selectors_present
+from .exit_test import run_exit_test
 
 _MINT_SOURCE_RE = re.compile(r"function\s+\w*mint\w*\s*\([^)]*\)\s*(external|public)", re.IGNORECASE)
 
@@ -68,6 +69,9 @@ def run_contract_lane(address: str, bs: BlockscoutClient, rpc: RpcClient, config
 
     # --- LP lock ---
     checks.append(_lp_lock_check(config))
+
+    # --- exit test: the only check that executes rather than inspects ---
+    checks.append(run_exit_test(address, bs, rpc))
 
     return ContractLane(source_verified=is_verified, checks=checks, deployer=deployer)
 

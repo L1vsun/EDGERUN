@@ -57,6 +57,35 @@ the full table and how each selector was computed and verified).
   dangerous selector is present anyway, in which case it's a `warn` — we can't tell you
   who can call it, but we can tell you it exists
 
+### exit_test  — the one check that executes rather than inspects
+`eth_call` a real `transfer(address,uint256)` of 1 wei from each of the top
+holders (`GET /api/v2/tokens/{address}/holders`) to the burn sink. Nothing is
+broadcast or signed; `eth_call` runs it against current state and discards it.
+
+Before simulating, the holder's balance is read live with `balanceOf` over RPC.
+This matters: Blockscout's holder list is a cached snapshot, and without the
+live read a holder who has since sold produces an "insufficient balance" revert
+that looks identical to a restriction. A 45-token live run with that bug
+accused 1INCH and SHRUB of running a "targeted blacklist"; the live balance
+read plus string-level benign-revert matching took the false-positive rate from
+5/45 to 0/100.
+
+- all tested holders can transfer -> `ok`
+- some can, some cannot -> `warn` (selective restriction — a targeted blacklist)
+- none can -> `fail`, and this alone forces an overall FAIL verdict, because it
+  is not a heuristic: we ran the transfer and it reverted
+- no holder with a live non-zero balance -> `unresolved`
+
+Revert reasons are decoded, not guessed: known custom-error selectors
+(`EnforcedPause`, `Blacklisted(address)`, `ERC20InsufficientBalance` …) plus
+`Error(string)` require-messages. An unrecognised selector is reported as
+"unrecognised error 0x…" rather than being interpreted.
+
+**What it does not prove:** it is a transfer test, not a DEX sell test. Tokens
+moving between wallets does not mean a pool exists, has liquidity, or lacks a
+router-level tax. And it is true only at the block it ran — which is what the
+watchtower exists to handle.
+
 ### lp_lock
 Unresolved until `dex.factory_address` is set in `known_tokens.json` — see
 `ROADMAP.md` for why this isn't wired to a live factory yet.
@@ -64,3 +93,18 @@ Unresolved until `dex.factory_address` is set in `known_tokens.json` — see
 ## impersonation lane
 
 See `docs/impersonation.md`.
+
+
+## The watchtower (backend)
+
+Every check above is a snapshot. `backend/app/watchtower.py` re-scans contracts
+we have already seen (oldest first) and records a diff when a watched check
+changes status: `exit_test`, `ownership`, `supply_mint`, `source_verified`.
+
+Transitions to or from `unresolved` are deliberately never recorded. An
+explorer timeout is not a fact about the contract, and surfacing it as
+"OWNERSHIP CHANGED" would bury the real events. Severity: any change *into* a
+failed exit test is critical, ok->fail is critical, ok->warn is a warning, and
+a recovery is informational.
+
+Events are served at `GET /api/events` and rendered at `/changes`.

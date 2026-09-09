@@ -91,6 +91,14 @@ class BlockscoutClient:
         """GET /api/v2/tokens/{address} — name, symbol, decimals, total_supply, holders_count."""
         return self._get(f"/api/v2/tokens/{address}")
 
+    def token_holders(self, address: str, limit: int = 10) -> list[dict]:
+        """GET /api/v2/tokens/{address}/holders — verified live 2026-09-09."""
+        data = self._get(f"/api/v2/tokens/{address}/holders")
+        return [
+            {"address": (i.get("address") or {}).get("hash", ""), "value": i.get("value", "0")}
+            for i in data.get("items", [])[:limit]
+        ]
+
     def newest_smart_contracts(self, limit: int = 50) -> list[dict]:
         """GET /api/v2/smart-contracts — most-recently-verified contracts, newest first."""
         data = self._get("/api/v2/smart-contracts")

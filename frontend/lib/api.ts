@@ -53,6 +53,24 @@ async function getJson<T>(path: string): Promise<T> {
   return resp.json();
 }
 
+export interface ChangeEvent {
+  ts: number;
+  address: string;
+  ticker: string | null;
+  check: string;
+  label: string;
+  before: string;
+  after: string;
+  severity: "critical" | "warning" | "info";
+  detail: string;
+  verdict_before: string | null;
+  verdict_after: string | null;
+}
+
+export function fetchEvents(limit = 40, severity?: string): Promise<{ items: ChangeEvent[]; total: number }> {
+  return getJson(`/api/events?limit=${limit}${severity ? `&severity=${severity}` : ""}`);
+}
+
 export interface Deployer {
   deployer: string;
   launches: number;

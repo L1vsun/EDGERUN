@@ -18,7 +18,13 @@ ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 
 class RpcError(RuntimeError):
-    pass
+    """RPC failure. `revert_data` carries the ABI-encoded revert payload when
+    the node returned one, so callers can decode *why* a call failed rather
+    than only that it did."""
+
+    def __init__(self, message: str, revert_data: str | None = None):
+        super().__init__(message)
+        self.revert_data = revert_data
 
 
 class RpcClient:
@@ -46,11 +52,18 @@ class RpcClient:
         except (httpx.HTTPError, ValueError) as exc:
             raise RpcError(f"{method} failed: {exc}") from exc
         if "error" in body:
-            raise RpcError(f"{method} -> {body['error']}")
+            err = body["error"]
+            data = err.get("data") if isinstance(err, dict) else None
+            raise RpcError(f"{method} -> {err}", revert_data=data if isinstance(data, str) else None)
         return body["result"]
 
-    def eth_call(self, to: str, data: str) -> str:
-        return self._call("eth_call", [{"to": to, "data": data}, "latest"])
+    def eth_call(self, from_address: str | None, to: str, data: str) -> str:
+        """`from` matters: a transfer simulation must run as a real holder,
+        otherwise it reverts on balance and tells you nothing."""
+        tx: dict[str, str] = {"to": to, "data": data}
+        if from_address:
+            tx["from"] = from_address
+        return self._call("eth_call", [tx, "latest"])
 
     def eth_get_code(self, address: str) -> str:
         return self._call("eth_getCode", [address, "latest"])
@@ -59,7 +72,7 @@ class RpcClient:
         """Returns the checksummed-ish lowercase owner address, or None if the
         call reverted / the contract has no owner() (not every contract does)."""
         try:
-            result = self.eth_call(contract_address, OWNER_SELECTOR)
+            result = self.eth_call(None, contract_address, OWNER_SELECTOR)
         except RpcError:
             return None
         if not result or result == "0x" or len(result) < 66:

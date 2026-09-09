@@ -14,6 +14,7 @@ from edgerun.scan import scan_address
 from . import settings
 from .cache import ScanCache
 from .poller import run_poller, run_token_sampler
+from .watchtower import run_watchtower
 from .rate_limit import RateLimiter
 from .receipt import render_og_image, render_receipt_page
 
@@ -38,6 +39,7 @@ _background_tasks: list[asyncio.Task] = []
 async def _start_background_tasks() -> None:
     _background_tasks.append(asyncio.create_task(run_poller(cache, config)))
     _background_tasks.append(asyncio.create_task(run_token_sampler(cache, config)))
+    _background_tasks.append(asyncio.create_task(run_watchtower(cache, config)))
 
 
 @app.on_event("shutdown")
@@ -66,6 +68,16 @@ def public_config() -> dict:
         "token_contract_address": settings.EDGERUN_CONTRACT_ADDRESS,
         "token_dex_url": settings.buy_url(),
     }
+
+
+@app.get("/api/events")
+def events(limit: int = 50, severity: str | None = None) -> dict:
+    """Watchtower feed: contracts whose state CHANGED after we first scanned
+    them. This is the part a snapshot scanner structurally cannot give you."""
+    limit = max(1, min(limit, 200))
+    if severity and severity not in ("critical", "warning", "info"):
+        raise HTTPException(status_code=400, detail="severity must be critical, warning or info")
+    return {"items": cache.events(limit=limit, severity=severity), "total": cache.event_count()}
 
 
 @app.get("/api/deployers")
