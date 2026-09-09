@@ -30,7 +30,44 @@ Set the env vars from `backend/.env.example` — at minimum `CORS_ORIGINS` to yo
 GitHub Pages origin (`https://<user>.github.io`) once you know it. Note the resulting
 public URL, e.g. `https://edgerun-api.up.railway.app`.
 
-## 2. Publish the frontend to GitHub Pages — automated (recommended)
+## 2. Publish the frontend to Netlify (recommended — custom domain)
+
+Netlify serves from the domain root, so the `basePath` that a GitHub Pages
+*project* page needs (`/EDGERUN`) disappears entirely. `frontend/netlify.toml`
+already carries the build config.
+
+1. netlify.com → **Add new site** → **Import an existing project** → GitHub → pick
+   the repo.
+2. **Base directory:** `frontend`. Build command and publish dir come from
+   `netlify.toml` (`npm run build` → `out`); leave them as detected.
+3. **Site configuration → Environment variables**, add:
+   - `NEXT_PUBLIC_API_BASE` = your Render backend URL (e.g. `https://edgerun.onrender.com`)
+   - `NEXT_PUBLIC_GITHUB_REPO_URL` = the repo URL
+   - at launch: `NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS`, and optionally
+     `NEXT_PUBLIC_EDGERUN_TICKER` / `NEXT_PUBLIC_EDGERUN_DEX_URL`
+   - **do NOT set `NEXT_PUBLIC_BASE_PATH`** — see the note in `netlify.toml`.
+     It exists only for GitHub Pages project pages and will break every asset URL here.
+4. Deploy. Then **Domain management → Add a custom domain**, point your DNS at
+   Netlify, and let it issue the certificate.
+
+### Then update the backend for the new origin — required
+
+The API refuses cross-origin requests it doesn't know about, so the site will
+load but show an empty feed until you do this. On Render → **Environment**:
+
+- `CORS_ORIGINS` = your Netlify origin, e.g. `https://edgerun.xyz`
+  (scheme + host, no path, no trailing slash). Comma-separate to keep the old
+  Pages origin working during the switchover:
+  `https://edgerun.xyz,https://l1vsun.github.io`
+- `SITE_URL` = the same Netlify URL — this is the "scan another contract" link
+  on shared receipt pages, which otherwise still points at GitHub Pages.
+
+Save and let Render redeploy.
+
+Share links (`/s/<address>`) keep pointing at the Render backend either way —
+they have to, since a static host can't render per-address OG tags.
+
+## 2b. Publish the frontend to GitHub Pages — automated
 
 `.github/workflows/deploy-pages.yml` already does the build-and-publish on every push
 to `main`. One-time setup:
@@ -49,7 +86,7 @@ Every subsequent push to `main` that touches `frontend/` redeploys automatically
 this is also how you update the token banner's CA/DEX values once the token launches
 (set the variables, then push or re-run the workflow manually from the Actions tab).
 
-## 2b. Publish the frontend — manual (fallback, if you'd rather not use Actions)
+## 2c. Publish the frontend — manual (fallback)
 
 ```
 cd frontend

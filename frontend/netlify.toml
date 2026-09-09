@@ -1,0 +1,30 @@
+# Netlify build config for the edgerun frontend.
+#
+# The "Base directory" in Netlify's UI must be set to `frontend` — this file
+# lives there, and the paths below are relative to it.
+#
+# NOTE ON basePath: do NOT set NEXT_PUBLIC_BASE_PATH here. Netlify serves the
+# site from the domain root, so a basePath would prefix every asset URL with a
+# path that doesn't exist and the page would load unstyled. That variable
+# exists only for GitHub Pages project pages (username.github.io/REPO/).
+
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Static export already emits real directories per route (trailingSlash: true),
+# so no SPA catch-all rewrite. A missing path should 404 honestly rather than
+# silently serving the home page.
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

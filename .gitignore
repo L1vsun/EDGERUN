@@ -11,3 +11,5 @@ next-env.d.ts
 *.db
 .env
 .env.local
+
+.DS_Store
