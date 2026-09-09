@@ -6,6 +6,8 @@ from __future__ import annotations
 
 from ..config import Config
 from ..models import CheckResult, ImpersonationLane, ImpersonationMatch
+from ..rpc import RpcClient
+from .stock_impersonation import run_stock_check
 
 
 def levenshtein(a: str, b: str) -> int:
@@ -40,10 +42,18 @@ def allowed_distance(a: str, b: str, threshold: int) -> int:
 
 
 def run_impersonation_lane(
-    address: str, token_symbol: str | None, token_name: str | None, config: Config
+    address: str, token_symbol: str | None, token_name: str | None, config: Config,
+    rpc: RpcClient | None = None,
 ) -> ImpersonationLane:
     checks: list[CheckResult] = []
     matches: list[ImpersonationMatch] = []
+
+    # Robinhood Chain carries real tokenised securities with a published
+    # registry, so a claim on one can be falsified outright rather than scored.
+    if rpc is not None:
+        stock = run_stock_check(address, token_symbol, token_name, rpc)
+        if stock is not None:
+            checks.append(stock)
 
     if not config.reference_tokens:
         checks.append(CheckResult(
@@ -97,7 +107,11 @@ def run_impersonation_lane(
         ))
         flagged = True
 
-    if not flagged:
+    # Don't append a reassuring "no match" line when the stock-registry check
+    # already proved this is a counterfeit — a FAIL and an OK side by side in
+    # the same lane reads as contradictory.
+    already_failed = any(c.status == "fail" for c in checks)
+    if not flagged and not already_failed:
         checks.append(CheckResult(
             "impersonation", "impersonation", "ok",
             f"ticker/name matches no known token within edit distance {threshold}",

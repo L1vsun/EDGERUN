@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchTokenStats, TokenStats } from "@/lib/api";
-import { CONTRACT_ADDRESS, TOKEN_TICKER, buyUrl } from "@/lib/config";
+import { CONTRACT_ADDRESS, TOKEN_TICKER, buyUrl, asset } from "@/lib/config";
 import PriceChart from "./PriceChart";
 
 function shortAddress(addr: string): string {
@@ -47,7 +47,10 @@ export default function TokenPriceCard({ withChart = true }: { withChart?: boole
   return (
     <div className={`price-card ${launched ? "panel-accent" : "panel price-card-armed"}`}>
       <div className="price-card-top">
-        <span className="price-ticker">{TOKEN_TICKER}</span>
+        <span className="price-brand">
+          <img className="price-mark" src={asset("/mark-ink.png")} alt="" aria-hidden="true" />
+          <span className="price-ticker">{TOKEN_TICKER}</span>
+        </span>
         {launched ? (
           <span className="price-state live">
             <span className="live-dot" /> live

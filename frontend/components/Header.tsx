@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useChainPulse } from "@/lib/chain";
-import { DEX_URL, GITHUB_REPO_URL, TOKEN_TICKER } from "@/lib/config";
-import LogoMark from "./LogoMark";
+import { DEX_URL, GITHUB_REPO_URL, TOKEN_TICKER, asset } from "@/lib/config";
 
 const TABS = [
   { href: "/", label: "Live Feed" },
+  { href: "/stock-tokens", label: "Stock Tokens" },
   { href: "/changes", label: "Changes" },
   { href: "/deployers", label: "Deployers" },
   { href: "/mechanism", label: "Mechanism" },
@@ -23,9 +23,9 @@ export default function Header() {
   return (
     <div className="header">
       <div className="header-inner">
-        <Link href="/" className="brand">
-          <LogoMark size={20} />
-          <span className="brand-name">edgerun</span>
+        {/* Header ground is chartreuse, so the ink lockup sits on it directly. */}
+        <Link href="/" className="brand" aria-label="edgerun home">
+          <img className="brand-lockup" src={asset("/lockup-ink.png")} alt="edgerun" />
         </Link>
 
         <nav className="nav-tabs">

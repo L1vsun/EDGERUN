@@ -476,3 +476,23 @@ footer .foot-links a:hover { background: var(--chart); }
 .change-addr { color: var(--ink-dim); }
 .change-addr:hover { color: var(--ink); text-decoration: underline; }
 .change-detail { margin-top: 8px; font-size: 12px; color: var(--ink-2); line-height: 1.55; }
+
+/* ================= brand marks ================= */
+/* Header ground is chartreuse; the lockup is the ink cut, so it sits flush. */
+.brand-lockup { height: 26px; width: auto; display: block; }
+@media (max-width: 640px) { .brand-lockup { height: 22px; } }
+
+.banner-mark { height: 15px; width: auto; display: block; flex-shrink: 0; }
+
+.foot-mark { height: 30px; width: auto; opacity: 0.5; margin: 0 auto 18px; display: block; }
+
+/* --- token card: the ticker is the loudest thing in the block --- */
+.price-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.price-mark { height: 30px; width: auto; flex-shrink: 0; }
+.price-ticker { font-size: 26px; letter-spacing: -0.045em; }
+.hero-token .price-mark { height: 36px; }
+.hero-token .price-ticker { font-size: 32px; }
+@media (max-width: 420px) {
+  .hero-token .price-ticker { font-size: 26px; }
+  .hero-token .price-mark { height: 30px; }
+}

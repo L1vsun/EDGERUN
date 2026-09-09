@@ -1,5 +1,45 @@
 # Impersonation
 
+## The strongest check: official stock tokens
+
+Robinhood Chain is not a generic EVM chain. It carries **194 real tokenised
+securities** — TSLA, NVDA, AAPL, SPY, GME — issued by Robinhood Assets (Jersey)
+Limited as ordinary ERC-20s, and Robinhood publishes the authoritative contract
+address for every one at a public endpoint:
+
+    https://api.robinhood.com/rhj/assets      (no key, 60 req/s, 15s cache)
+
+That makes impersonation of a stock token a **matter of fact rather than
+similarity**. Everywhere else this tool says "2 edits from a token we consider
+established"; here it says "the official Tesla token is 0x322F0929…, and this
+contract is not it."
+
+**Why a contract scanner cannot catch this.** A counterfeit
+"Tesla • Robinhood Token" is a structurally perfect ERC-20: source verified,
+ownership renounced, supply fixed, no mint, transfers work. Every code-level
+check passes it, because nothing about the *code* is wrong. It is a scam purely
+because of what it claims to be — a claim only the registry can falsify.
+
+**The scale of it.** Searching ten tickers against the live chain on 2026-09-09
+returned **213 contracts using an official ticker that were not the official
+contract**, against 10 genuine ones. Six separate contracts were named exactly
+"NVIDIA • Robinhood Token".
+
+Three signals, in order of strength:
+1. address is in the official registry -> `ok`, verified genuine
+2. ticker matches an official asset but the address does not -> `fail`
+3. name copies the "• Robinhood Token" convention (all 194 official tokens use
+   it) without being registered -> `fail`
+
+A fourth, corroborating only: official tokens implement ERC-8056
+`uiMultiplier()` (verified — the real TSLA returns 1e18, an ordinary token
+reverts). An unregistered token implementing it is a `warn`, never proof of
+anything on its own, since any contract can return a number.
+
+If the registry is unreachable the check reports `unresolved`. It must never be
+possible for an upstream outage to make a counterfeit look genuine.
+
+
 ## Why distance, not a percentage
 
 "73% similar" tells you nothing actionable. "1 edit from HOOD" tells you exactly what

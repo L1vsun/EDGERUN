@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TOKEN_TICKER, CONTRACT_ADDRESS, DEX_URL } from "@/lib/config";
+import { TOKEN_TICKER, CONTRACT_ADDRESS, DEX_URL, asset } from "@/lib/config";
 
 // Visual truncation only — the ellipsis form from the design brief
 // (0x1a2b...ef42). The copy button and the `title` attribute below always
@@ -35,6 +35,8 @@ export default function TokenBanner() {
   return (
     <div className="banner">
       <div className="banner-inner">
+        {/* Bar is ink-coloured, so this uses the chartreuse cut of the mark. */}
+        <img className="banner-mark" src={asset("/mark-chartreuse.png")} alt="" aria-hidden="true" />
         <span className="banner-ticker">{TOKEN_TICKER}</span>
         {hasAddress ? (
           <>

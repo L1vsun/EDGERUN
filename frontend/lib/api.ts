@@ -53,6 +53,30 @@ async function getJson<T>(path: string): Promise<T> {
   return resp.json();
 }
 
+export interface StockToken {
+  ticker: string;
+  name: string;
+  address: string;
+  status: string;
+  multiplier: string;
+}
+
+export interface Impersonator {
+  address: string;
+  ticker: string | null;
+  name: string | null;
+  detail: string;
+  scanned_at: string;
+}
+
+export function fetchStockTokens(): Promise<{ count: number; source: string; items: StockToken[] }> {
+  return getJson("/api/stock-tokens");
+}
+
+export function fetchImpersonators(limit = 50): Promise<{ count: number; items: Impersonator[] }> {
+  return getJson(`/api/impersonators?limit=${limit}`);
+}
+
 export interface ChangeEvent {
   ts: number;
   address: string;

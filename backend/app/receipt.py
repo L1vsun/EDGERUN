@@ -48,8 +48,17 @@ def render_og_image(result: dict) -> bytes:
     small = _font("JetBrainsMono-Regular.ttf", 22)
     tiny = _font("JetBrainsMono-Regular.ttf", 19)
 
-    d.text((70, 58), "EDGERUN", font=_font("JetBrainsMono-ExtraBold.ttf", 30), fill=INK)
-    d.text((70, 96), "robinhood chain · contract check", font=tiny, fill=(110, 118, 96))
+    # Brand mark, if present — a shared card should be recognisably ours.
+    text_x = 70
+    mark_path = ASSETS / "mark-ink.png"
+    if mark_path.exists():
+        mark = Image.open(mark_path).convert("RGBA")
+        mark.thumbnail((46, 46), Image.LANCZOS)
+        img.paste(mark, (70, 52), mark)
+        text_x = 70 + mark.width + 14
+
+    d.text((text_x, 58), "EDGERUN", font=_font("JetBrainsMono-ExtraBold.ttf", 30), fill=INK)
+    d.text((text_x, 96), "robinhood chain · contract check", font=tiny, fill=(110, 118, 96))
 
     ticker = result.get("token_symbol") or "unknown token"
     d.text((70, 180), ticker.upper()[:22], font=_font("JetBrainsMono-ExtraBold.ttf", 46), fill=INK)
@@ -75,10 +84,19 @@ def render_og_image(result: dict) -> bytes:
         facts = [f"ok  {c['detail']}" for c in (result.get("contract") or {}).get("checks", [])
                  if c.get("status") == "ok"]
 
-    y = 462
-    for line in facts[:3]:
-        d.text((70, y), line[:88], font=small, fill=(60, 66, 48))
-        y += 32
+    # Wrap rather than hard-truncate: these lines carry contract addresses, and
+    # cutting one mid-address is worse than showing one fact fewer.
+    import textwrap
+
+    max_chars = int((W - 70 - 40) / (small.size * 0.6))
+    y, lines_left = 462, 4
+    for fact in facts:
+        if lines_left <= 0:
+            break
+        for line in textwrap.wrap(fact, width=max_chars)[:lines_left]:
+            d.text((70, y), line, font=small, fill=(60, 66, 48))
+            y += 30
+            lines_left -= 1
 
     footer = (
         f"facts checked: {result.get('facts_checked', 0)} · "

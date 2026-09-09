@@ -32,7 +32,7 @@ def scan_address(address: str, config: Config | None = None) -> ScanResult:
         except BlockscoutError:
             pass  # not every contract is an ERC-20; impersonation lane handles the empty case
 
-        impersonation = run_impersonation_lane(address, token_symbol, token_name, config)
+        impersonation = run_impersonation_lane(address, token_symbol, token_name, config, rpc)
         blockscout_url = bs.explorer_url(address)
 
     verdict, facts_checked, unresolved = assemble_verdict(contract, impersonation)

@@ -1,11 +1,15 @@
 import Link from "next/link";
-import { GITHUB_REPO_URL } from "@/lib/config";
+import { GITHUB_REPO_URL, asset } from "@/lib/config";
 
 export default function Footer() {
   return (
     <footer>
+      <div className="container">
+        <img className="foot-mark" src={asset("/mark-ink.png")} alt="edgerun" />
+      </div>
       <div className="container foot-links">
         <Link href="/">live feed</Link>
+        <Link href="/stock-tokens">stock tokens</Link>
         <Link href="/changes">changes</Link>
         <Link href="/deployers">deployers</Link>
         <Link href="/mechanism">mechanism</Link>

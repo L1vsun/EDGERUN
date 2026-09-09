@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from edgerun.config import load_config
 from edgerun.scan import scan_address
+from edgerun.stock_registry import REGISTRY as STOCK_REGISTRY
 
 from . import settings
 from .cache import ScanCache
@@ -68,6 +69,42 @@ def public_config() -> dict:
         "token_contract_address": settings.EDGERUN_CONTRACT_ADDRESS,
         "token_dex_url": settings.buy_url(),
     }
+
+
+@app.get("/api/stock-tokens")
+def stock_tokens() -> dict:
+    """The official Robinhood tokenised-stock registry, as this tool sees it.
+
+    Published so anyone can check our impersonation calls against the same
+    source we use — https://api.robinhood.com/rhj/assets.
+    """
+    if not STOCK_REGISTRY.refresh():
+        raise HTTPException(status_code=503, detail=STOCK_REGISTRY.error or "registry unavailable")
+    items = [STOCK_REGISTRY.official_for_ticker(t) for t in STOCK_REGISTRY.all_tickers()]
+    return {"count": len(items), "source": "https://api.robinhood.com/rhj/assets", "items": items}
+
+
+@app.get("/api/impersonators")
+def impersonators(limit: int = 50) -> dict:
+    """Scanned contracts that claim to be an official stock token and aren't.
+
+    Drawn from real scans only — this is not a search of the whole chain, it
+    is what the poller has actually checked.
+    """
+    limit = max(1, min(limit, 200))
+    out = []
+    for scan in cache.feed(500):
+        for check in (scan.get("impersonation") or {}).get("checks", []):
+            if check.get("id") == "stock_token" and check.get("status") == "fail":
+                out.append({
+                    "address": scan.get("address"),
+                    "ticker": scan.get("token_symbol"),
+                    "name": scan.get("token_name"),
+                    "detail": check.get("detail"),
+                    "scanned_at": scan.get("scanned_at"),
+                })
+                break
+    return {"count": len(out), "items": out[:limit]}
 
 
 @app.get("/api/events")

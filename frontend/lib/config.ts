@@ -31,3 +31,12 @@ export const DEX_URL = buyUrl();
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8811";
 
 export const GITHUB_REPO_URL = process.env.NEXT_PUBLIC_GITHUB_REPO_URL || "";
+
+// Static files in /public are NOT basePath-prefixed automatically for plain
+// <img src>, so anything under /public must go through this. Netlify serves
+// from the root (empty basePath); a GitHub Pages project page needs /EDGERUN.
+export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+export function asset(path: string): string {
+  return `${BASE_PATH}${path.startsWith("/") ? path : `/${path}`}`;
+}
