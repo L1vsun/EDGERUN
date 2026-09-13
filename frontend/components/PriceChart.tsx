@@ -19,6 +19,19 @@ export default function PriceChart({ launched }: { launched: boolean }) {
   const [series, setSeries] = useState<Series>("price");
   const [points, setPoints] = useState<TokenPoint[] | null>(null);
   const [error, setError] = useState(false);
+  // A freshly launched token has no price on Blockscout until a price
+  // aggregator lists it (verified: every new token returns exchange_rate
+  // null, while holders_count is populated from block one). Defaulting to an
+  // empty price chart would look broken, so switch to holders automatically
+  // until price samples exist — unless the viewer picked a series themselves.
+  const [userPicked, setUserPicked] = useState(false);
+
+  useEffect(() => {
+    if (userPicked || !points || points.length === 0) return;
+    const hasPrice = points.some((p) => typeof p.price === "number");
+    const hasHolders = points.some((p) => typeof p.holders === "number");
+    if (!hasPrice && hasHolders && series === "price") setSeries("holders");
+  }, [points, series, userPicked]);
 
   useEffect(() => {
     if (!launched) return;
@@ -82,13 +95,13 @@ export default function PriceChart({ launched }: { launched: boolean }) {
         <div className="chart-series">
           <button
             className={`chip${series === "price" ? " chip-on" : ""}`}
-            onClick={() => setSeries("price")}
+            onClick={() => { setUserPicked(true); setSeries("price"); }}
           >
             price
           </button>
           <button
             className={`chip${series === "holders" ? " chip-on" : ""}`}
-            onClick={() => setSeries("holders")}
+            onClick={() => { setUserPicked(true); setSeries("holders"); }}
           >
             holders
           </button>
@@ -116,7 +129,7 @@ export default function PriceChart({ launched }: { launched: boolean }) {
           {values.length === 1
             ? "first sample recorded — the line needs one more."
             : series === "price"
-              ? "no price samples in this window yet. Holders is available immediately."
+              ? "no price samples yet — a new token has no price on Blockscout until an aggregator lists it. Holders is tracked from block one."
               : "no samples in this window yet."}
         </div>
       ) : (
