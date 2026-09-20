@@ -90,6 +90,7 @@ export function startChain(onState: (s: ChainState) => void): () => void {
   const firstSeen = new Map<string, number>();
   const walletFirst = new Map<string, number>();
   let swapEvents: { t: number; pool: string }[] = [];
+  let lastGood: ChainState | null = null;   // a dropped poll should not blank the screen
 
   async function resolveSymbols(addrs: string[]) {
     const want = addrs.filter((a) => !symbols.has(a) && !pending.has(a)).slice(0, 12);
@@ -232,11 +233,13 @@ export function startChain(onState: (s: ChainState) => void): () => void {
         lastAt = now;
       }
       const state = summarise(now);
+      lastGood = state;
       if (!stopped) onState(state);
       resolveSymbols(state.tokens.slice(0, 30).map((t) => t.address));
       resolvePools([...new Set(swapEvents.map((s) => s.pool))]);
     } catch {
-      if (!stopped) onState({ ok: false, block: lastBlock, txPerSec: 0, transfersPerMin: 0, wallets: 0, tokens: [], lag });
+      // keep the last good numbers on screen and just flag the connection
+      if (!stopped) onState(lastGood ? { ...lastGood, ok: false } : { ok: false, block: lastBlock, txPerSec: 0, transfersPerMin: 0, wallets: 0, tokens: [], lag });
     }
     if (!stopped) timer = setTimeout(poll, POLL_MS);
   }
@@ -246,6 +249,116 @@ export function startChain(onState: (s: ChainState) => void): () => void {
     stopped = true;
     clearTimeout(timer);
   };
+}
+
+
+
+// ---- scan any token on demand ----
+//
+// Paste a contract address and we pull its own Transfer history straight from the RPC
+// (address-filtered, so it is one fast call) and run the same measurements over a longer
+// window than the live table uses. DEX swaps are not counted here, so a scan never shows
+// the "dex live" flag even for a token that has a pool.
+
+export const SCAN_BLOCKS = 9000; // ~17 minutes of chain
+
+export async function scanToken(address: string): Promise<TokenStat> {
+  const addr = address.trim().toLowerCase();
+  if (!/^0x[0-9a-f]{40}$/.test(addr)) throw new Error("that is not a contract address");
+
+  const head = parseInt((await rpc({ jsonrpc: "2.0", id: 1, method: "eth_blockNumber", params: [] })).result, 16);
+  const [logsRes, symRes] = await Promise.all([
+    rpc({
+      jsonrpc: "2.0", id: 1, method: "eth_getLogs",
+      params: [{ fromBlock: "0x" + (head - SCAN_BLOCKS).toString(16), toBlock: "0x" + head.toString(16), address: addr, topics: [TRANSFER] }],
+    }),
+    rpc({ jsonrpc: "2.0", id: 2, method: "eth_call", params: [{ to: addr, data: "0x95d89b41" }, "latest"] }),
+  ]);
+  if (logsRes.error) throw new Error(logsRes.error.message || "the node refused that query");
+  const logs = (logsRes.result || []).filter((l: any) => l.topics.length === 3);
+  const symbol = decodeString(symRes.result) || addr.slice(0, 8);
+  if (!logs.length) throw new Error(`${symbol}: no transfers at all in the last ${Math.round(SCAN_BLOCKS / 9 / 60)} minutes`);
+
+  // blocks are ~9/s on this chain, which is how a block range becomes a duration
+  const first = parseInt(logs[0].blockNumber, 16);
+  const minutes = Math.max(0.5, (head - first) / 9 / 60);
+  const recentFrom = head - Math.round(9 * 45);
+
+  const w = new Map<string, number>();
+  let mints = 0, burns = 0, recent = 0;
+  for (const l of logs) {
+    const from = l.topics[1], to = l.topics[2];
+    if (from === ZERO) mints++;
+    else if (to === ZERO) burns++;
+    if (parseInt(l.blockNumber, 16) >= recentFrom) recent++;
+    for (const a of [from, to]) if (a !== ZERO) w.set(a, (w.get(a) || 0) + 1);
+  }
+  let top = 0;
+  for (const v of w.values()) if (v > top) top = v;
+  const perMin = logs.length / minutes;
+  const recentRate = recent / 0.75;
+
+  return {
+    address: addr, symbol, isNew: false,
+    transfers: logs.length, perMin, wallets: w.size,
+    newWallets: 0, // a one-off scan has no history to call a wallet new against
+    mints, burns, swaps: 0,
+    concentration: logs.length ? top / (logs.length * 2) : 0,
+    accel: perMin > 0 ? recentRate / perMin : 1,
+    firstSeen: 0, age: 0,
+  };
+}
+
+// ---- signals: the same facts, said in a way you can act on in one second ----
+//
+// Each is a plain threshold on measured chain activity, and each names the number that
+// triggered it so it can be checked. None of them is advice or a price forecast.
+
+export type Tone = "bad" | "good" | "flat";
+export interface Signal { id: string; label: string; tone: Tone; why: string }
+
+export function signals(t: TokenStat): Signal[] {
+  const out: Signal[] = [];
+  const freshShare = t.wallets ? t.newWallets / t.wallets : 0;
+
+  // net issuance only: a wrapper like WETH mints on every deposit and burns on every
+  // withdrawal, which is not dilution. Real printing is mints with no matching burns.
+  if (t.mints >= 4 && t.mints > t.burns * 3 && t.transfers >= 8 && t.mints / t.transfers > 0.03) {
+    out.push({ id: "printing", label: "printing", tone: "bad", why: `${t.mints} mints from 0x0 against ${t.burns} burns — net new supply while you watch` });
+  }
+  // concentration counts wallet slots (two per transfer), so double it to read as
+  // "share of transfers this address touches"
+  if (t.concentration > 0.45 && t.transfers >= 10) {
+    out.push({ id: "onewallet", label: "one wallet", tone: "bad", why: `one address touches ${pctOf(Math.min(1, t.concentration * 2))} of all transfers — that is a single actor, not a crowd` });
+  }
+  // Most tokens on this chain have no pool at all, so "no swaps" says nothing. The rare,
+  // useful state is the opposite: something you can actually trade.
+  if (t.swaps >= 3) {
+    out.push({ id: "dex", label: "dex live", tone: "good", why: `${t.swaps} DEX swaps in the window — there is a pool and it is being traded` });
+  }
+  if (t.accel >= 2 && t.transfers >= 20) {
+    out.push({ id: "heating", label: "heating", tone: "good", why: `flow is ${t.accel.toFixed(1)}x its own 3-minute average in the last 45 seconds` });
+  }
+  if (freshShare > 0.65 && t.wallets >= 20) {
+    out.push({ id: "fresh", label: "fresh wallets", tone: "good", why: `${t.newWallets} of ${t.wallets} wallets are ones we had never seen before` });
+  }
+  if (t.accel <= 0.45 && t.transfers >= 25) {
+    out.push({ id: "cooling", label: "cooling", tone: "flat", why: `flow has fallen to ${t.accel.toFixed(1)}x its own average — interest is draining` });
+  }
+  if (t.isNew) {
+    out.push({ id: "new", label: "just appeared", tone: "flat", why: "first seen on the chain since you opened this page" });
+  }
+  return out;
+}
+
+const pctOf = (x: number) => `${Math.round(x * 100)}%`;
+
+// How much a token deserves a glance: loud things first, weighted by how much is moving.
+export function interest(t: TokenStat): number {
+  const sig = signals(t);
+  let s = 0;
+  for (const x of sig) s += x.tone === "bad" ? 3 : x.tone === "good" ? 2.5 : 0.6;
+  return s * Math.log10(10 + t.perMin) + Math.min(2, t.perMin / 400);
 }
 
 // ---- turning a token's numbers into something the circuit can smell ----

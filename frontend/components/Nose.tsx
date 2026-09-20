@@ -2,15 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/config";
-import { ChainState, TokenStat, featureVector, odour, startChain } from "@/lib/chain";
+import { ChainState, SCAN_BLOCKS, Signal, TokenStat, interest, odour, scanToken, signals, startChain } from "@/lib/chain";
 import BrainCanvas, { Pulse } from "./BrainCanvas";
 
 // Live Robinhood Chain flow, smelled by a real fly's olfactory circuit.
 // Everything runs in this tab: the chain is read from the public RPC, the circuit from
 // a 1.6 MB file of real connectome wiring.
 
-type SortKey = "perMin" | "wallets" | "newWallets" | "concentration" | "accel" | "swaps" | "novelty";
+type SortKey = "score" | "perMin" | "wallets" | "newWallets" | "concentration" | "accel" | "swaps" | "novelty";
 const COLS: { key: SortKey; label: string }[] = [
+  { key: "score", label: "worth a look" },
   { key: "perMin", label: "flow/min" },
   { key: "wallets", label: "wallets" },
   { key: "newWallets", label: "new" },
@@ -26,6 +27,8 @@ const NOVEL_ENOUGH = 0.45;
 const ARCHIVE_MAX = 600;
 
 interface Scored extends TokenStat {
+  sig: Signal[];
+  score: number;
   novelty: number;
   nearest: { symbol: string; overlap: number } | null;
   code: number[];
@@ -43,12 +46,36 @@ export default function Nose() {
   const [state, setState] = useState<ChainState | null>(null);
   const [rows, setRows] = useState<Scored[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
-  const [sort, setSort] = useState<SortKey>("perMin");
+  const [sort, setSort] = useState<SortKey>("score");
   const [circuit, setCircuit] = useState<any>(null);
   const circuitRef = useRef<any>(null);
   const archive = useRef<{ address: string; code: Set<number> }[]>([]);
+  const rowsRef = useRef<Scored[]>([]);
   const pulses = useRef<Pulse[]>([]);
+  const watchRef = useRef<string[]>([]);
   const selectedRef = useRef<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [scan, setScan] = useState<{ busy: boolean; result: Scored | null; error: string }>({ busy: false, result: null, error: "" });
+  const [watch, setWatch] = useState<string[]>([]);
+  const fired = useRef<Record<string, string>>({}); // token -> signals we have already announced
+  const [ping, setPing] = useState<{ symbol: string; labels: string } | null>(null);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("edgerun.watch");
+      if (raw) setWatch(JSON.parse(raw));
+    } catch {
+      /* private window or blocked storage: the watchlist just does not persist */
+    }
+  }, []);
+
+  const toggleWatch = useCallback((address: string) => {
+    setWatch((prev) => {
+      const next = prev.includes(address) ? prev.filter((a) => a !== address) : [...prev, address];
+      try { localStorage.setItem("edgerun.watch", JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     let dead = false;
@@ -57,7 +84,7 @@ export default function Nose() {
       const c = circuitRef.current;
       const FH = (window as any).FlyHash;
       const live = s.tokens.slice(0, 40);
-      if (!c || !FH) return live.map((t) => ({ ...t, code: [], codeSet: new Set<number>(), pn: null, gloms: [], novelty: -1, nearest: null }));
+      if (!c || !FH) return live.map((t) => ({ ...t, code: [], codeSet: new Set<number>(), pn: null, gloms: [], novelty: -1, nearest: null, sig: signals(t), score: interest(t) }));
 
       const vecs = live.map((t) => odour(t, c.gloms.length));
       const smelled = vecs.map((v) => c.smell(v));
@@ -76,7 +103,7 @@ export default function Nose() {
           const o = FH.overlap(codeSet, smelled[j].codeSet);
           if (o > best) { best = o; bestSym = u.symbol; }
         });
-        return { ...t, code, codeSet, pn, gloms: vecs[i], novelty: 1 - seen, nearest: bestSym ? { symbol: bestSym, overlap: best } : null };
+        return { ...t, code, codeSet, pn, gloms: vecs[i], novelty: 1 - seen, nearest: bestSym ? { symbol: bestSym, overlap: best } : null, sig: signals(t), score: interest(t) };
       });
       for (const r of scored) {
         const known = archive.current.some((m) => m.address !== r.address && FH.overlap(r.codeSet, m.code) >= NOVEL_ENOUGH);
@@ -89,9 +116,23 @@ export default function Nose() {
     const stop = startChain((s) => {
       if (dead) return;
       setState(s);
-      if (!s.ok) return;
+      if (!s.ok) return;   // keep the last rows on screen; the ticker shows the state
       const scored = score(s);
       setRows(scored);
+      rowsRef.current = scored;
+
+      // a starred token that picks up a flag it did not have before is worth saying out loud
+      for (const t of scored) {
+        if (!watchRef.current.includes(t.address)) continue;
+        const now = t.sig.map((g) => g.label).join(" · ");
+        const before = fired.current[t.address];
+        if (now && now !== before) {
+          fired.current[t.address] = now;
+          if (before !== undefined) setPing({ symbol: t.symbol, labels: now });
+        } else if (!now) {
+          fired.current[t.address] = "";
+        }
+      }
       // every token in the window sends its own wave, spread across the poll interval,
       // so the circuit is continuously alive with real traffic
       const now = performance.now();
@@ -132,6 +173,43 @@ export default function Nose() {
     return () => { dead = true; stop(); };
   }, []);
 
+  const runScan = useCallback(async (raw: string) => {
+    const c = circuitRef.current;
+    const FH = (window as any).FlyHash;
+    setScan({ busy: true, result: null, error: "" });
+    try {
+      const stat = await scanToken(raw);
+      let result: Scored;
+      if (c && FH) {
+        const vec = odour(stat, c.gloms.length);
+        const { code, codeSet, pn } = c.smell(vec);
+        let best = 0;
+        let bestSym: string | null = null;
+        for (const r of rowsRef.current) {
+          if (r.address === stat.address) continue;
+          const o = FH.overlap(codeSet, r.codeSet);
+          if (o > best) { best = o; bestSym = r.symbol; }
+        }
+        let seen = 0;
+        for (const m of archive.current) {
+          if (m.address === stat.address) continue;
+          const o = FH.overlap(codeSet, m.code);
+          if (o > seen) seen = o;
+        }
+        result = { ...stat, code, codeSet, pn, gloms: vec, novelty: 1 - seen,
+          nearest: bestSym ? { symbol: bestSym, overlap: best } : null, sig: signals(stat), score: interest(stat) };
+        pulses.current = pulses.current.filter((p) => p.at > performance.now() + 300);
+        pulses.current.unshift({ at: performance.now(), gloms: vec, pn, code, strength: 1, lead: true });
+      } else {
+        result = { ...stat, code: [], codeSet: new Set<number>(), pn: null, gloms: [], novelty: -1,
+          nearest: null, sig: signals(stat), score: interest(stat) };
+      }
+      setScan({ busy: false, result, error: "" });
+    } catch (e: any) {
+      setScan({ busy: false, result: null, error: String(e?.message || e) });
+    }
+  }, []);
+
   const pick = useCallback((t: Scored) => {
     setSelected(t.address);
     selectedRef.current = t.address;
@@ -142,7 +220,20 @@ export default function Nose() {
     }
   }, []);
 
-  const shown = [...rows].sort((a, b) => (b[sort] as number) - (a[sort] as number));
+  useEffect(() => { watchRef.current = watch; }, [watch]);
+
+  useEffect(() => {
+    if (!ping) return;
+    const id = setTimeout(() => setPing(null), 9000);
+    return () => clearTimeout(id);
+  }, [ping]);
+
+  const shown = [...rows].sort((a, b) => {
+    const w = Number(watch.includes(b.address)) - Number(watch.includes(a.address));
+    return w || (b[sort] as number) - (a[sort] as number);
+  });
+  // the handful actually worth interrupting someone for
+  const alerts = [...rows].filter((t) => t.sig.length).sort((a, b) => b.score - a.score).slice(0, 4);
   const sel = rows.find((r) => r.address === selected) || null;
 
   useEffect(() => {
@@ -160,48 +251,113 @@ export default function Nose() {
         <div className="hero">
           <div className="kicker">
             <span className={`dot${state?.ok ? " on" : ""}`} />
-            {state?.ok ? "live · robinhood chain" : "connecting"}
+            {state?.ok ? "live · robinhood chain" : state ? "reconnecting" : "connecting"}
           </div>
-          <h1>A real fly brain,<br />smelling the chain.</h1>
+          <h1>Which token is<br />actually moving.</h1>
           <p>
-            9,515 neurons in their true positions — the fly&apos;s olfactory circuit, wired exactly as the
-            connectome maps it. Every token moving on Robinhood Chain is fed to it as a smell, and it
-            answers one question: <b>have I smelled this before?</b>
+            Every transfer and swap on Robinhood Chain, read live, and flagged the moment one wallet
+            is faking the volume, supply starts printing, or real new buyers pile in. Scored by a real
+            fly&apos;s olfactory circuit — <b>9,515 neurons</b> built to tell one smell from another.
           </p>
+          <form
+            className="scan"
+            onSubmit={(e) => { e.preventDefault(); if (query.trim()) runScan(query); }}
+          >
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="paste any token address — 0x…"
+              spellCheck={false}
+              aria-label="token contract address"
+            />
+            <button type="submit" disabled={scan.busy || !query.trim()}>{scan.busy ? "smelling…" : "smell it"}</button>
+          </form>
+
+          {(scan.result || scan.error) && (
+            <div className="scanout">
+              {scan.error ? (
+                <span className="scanerr">{scan.error}</span>
+              ) : scan.result ? (
+                <>
+                  <div className="scanhead">
+                    <b>{scan.result.symbol}</b>
+                    <span>{num(scan.result.transfers)} transfers · {num(scan.result.wallets)} wallets · last {Math.round(SCAN_BLOCKS / 9 / 60)} min</span>
+                    <button className="x" onClick={() => { setScan({ busy: false, result: null, error: "" }); setQuery(""); }} aria-label="close">×</button>
+                  </div>
+                  <div className="scanflags">
+                    {scan.result.sig.length
+                      ? scan.result.sig.map((g) => <i key={g.id} className={`chip chip-${g.tone}`}>{g.label}</i>)
+                      : <span className="quiet">nothing unusual in how it is moving</span>}
+                  </div>
+                  <div className="scanwhy">
+                    {scan.result.sig.slice(0, 2).map((g) => <p key={g.id}>{g.why}</p>)}
+                    {scan.result.nearest && <p>moves most like <b>{scan.result.nearest.symbol}</b> of everything live right now · {pct(scan.result.nearest.overlap)} of the same neurons.</p>}
+                  </div>
+                </>
+              ) : null}
+            </div>
+          )}
+
+          {alerts.length > 0 && (
+            <div className="calls">
+              {alerts.map((t) => (
+                <button key={t.address} className={`call call-${t.sig[0].tone}`} onClick={() => pick(t)}>
+                  <b>{t.symbol}</b>
+                  <i>{t.sig.slice(0, 3).map((g) => g.label).join(" · ")}</i>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {sel && phase === "run" && (
           <div className="focus">
             <div className="fhead2">
               <h2>{sel.symbol}</h2>
-              {sel.isNew && <i className="tag">new</i>}
+              <span className="flow">{num(sel.perMin)}/min</span>
+              <button
+                className={`star${watch.includes(sel.address) ? " on" : ""}`}
+                onClick={() => toggleWatch(sel.address)}
+                title={watch.includes(sel.address) ? "stop watching" : "watch this — tell me when it changes"}
+              >★</button>
             </div>
-            <div className="big">
-              <b>{pct(sel.novelty)}</b>
-              <span>novelty<small>unlike {archive.current.length} shapes seen</small></span>
+
+            <div className="verdict">
+              {sel.sig.length ? (
+                sel.sig.slice(0, 3).map((g) => (
+                  <div key={g.id} className={`sig sig-${g.tone}`}>
+                    <b>{g.label}</b>
+                    <span>{g.why}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="sig sig-flat"><b>quiet</b><span>nothing unusual in how this one is moving</span></div>
+              )}
             </div>
-            <div className="odour">
-              {featureVector(sel).map((f) => (
-                <div key={f.label} className="frow">
-                  <span>{f.label}</span>
-                  <i><b style={{ width: `${Math.round(f.value * 100)}%` }} /></i>
-                </div>
-              ))}
-            </div>
+
             <div className="mini">
-              <div><b>{num(sel.code.length)}</b><span>kenyon cells lit</span></div>
-              {sel.nearest && <div><b>{sel.nearest.symbol}</b><span>smells like · {pct(sel.nearest.overlap)}</span></div>}
+              <div><b>{num(sel.wallets)}</b><span>wallets · {pct(sel.wallets ? sel.newWallets / sel.wallets : 0)} new</span></div>
+              <div><b>{sel.accel.toFixed(1)}×</b><span>vs its own average</span></div>
+              {sel.nearest && <div><b>{sel.nearest.symbol}</b><span>moves most like this · {pct(sel.nearest.overlap)}</span></div>}
             </div>
           </div>
         )}
 
         <div className="ticker">
-          <div><b>{state?.ok ? num(state.block) : "—"}</b><span>block</span></div>
+          <div><b>{state?.block ? num(state.block) : "—"}</b><span>block</span></div>
           <div><b>{state ? num(state.transfersPerMin) : "—"}</b><span>transfers/min</span></div>
           <div><b>{state ? num(state.wallets) : "—"}</b><span>wallets</span></div>
           <div><b>{state ? num(state.tokens.length) : "—"}</b><span>tokens moving</span></div>
           <div><b>{phase === "run" ? "9,515" : "…"}</b><span>neurons live</span></div>
         </div>
+
+        {ping && (
+          <div className="ping" onClick={() => setPing(null)}>
+            <b>{ping.symbol}</b>
+            <span>{ping.labels}</span>
+            <i>watched · just changed</i>
+          </div>
+        )}
 
         <div className="hint">{phase === "run" ? "drag to turn the brain" : "waking the circuit…"}</div>
       </section>
@@ -209,7 +365,7 @@ export default function Nose() {
       <section className="feed">
         <div className="fhead">
           <h2>Everything moving right now</h2>
-          <small>3-minute window · click a column to sort · a row to smell it</small>
+          <small>3-minute window · ★ to watch · click a column to sort, a row to smell it</small>
         </div>
         <div className="tscroll">
           <table className="tbl">
@@ -225,7 +381,18 @@ export default function Nose() {
             <tbody>
               {shown.map((t) => (
                 <tr key={t.address} className={t.address === selected ? "on" : ""} onClick={() => pick(t)}>
-                  <td className="sym">{t.symbol}{t.isNew && <i className="tag">new</i>}</td>
+                  <td className="sym">
+                    <button
+                      className={`star${watch.includes(t.address) ? " on" : ""}`}
+                      onClick={(e) => { e.stopPropagation(); toggleWatch(t.address); }}
+                      title="watch this"
+                    >★</button>
+                    {t.symbol}
+                  </td>
+                  <td className="sigs">
+                    {t.sig.length ? t.sig.slice(0, 3).map((g) => <i key={g.id} className={`chip chip-${g.tone}`}>{g.label}</i>) : <span className="quiet">quiet</span>}
+                  </td>
+                  <td>{Math.round(t.score)}</td>
                   <td>{num(t.perMin)}</td>
                   <td>{num(t.wallets)}</td>
                   <td className={t.wallets && t.newWallets / t.wallets > 0.6 ? "hi" : ""}>{num(t.newWallets)}</td>
@@ -236,7 +403,7 @@ export default function Nose() {
                   <td className="like">{t.nearest ? `${t.nearest.symbol} · ${pct(t.nearest.overlap)}` : t.novelty < 0 ? "·" : "—"}</td>
                 </tr>
               ))}
-              {!shown.length && <tr><td colSpan={9} className="empty">reading the chain…</td></tr>}
+              {!shown.length && <tr><td colSpan={11} className="empty">reading the chain…</td></tr>}
             </tbody>
           </table>
         </div>
@@ -252,18 +419,20 @@ export default function Nose() {
           </p>
         </div>
         <div>
-          <h3>What you get</h3>
+          <h3>What the flags mean</h3>
           <p>
-            <b>Novelty</b> is how unlike anything already seen a token&apos;s flow pattern is — a new shape of
-            activity, not just a new listing. <b>Smells like</b> names the closest token right now. Flow,
-            wallets, one-address share and acceleration are raw chain facts and stand on their own.
+            <b>one wallet</b> — a single address sits on most of the transfers, so the volume is one
+            actor. <b>printing</b> — new supply is being minted right now. <b>no dex</b> — plenty of
+            movement, no swaps. <b>heating</b> — flow is running well above the token&apos;s own average.
+            <b>fresh wallets</b> — the buyers are addresses we had not seen before.
           </p>
         </div>
         <div>
           <h3>What it is not</h3>
           <p>
-            It does not predict price. It compares patterns of on-chain activity. Which measurements become
-            which glomeruli is our design; the 9,515 neurons and their synapses are the fly&apos;s.
+            Not advice and not a price call. Every flag is a plain threshold on measured activity and
+            names the number behind it, so you can check it yourself on the explorer. A token with no
+            flags is not safe — it is only unremarkable in the last three minutes.
           </p>
         </div>
       </section>

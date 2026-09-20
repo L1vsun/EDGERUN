@@ -141,64 +141,71 @@ Buy links auto-resolve to `https://www.ponsfamily.com/launchpad/<address>`.
 
 ---
 
-## Product (2026-09-20): the fly nose for Robinhood Chain
+## Product (2026-09-21): the fly nose for Robinhood Chain
 
-ONE page, no servers, three parts.
+ONE page, no servers. A trader should get the answer in a second and be able to act.
 
-**1. The brain, full-bleed and alive.** The fly's olfactory circuit in its real 3-D
-anatomy — 9,515 neurons where the connectome actually puts them — slowly turning, drag
-to spin. Every token in the window sends its own wave through it, staggered across the
-poll so the circuit is continuously firing with real traffic: the glomeruli that token's
-activity excites, then the projection neurons they feed, then the Kenyon cells that win
-the sparse code, then the outputs. For the focused token the PN->KC **synapses are drawn
-from the real connectome** (`circuit.kcInputs`), not decorative lines.
+**What you can DO**
+- **Paste any token address -> "smell it".** One address-filtered `eth_getLogs` pulls that
+  token's own last ~17 minutes (9,000 blocks, ~0.9 s) and returns flags + what it moves
+  like. Works for tokens not in the live list. Bad input fails with a plain message.
+- **Star any token.** Persists in `localStorage` (wrapped in try/catch), pins it to the top
+  of the table, and raises a toast the moment it picks up a flag it did not have before.
+- **Drag the brain.** Click a row or an alert card to send that token through the circuit.
 
-**2. Live token table.** Every ERC-20 Transfer and DEX swap, straight from the public RPC,
-3-minute rolling window: flow/min, distinct wallets, wallets new since page load, share of
-flow through one address, acceleration (last 45 s vs window), swap count. Sortable. Raw
-chain facts that need no brain.
+**What you SEE in one glance** — flags, not metrics. Each is a plain threshold on measured
+activity and names the number behind it:
+- `one wallet` (bad) — one address touches >90% of transfers: a single actor, not a crowd
+- `printing` (bad) — >=4 mints from 0x0, >3x the burns: net new supply, not wrapper churn
+- `heating` (good) — flow >=2x the token's own 3-min average in the last 45 s
+- `fresh wallets` (good) — >65% of wallets never seen before (needs >=20 wallets)
+- `dex live` (good) — >=3 real DEX swaps: there is a pool and it trades
+- `cooling` / `just appeared` (neutral)
+Default sort is "worth a look" (flag severity x how much is moving), not raw volume.
 
-**3. The circuit's verdict.** Each token's numbers become an odour across the 53 real
-glomeruli; the sparse code (~5% of 5,177 Kenyon cells) gives **novelty** (unlike every
-shape seen this session) and **smells like** (closest token now, % code overlap). FlyHash
-(Dasgupta, Stevens & Navlakha, Science 2017) on real wiring. It does NOT predict price.
+**The brain** is the full-bleed background in real 3-D anatomy, turning slowly. Every token
+in the window sends its own wave, staggered across the poll, so it is continuously firing
+with real traffic. For the focused token the PN->KC lines drawn are **real synapses** from
+the connectome (`circuit.kcInputs`). Novelty / "moves most like X" come from the sparse
+Kenyon code (FlyHash on real wiring).
 
 Files: `frontend/public/brain/{mb.bin.gz 1.66 MB, mb.json, flyhash.js}` (from
-`brain/export_mb.py`), `frontend/components/{BrainCanvas,Nose}.tsx`,
-`frontend/lib/chain.ts`, `app/{page,layout}.tsx`, `globals.css`.
-Offline Python/JS research tools stay in `brain/` but the site does not use them.
+`brain/export_mb.py`), `frontend/components/{BrainCanvas,Nose}.tsx`, `frontend/lib/chain.ts`,
+`app/{page,layout}.tsx`, `globals.css`. Offline research tools stay in `brain/`, unused by
+the site.
 
-Verified 2026-09-20 (measured, not assumed)
-- **Circuit is real:** 9,515 neurons, 849,261 internal edges, 88% of their in-edges
-  internal. Mean 5.7 PN inputs per Kenyon cell — biology says ~6. 53 real glomeruli.
-- **Sparse coding works:** 259/5,177 KCs fire (5.0%). Unrelated inputs overlap 0.01-0.08;
-  a 5% perturbation still overlaps 0.96, decaying smoothly to 0.18. 0.9 ms per hash.
-- **A full LIF sim of this subnetwork does NOT work** — saturates at 69% of KCs with all
-  odours identical (overlap 0.995). One glomerulus alone gives a realistic 3.8%; three or
-  more ignite everything. Isolating the circuit loses the inhibition that sparsifies it.
-  Hence the FlyHash formulation with explicit APL winner-take-all.
-- **Rendering:** 60 fps at 1600x1000 and at 500 px, heap 19-35 MB, zero console errors.
-  Frames 260 ms apart differ substantially (lit pixels swing 9.8k -> 20.4k), so the
-  animation is genuinely driven, not a loop.
-- **Load:** page visible ~250 ms, token table ~2.9 s on a throttled 5 Mbps link, total
-  payload ~2 MB (the old whole-brain build was 37 MB). The table does not wait for the
-  circuit; novelty columns fill in when it lands.
-- **FlyWire coordinates are 4x4x40 nm voxels** — z must be scaled x10 or the brain renders
-  flat. (Caught it: z spanned 3% of x before the fix.)
-- **Chain:** ~9 blocks/s, ~52 tx/s, 8,298 Transfer logs / 500 blocks, 336 active tokens,
-  ~2,300 wallets/min, real V2+V3 pools whose token0/token1/symbol resolve over eth_call.
-  RPC sends `access-control-allow-origin: *`; it 429s on large getLogs ranges (3,000
-  blocks failed) — stay under ~500. ~100 KB/s of logs while the tab is open.
+Verified 2026-09-21 (measured in a real browser against the live chain)
+- Circuit: 9,515 neurons, 849,261 internal edges, 88% of in-edges internal, mean 5.7 PN
+  inputs per Kenyon cell (biology ~6), 53 real glomeruli. Sparse code 259/5,177 = 5.0%;
+  unrelated inputs overlap 0.01-0.08, a 5% perturbation still overlaps 0.96. 0.9 ms/hash.
+- **A full LIF sim of this subnetwork does NOT work** — saturates at 69% of KCs, all odours
+  identical (0.995). Isolating the circuit loses the inhibition that sparsifies it; hence
+  FlyHash with explicit APL winner-take-all.
+- Rendering 60 fps at 1600x1050 and at 500 px; heap 19-48 MB; zero console exceptions.
+  Frames 260 ms apart differ substantially, so the animation is data-driven.
+- Load: visible ~250 ms, table ~2.9 s on throttled 5 Mbps, ~2 MB total (was 37 MB).
+- Scan tested live: SPCX returned 1,898 transfers / 193 wallets over 17 min; `hello`
+  returned "that is not a contract address"; star persisted to localStorage and pinned.
+- **FlyWire coords are 4x4x40 nm voxels** — z must be scaled x10 or the brain renders flat.
+- Signal thresholds were tuned against live data, not guessed: WETH first tripped `printing`
+  (wrappers mint on every deposit -> now requires net issuance), `no dex` fired on nearly
+  everything (most tokens have no pool -> inverted to `dex live`), and the one-wallet share
+  was reported at half its true value (concentration counts two wallet slots per transfer).
+- A failed poll now keeps the last good numbers on screen and shows "reconnecting" instead
+  of blanking the ticker to zeros.
+- Chain: ~9 blocks/s, ~52 tx/s, 8,298 Transfer logs / 500 blocks, ~336 active tokens. RPC
+  sends `access-control-allow-origin: *`; it 429s on large unfiltered getLogs (3,000 blocks
+  failed) but address-filtered queries over 9,000 blocks are fine. ~100 KB/s while open.
 
 **BLOCKER, still unresolved: data licence.** Third-party sources (not FlyWire's own terms;
 unconfirmed) say FlyWire data is CC BY-NC 4.0 — non-commercial. The site ships
 connectome-derived data and promotes a token. Resolve before launch: written permission,
-drop the commercial/token framing, or change dataset. Credit to FlyWire + Dasgupta et al.
-is in the footer (attribution is required either way). Raised three times, not yet decided.
+drop the commercial/token framing, or change dataset. Raised four times, not yet decided.
 
-Known limits: novelty is session-relative, so everything looks novel in the first minute;
-"new wallets" means new since page load; acceleration needs ~60 s of window; the 8
-measurements -> 53 glomeruli mapping is our design, not biology.
+Known limits: novelty is session-relative (everything looks novel in the first minute);
+"new wallets" means new since page load; acceleration needs ~60 s of window; a manual scan
+cannot show `dex live` because it does not count swaps; the 8 measurements -> 53 glomeruli
+mapping is our design, not biology.
 
 ---
 
