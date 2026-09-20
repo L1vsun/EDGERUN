@@ -3,7 +3,7 @@
 // neuron 0 is held at g = 50 mV every step and drives neuron 1 through a 100-synapse excitatory edge.
 // It pins exact integration, the 1.8 ms synaptic delay and the 2.2 ms refractory period.
 const assert = require("assert");
-const { Sim } = require("../frontend/public/brain/sim-core.js");
+const { Sim } = require("./sim-core.js");
 
 const conn = { N: 2, S: 1, offsets: new Uint32Array([0, 1, 1]), post: new Int32Array([1]), w: new Int16Array([100]) };
 const sim = new Sim(conn, {});
