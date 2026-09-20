@@ -7,6 +7,7 @@ import { DEX_URL, GITHUB_REPO_URL, TOKEN_TICKER, asset } from "@/lib/config";
 
 const TABS = [
   { href: "/", label: "Live Feed" },
+  { href: "/brain", label: "Fly Brain" },
   { href: "/stock-tokens", label: "Stock Tokens" },
   { href: "/changes", label: "Changes" },
   { href: "/deployers", label: "Deployers" },

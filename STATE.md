@@ -1,6 +1,6 @@
 # edgerun — project state
 
-Handoff snapshot. Last updated 2026-09-13.
+Handoff snapshot. Last updated 2026-09-20.
 
 ---
 
@@ -134,33 +134,72 @@ Buy links auto-resolve to `https://www.ponsfamily.com/launchpad/<address>`.
 
 ---
 
-## Strategic decision pending
+## Pivot (2026-09-20): fly-brain product — prototype in `brain/`
 
-Competitors (Sheriff Cat, GPTHEIST, bodkin, graphrun) are all the same product:
-memecoin rug-checking with a mascot. Notably **Sheriff Cat is labelled "SAMPLE
-DATA" on every panel — a mockup with no backend.** `crowd` is the smart one: it
-asks a single sharp question ("how many wallets are actually in this launch?")
-rather than shipping a kitchen sink.
+Product base moved from "safety checker" to a **live simulation of the real
+*Drosophila* connectome reacting to Robinhood Chain**. The old "Is that actually
+Tesla?" repositioning is **superseded**. User's draft (amygdala / C. elegans /
+PFC / hippocampus / basal ganglia) was "just a draft" — take the good parts.
 
-We drifted into the same kitchen-sink square. **Proposed repositioning, awaiting
-the user's go-ahead:**
+**Prototype (offline, works):** real scan events -> sensory channels -> real fly
+brain + degree-preserving *shuffled* control -> rule-based read -> code gate ->
+public trace. Signals only, no trading, no LLM yet.
+```
+brain/fetch_data.sh                       # ~135 MB into brain/data/fly/ (gitignored)
+python3 -m venv brain/.venv && brain/.venv/bin/pip install -r brain/requirements.txt pytest
+edgerun/.venv/bin/python brain/collect_events.py 40      # snapshot real scans (needs edgerun venv)
+brain/.venv/bin/python brain/run.py       # ~40 s; writes frontend/public/brain/trace.json
+brain/.venv/bin/python brain/experiment.py --trials 8   # ~1.5 min; writes .../experiment.json
+cd brain && .venv/bin/python -m pytest test_gate.py -q
+```
+**Website:** `/brain` page (`frontend/app/brain/`, `frontend/components/BrainReplay.tsx`)
+renders those two JSON files at build time — a RECORDED replay, clearly labelled
+not live (the sim needs ~2 GB RAM + a compiler; Render free tier has neither).
+To update the site: re-run the two scripts above, `cd frontend && npm run build`,
+commit `frontend/public/brain/*.json`. Netlify rebuilds on push. View locally:
+`cd frontend && npm run dev` -> http://localhost:3000/brain (only the static
+build was checked: `frontend/out` served on :3311; dev mode not run).
+Checked visually at 1400 px and 500 px (headless Chrome min width).
+Files: `fly.py` (persistent LIF sim), `atlas.py` (annotated neuron groups),
+`run.py` (pipeline + gate), `collect_events.py`, `experiment.py` (controlled input
+runs), `THIRD_PARTY.md` (credits + data-licence caveat).
 
-- Stop competing as "another safety checker". Own **tokenised-stock
-  authenticity** — 194 real securities on this chain, 213 counterfeits found,
-  nobody guarding them. Different category, different (less degen) audience,
-  defensible because it needs the registry integration.
-- One sentence: **"Is that actually Tesla?"**
-- Replace the chart block with a live **real-vs-counterfeit** comparison
-  (official token beside a real fake we caught — near identical).
-- **Reduce visual noise** (user's explicit ask): drop the marquee, calm the
-  grid, fewer competing blocks. `crowd` reads confident because it's quiet.
-- **Token utility:** priority scan queue is worthless (scanning is free and
-  instant). The defensible offer is surveillance — *bag watch*: register what
-  you hold, get alerted the moment sellability breaks or a counterfeit of a
-  stock you own appears. Built on the existing watchtower. Secondary: API
-  access to the registry + counterfeit feed.
+Verified 2026-09-20 (ran it, not assumed):
+- Runs on this Mac: 138,639 neurons / 15.09M synapses, FlyWire **783**. Needs the
+  compiled Brian2 backend: numpy 190 s vs cython 4.2 s per 1 s of fly time.
+  First run pays ~13 s of Cython compile. Brian 2.10.1 works on Python 3.14.
+- Port fidelity vs Shiu's own code, same 21 sugar neurons, 500 ms: 6.5–6.7k
+  spikes / ~358 active (mine) vs 6.6–6.7k / ~360 (paper). Within ~3%.
+- Annotation table (flyconnectome/flywire_annotations, supplemental file 1) is
+  **release 783** and covers 138,625/138,639 sim neurons -> use 783 (the earlier
+  "use v630" note is obsolete). Channels: gustatory sugar/water (129) = sweet,
+  gustatory bitter (65) = bitter, mechanosensory (2,656) = jolt. Readouts: feeding
+  motor (66), head motor (40), descending (1,299).
+- Response is wiring-dependent: same stimulus, real brain ~8,600 active neurons,
+  shuffled control ~300. Sweet 150 Hz -> feeding motor ~23 Hz (real) vs 0 (control).
+- **Sticky state:** after input stops, ~8,100 neurons keep firing (descending ~4 Hz)
+  for the full 900 ms measured; control dies. Not checked whether this is
+  biological or a model artifact. Cycles are therefore NOT independent.
+- Replay of 40 real scans: 36 PASS, 4 FAIL (all impersonation). Gate ALERTs exactly
+  on the 4 FAIL cycles — by construction: brain weight is 0 in the gate.
 
-Nothing of this repositioning has been built yet.
+Not verified / known limits:
+- **Licence of the FlyWire data + annotations: not established** (annotation repo
+  has no LICENSE; MIT covers only Shiu's code). Resolve before any token launch.
+- Controlled run (`brain/experiment.py --trials 8`, sweet fixed at 120 Hz, fresh brain
+  per trial, 300 ms): feeding motor 21.0±1.7 Hz alone, 17.8±1.8 with bitter 40,
+  10.8±0.7 with bitter 80 (about -15% / -49%); bitter 80 alone is silent (121
+  active). An earlier 5-trial run showed two brains igniting far less (active
+  6.7k±3.1k) — NOT reproduced in the 8-trial rerun; treat as rare/stochastic.
+  The replay's feeding dip was partly the 120 vs 160 Hz sweet difference.
+- Sense->channel mapping (sweet=clear, bitter=flagged, jolt=watchtower critical)
+  is a design choice, and 40 Hz/event is an arbitrary knob. `jolt` is unused: no
+  watchtower diffs in a single snapshot.
+- Flies have no cortex: draft's "cortical zones" = neuropils; only super_class /
+  cell_class / cell_sub_class are used so far, not neuropil regions.
+- No live price feed for new tokens (Open issue 3) — a market-driven amygdala has
+  no input yet. Live backend DB is empty (ephemeral disk, Open issue 2), so replay
+  uses its own captured snapshot in `brain/data/events.json`.
 
 ---
 

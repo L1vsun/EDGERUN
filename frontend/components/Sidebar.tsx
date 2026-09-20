@@ -55,6 +55,10 @@ export default function Sidebar() {
       <div className="side-card panel">
         <div className="eyebrow" style={{ color: "var(--text-faint)" }}>the rest of the site</div>
         <div className="side-links">
+          <Link href="/brain">
+            fly brain
+            <small>a real connectome reacting to scans</small>
+          </Link>
           <Link href="/changes">
             changes
             <small>contracts that turned after the scan</small>

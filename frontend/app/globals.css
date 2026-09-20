@@ -499,3 +499,36 @@ footer .foot-links a:hover { background: var(--chart); }
   .hero-token .price-ticker { font-size: 26px; }
   .hero-token .price-mark { height: 30px; }
 }
+
+/* ================= fly brain page ================= */
+.brain-note { font-size: 13.5px; color: var(--ink-dim); max-width: 780px; margin: 10px 0 14px; }
+.brain-legend { display: flex; gap: 20px; flex-wrap: wrap; font-family: var(--mono); font-size: 11px; color: var(--ink-dim); margin-bottom: 12px; }
+.brain-legend i { display: inline-block; width: 14px; height: 8px; margin-right: 7px; border: 1px solid var(--ink); }
+.brain-legend .real i { background: var(--chart-deep); }
+.brain-legend .ctrl i { background: var(--unresolved); }
+.brain-wrap { overflow-x: auto; }
+.brain-table { width: 100%; min-width: 900px; border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+.brain-table th { text-align: left; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.13em; color: var(--ink-dim); padding: 11px 12px; border-bottom: var(--line); white-space: nowrap; }
+.brain-table th small { text-transform: none; letter-spacing: 0; color: var(--ink-faint); }
+.brain-table td { padding: 10px 12px; border-bottom: var(--hair); vertical-align: top; }
+.brain-table tr.rest td { background: var(--bone); color: var(--ink-dim); }
+.brain-table .scans .flagged { color: var(--fail-ink); font-weight: 800; }
+.brain-table .dim { color: var(--ink-faint); font-weight: 400; }
+.brain-table .because { font-size: 10.5px; margin-top: 4px; }
+.brain-table .pill { display: inline-block; margin: 0 4px 4px 0; white-space: nowrap; }
+.pill-sweet { background: var(--ok); }
+.pill-bitter { background: var(--fail); }
+.pill-rest, .pill-silence { background: var(--paper); color: var(--ink-dim); border-style: dashed; }
+.bcell { width: 96px; }
+.bcell.wide { width: 220px; }
+.bcell b { display: block; margin-bottom: 3px; }
+.bar { display: block; height: 7px; margin-top: 3px; background: #eef0e4; border: 1px solid var(--ink); }
+.bar.ctrl { height: 5px; border-color: var(--ink-faint); }
+.bar i { display: block; height: 100%; }
+.bar.real i { background: var(--chart-deep); }
+.bar.ctrl i { background: var(--unresolved); }
+.brain-limits { padding: 24px 26px; }
+.brain-limits ul { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.55; max-width: 820px; }
+.brain-limits li { margin-bottom: 9px; }
+.brain-links { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 16px; font-family: var(--mono); font-size: 12px; font-weight: 700; }
+.brain-links a { text-decoration: underline; }
