@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import SiteChrome from "@/components/SiteChrome";
+import Header from "@/components/Header";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -25,9 +25,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://edgerun.netlify.ap
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "edgerun — Robinhood Chain contract checker",
+  title: "edgerun — a real fly brain, alive",
   description:
-    "Check a Robinhood Chain contract before you touch it. Contract safety, impersonation and counterfeit stock tokens — checked separately, reported as facts not a score.",
+    "The whole adult fly connectome — 138,639 neurons, 15 million synapses — simulated live in your browser and fed by Robinhood Chain.",
   icons: {
     icon: [
       { url: `${BASE}/favicon.ico`, sizes: "any" },
@@ -37,17 +37,15 @@ export const metadata: Metadata = {
     apple: `${BASE}/apple-touch-icon.png`,
   },
   openGraph: {
-    title: "edgerun — scan it before you ape it",
-    description:
-      "Contract safety, impersonation and counterfeit stock tokens on Robinhood Chain. Not a score, a verdict.",
+    title: "edgerun — a real fly brain, alive",
+    description: "138,639 neurons simulated live in your browser, fed by Robinhood Chain.",
     images: [{ url: `${BASE}/og.png`, width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "edgerun — scan it before you ape it",
-    description:
-      "Contract safety, impersonation and counterfeit stock tokens on Robinhood Chain.",
+    title: "edgerun — a real fly brain, alive",
+    description: "138,639 neurons simulated live in your browser, fed by Robinhood Chain.",
     images: [`${BASE}/og.png`],
   },
 };
@@ -58,7 +56,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${mono.variable}`}>
       <body>
-        <SiteChrome>{children}</SiteChrome>
+        <Header />
+        <main>{children}</main>
       </body>
     </html>
   );

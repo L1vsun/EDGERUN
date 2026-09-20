@@ -19,7 +19,7 @@ Three deployables, one scan engine:
 
 ## Live deployments
 
-- **Backend:** https://edgerun.onrender.com — healthy, poller running
+- **Backend:** https://edgerun.onrender.com — still running, but the site no longer calls it
 - **Frontend (primary since 2026-09-20): GitHub Pages** https://l1vsun.github.io/EDGERUN/
   via `.github/workflows/deploy-pages.yml` (Settings -> Pages -> Source: GitHub Actions).
   Repo *Variables*: `NEXT_PUBLIC_API_BASE`, `NEXT_PUBLIC_BASE_PATH=/EDGERUN` (exact
@@ -141,72 +141,58 @@ Buy links auto-resolve to `https://www.ponsfamily.com/launchpad/<address>`.
 
 ---
 
-## Pivot (2026-09-20): fly-brain product — prototype in `brain/`
+## Product (2026-09-20): a live fly brain — single page, no servers
 
-Product base moved from "safety checker" to a **live simulation of the real
-*Drosophila* connectome reacting to Robinhood Chain**. The old "Is that actually
-Tesla?" repositioning is **superseded**. User's draft (amygdala / C. elegans /
-PFC / hippocampus / basal ganglia) was "just a draft" — take the good parts.
+The site is ONE page: the real adult *Drosophila* connectome (FlyWire 783, 138,639
+neurons, 15.09M synapses) **simulated live in the visitor's browser** by a web
+worker, driven by live Robinhood Chain blocks fetched straight from the public RPC
+(CORS `*`). No backend, no Render, no API keys. The scan engine / backend / watchtower
+code still exists in `edgerun/` and `backend/` but the site no longer calls it. All
+other tabs, alerts, disclaimers and the old replay page were removed at the owner's
+request (git history has them).
 
-**Prototype (offline, works):** real scan events -> sensory channels -> real fly
-brain + degree-preserving *shuffled* control -> rule-based read -> code gate ->
-public trace. Signals only, no trading, no LLM yet.
-```
-brain/fetch_data.sh                       # ~135 MB into brain/data/fly/ (gitignored)
-python3 -m venv brain/.venv && brain/.venv/bin/pip install -r brain/requirements.txt pytest
-edgerun/.venv/bin/python brain/collect_events.py 40      # snapshot real scans (needs edgerun venv)
-brain/.venv/bin/python brain/run.py       # ~40 s; writes frontend/public/brain/trace.json
-brain/.venv/bin/python brain/experiment.py --trials 8   # ~1.5 min; writes .../experiment.json
-cd brain && .venv/bin/python -m pytest test_gate.py -q
-```
-**Website:** `/brain` page (`frontend/app/brain/`, `frontend/components/BrainReplay.tsx`)
-renders those two JSON files at build time — a RECORDED replay, clearly labelled
-not live (the sim needs ~2 GB RAM + a compiler; Render free tier has neither).
-To update the site: re-run the two scripts above, `cd frontend && npm run build`,
-commit `frontend/public/brain/*.json`. Netlify rebuilds on push. View locally:
-`cd frontend && npm run dev` -> http://localhost:3000/brain (only the static
-build was checked: `frontend/out` served on :3311; dev mode not run).
-Checked visually at 1400 px and 500 px (headless Chrome min width).
-Files: `fly.py` (persistent LIF sim), `atlas.py` (annotated neuron groups),
-`run.py` (pipeline + gate), `collect_events.py`, `experiment.py` (controlled input
-runs), `THIRD_PARTY.md` (credits + data-licence caveat).
+Chain -> brain (design choice, arbitrary but simple): `touch` (2,656 mechanosensory
+neurons) <- tx/s x0.6 Hz (cap 60); `sweet` (129 sugar neurons) <- 60 Hz while a
+contract was deployed in the last poll; `bitter` (65 bitter neurons) <- 60 Hz while a
+block used >3M gas (median ~0.7M). Visitors can also hold the three buttons. Neurons are
+drawn as they fire: white = sensory, chartreuse = central/optic, coral = motor/descending.
 
-Verified 2026-09-20 (ran it, not assumed):
-- Runs on this Mac: 138,639 neurons / 15.09M synapses, FlyWire **783**. Needs the
-  compiled Brian2 backend: numpy 190 s vs cython 4.2 s per 1 s of fly time.
-  First run pays ~13 s of Cython compile. Brian 2.10.1 works on Python 3.14.
-- Port fidelity vs Shiu's own code, same 21 sugar neurons, 500 ms: 6.5–6.7k
-  spikes / ~358 active (mine) vs 6.6–6.7k / ~360 (paper). Within ~3%.
-- Annotation table (flyconnectome/flywire_annotations, supplemental file 1) is
-  **release 783** and covers 138,625/138,639 sim neurons -> use 783 (the earlier
-  "use v630" note is obsolete). Channels: gustatory sugar/water (129) = sweet,
-  gustatory bitter (65) = bitter, mechanosensory (2,656) = jolt. Readouts: feeding
-  motor (66), head motor (40), descending (1,299).
-- Response is wiring-dependent: same stimulus, real brain ~8,600 active neurons,
-  shuffled control ~300. Sweet 150 Hz -> feeding motor ~23 Hz (real) vs 0 (control).
-- **Sticky state:** after input stops, ~8,100 neurons keep firing (descending ~4 Hz)
-  for the full 900 ms measured; control dies. Not checked whether this is
-  biological or a model artifact. Cycles are therefore NOT independent.
-- Replay of 40 real scans: 36 PASS, 4 FAIL (all impersonation). Gate ALERTs exactly
-  on the 4 FAIL cycles — by construction: brain weight is 0 in the gate.
+Files
+- `frontend/public/brain/sim-core.js` — event-driven LIF simulator (plain JS, also runs in Node)
+- `frontend/public/brain/worker.js` — loads data, runs in real time, streams spikes
+- `frontend/public/brain/{connectome.bin.gz (37 MB), positions.bin, classes.bin, groups.json}`
+  — generated by `brain/export_web.py` from the Shiu/FlyWire data (`brain/fetch_data.sh` first)
+- `frontend/components/BrainStage.tsx` (canvas + UI), `frontend/lib/feed.ts` (RPC polling),
+  `frontend/components/Header.tsx`, `frontend/app/{page,layout}.tsx`, `globals.css` (all rewritten)
+- `brain/` (Python) — offline tools: `run.py` (scan replay), `experiment.py`, `export_web.py`;
+  tests: `brain/.venv/bin/python -m pytest brain/test_gate.py`, `node brain/test_sim_core.js`
 
-Not verified / known limits:
-- **Licence of the FlyWire data + annotations: not established** (annotation repo
-  has no LICENSE; MIT covers only Shiu's code). Resolve before any token launch.
-- Controlled run (`brain/experiment.py --trials 8`, sweet fixed at 120 Hz, fresh brain
-  per trial, 300 ms): feeding motor 21.0±1.7 Hz alone, 17.8±1.8 with bitter 40,
-  10.8±0.7 with bitter 80 (about -15% / -49%); bitter 80 alone is silent (121
-  active). An earlier 5-trial run showed two brains igniting far less (active
-  6.7k±3.1k) — NOT reproduced in the 8-trial rerun; treat as rare/stochastic.
-  The replay's feeding dip was partly the 120 vs 160 Hz sweet difference.
-- Sense->channel mapping (sweet=clear, bitter=flagged, jolt=watchtower critical)
-  is a design choice, and 40 Hz/event is an arbitrary knob. `jolt` is unused: no
-  watchtower diffs in a single snapshot.
-- Flies have no cortex: draft's "cortical zones" = neuropils; only super_class /
-  cell_class / cell_sub_class are used so far, not neuropil regions.
-- No live price feed for new tokens (Open issue 3) — a market-driven amygdala has
-  no input yet. Live backend DB is empty (ephemeral disk, Open issue 2), so replay
-  uses its own captured snapshot in `brain/data/events.json`.
+Verified 2026-09-20 (ran it, not assumed)
+- JS simulator vs Brian2 running the paper's code: 200 ms deterministic cascade, **all 138,639
+  per-neuron spike counts identical** (3,336 spikes). Noisy Poisson-driven test, 10 trials each:
+  JS 6516±213 spikes / 357±9 active vs Brian 6557±195 / 362±6. Rules that mattered (found by
+  diffing): Brian drops synaptic input that arrives while a neuron is refractory; a spike's
+  reset wipes same-step arrivals; step order drive -> integrate -> deliver -> reset.
+- Speed: parking sub-threshold neurons (max(v,g) <= threshold cannot spike without input) and
+  decaying them in closed form made it ~20x faster: chain-like load costs ~0.12x real time in
+  Node (heavy chain ~0.23x). Naive per-step integration was 2.7x SLOWER than real time.
+- Real Chrome (headless, DevTools-driven): wakes in <2 s locally, brain time tracks wall time
+  1:1, ~3.8-4.2k neurons firing, live block/tx from the real chain, zero console errors, button
+  hold works. Checked at `/` and under the Pages base path `/EDGERUN/`. **Not checked:** real
+  GitHub Pages delivery of the 37 MB file (worker handles both Content-Encoding cases), phones.
+- Chain sample (120 blocks): ~9 blocks/s, ~52 tx/s, median 5 tx/block, median 0.72M gas/block.
+
+**BLOCKER to resolve before pushing/launch: data licence.** Search results (third-party
+pages, not FlyWire's own terms — unconfirmed) say FlyWire data is **CC BY-NC 4.0**
+(non-commercial). The site now SHIPS connectome-derived data (`connectome.bin.gz` etc.) and
+promotes a token; that is likely commercial use. Options: get FlyWire's written permission,
+drop the token/commercial framing, or switch dataset. A one-line credit to FlyWire and
+Shiu et al. is in the page footer (attribution is a licence requirement either way).
+
+Known limits: the brain is silent with no input (LIF has no spontaneous activity); after
+input stops ~8k neurons keep firing for >0.9 s in the full model (biology vs artefact not
+checked); ~37 MB first load and ~200 MB RAM (mobile untested); channel mapping is ours,
+not a forecast of anything.
 
 ---
 

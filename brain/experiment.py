@@ -13,7 +13,7 @@ import numpy as np
 
 import atlas
 from fly import Fly
-from run import DATA, PUBLISHED
+from run import DATA, OUT
 
 CONDITIONS = {                       # channel rates, Hz
     "sweet 120":            {"sweet": 120},
@@ -25,7 +25,7 @@ CONDITIONS = {                       # channel rates, Hz
 ap = argparse.ArgumentParser()
 ap.add_argument("--trials", type=int, default=5)
 ap.add_argument("--dur", type=int, default=300)
-ap.add_argument("--out", default=str(PUBLISHED / "experiment.json"), help="default is the file the website reads")
+ap.add_argument("--out", default=str(OUT / "experiment.json"), help="default: brain/out/")
 args = ap.parse_args()
 channels, readouts = atlas.load(DATA)
 

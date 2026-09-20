@@ -1,22 +1,13 @@
-import Hero from "@/components/Hero";
-import LiveFeed from "@/components/LiveFeed";
-import Sidebar from "@/components/Sidebar";
+import BrainStage from "@/components/BrainStage";
 
 export default function Home() {
   return (
     <>
-      <Hero />
-
-      <section className="block" style={{ paddingTop: 8 }}>
-        <div className="container-wide">
-          <div className="dash-grid">
-            <div className="dash-main">
-              <LiveFeed />
-            </div>
-            <Sidebar />
-          </div>
-        </div>
-      </section>
+      <BrainStage />
+      <footer className="credit">
+        Connectome: <a href="https://flywire.ai" target="_blank" rel="noreferrer">FlyWire</a> (Dorkenwald et al., 2024) ·
+        model: <a href="https://github.com/philshiu/Drosophila_brain_model" target="_blank" rel="noreferrer">Shiu et al., 2023</a>
+      </footer>
     </>
   );
 }

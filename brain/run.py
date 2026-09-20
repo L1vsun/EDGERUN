@@ -15,7 +15,8 @@ import atlas
 from fly import Fly
 
 HERE = Path(__file__).parent
-PUBLISHED = HERE.parent / "frontend" / "public" / "brain"   # the site imports these at build time
+PUBLISHED = HERE.parent / "frontend" / "public" / "brain"   # export_web.py writes the browser data files here
+OUT = HERE / "out"
 DATA = HERE / "data" / "fly"
 HZ_PER_EVENT, HZ_MAX = 40, 160          # arbitrary knob: stimulus rate per event, capped near the paper's 150 Hz
 SHUFFLE_SEED = 1
@@ -82,7 +83,7 @@ def main():
     ap.add_argument("--batch", type=int, default=4, help="events per brain cycle")
     ap.add_argument("--dur", type=int, default=300, help="brain time per cycle, ms")
     ap.add_argument("--rest", type=int, default=3, help="silent cycles appended at the end")
-    ap.add_argument("--out", default=str(PUBLISHED / "trace.json"), help="default is the file the website reads")
+    ap.add_argument("--out", default=str(OUT / "trace.json"), help="default: brain/out/")
     args = ap.parse_args()
     args.events = json.loads(Path(args.events).read_text())
 
