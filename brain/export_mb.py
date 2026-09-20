@@ -5,7 +5,7 @@ feedback neuron and the dopaminergic neurons — the circuit that actually class
 odours in a fly. ~9.5k neurons, 88% of whose input edges are internal to it.
 
 Writes frontend/public/brain/mb.bin.gz:
-  u32 N, u32 S, u8 layer[N], u16 x[N], u16 y[N], u32 offsets[N+1], u32 post_delta[S], i16 weight[S]
+  u32 N, u32 S, u8 layer[N], u16 x[N], u16 y[N], u16 z[N], u32 offsets[N+1], u32 post_delta[S], i16 weight[S]
 plus mb.json with the layer names, glomerulus grouping of the ORNs and counts.
 """
 import gzip
@@ -50,34 +50,24 @@ starts = offsets[:-1][counts > 0].astype(np.int64)
 delta[starts] = post[starts]
 assert delta.min() >= 0
 
-# 2-D layout: real anatomy, but each layer packed into its own band so the pathway reads
-# top-to-bottom on screen (sensory in, output at the bottom) instead of overlapping in depth.
+# Real anatomy in 3-D: the browser rotates it, so the mushroom body calyx, the antennal
+# lobe and the lobes read as the shapes they actually are. Normalised into 0..1 on one
+# shared scale so proportions survive; a neuron with no recorded soma sits at the median.
 xyz = ann[["pos_x", "pos_y", "pos_z"]].to_numpy(float)[sel]
-X = np.zeros(len(sel)); Y = np.zeros(len(sel))
-BANDS = {"ORN": (0.06, 0.042), "ALLN": (0.19, 0.030), "PN": (0.32, 0.042), "LH": (0.32, 0.030),
-         "KC": (0.62, 0.150), "APL": (0.62, 0.010), "MBON": (0.93, 0.030), "DAN": (0.93, 0.022)}
-for li, k in enumerate(LAYERS):
-    m = layer == li
-    if not m.any():
-        continue
-    p3 = xyz[m]
-    a = np.nan_to_num(p3[:, 0], nan=np.nanmedian(p3[:, 0]))      # medial-lateral -> across
-    b = np.nan_to_num(p3[:, 2], nan=np.nanmedian(p3[:, 2]))      # depth -> spread within the band
-    centre, half = BANDS[k]
-    rank = a.argsort().argsort() / max(1, len(a) - 1)
-    width = 0.92 if k in ("ORN", "KC") else 0.74
-    X[m] = (1 - width) / 2 + width * rank
-    if np.ptp(b) > 0:
-        sp = (b - b.min()) / float(np.ptp(b)) - 0.5
-    else:
-        sp = np.zeros(len(b))
-    # break the straight line: jitter deterministically so a band reads as a population
-    jit = ((np.arange(len(b)) * 2654435761) % 1000) / 1000.0 - 0.5
-    Y[m] = centre + sp * 2 * half + jit * half * 0.5
-Y = np.clip(Y, 0.01, 0.99)
+xyz *= np.array([4.0, 4.0, 40.0])                 # FlyWire voxels are 4x4x40 nm: z is 10x coarser
+for c in range(3):
+    col = xyz[:, c]
+    col[np.isnan(col)] = np.nanmedian(col)
+    xyz[:, c] = col
+lo, hi = xyz.min(0), xyz.max(0)
+scale = float((hi - lo).max())
+q = (xyz - (lo + hi) / 2) / scale + 0.5           # centred, aspect preserved
+q = np.clip(q, 0, 1)
+X, Y, Z = q[:, 0], q[:, 1], q[:, 2]
 
 blob = (np.array([len(sel), len(w)], "<u4").tobytes() + layer.tobytes()
         + (X * 65535).round().astype("<u2").tobytes() + (Y * 65535).round().astype("<u2").tobytes()
+        + (Z * 65535).round().astype("<u2").tobytes()
         + offsets.tobytes() + delta.astype("<u4").tobytes() + w.tobytes())
 PUBLISHED.mkdir(parents=True, exist_ok=True)
 with gzip.open(PUBLISHED / "mb.bin.gz", "wb", compresslevel=9) as f:

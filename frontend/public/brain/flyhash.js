@@ -17,6 +17,7 @@
     const layer = new Uint8Array(buf.slice(o, o + N)); o += N;
     const X = new Uint16Array(buf.slice(o, o + 2 * N)); o += 2 * N;
     const Y = new Uint16Array(buf.slice(o, o + 2 * N)); o += 2 * N;
+    const Z = new Uint16Array(buf.slice(o, o + 2 * N)); o += 2 * N;
     const offsets = new Uint32Array(buf.slice(o, o + 4 * (N + 1))); o += 4 * (N + 1);
     const post = new Int32Array(buf.slice(o, o + 4 * S)); o += 4 * S;
     const w = new Int16Array(buf.slice(o, o + 2 * S));
@@ -24,7 +25,7 @@
       let p = 0;
       for (let e = offsets[i], end = offsets[i + 1]; e < end; e++) { p += post[e]; post[e] = p; }
     }
-    return { N, S, layer, X, Y, offsets, post, w };
+    return { N, S, layer, X, Y, Z, offsets, post, w };
   }
 
   class Circuit {
@@ -72,6 +73,12 @@
           if (mb.layer[q] === this.MBONlayer) a.push([q, mb.w[e]]);
         }
         return a;
+      });
+      // reverse index: for each Kenyon cell, the projection neurons that feed it.
+      // The renderer draws these as the actual synapses lighting up.
+      this.kcInputs = this.idx.KC.map(() => []);
+      this.pn2kc.forEach((list, p) => {
+        for (const [k] of list) this.kcInputs[k].push(p);
       });
       this.pn = new Float64Array(this.idx.PN.length);
       this.kc = new Float64Array(this.idx.KC.length);
