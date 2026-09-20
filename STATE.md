@@ -20,12 +20,19 @@ Three deployables, one scan engine:
 ## Live deployments
 
 - **Backend:** https://edgerun.onrender.com — healthy, poller running
-- **Frontend:** https://edgerun.netlify.app (needs base dir `frontend`)
-- **Pages fallback:** https://l1vsun.github.io/EDGERUN/ (needs `NEXT_PUBLIC_BASE_PATH=/EDGERUN`)
+- **Frontend (primary since 2026-09-20): GitHub Pages** https://l1vsun.github.io/EDGERUN/
+  via `.github/workflows/deploy-pages.yml` (Settings -> Pages -> Source: GitHub Actions).
+  Repo *Variables*: `NEXT_PUBLIC_API_BASE`, `NEXT_PUBLIC_BASE_PATH=/EDGERUN` (exact
+  case — `/edgerun/` 404s), `NEXT_PUBLIC_SITE_URL=https://l1vsun.github.io` (origin
+  only; without it og:image pointed at the dead Netlify host — workflow fixed, variable
+  must be set by the owner). Deploys only on pushes touching `frontend/**` or the
+  workflow file; Pages caches ~10 min. `/brain/` is live there.
+- **Netlify: free trial ended — do not rely on it** (was https://edgerun.netlify.app).
+- **Pages CORS:** backend returned `access-control-allow-origin: https://l1vsun.github.io`
+  (checked 2026-09-20), so the site can call it.
 - **Repo:** https://github.com/l1vsun/edgerun
 
-Render auto-deploys on push if enabled; **Netlify needs Base directory =
-`frontend`** set in its UI (netlify.toml can't set that itself).
+Render auto-deploys on push if enabled (a redeploy wipes its SQLite DB — open issue 2).
 
 ---
 
