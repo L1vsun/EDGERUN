@@ -759,5 +759,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-21T19:39:18+00:00",
+  "block": 69054784,
+  "mode": "rules",
+  "call": "HOOD is the one to watch - heating",
+  "focus": "HOOD",
+  "confidence": 0.82,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 3511.2,
+    "wallets": 436,
+    "one_addr_share": 0.15,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 2860.8,
+    "wallets": 436,
+    "one_addr_share": 0.33,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "musebook",
+    "per_min": 614.4,
+    "wallets": 109,
+    "one_addr_share": 0.64,
+    "flags": []
+   },
+   {
+    "symbol": "META",
+    "per_min": 530.4,
+    "wallets": 43,
+    "one_addr_share": 0.86,
+    "flags": []
+   },
+   {
+    "symbol": "Maximusmic",
+    "per_min": 370.8,
+    "wallets": 45,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "DELTA",
+    "per_min": 333.6,
+    "wallets": 97,
+    "one_addr_share": 0.31,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "museic",
+    "per_min": 205.2,
+    "wallets": 26,
+    "one_addr_share": 0.9,
+    "flags": []
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 180.0,
+    "wallets": 52,
+    "one_addr_share": 0.69,
+    "flags": []
+   }
+  ]
  }
 ]
