@@ -912,5 +912,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-21T20:38:09+00:00",
+  "block": 69090038,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.3,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2406.0,
+    "wallets": 279,
+    "one_addr_share": 0.14,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 2236.8,
+    "wallets": 351,
+    "one_addr_share": 0.29,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "GOOGL",
+    "per_min": 238.8,
+    "wallets": 21,
+    "one_addr_share": 0.67,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "STPDM",
+    "per_min": 224.4,
+    "wallets": 90,
+    "one_addr_share": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "DIHBOT",
+    "per_min": 198.0,
+    "wallets": 19,
+    "one_addr_share": 0.85,
+    "flags": []
+   },
+   {
+    "symbol": "BASLTION",
+    "per_min": 190.8,
+    "wallets": 82,
+    "one_addr_share": 0.94,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "TAO",
+    "per_min": 156.0,
+    "wallets": 22,
+    "one_addr_share": 0.56,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "VMLN",
+    "per_min": 120.0,
+    "wallets": 23,
+    "one_addr_share": 0.92,
+    "flags": [
+     "one wallet"
+    ]
+   }
+  ]
  }
 ]
