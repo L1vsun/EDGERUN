@@ -382,5 +382,82 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-21T17:08:19+00:00",
+  "block": 68964402,
+  "mode": "rules",
+  "call": "DRIP is the one to watch - heating",
+  "focus": "DRIP",
+  "confidence": 0.62,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 3594.0,
+    "wallets": 413,
+    "one_addr_share": 0.2,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 3216.0,
+    "wallets": 566,
+    "one_addr_share": 0.23,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 549.6,
+    "wallets": 87,
+    "one_addr_share": 0.54,
+    "flags": []
+   },
+   {
+    "symbol": "LOX",
+    "per_min": 476.4,
+    "wallets": 153,
+    "one_addr_share": 0.79,
+    "flags": []
+   },
+   {
+    "symbol": "DRIP",
+    "per_min": 286.8,
+    "wallets": 130,
+    "one_addr_share": 0.95,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 267.6,
+    "wallets": 159,
+    "one_addr_share": 0.45,
+    "flags": []
+   },
+   {
+    "symbol": "UNSTOX",
+    "per_min": 228.0,
+    "wallets": 85,
+    "one_addr_share": 0.73,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "MCCC",
+    "per_min": 223.2,
+    "wallets": 76,
+    "one_addr_share": 0.71,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
