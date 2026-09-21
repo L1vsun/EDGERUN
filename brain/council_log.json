@@ -1305,5 +1305,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-21T23:09:27+00:00",
+  "block": 69180292,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.25,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 1767.6,
+    "wallets": 289,
+    "one_addr_share": 0.13,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1450.8,
+    "wallets": 358,
+    "one_addr_share": 0.29,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "META",
+    "per_min": 249.6,
+    "wallets": 49,
+    "one_addr_share": 0.7,
+    "flags": []
+   },
+   {
+    "symbol": "HACHI",
+    "per_min": 182.4,
+    "wallets": 89,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "PONS",
+    "per_min": 126.0,
+    "wallets": 56,
+    "one_addr_share": 0.26,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "AGRIPPA",
+    "per_min": 126.0,
+    "wallets": 26,
+    "one_addr_share": 0.71,
+    "flags": []
+   },
+   {
+    "symbol": "TRADECAT",
+    "per_min": 122.4,
+    "wallets": 73,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "musebook",
+    "per_min": 96.0,
+    "wallets": 26,
+    "one_addr_share": 0.51,
+    "flags": []
+   }
+  ]
  }
 ]
