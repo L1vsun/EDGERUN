@@ -686,5 +686,78 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-21T19:08:49+00:00",
+  "block": 69036566,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.16,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 4152.0,
+    "wallets": 463,
+    "one_addr_share": 0.17,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 3646.8,
+    "wallets": 486,
+    "one_addr_share": 0.27,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "META",
+    "per_min": 1279.2,
+    "wallets": 88,
+    "one_addr_share": 0.87,
+    "flags": []
+   },
+   {
+    "symbol": "musebook",
+    "per_min": 624.0,
+    "wallets": 108,
+    "one_addr_share": 0.62,
+    "flags": []
+   },
+   {
+    "symbol": "DELTA",
+    "per_min": 400.8,
+    "wallets": 143,
+    "one_addr_share": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "PING",
+    "per_min": 300.0,
+    "wallets": 94,
+    "one_addr_share": 0.63,
+    "flags": []
+   },
+   {
+    "symbol": "Nautilo",
+    "per_min": 288.0,
+    "wallets": 54,
+    "one_addr_share": 0.66,
+    "flags": []
+   },
+   {
+    "symbol": "ZUCK",
+    "per_min": 285.6,
+    "wallets": 97,
+    "one_addr_share": 0.93,
+    "flags": [
+     "one wallet"
+    ]
+   }
+  ]
  }
 ]
