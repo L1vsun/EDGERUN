@@ -63,7 +63,7 @@ export default function Hero() {
           called <b>Tesla • Robinhood Token</b>, and 213 already have.
         </p>
         <p className="lead-sub">
-          edgerun checks the contract while you are still reading the post - in your browser,
+          EDGERUN checks the contract while you are still reading the post - in your browser,
           against the chain and Robinhood&apos;s own registry.
         </p>
         <div className="lead-cta">

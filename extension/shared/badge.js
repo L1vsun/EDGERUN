@@ -194,7 +194,7 @@
       .map((c) => `· ${c.detail}`);
     if (evidence.length) lines.push("", ...evidence);
     lines.push("", `Check it yourself: ${r.explorerUrl}`);
-    lines.push("Checked with edgerun - runs in your own browser, against the chain.");
+    lines.push("Checked with EDGERUN - runs in your own browser, against the chain.");
     return lines.join("\n");
   }
   E.badgeReceipt = receipt;

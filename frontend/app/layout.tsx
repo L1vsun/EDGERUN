@@ -25,9 +25,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://edgerun.netlify.ap
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "edgerun - five modules read every block",
+  title: "EDGERUN - is that the real contract?",
   description:
-    "A traced connectome wired to Robinhood Chain: five modules argue over live transfers in your browser, and a code gate decides whether any of it is worth saying.",
+    "A browser extension for Robinhood Chain: checks the token in the post you are reading, in your browser, against the chain and Robinhood's published registry.",
   icons: {
     icon: [
       { url: `${BASE}/favicon.ico`, sizes: "any" },
@@ -37,15 +37,15 @@ export const metadata: Metadata = {
     apple: `${BASE}/apple-touch-icon.png`,
   },
   openGraph: {
-    title: "edgerun - five modules read every block",
-    description: "Five modules argue over live Robinhood Chain flow in your browser. Most rounds, the gate says nothing.",
+    title: "EDGERUN - is that the real contract?",
+    description: "Seven contracts use $PEPE on this chain. EDGERUN tells you which one you are actually looking at.",
     images: [{ url: `${BASE}/og.png`, width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "edgerun - five modules read every block",
-    description: "Five modules argue over live Robinhood Chain flow in your browser. Most rounds, the gate says nothing.",
+    title: "EDGERUN - is that the real contract?",
+    description: "Seven contracts use $PEPE on this chain. EDGERUN tells you which one you are actually looking at.",
     images: [`${BASE}/og.png`],
   },
 };
@@ -54,7 +54,17 @@ export const viewport = { themeColor: "#cfff04" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${mono.variable}`}>
+    // the inline script below rewrites data-theme before hydration, which React would
+    // otherwise report as a server/client mismatch
+    <html lang="en" className={`${display.variable} ${mono.variable}`} data-theme="dark" suppressHydrationWarning>
+      <head>
+        {/* Applied before first paint, so a light-theme visitor never sees a dark flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('edgerun.theme');if(!t){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body>
         <Header />
         <main>{children}</main>

@@ -540,3 +540,32 @@ button now hides below 760px). Verified: no horizontal overflow at 390px, 0 long
 mentioned the extension at all. Now: the problem in numbers from this chain, real badge and
 panel output, the verdict table, install, what it checks that a contract scan cannot, the
 backend measurement table, the repo map, and the honesty rules.
+
+## Themes, bands and contrast (2026-09-21)
+
+- **Light theme + toggle.** The palette was tokenised first (`--bg/--bg-2/--card/--card-soft/
+  --text/--text-2/--text-3/--text-4/--accent/--accent-ink/--line/--rule`), so light is a
+  variable swap rather than a second stylesheet. `--accent` stays chartreuse as a *fill*;
+  `--accent-ink` is a deep olive in light, because chartreuse as text on white is unreadable.
+  The toggle lives in the header, persists to `localStorage` (`edgerun.theme`), defaults to
+  the OS preference, and is applied by an inline script before first paint so there is no
+  flash. `<html suppressHydrationWarning>` because that script rewrites the attribute React
+  rendered.
+- **The specimen and the X mock stay dark in both themes** - they are pictures of dark things,
+  and a photograph does not invert when the page around it does.
+- **Contrast raised in dark too**: body copy went #a8b096 -> #cdd5bc, secondary #8b9378 ->
+  #a7b191, labels #4e5845 -> #7d886a. The old values were genuinely hard to read.
+- **Bands.** Every major section now uses `padding-block: var(--band)` (116px) with a hairline
+  above, and `.install` / `.council` paint edge-to-edge via a `left: calc(50% - 50vw); width:
+  100vw` pseudo-element (`overflow-x: clip` on the body keeps that from creating a scrollbar).
+- **Smooth scrolling**: `html { scroll-behavior: smooth }` with a reduced-motion opt-out, plus
+  `scroll-margin-top` on anchor targets.
+- **Guide type up again**: step body 15 -> 16.5px, step titles 15.5 -> 17.5px, surface copy
+  14 -> 15.5px, note 14 -> 15.5px.
+- **Name is EDGERUN** in every user-visible string: site metadata and copy, extension manifest
+  name and title, popup title, the copy-proof footer, both READMEs. Paths, module names,
+  storage keys, CSS classes and the CLI command stay lowercase - they are identifiers, not the
+  name.
+
+Caught while doing it: the light theme initially rendered the install guide as dark text on
+dark cards, because the card surfaces were still hardcoded `rgba(14,19,12,...)`. Tokenised.

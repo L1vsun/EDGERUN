@@ -1,10 +1,11 @@
+import ThemeToggle from "./ThemeToggle";
 import { DEX_URL, EXTENSION_URL, GITHUB_USER_URL, TOKEN_TICKER, X_URL, asset } from "@/lib/config";
 
 export default function Header() {
   return (
     <header className="top">
-      <a href={asset("/")} className="brand" aria-label="edgerun home">
-        <img src={asset("/lockup-ink.png")} alt="edgerun" />
+      <a href={asset("/")} className="brand" aria-label="EDGERUN home">
+        <img src={asset("/lockup-ink.png")} alt="EDGERUN" />
       </a>
 
       <nav className="top-nav">
@@ -14,6 +15,7 @@ export default function Header() {
       </nav>
 
       <div className="top-actions">
+        <ThemeToggle />
         <a className="ico" href={X_URL} target="_blank" rel="noreferrer" aria-label="X" title="X">
           <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
             <path fill="currentColor" d="M18.9 2H22l-7.3 8.3L23.3 22h-6.8l-5.3-6.9L5.1 22H2l7.8-8.9L1.1 2h6.9l4.8 6.4L18.9 2Zm-1.1 18h1.9L7.3 3.9H5.3L17.8 20Z" />

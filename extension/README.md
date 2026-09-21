@@ -1,4 +1,4 @@
-# edgerun - browser extension
+# EDGERUN - browser extension
 
 Puts a verdict next to the token wherever you already look at it: a post on X, a Dexscreener
 pair, a Blockscout page. The question it answers first is the one that actually costs people

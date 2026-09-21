@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="frontend/public/icon-192.png" width="88" alt="edgerun" />
+<img src="frontend/public/icon-192.png" width="88" alt="EDGERUN" />
 
-# edgerun
+# EDGERUN
 
 **Is that the real contract? Answered before you finish reading the post.**
 
