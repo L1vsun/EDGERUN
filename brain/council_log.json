@@ -1152,5 +1152,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-21T22:09:39+00:00",
+  "block": 69144618,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.13,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "AGE",
+    "per_min": 2188.8,
+    "wallets": 285,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 1960.8,
+    "wallets": 265,
+    "one_addr_share": 0.2,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1902.0,
+    "wallets": 340,
+    "one_addr_share": 0.32,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "AN1",
+    "per_min": 325.2,
+    "wallets": 92,
+    "one_addr_share": 0.61,
+    "flags": []
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 310.8,
+    "wallets": 24,
+    "one_addr_share": 0.67,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 298.8,
+    "wallets": 33,
+    "one_addr_share": 0.69,
+    "flags": []
+   },
+   {
+    "symbol": "KERAUN",
+    "per_min": 133.2,
+    "wallets": 33,
+    "one_addr_share": 0.71,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "CASHCAT",
+    "per_min": 130.8,
+    "wallets": 54,
+    "one_addr_share": 0.16,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
