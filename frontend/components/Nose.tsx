@@ -4,13 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/config";
 import { ChainState, SCAN_BLOCKS, Signal, TokenStat, interest, odour, scanToken, signals, startChain } from "@/lib/chain";
 import { Dossier, investigate, readDossier } from "@/lib/osint";
+import { Round } from "@/lib/council";
 import BrainCanvas, { ModuleMark, Pulse } from "./BrainCanvas";
 import ModuleHUD from "./ModuleHUD";
-import Fly from "./Fly";
+import Cortex from "./Cortex";
 
-// Live Robinhood Chain flow, smelled by a real fly's olfactory circuit.
-// Everything runs in this tab: the chain is read from the public RPC, the circuit from
-// a 1.6 MB file of real connectome wiring.
+// Live Robinhood Chain flow, read through a real olfactory circuit and argued over by five
+// modules. Everything runs in this tab: the chain from the public RPC, the circuit from a
+// 1.6 MB file of real connectome wiring, the council from the numbers on screen.
 
 type SortKey = "score" | "perMin" | "wallets" | "newWallets" | "concentration" | "accel" | "swaps" | "novelty";
 const COLS: { key: SortKey; label: string }[] = [
@@ -56,7 +57,8 @@ export default function Nose() {
   const rowsRef = useRef<Scored[]>([]);
   const pulses = useRef<Pulse[]>([]);
   const marks = useRef<ModuleMark[]>([]);
-  const [council, setCouncil] = useState<Record<string, string>>({});
+  const [say, setSay] = useState<Record<string, string>>({});
+  const relay = useRef({ at: 0 });
   const watchRef = useRef<string[]>([]);
   const selectedRef = useRef<string | null>(null);
   const [query, setQuery] = useState("");
@@ -66,21 +68,12 @@ export default function Nose() {
   const fired = useRef<Record<string, string>>({}); // token -> signals we have already announced
   const [ping, setPing] = useState<{ symbol: string; labels: string } | null>(null);
 
-  useEffect(() => {
-    fetch(asset("/brain/council.json"))
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (!d) return;
-        const by: Record<string, string> = {};
-        for (const r of d.regions || []) {
-          const v = r.says || {};
-          const line = v.headline || v.verdict || v.precedent || v.call;
-          if (line) by[r.id] = String(line);
-        }
-        if (d.gate) by.gate = `${d.gate.action} · ${d.gate.why}`;
-        setCouncil(by);
-      })
-      .catch(() => {});
+  // each round the council runs, the callouts on the anatomy say what that region just said
+  const onRound = useCallback((r: Round) => {
+    const by: Record<string, string> = {};
+    for (const a of r.agents) by[a.id] = a.lead;
+    by.gate = `${r.gate.action} · ${r.gate.why}`;
+    setSay(by);
   }, []);
 
   useEffect(() => {
@@ -249,6 +242,19 @@ export default function Nose() {
     }
   }, []);
 
+  // a token named by the council: focus it if it is in the live window, otherwise scan it
+  const focusAddress = useCallback((address: string) => {
+    const t = rowsRef.current.find((r) => r.address === address);
+    if (t) pick(t);
+    else { setQuery(address); runScan(address); }
+  }, [pick, runScan]);
+
+  const scanAddress = useCallback((address: string) => {
+    setQuery(address);
+    runScan(address);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [runScan]);
+
   useEffect(() => { watchRef.current = watch; }, [watch]);
 
   useEffect(() => {
@@ -274,19 +280,19 @@ export default function Nose() {
   return (
     <>
       <section className="stage">
-        <BrainCanvas circuit={circuit} pulses={pulses} marks={marks} />
-        {phase === "run" && <ModuleHUD marks={marks} say={council} />}
+        <BrainCanvas circuit={circuit} pulses={pulses} marks={marks} relay={relay} />
+        {phase === "run" && <ModuleHUD marks={marks} say={say} />}
         <div className="vignette" />
         <div className="reticle" aria-hidden="true">
           <span className="r-tl" /><span className="r-tr" /><span className="r-bl" /><span className="r-br" />
-          <span className="r-scale">FLYWIRE 783 · 9,515 NEURONS TRACED · 849,261 SYNAPSES</span>
+          <span className="r-scale">CONNECTOME 783 · 9,515 NEURONS TRACED · 849,261 SYNAPSES</span>
         </div>
 
         <div className="hero">
           <div className="rail">
             <span className="stamp">RESTRICTED</span>
-            <span><i>SPECIMEN</i> D. melanogaster</span>
-            <span><i>PREP</i> FlyWire 783</span>
+            <span><i>CIRCUIT</i> 9,515 neurons</span>
+            <span><i>COUNCIL</i> 5 modules</span>
             <span><i>FEED</i> RH Chain 4663</span>
             <span className={`rail-live${state?.ok ? " on" : ""}`}>
               <span className={`dot${state?.ok ? " on" : ""}`} />
@@ -294,13 +300,12 @@ export default function Nose() {
             </span>
           </div>
           <div className="title">
-            <Fly size={62} alert={!!ping} />
-            <h1>The fly knows<br />which one stinks.</h1>
+            <h1>Five modules<br />read every block.</h1>
           </div>
           <p>
-            Every transfer and swap on the chain, live. It calls out the wallet faking your volume,
-            the supply being printed under you, and the ones actually catching real buyers — before
-            you send it.
+            Four of them argue over the same live chain — what is moving, why it is a trap, what
+            followed last time, what it adds up to — and a fifth decides whether any of it is worth
+            interrupting you for. Most rounds, it says nothing.
           </p>
           <form
             className="scan"
@@ -313,7 +318,7 @@ export default function Nose() {
               spellCheck={false}
               aria-label="token contract address"
             />
-            <button type="submit" disabled={scan.busy || !query.trim()}>{scan.busy ? "smelling…" : "smell it"}</button>
+            <button type="submit" disabled={scan.busy || !query.trim()}>{scan.busy ? "reading…" : "run it"}</button>
           </form>
 
           {(scan.result || scan.error) && (
@@ -422,20 +427,23 @@ export default function Nose() {
         <div className="hint">{phase === "run" ? "drag to turn the brain" : "waking the circuit…"}</div>
       </section>
 
+      <Cortex state={state} relay={relay} onRound={onRound} onFocus={focusAddress} onScan={scanAddress} />
+
       <section className="feed">
         <div className="fhead">
           <h2>Everything moving right now</h2>
-          <small>3-minute window · ★ to watch · click a column to sort, a row to smell it</small>
+          <small>3-minute window · ★ to watch · click a column to sort, a row to send it through the circuit</small>
         </div>
         <div className="tscroll">
           <table className="tbl">
             <thead>
               <tr>
                 <th>token</th>
+                <th>flags</th>
                 {COLS.map((c) => (
                   <th key={c.key} className={`sortable${sort === c.key ? " sorted" : ""}`} onClick={() => setSort(c.key)}>{c.label}</th>
                 ))}
-                <th>smells like</th>
+                <th>moves like</th>
               </tr>
             </thead>
             <tbody>
@@ -471,11 +479,12 @@ export default function Nose() {
 
       <section className="how">
         <div>
-          <h3>Why a fly</h3>
+          <h3>Why a real circuit</h3>
           <p>
-            The mushroom body turns a smell into a sparse code: of 5,177 Kenyon cells only ~5% fire, and
+            The mushroom body turns an input into a sparse code: of 5,177 traced cells only ~5% fire, and
             which 5% depends on the input. Similar inputs share most of their code, unrelated ones almost
-            none — the same trick behind locality-sensitive hashing.
+            none — the same trick behind locality-sensitive hashing. Every synapse drawn here is measured,
+            not invented.
           </p>
         </div>
         <div>

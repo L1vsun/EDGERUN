@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { RELAY_STEP } from "@/lib/council";
 
 // The whole fly brain, with the smell circuit burning inside it.
 //
@@ -53,10 +54,14 @@ export default function BrainCanvas({
   circuit,
   pulses,
   marks,
+  relay,
 }: {
   circuit: any | null;
   pulses: React.MutableRefObject<Pulse[]>;
   marks?: React.MutableRefObject<ModuleMark[]>;
+  // when the council relay last started: the regions light in the order the seats actually
+  // ran, so the anatomy and the board are the same event seen twice
+  relay?: React.MutableRefObject<{ at: number }>;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
@@ -260,8 +265,10 @@ export default function BrainCanvas({
       }
       // then the ones that are firing, back to front
       // ---- module anchors: centroid of the neurons each region owns ----
-      const speaking = Math.floor(now / CYCLE_MS) % MODULES.length;
-      const phase = ((now % CYCLE_MS) / CYCLE_MS);
+      const since = relay?.current.at ? now - relay.current.at : -1;
+      const onRelay = since >= 0 && since < RELAY_STEP * MODULES.length;
+      const speaking = onRelay ? Math.floor(since / RELAY_STEP) : relay ? -1 : Math.floor(now / CYCLE_MS) % MODULES.length;
+      const phase = onRelay ? (since % RELAY_STEP) / RELAY_STEP : ((now % CYCLE_MS) / CYCLE_MS);
       const out: ModuleMark[] = [];
       for (let m = 0; m < MODULES.length; m++) {
         const list = modNeurons[m];
@@ -323,7 +330,7 @@ export default function BrainCanvas({
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
     };
-  }, [circuit, pulses]);
+  }, [circuit, pulses, marks, relay]);
 
   return <canvas ref={ref} className="brain-canvas" />;
 }

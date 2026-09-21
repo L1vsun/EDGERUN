@@ -25,9 +25,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://edgerun.netlify.ap
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "edgerun — a real fly brain, alive",
+  title: "edgerun — five modules read every block",
   description:
-    "The whole adult fly connectome — 138,639 neurons, 15 million synapses — simulated live in your browser and fed by Robinhood Chain.",
+    "A traced connectome wired to Robinhood Chain: five modules argue over live transfers in your browser, and a code gate decides whether any of it is worth saying.",
   icons: {
     icon: [
       { url: `${BASE}/favicon.ico`, sizes: "any" },
@@ -37,15 +37,15 @@ export const metadata: Metadata = {
     apple: `${BASE}/apple-touch-icon.png`,
   },
   openGraph: {
-    title: "edgerun — a real fly brain, alive",
-    description: "138,639 neurons simulated live in your browser, fed by Robinhood Chain.",
+    title: "edgerun — five modules read every block",
+    description: "Five modules argue over live Robinhood Chain flow in your browser. Most rounds, the gate says nothing.",
     images: [{ url: `${BASE}/og.png`, width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "edgerun — a real fly brain, alive",
-    description: "138,639 neurons simulated live in your browser, fed by Robinhood Chain.",
+    title: "edgerun — five modules read every block",
+    description: "Five modules argue over live Robinhood Chain flow in your browser. Most rounds, the gate says nothing.",
     images: [`${BASE}/og.png`],
   },
 };

@@ -95,9 +95,9 @@ export default function Council() {
   return (
     <section className="council">
       <div className="fhead">
-        <h2>The council</h2>
+        <h2>The published round</h2>
         <small>
-          four regions · one gate · {ago(round.generated_at)}
+          the same five seats, run off-page · {ago(round.generated_at)}
           {round.usage?.usd ? ` · $${round.usage.usd.toFixed(3)}/round` : ""}
         </small>
       </div>
@@ -138,7 +138,8 @@ export default function Council() {
       </div>
 
       <p className="c-foot">
-        Four regions, each with its own slice of the data, reporting in order — Scout sees the chain,
+        This is the scheduled run, minutes old — the board above is the same pipeline recomputed in
+        your tab on the numbers you can see. Four regions, each with its own slice of the data, reporting in order — Scout sees the chain,
         Skeptic sees Scout, Historian sees the log of every past round, Synthesis sees all three. The
         gate is code in both versions: it stays silent unless confidence and evidence clear a fixed bar,
         which is why it often says nothing. Rounds are minutes old; the chain data above this is live.

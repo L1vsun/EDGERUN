@@ -232,6 +232,49 @@ except the instrument panels. Deliberately avoids the generic dark-gradient-and-
 Rendering still 60 fps at 1600x1050 and at 500 px, heap ~21 MB, zero console errors. The
 module stack is hidden below 1080 px (leader lines have nowhere to go on a phone).
 
+## The council runs in the browser now (2026-09-21)
+
+The page no longer just reads a JSON file written half an hour ago. `frontend/lib/council.ts`
+is a TS port of `brain/council_rules.py` — same four seats, same thresholds, same gate — and
+it runs **on every poll, in the visitor's tab, on the numbers already on screen**.
+`frontend/components/Cortex.tsx` is the board it draws:
+
+- five modules relay in execution order (620 ms each, `RELAY_STEP` in `lib/council.ts`), with a
+  read-head sweep on the seat that holds the floor and a packet crossing the wire to the next
+- **the same clock drives the anatomy**: `relay.current.at` is passed into `BrainCanvas`, so the
+  region behind each seat lights as that seat speaks. The old free-running 2.1 s cycle is the
+  fallback when no relay ref is passed
+- each seat draws its own working: Scout a per-round sparkline of chain flow, Skeptic a split bar
+  (trap / clean / too small to judge), Historian a tick row of how many rounds it remembers,
+  Synthesis a confidence meter with the 0.55 gate bar marked, Gate the SPEAK/SILENCE history strip
+- clickable: a seat expands to "what it saw" (job, what it is allowed to read, what it consumed);
+  a symbol inside a line focuses that token in the specimen; a SPEAK verdict offers "pull its
+  paper trail", which runs the scanner + OSINT dossier on the named address
+- the Historian's log is real and persists in `localStorage` (`edgerun.rounds`, last 40). It says
+  "none yet" until it has 3 rounds and reports precedent only from rounds this browser logged.
+- honesty: the badge reads `RULES · IN THIS TAB`, and `components/Council.tsx` (retitled "The
+  published round") still shows the scheduled off-page round. Nothing claims a model wrote this.
+
+Supporting change: `TokenStat.pools` (distinct DEX pools a token appears in) is now computed in
+`lib/chain.ts`, which is how Synthesis skips quote assets client-side — same rule the Python
+snapshot uses.
+
+**Fly branding removed** (the user's call: "not meta"). `components/Fly.tsx` and its CSS are gone,
+the headline is "Five modules read every block.", the rail reads CIRCUIT / COUNCIL / FEED, the
+specimen caption says CONNECTOME 783, page + OG titles no longer say "fly brain", and "smell it"
+is "run it". The FlyWire citation stays in the footer — it is attribution, not branding.
+
+**Bug fixed while verifying:** the live table's `<thead>` had 10 cells against 11 body cells, so
+every numeric header was shifted one column left (flow/min sat over wallets, and so on). A `flags`
+header was missing.
+
+Verified 2026-09-21 in headless Chrome against the live chain: rounds run on every poll, the relay
+lights the matching anatomy mid-flight (captured at stage 2, Skeptic firing), the Historian returned
+real precedent once the log passed 3 rounds ("WETH carried the same flags at 2,212/min and its flow
+held to 1,956/min over 13 rounds"), zero console errors, no horizontal overflow at 390 px, and
+`npm run build` passes. Not verified: many hours of accumulated log, and the reduced-motion path
+(CSS only, code-reviewed).
+
 ## OSINT: the paper trail (2026-09-21)
 
 `frontend/lib/osint.ts` + the dossier block under a scan result. Public records only,

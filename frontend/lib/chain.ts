@@ -31,6 +31,7 @@ export interface TokenStat {
   mints: number;
   burns: number;
   swaps: number;
+  pools: number;         // distinct DEX pools this token appears in: 2+ means it is a quote asset
   concentration: number; // share of transfers that touch the single busiest wallet
   accel: number; // recent rate vs the whole window, 1 = steady
   firstSeen: number;
@@ -162,8 +163,16 @@ export function startChain(onState: (s: ChainState) => void): () => void {
     }
 
     const swapsPerToken = new Map<string, number>();
+    // a token quoted in two or more different pools is what everything else is priced
+    // against (WETH, a stable) — always busy, and never the interesting call
+    const poolsPerToken = new Map<string, Set<string>>();
     for (const s of swapEvents) {
-      for (const t of poolTokens.get(s.pool) || []) swapsPerToken.set(t, (swapsPerToken.get(t) || 0) + 1);
+      for (const t of poolTokens.get(s.pool) || []) {
+        swapsPerToken.set(t, (swapsPerToken.get(t) || 0) + 1);
+        let set = poolsPerToken.get(t);
+        if (!set) poolsPerToken.set(t, (set = new Set()));
+        set.add(s.pool);
+      }
     }
 
     const tokens: TokenStat[] = [];
@@ -184,6 +193,7 @@ export function startChain(onState: (s: ChainState) => void): () => void {
         mints: s.mint,
         burns: s.burn,
         swaps: swapsPerToken.get(address) || 0,
+        pools: poolsPerToken.get(address)?.size || 0,
         concentration: s.n ? top / (s.n * 2) : 0,
         accel: windowRate > 0 ? recentRate / windowRate : 1,
         firstSeen: seen,
@@ -328,7 +338,7 @@ export async function scanToken(address: string): Promise<TokenStat> {
     address: addr, symbol, isNew: false,
     transfers: logs.length, perMin, wallets: w.size,
     newWallets: 0, // a one-off scan has no history to call a wallet new against
-    mints, burns, swaps: 0,
+    mints, burns, swaps: 0, pools: 0,
     concentration: logs.length ? top / (logs.length * 2) : 0,
     accel: perMin > 0 ? recentRate / perMin : 1,
     firstSeen: 0, age: 0,
