@@ -58,45 +58,84 @@
     if (article.querySelector('[data-edgerun="badge"]')) return;
 
     const results = found.addresses.map((a) => verdicts[a]).filter(Boolean);
-    const officialTickers = found.tickers.map((t) => resolved[t]).filter(Boolean);
-
-    // The cross-check. An official ticker named next to a contract that is not that
-    // ticker's registry address is the strongest thing this extension can say.
-    let mismatch = null;
-    for (const official of officialTickers) {
-      for (const r of results) {
-        if (r.address !== official.address) {
-          mismatch = { official, given: r };
-          break;
-        }
-      }
-      if (mismatch) break;
-    }
+    const tickers = found.tickers.map((t) => resolved[t]).filter(Boolean);
+    const official = tickers.filter((t) => t.kind === "official");
+    const onchain = tickers.filter((t) => t.kind === "onchain");
+    const url = (a) => `https://robinhoodchain.blockscout.com/address/${a}`;
+    const stamp = { level: "identity", scannedAt: Date.now() };
 
     let result;
-    if (mismatch) {
+
+    // 1. The strongest claim available: an official ticker named next to a contract that is
+    //    not that ticker's registry address. Provable from Robinhood's own registry.
+    const wrongOfficial = official
+      .map((o) => ({ o, given: results.find((r) => r.address !== o.address) }))
+      .find((x) => x.given);
+
+    // 2. Weaker but still a fact: the post names a ticker and hands over a contract whose
+    //    own symbol is something else. Stated as an observation, not an accusation — a post
+    //    can legitimately mention one token and link another.
+    const wrongSymbol = !wrongOfficial && onchain
+      .map((t) => ({ t, given: results.find((r) => r.symbol && r.symbol.toUpperCase().replace(/^\$/, "") !== t.ticker) }))
+      .find((x) => x.given);
+
+    if (wrongOfficial) {
+      const { o, given } = wrongOfficial;
       result = {
-        ...mismatch.given,
+        ...given,
         verdict: "FAIL",
-        symbol: `$${mismatch.official.ticker}`,
-        lead: `This post names $${mismatch.official.ticker}, which Robinhood publishes at ${mismatch.official.address.slice(0, 10)}… — but the contract in the post is ${mismatch.given.address.slice(0, 10)}…, a different token.`,
+        symbol: `$${o.ticker}`,
+        lead: `This post names $${o.ticker}, which Robinhood publishes at ${o.address.slice(0, 10)}… — but the contract in the post is ${given.address.slice(0, 10)}…, a different token.`,
+      };
+    } else if (wrongSymbol) {
+      const { t, given } = wrongSymbol;
+      result = {
+        ...given,
+        verdict: given.verdict === "FAIL" ? "FAIL" : "CAUTION",
+        symbol: `$${t.ticker}`,
+        lead: `The post says $${t.ticker}, but the contract it gives is ${given.symbol}. They are not the same token — check which one you actually want.`,
       };
     } else if (results.length) {
       result = results.sort((a, b) => (RANK[b.verdict] || 0) - (RANK[a.verdict] || 0))[0];
       if (results.length > 1) {
         result = { ...result, lead: `${results.length} tokens named in this post; showing the one that matters most.` };
       }
-    } else if (officialTickers.length) {
-      const o = officialTickers[0];
+    } else if (official.length) {
+      const o = official[0];
       result = {
+        ...stamp,
         address: o.address,
         symbol: `$${o.ticker}`,
         verdict: "OFFICIAL",
-        level: "identity",
-        scannedAt: Date.now(),
-        explorerUrl: `https://robinhoodchain.blockscout.com/address/${o.address}`,
+        explorerUrl: url(o.address),
         lead: `$${o.ticker} (${o.name}) is an official Robinhood tokenised stock at ${o.address}. This post names no contract address — check any address you are given against that one.`,
         checks: [{ id: "stock_token", label: "official address", status: "ok", detail: `${o.ticker} → ${o.address}, from Robinhood's published registry` }],
+      };
+    } else if (onchain.length) {
+      // A ticker that belongs to nobody. The count IS the answer.
+      const t = onchain[0];
+      const many = t.count > 1;
+      result = {
+        ...stamp,
+        address: t.candidates[0].address,
+        symbol: `$${t.ticker}`,
+        verdict: many ? "CAUTION" : "UNRESOLVED",
+        explorerUrl: url(t.candidates[0].address),
+        lead: many
+          ? `$${t.ticker} is not one token here — at least ${t.count} different contracts use that ticker on this chain, and this post does not say which. That is how people buy the wrong one.`
+          : `$${t.ticker} matches one contract on this chain (${t.candidates[0].name || "unnamed"}). Nothing about that contract has been checked yet.`,
+        checks: [
+          {
+            id: "ticker", label: "ticker", status: many ? "warn" : "unresolved",
+            detail: many
+              ? `${t.count}${t.capped ? "+" : ""} contracts on Robinhood Chain use the symbol ${t.ticker}. No registry decides which is "the" one — only an address does.`
+              : `one contract on this chain uses the symbol ${t.ticker}`,
+          },
+          ...t.candidates.map((c) => ({
+            id: `cand:${c.address}`, label: c.name || "unnamed", status: "unresolved",
+            detail: `${c.address}${c.verified ? " · source verified" : " · source not verified"}`,
+          })),
+        ],
       };
     } else {
       return;

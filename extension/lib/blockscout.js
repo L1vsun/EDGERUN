@@ -27,6 +27,16 @@ export const address = (a) => get(`/api/v2/addresses/${a}`);
 /** name, symbol, decimals, total_supply, holders_count. */
 export const token = (a) => get(`/api/v2/tokens/${a}`);
 
+/**
+ * Token search. Fuzzy and capped at 50 by the explorer, so the caller filters to exact
+ * symbol matches and treats the count as a floor, never as a total.
+ */
+export async function search(q) {
+  const data = await get(`/api/v2/search?q=${encodeURIComponent(q)}`);
+  const items = (data?.items || []).filter((i) => i.type === "token" && i.address_hash);
+  return { items, capped: (data?.items || []).length >= 50 };
+}
+
 /** Top holders. Their balances are a cached snapshot — read balanceOf live before using. */
 export async function holders(a, limit = 6) {
   const data = await get(`/api/v2/tokens/${a}/holders`);

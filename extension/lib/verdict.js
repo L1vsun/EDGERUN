@@ -351,13 +351,52 @@ export async function scanMany(addresses) {
 }
 
 /**
- * What a bare $TICKER in a post can honestly be answered with: the registry's address for
- * it, if it is an official one. A ticker that is not official gets nothing — on this chain
- * a ticker maps to many contracts, and picking one to badge would be inventing an answer.
+ * What a bare $TICKER in a post can honestly be answered with.
+ *
+ * Two different answers, and the difference is the whole point:
+ *
+ *   official — Robinhood publishes exactly one address for this ticker. We can name it.
+ *   onchain  — the ticker exists on this chain but belongs to no one. Measured live:
+ *              $PEPE is 7 different contracts, $HOOD 6, $DOGE 5. The honest answer is the
+ *              count, not a pick. Choosing one of seven would be inventing an answer, and
+ *              that ambiguity is exactly how somebody buys the wrong one.
+ *
+ * The explorer's search is fuzzy and capped at 50 results, so the count is reported as a
+ * floor ("at least N"), never as a total.
  */
 export async function resolveTicker(ticker) {
   const reg = await getRegistry();
   if (!reg.loaded) return null;
   const official = officialForTicker(reg, ticker);
   return official ? { ...official, kind: "official" } : null;
+}
+
+export async function lookupTicker(ticker) {
+  const t = String(ticker || "").toUpperCase().replace(/^\$/, "");
+  if (!/^[A-Z]{2,8}$/.test(t)) return null;
+
+  const official = await resolveTicker(t);
+  if (official) return { ticker: t, ...official };
+
+  let found;
+  try {
+    found = await bs.search(t);
+  } catch {
+    return null; // explorer unreachable: say nothing rather than guess
+  }
+  const exact = found.items.filter((i) => String(i.symbol || "").toUpperCase() === t);
+  if (!exact.length) return null; // not a token on this chain — no badge, per the rule above
+
+  return {
+    ticker: t,
+    kind: "onchain",
+    count: exact.length,
+    capped: found.capped,
+    candidates: exact.slice(0, 6).map((i) => ({
+      address: String(i.address_hash).toLowerCase(),
+      name: i.name || "",
+      symbol: i.symbol || "",
+      verified: !!i.is_smart_contract_verified,
+    })),
+  };
 }

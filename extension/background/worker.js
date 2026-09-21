@@ -10,9 +10,10 @@
 
 import { remaining } from "../lib/budget.js";
 import { getRegistry } from "../lib/registry.js";
-import { isAddress, resolveTicker, scan, scanMany } from "../lib/verdict.js";
+import { isAddress, lookupTicker, resolveTicker, scan, scanMany } from "../lib/verdict.js";
 
 const TTL = { identity: 15 * 60 * 1000, full: 5 * 60 * 1000 };
+const TICKER_TTL = 6 * 60 * 60 * 1000; // which contracts claim a ticker barely changes
 const cacheKey = (address, level) => `v:${level}:${address.toLowerCase()}`;
 const inflight = new Map();
 
@@ -121,10 +122,21 @@ const HANDLERS = {
   verdicts: (m) => getVerdicts(m.addresses),
   ticker: (m) => resolveTicker(m.ticker),
   tickers: async (m) => {
-    // registry-only, so a whole timeline's worth costs nothing after the first load
+    // An official ticker costs nothing (the registry is already local). Anything else needs
+    // one explorer search, so it is cached hard — a ticker's contract set barely moves, and
+    // a timeline full of $PEPE must not spend a search per post.
     const out = {};
-    for (const t of [...new Set(m.tickers || [])]) {
-      const hit = await resolveTicker(t);
+    for (const t of [...new Set(m.tickers || [])].slice(0, 12)) {
+      const key = `tk:${t.toUpperCase()}`;
+      try {
+        const got = await chrome.storage.local.get(key);
+        if (got[key] && Date.now() - got[key].at < TICKER_TTL) {
+          if (got[key].hit) out[t] = got[key].hit;
+          continue;
+        }
+      } catch {}
+      const hit = await lookupTicker(t);
+      chrome.storage.local.set({ [key]: { at: Date.now(), hit } }).catch(() => {});
       if (hit) out[t] = hit;
     }
     return out;
