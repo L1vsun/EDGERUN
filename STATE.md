@@ -232,6 +232,52 @@ except the instrument panels. Deliberately avoids the generic dark-gradient-and-
 Rendering still 60 fps at 1600x1050 and at 500 px, heap ~21 MB, zero console errors. The
 module stack is hidden below 1080 px (leader lines have nowhere to go on a phone).
 
+## The browser extension (2026-09-21) — `extension/`
+
+MV3 extension that puts a verdict next to the token on X, Dexscreener and Blockscout. Full
+notes in `extension/README.md`; the decisions that matter here:
+
+**It does not use the backend.** The spec in `EDGERUN_extension_architecture.md` had the
+extension as "a client of the existing backend". Measured that backend live before building:
+cold start **31.6 s**, warm uncached scan **14.1 s**, rate limit **12/min/IP**, no batch
+endpoint — and it does not return the stock-token check at all on the canonical TSLA (a
+forced, uncached scan shows only the Levenshtein check; `/api/impersonators` 404s although it
+exists in `main.py`, so **the Render deploy is stale**). Reading the chain directly instead:
+~200 ms for one address, **206 ms for five batched**. The service worker owns every request,
+so there is no CORS and no page CSP either.
+
+**Two tiers.** `identity` (registry + reference list, one batched RPC for up to 12 addresses)
+badges a whole timeline; `full` (source, mint selectors, ownership, LP lock, live exit test)
+runs on token pages and on click, ~6.5–8 s, explorer-bound.
+
+**Five verdict states, not four.** OFFICIAL / FAIL / CAUTION / PASS / UNRESOLVED. An
+identity-clean token is UNRESOLVED on purpose — "not impersonating anything" is not "safe",
+and only the full tier can reach PASS. No path exists from a failed request to a green badge.
+
+**The killer feature is the cross-check**, not PASS/FAIL: a post saying $TSLA next to a
+contract that is not Robinhood's TSLA address is naming one token and linking another. Comes
+free from the registry. A bare `$TICKER` is only ever answered from the registry — on this
+chain a ticker maps to many contracts, so anything not official gets no badge at all.
+
+Live findings while testing (real contracts, not fixtures): `0xD18F5e73…` (symbol TSLA, name
+"memestock") is a **honeypot** — simulated transfer reverted `"blacklisted"` for all three
+live holders. `0x066aD1C8…`, named exactly "Tesla • Robinhood Token", blocks some holders and
+not others: a targeted blacklist.
+
+Verified: the engine against real contracts; the real content scripts against a timeline with
+X's DOM contract; the Blockscout surface on the **live explorer** (badge in the `h1`, one
+panel, seven checks, no console errors); pair resolution for both a v3 pair address and a v4
+pool id. **Not verified:** the Dexscreener DOM (Cloudflare challenges headless Chrome, so the
+symbol anchor was tested on a harness), the `declarativeNetRequest` Referer rule as applied by
+Chrome (the 403-without/200-with requirement is verified; Chrome 153 no longer honours
+`--load-extension`, so it was never exercised inside a loaded extension), and X's real
+timeline.
+
+Chain facts this depends on: Dexscreener's slug is **`robinhood`** (`robinhoodchain` and
+`rhchain` both return `[]`) and its URLs carry the **pair**, not the token — some of which are
+Uniswap v4 pool ids (32 bytes). That also means LP lock cannot be checked the v2/v3 way here;
+the check reports `unresolved` and says why rather than guessing.
+
 ## The council runs in the browser now (2026-09-21)
 
 The page no longer just reads a JSON file written half an hour ago. `frontend/lib/council.ts`

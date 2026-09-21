@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>edgerun</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { width: 360px; margin: 0; padding: 0; background: #0a0e08; color: #cbd2ba;
+    font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  header { display: flex; align-items: center; gap: 8px; padding: 11px 13px; border-bottom: 1px solid #1d2417; }
+  header b { color: #eef0e4; letter-spacing: 0.12em; }
+  header .reg { margin-left: auto; font-size: 9.5px; color: #6d7760; }
+  form { display: flex; gap: 6px; padding: 11px 13px; }
+  input { flex: 1; min-width: 0; font: inherit; color: #eef0e4; background: #10140c;
+    border: 1px solid #2b3529; padding: 8px 9px; outline: none; }
+  input:focus { border-color: #cfff04; }
+  button { font: inherit; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 8px 11px; cursor: pointer; color: #0a0e04; background: #cfff04; border: 1px solid #cfff04; font-weight: 700; }
+  button:disabled { background: #2a3318; border-color: #2a3318; color: #6b7355; cursor: default; }
+  #out { padding: 0 13px 12px; }
+  .v { display: inline-block; font-size: 9.5px; letter-spacing: 0.14em; padding: 2px 6px; border: 1px solid currentColor; }
+  .lead { color: #eef0e4; margin: 9px 0; }
+  .row { display: grid; grid-template-columns: 8px 1fr; gap: 8px; padding: 5px 0; border-top: 1px solid #141a0f; }
+  .row i { width: 7px; height: 7px; border-radius: 50%; margin-top: 6px; }
+  .row b { display: block; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #eef0e4; }
+  .row span { color: #a3ab91; }
+  .err { color: #ffb3b3; padding: 4px 0 8px; }
+  h2 { font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6d7760; margin: 4px 13px; }
+  ul { list-style: none; margin: 0; padding: 0 13px 13px; }
+  li { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px solid #141a0f; }
+  li a { color: #cfff04; text-decoration: none; flex: 1; overflow: hidden; text-overflow: ellipsis; }
+  li button { background: none; border: none; color: #6d7760; padding: 2px 4px; }
+  .quiet { color: #4f5942; padding: 0 13px 12px; }
+  footer { padding: 10px 13px; border-top: 1px solid #1d2417; color: #565f49; font-size: 9.5px; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <header><b>EDGERUN</b><span class="reg" id="reg">registry…</span></header>
+  <form id="f">
+    <input id="q" placeholder="paste a token address — 0x…" spellcheck="false" autocomplete="off" />
+    <button id="go" type="submit">check</button>
+  </form>
+  <div id="out"></div>
+  <h2>watching</h2>
+  <ul id="watch"></ul>
+  <footer>
+    Checks run in your browser against Robinhood Chain and Robinhood's published stock-token
+    registry. No account, no server, and the watchlist never leaves this machine.
+  </footer>
+  <script src="popup.js"></script>
+</body>
+</html>
