@@ -536,5 +536,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-21T18:11:24+00:00",
+  "block": 69002205,
+  "mode": "rules",
+  "call": "GLD is the one to watch - heating",
+  "focus": "GLD",
+  "confidence": 0.84,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 3168.0,
+    "wallets": 359,
+    "one_addr_share": 0.21,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 3162.0,
+    "wallets": 712,
+    "one_addr_share": 0.32,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "Ajizzle",
+    "per_min": 1561.2,
+    "wallets": 1303,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "AI",
+    "per_min": 921.6,
+    "wallets": 51,
+    "one_addr_share": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "CATBRAIN",
+    "per_min": 751.2,
+    "wallets": 227,
+    "one_addr_share": 0.62,
+    "flags": []
+   },
+   {
+    "symbol": "GME",
+    "per_min": 747.6,
+    "wallets": 591,
+    "one_addr_share": 0.51,
+    "flags": [
+     "dex live",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SI",
+    "per_min": 656.4,
+    "wallets": 106,
+    "one_addr_share": 0.67,
+    "flags": []
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 271.2,
+    "wallets": 61,
+    "one_addr_share": 0.5,
+    "flags": []
+   }
+  ]
  }
 ]
