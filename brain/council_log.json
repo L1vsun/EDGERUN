@@ -153,5 +153,86 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-21T15:38:44+00:00",
+  "block": 68910679,
+  "mode": "rules",
+  "call": "AMD is the one to watch - heating",
+  "focus": "AMD",
+  "confidence": 0.66,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 3409.2,
+    "wallets": 505,
+    "one_addr_share": 0.3,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 3019.2,
+    "wallets": 264,
+    "one_addr_share": 0.18,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "Glorp",
+    "per_min": 541.2,
+    "wallets": 226,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "NVDAx3L",
+    "per_min": 469.2,
+    "wallets": 24,
+    "one_addr_share": 0.77,
+    "flags": []
+   },
+   {
+    "symbol": "NUKE",
+    "per_min": 415.2,
+    "wallets": 117,
+    "one_addr_share": 0.62,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 356.4,
+    "wallets": 53,
+    "one_addr_share": 0.37,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 320.4,
+    "wallets": 237,
+    "one_addr_share": 0.43,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "AMD",
+    "per_min": 314.4,
+    "wallets": 235,
+    "one_addr_share": 0.84,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
