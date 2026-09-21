@@ -110,6 +110,11 @@ text is read.
   in the reading flow where it cannot be scrolled past.
 - **Only a fake gets full volume** - red fill, a two-pulse ring on arrival, then still. Clean
   and unverified results are quieter cards. If everything shouted, nothing would.
+- **The panel opens beside the post, never over it.** It goes into the gutter next to the
+  post - right if there is room, then left - and only drops below the badge when the window
+  is too narrow for either. Opening underneath covered the very post the reader was trying to
+  judge, which is backwards for a panel whose job is to comment on it. It also opens with
+  only the checks that decided the verdict, and a "+N more checks" line for the rest.
 - **The panel is parented to the document root**, not to the badge. X puts `transform` on
   timeline containers, and `position: fixed` inside a transformed ancestor resolves against
   that ancestor rather than the viewport - which is why the panel used to open half off the

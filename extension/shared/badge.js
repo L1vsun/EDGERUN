@@ -124,34 +124,37 @@
   const PANEL_CSS = `
     :host { all: initial; ${TOKENS} font-family: ${FONT}; }
     * { box-sizing: border-box; }
-    .panel { font-family: ${FONT}; position: fixed; z-index: 2147483647; width: 400px; max-width: calc(100vw - 24px);
+    .panel { font-family: ${FONT}; position: fixed; z-index: 2147483647; width: 340px; max-width: calc(100vw - 24px);
       background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: var(--radius);
-      box-shadow: var(--shadow); overflow: hidden; font-size: 14px; line-height: 1.5; }
+      box-shadow: var(--shadow); overflow: hidden; font-size: 13px; line-height: 1.5; }
     .panel[hidden] { display: none; }
-    .head { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
-    .head b { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; }
+    .head { display: flex; align-items: center; gap: 9px; padding: 11px 13px; border-bottom: 1px solid var(--line); }
+    .head b { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
     .v { margin-left: auto; font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
       padding: 5px 10px; border-radius: 999px; color: #fff; background: var(--muted); }
     .v.bad { background: var(--bad); } .v.ok { background: var(--ok); } .v.warn { background: var(--warn); }
-    .lead { margin: 0; padding: 14px 16px; font-size: 14.5px; border-bottom: 1px solid var(--line); }
+    .lead { margin: 0; padding: 11px 13px; font-size: 13.5px; border-bottom: 1px solid var(--line); }
     .lead.bad { color: var(--bad); font-weight: 600; background: var(--bad-soft); }
-    .rows { margin: 0; padding: 6px 0; max-height: 52vh; overflow-y: auto; border-bottom: 1px solid var(--line); }
-    .rows::-webkit-scrollbar { width: 10px; }
+    .rows { margin: 0; padding: 4px 0; max-height: 40vh; overflow-y: auto; border-bottom: 1px solid var(--line); }
+    .rows::-webkit-scrollbar { width: 8px; }
+    .more-rows { display: block; width: 100%; text-align: left; padding: 7px 13px; border: none;
+      border-radius: 0; background: none; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .more-rows:hover { background: var(--soft); color: var(--ink); }
     .rows::-webkit-scrollbar-thumb { background: #d7ddc8; border-radius: 99px; border: 3px solid var(--card); }
-    .row { display: grid; grid-template-columns: 10px 1fr; gap: 11px; padding: 9px 16px; }
+    .row { display: grid; grid-template-columns: 9px 1fr; gap: 9px; padding: 7px 13px; }
     .row i { width: 9px; height: 9px; border-radius: 50%; margin-top: 6px; background: var(--muted); }
     .row i.ok { background: var(--ok); } .row i.fail { background: var(--bad); }
     .row i.warn { background: var(--warn); } .row i.unresolved { background: #b9c0aa; }
     .row b { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase;
       color: var(--muted); margin-bottom: 2px; }
-    .row span { display: block; font-size: 13.5px; }
-    .addr { padding: 4px 16px 14px; font-family: ${MONO}; font-size: 12px; color: var(--muted); word-break: break-all; }
-    .foot { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--line); background: var(--soft); }
-    .foot a { font-size: 13px; font-weight: 700; color: var(--ok); text-decoration: none; }
+    .row span { display: block; font-size: 12.5px; }
+    .addr { padding: 3px 13px 10px; font-family: ${MONO}; font-size: 11px; color: var(--muted); word-break: break-all; }
+    .foot { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; padding: 9px 13px; border-top: 1px solid var(--line); background: var(--soft); }
+    .foot a { font-size: 12px; font-weight: 700; color: var(--ok); text-decoration: none; }
     .foot a:hover { text-decoration: underline; }
-    .when { margin-left: auto; font-size: 12px; color: var(--muted); }
-    button { font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; padding: 10px 16px;
-      border-radius: 9px; color: var(--ink); background: var(--card); border: 1px solid var(--line); }
+    .when { margin-left: auto; font-size: 11px; color: var(--muted); }
+    button { font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; padding: 7px 11px;
+      border-radius: 8px; color: var(--ink); background: var(--card); border: 1px solid var(--line); }
     button:hover { background: #eef2e4; }
     button.go { background: var(--signal); border-color: #b9e604; color: #131a02; }
     button.go:hover { filter: brightness(1.04); }
@@ -227,21 +230,40 @@
   }
   E.closeBadgePanel = closePanel;
 
-  function position(panel, chip) {
-    const r = chip.getBoundingClientRect();
-    const w = Math.min(400, window.innerWidth - 24);
-    const gap = 8;
+  /**
+   * Beside the post, not on top of it.
+   *
+   * Opening underneath the badge covered the very post the reader is trying to judge, which
+   * is backwards for a panel whose whole job is to comment on it. So it goes into the gutter
+   * next to the post first - right if there is room, then left - and only drops below when
+   * the window is too narrow for either, which is the one case where there is no gutter to
+   * use. Vertically it lines up with the badge rather than the post, so the eye does not
+   * have to travel.
+   */
+  function position(panel, chip, anchor) {
+    const c = chip.getBoundingClientRect();
+    const a = (anchor || chip).getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const w = Math.min(340, vw - 24);
+    const gap = 14;
     panel.style.width = `${w}px`;
-    // measure before deciding which way to open
     panel.style.top = "0px";
     panel.style.left = "0px";
-    const h = panel.offsetHeight || 320;
-    const below = window.innerHeight - r.bottom;
-    const top = below >= h + gap || below >= r.top ? r.bottom + gap : Math.max(12, r.top - h - gap);
-    // keep it fully on screen horizontally, anchored to the chip where there is room
-    const left = Math.max(12, Math.min(window.innerWidth - w - 12, r.left));
-    panel.style.top = `${Math.max(12, Math.min(window.innerHeight - h - 12, top))}px`;
-    panel.style.left = `${left}px`;
+    const h = panel.offsetHeight || 300;
+
+    let left;
+    let top = c.top - 6;
+    if (vw - a.right >= w + gap + 12) left = a.right + gap;          // gutter on the right
+    else if (a.left >= w + gap + 12) left = a.left - w - gap;        // gutter on the left
+    else {
+      // no room either side: fall back to under the badge, flipping up when short of space
+      left = Math.max(12, Math.min(vw - w - 12, c.left));
+      const below = vh - c.bottom;
+      top = below >= h + 8 || below >= c.top ? c.bottom + 8 : c.top - h - 8;
+    }
+    panel.style.left = `${Math.max(12, Math.min(vw - w - 12, left))}px`;
+    panel.style.top = `${Math.max(12, Math.min(vh - h - 12, top))}px`;
   }
 
   window.addEventListener("resize", closePanel, true);
@@ -257,7 +279,7 @@
       if (!openFor) return;
       const r = openFor.chip.getBoundingClientRect();
       if (!openFor.chip.isConnected || r.bottom < 0 || r.top > window.innerHeight) return closePanel();
-      position(panelRoot.querySelector(".panel"), openFor.chip);
+      position(panelRoot.querySelector(".panel"), openFor.chip, openFor.anchor);
     });
   }, true);
   document.addEventListener("click", (e) => {
@@ -293,16 +315,20 @@
     root.append(style, chip);
 
     let current = null;
+    let expanded = false;
+    // the post this badge belongs to - the panel opens beside it, never over it
+    const anchorOf = () => host.closest('article, [data-testid="tweet"]') || host;
 
     const toggle = () => {
       const r = ensurePanel();
       const panel = r.querySelector(".panel");
       if (openFor?.chip === chip && !panel.hidden) return closePanel();
       if (!current) return;
+      expanded = false;
       renderPanel(panel, current);
       panel.hidden = false;
-      openFor = { chip };
-      position(panel, chip);
+      openFor = { chip, anchor: anchorOf() };
+      position(panel, chip, anchorOf());
     };
     chip.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); toggle(); });
     chip.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
@@ -324,7 +350,7 @@
       if (openFor?.chip === chip && panelRoot) {
         const panel = panelRoot.querySelector(".panel");
         renderPanel(panel, result);
-        position(panel, chip);
+        position(panel, chip, anchorOf());
       }
     };
 
@@ -340,9 +366,16 @@
 
     function renderPanel(panel, r) {
       const tone = TONE[r.verdict] || TONE.UNRESOLVED;
-      const rows = (r.checks || []).map((c) => `
+      // The checks that decided the verdict first, and only those, until asked for the rest.
+      // A panel that opens with eight rows is a wall; the fail and warn lines are the answer.
+      const all = r.checks || [];
+      const loud = all.filter((c) => c.status === "fail" || c.status === "warn");
+      const shown = expanded || loud.length === 0 ? all : loud.slice(0, 3);
+      const hidden = all.length - shown.length;
+      const rows = shown.map((c) => `
         <div class="row"><i class="${esc(c.status)}"></i>
-          <span><b>${esc(c.label)}</b><span>${esc(c.detail)}</span></span></div>`).join("");
+          <span><b>${esc(c.label)}</b><span>${esc(c.detail)}</span></span></div>`).join("")
+        + (hidden > 0 ? `<button class="more-rows" data-act="expand">+ ${hidden} more check${hidden === 1 ? "" : "s"}</button>` : "");
       const needsFull = r.level !== "full" && r.verdict !== "FAIL";
       panel.innerHTML = `
         <div class="head"><b>${esc(r.symbol || "unknown token")}</b>
@@ -361,6 +394,12 @@
           <span class="when">${r.cached ? "cached · " : ""}${ago(r.scannedAt)}</span>
         </div>`;
       panel.querySelector('[data-act="close"]')?.addEventListener("click", (e) => { e.stopPropagation(); closePanel(); });
+      panel.querySelector('[data-act="expand"]')?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        expanded = true;
+        renderPanel(panel, current);
+        position(panel, chip, anchorOf());
+      });
       panel.querySelector('[data-act="full"]')?.addEventListener("click", (e) => {
         e.stopPropagation();
         e.target.textContent = "checking…";
@@ -384,7 +423,7 @@
           const { checks } = await E.ask({ type: "deployer", address: r.address });
           current = { ...current, checks: [...current.checks.filter((c) => !String(c.id).startsWith("deployer") && c.id !== "production_line" && c.id !== "explorer_scam"), ...checks] };
           renderPanel(panel, current);
-          position(panel, chip);
+          position(panel, chip, anchorOf());
         } catch (err) {
           btn.disabled = false;
           btn.textContent = "records unavailable";
@@ -417,7 +456,7 @@
           };
           current = { ...current, checks: [...current.checks.filter((c) => !String(c.id).startsWith("cand:")), verdictRow, ...rows] };
           renderPanel(panel, current);
-          position(panel, chip);
+          position(panel, chip, anchorOf());
         } catch (err) {
           btn.disabled = false;
           btn.textContent = "could not rank";
