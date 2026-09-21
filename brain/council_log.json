@@ -307,5 +307,80 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-21T16:40:22+00:00",
+  "block": 68947600,
+  "mode": "rules",
+  "call": "SPY is the one to watch - dex live",
+  "focus": "SPY",
+  "confidence": 0.78,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 6808.8,
+    "wallets": 633,
+    "one_addr_share": 0.28,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 6456.0,
+    "wallets": 449,
+    "one_addr_share": 0.37,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 2055.6,
+    "wallets": 127,
+    "one_addr_share": 0.7,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "Lala",
+    "per_min": 1686.0,
+    "wallets": 1406,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "Drip",
+    "per_min": 1360.8,
+    "wallets": 356,
+    "one_addr_share": 0.65,
+    "flags": []
+   },
+   {
+    "symbol": "DRIP",
+    "per_min": 906.0,
+    "wallets": 295,
+    "one_addr_share": 0.86,
+    "flags": []
+   },
+   {
+    "symbol": "ROOT",
+    "per_min": 498.0,
+    "wallets": 139,
+    "one_addr_share": 0.61,
+    "flags": []
+   },
+   {
+    "symbol": "DRIP",
+    "per_min": 454.8,
+    "wallets": 147,
+    "one_addr_share": 0.84,
+    "flags": []
+   }
+  ]
  }
 ]
