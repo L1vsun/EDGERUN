@@ -147,6 +147,17 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .scanwhy p { margin: 5px 0 0; font-size: 11.5px; line-height: 1.45; color: #9aa285; }
 .scanwhy b { color: var(--bone); }
 
+/* the paper trail */
+.dossier { border-top: 1px solid var(--rule); padding: 10px 14px 12px; }
+.dos-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 7px;
+  font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #5a6450; }
+.dos-head a { color: var(--chart); text-decoration: none; border-bottom: 1px solid rgba(207,255,4,0.35); }
+.dos-head i { font-style: normal; color: var(--dim); }
+.dos { margin: 0 0 5px; padding-left: 12px; position: relative; font-size: 11.5px; line-height: 1.45; color: #9aa285; }
+.dos::before { content: ""; position: absolute; left: 0; top: 7px; width: 5px; height: 1px; background: currentColor; opacity: 0.6; }
+.dos-bad { color: var(--bad); }
+.dos-good { color: var(--chart); }
+
 /* watch */
 .star { background: none; border: none; cursor: pointer; color: #38412a; font-size: 13px; padding: 0 6px 0 0; line-height: 1; }
 .star:hover { color: var(--dim); }

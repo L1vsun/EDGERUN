@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/config";
 import { ChainState, SCAN_BLOCKS, Signal, TokenStat, interest, odour, scanToken, signals, startChain } from "@/lib/chain";
+import { Dossier, investigate, readDossier } from "@/lib/osint";
 import BrainCanvas, { ModuleMark, Pulse } from "./BrainCanvas";
 import ModuleHUD from "./ModuleHUD";
 import Fly from "./Fly";
@@ -60,6 +61,7 @@ export default function Nose() {
   const selectedRef = useRef<string | null>(null);
   const [query, setQuery] = useState("");
   const [scan, setScan] = useState<{ busy: boolean; result: Scored | null; error: string }>({ busy: false, result: null, error: "" });
+  const [dossier, setDossier] = useState<{ busy: boolean; d: Dossier | null }>({ busy: false, d: null });
   const [watch, setWatch] = useState<string[]>([]);
   const fired = useRef<Record<string, string>>({}); // token -> signals we have already announced
   const [ping, setPing] = useState<{ symbol: string; labels: string } | null>(null);
@@ -226,8 +228,14 @@ export default function Nose() {
           nearest: null, sig: signals(stat), score: interest(stat) };
       }
       setScan({ busy: false, result, error: "" });
+      // the public paper trail: who deployed it, what else they have launched, who paid
+      setDossier({ busy: true, d: null });
+      investigate(result.address, (partial) => setDossier({ busy: true, d: partial }))
+        .then((d) => setDossier({ busy: false, d }))
+        .catch(() => setDossier({ busy: false, d: null }));
     } catch (e: any) {
       setScan({ busy: false, result: null, error: String(e?.message || e) });
+      setDossier({ busy: false, d: null });
     }
   }, []);
 
@@ -317,7 +325,7 @@ export default function Nose() {
                   <div className="scanhead">
                     <b>{scan.result.symbol}</b>
                     <span>{num(scan.result.transfers)} transfers · {num(scan.result.wallets)} wallets · last {Math.round(SCAN_BLOCKS / 9 / 60)} min</span>
-                    <button className="x" onClick={() => { setScan({ busy: false, result: null, error: "" }); setQuery(""); }} aria-label="close">×</button>
+                    <button className="x" onClick={() => { setScan({ busy: false, result: null, error: "" }); setDossier({ busy: false, d: null }); setQuery(""); }} aria-label="close">×</button>
                   </div>
                   <div className="scanflags">
                     {scan.result.sig.length
@@ -327,6 +335,23 @@ export default function Nose() {
                   <div className="scanwhy">
                     {scan.result.sig.slice(0, 2).map((g) => <p key={g.id}>{g.why}</p>)}
                     {scan.result.nearest && <p>moves most like <b>{scan.result.nearest.symbol}</b> of everything live right now · {pct(scan.result.nearest.overlap)} of the same neurons.</p>}
+                  </div>
+                  <div className="dossier">
+                    <div className="dos-head">
+                      <span>paper trail</span>
+                      {dossier.busy && !dossier.d ? <i>pulling records…</i> : dossier.d?.deployer ? (
+                        <a href={`https://robinhoodchain.blockscout.com/address/${dossier.d.deployer}`} target="_blank" rel="noreferrer">
+                          deployer {dossier.d.deployer.slice(0, 8)}…
+                        </a>
+                      ) : null}
+                    </div>
+                    {dossier.d ? (
+                      readDossier(dossier.d).map((r, i) => (
+                        <p key={i} className={`dos dos-${r.tone}`}>{r.text}</p>
+                      ))
+                    ) : dossier.busy ? null : (
+                      <p className="dos dos-flat">no public record reachable for this address</p>
+                    )}
                   </div>
                 </>
               ) : null}

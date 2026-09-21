@@ -232,6 +232,42 @@ except the instrument panels. Deliberately avoids the generic dark-gradient-and-
 Rendering still 60 fps at 1600x1050 and at 500 px, heap ~21 MB, zero console errors. The
 module stack is hidden below 1080 px (leader lines have nowhere to go on a phone).
 
+## OSINT: the paper trail (2026-09-21)
+
+`frontend/lib/osint.ts` + the dossier block under a scan result. Public records only,
+straight from the block explorer, **no key and no backend** — it sends
+`access-control-allow-origin: *`, so the browser asks it directly. It is the same trail
+anyone can click through by hand; this just follows it in one go.
+
+What it establishes for any address:
+- **the real deployer, not the factory.** Most tokens here are launched through a
+  launchpad, so `creator_address_hash` is the factory. The wallet that signed the
+  *creation transaction* is the human — that is the one followed.
+- **what else that wallet has launched**, with the date span. Verified live: SPCX's
+  deployer `0x5516B3…E000` has launched **at least 50 contracts** through the same factory
+  between 2026-07-27 and 2026-09-09 — "a production line, not a project".
+- **who paid for the gas** (earliest inbound transfers), which is the thread that leads to
+  an operator's other wallets.
+- verification status, whether the code is factory boilerplate, the explorer's own
+  `is_scam` / `reputation` fields, and any non-boilerplate URLs published in the source.
+
+Measured / learned:
+- Blockscout **403s a request with no `Referer` at all**; any value satisfies it
+  (blockscout, github.io and localhost all return 200). Browsers attach one automatically
+  and scripts are forbidden from setting it, so nothing needs doing client-side — but the
+  Python/server path must set one.
+- Rate limit is **150 per window** (`x-ratelimit-limit`), and a dossier spends ~5. So it
+  runs **on demand only** (on a scan), never for all 40 table rows, and results are cached.
+- The transaction-list endpoints are slow (a full dossier takes ~15-25 s), so the panel
+  **fills progressively** via an `onPartial` callback. It deliberately does not state the
+  factory verdict before the creation transaction is read — an earlier version claimed
+  "not stamped out by a factory" during the partial phase and then corrected itself.
+
+**Not built, and why:** reading X/Twitter for "who posted this CA". The X API is paid and
+cannot be called from a static page, and scraping it breaks their terms. The clean route
+is a research region in the council using Claude's `web_search` server tool, which runs
+server-side where the key already lives — that is a v2 item, not a v1 gap.
+
 ## The council (2026-09-21): four regions, two versions
 
 The "cortical structures as agents" idea. Four regions with different jobs and different
