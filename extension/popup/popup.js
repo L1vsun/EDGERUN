@@ -11,8 +11,14 @@ const ask = (message) =>
   });
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const DOT = { ok: "#cfff04", warn: "#ffd682", fail: "#ff6b6b", unresolved: "#7e8a6d" };
-const VCOLOR = { FAIL: "#ff6b6b", CAUTION: "#ffd682", UNRESOLVED: "#7e8a6d", PASS: "#cfff04", OFFICIAL: "#cfff04" };
+
+const LEAD = {
+  OFFICIAL: "This address is in Robinhood's published registry of tokenised stocks.",
+  PASS: "The full check ran and found nothing against it. Not advice, and not a price call.",
+  UNRESOLVED: "No claim on an official asset. Nothing else could be established.",
+};
+const leadFor = (r) =>
+  LEAD[r.verdict] || (r.checks || []).find((c) => c.status === "fail")?.detail || "";
 
 const out = document.getElementById("out");
 const form = document.getElementById("f");
@@ -32,7 +38,8 @@ form.addEventListener("submit", async (e) => {
   const address = input.value.trim();
   if (!address) return;
   go.disabled = true;
-  out.innerHTML = `<p class="lead">checking…</p>`;
+  go.textContent = "checking…";
+  out.innerHTML = `<p class="lead" style="padding-top:16px">checking the chain…</p>`;
   try {
     const r = await ask({ type: "verdict", address, level: "full" });
     render(r);
@@ -40,22 +47,25 @@ form.addEventListener("submit", async (e) => {
     out.innerHTML = `<p class="err">${esc(err.message)}</p>`;
   } finally {
     go.disabled = false;
+    go.textContent = "check";
   }
 });
 
 function render(r) {
   const rows = (r.checks || []).map((c) => `
-    <div class="row"><i style="background:${DOT[c.status] || "#7e8a6d"}"></i>
+    <div class="row"><i class="${esc(c.status)}"></i>
       <span><b>${esc(c.label)}</b><span>${esc(c.detail)}</span></span></div>`).join("");
   out.innerHTML = `
-    <p class="lead"><span class="v" style="color:${VCOLOR[r.verdict]}">${esc(r.verdict)}</span>
-      &nbsp;${esc(r.symbol || "unknown")}</p>
+    <div class="top"><b>${esc(r.symbol || "unknown token")}</b><span class="v ${esc(r.verdict)}">${esc(r.verdict)}</span></div>
+    <p class="lead">${esc(leadFor(r))}</p>
     ${rows}
-    <div class="row" style="border:0"><i style="background:transparent"></i>
-      <span><button id="w" style="background:none;border:1px solid #2b3529;color:#cbd2ba;">watch</button>
-      <a href="${esc(r.explorerUrl)}" target="_blank" style="color:#cfff04;margin-left:8px;">explorer</a></span></div>`;
-  document.getElementById("w")?.addEventListener("click", async () => {
+    <div class="acts">
+      <button id="w">watch</button>
+      <a href="${esc(r.explorerUrl)}" target="_blank" rel="noreferrer">explorer ↗</a>
+    </div>`;
+  document.getElementById("w")?.addEventListener("click", async (e) => {
     await ask({ type: "watch:toggle", address: r.address });
+    e.target.textContent = "watching ✓";
     loadWatch();
   });
 }

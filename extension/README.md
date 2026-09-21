@@ -71,6 +71,27 @@ The strongest thing here is the cross-check: a post that says **$TSLA** and past
 that is not Robinhood's TSLA address is showing you a different token than the one it names.
 That is provable from the registry alone.
 
+## Design
+
+Light, on purpose. This sits on other people's pages — X in dark mode, Dexscreener's near
+black, Blockscout's grey — and a dark chip on a dark page is something you have to go looking
+for. A bright card reads instantly against all three, and the status colour lands before any
+text is read.
+
+- **On X the badge is a strip under the post text**, not a chip in the action bar. The action
+  bar is cramped, low-contrast and off the eye's path; a warning about a fake contract belongs
+  in the reading flow where it cannot be scrolled past.
+- **Only a fake gets full volume** — red fill, a two-pulse ring on arrival, then still. Clean
+  and unverified results are quieter cards. If everything shouted, nothing would.
+- **The panel is parented to the document root**, not to the badge. X puts `transform` on
+  timeline containers, and `position: fixed` inside a transformed ancestor resolves against
+  that ancestor rather than the viewport — which is why the panel used to open half off the
+  right edge. It is now positioned from the badge's own rect, clamped to the viewport, flips
+  above the badge when there is no room below, follows on scroll, and closes once its badge
+  leaves the screen.
+- **Fonts are declared on the inner elements**, not just `:host`. A page's own rules outrank
+  `:host` rules on the host element, so the host page's font leaks in through inheritance.
+
 ## Layout
 
 ```
@@ -139,6 +160,9 @@ Verified live on 2026-09-21 against Robinhood Chain:
   "Tesla • Robinhood Token") blocks *some* holders and not others — a targeted blacklist.
 - The real content scripts driven against a timeline with X's DOM contract: four badges, the
   cross-check message correct, the fifth post (no tokens) correctly left alone.
+- The panel against a harness with the same transformed ancestors X uses: opens fully on
+  screen (`left 126 → right 526` in a 1200px viewport), follows the badge on scroll
+  (`top 183 → 33` after 150px), and hides once the badge scrolls away.
 - The Blockscout surface on the **live explorer**: badge in the `h1`, one panel, all seven
   checks rendered, no console errors.
 - Pair resolution through the real worker for both a v3 pair address and a v4 pool id.

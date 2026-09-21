@@ -29,25 +29,45 @@
     return float;
   }
 
+  // A standing panel, in the same light card language as the badge, rendered in its own
+  // shadow root so the explorer's stylesheet cannot reach it.
   function panelFor(result) {
     const wrap = document.createElement("div");
     wrap.setAttribute("data-edgerun", "panel");
-    wrap.style.cssText = "margin:12px 0;padding:12px 14px;border:1px solid #2b3529;background:#0b0f0a;color:#cbd2ba;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;";
+    wrap.style.cssText = "display:block;margin:16px 0;";
+    const root = wrap.attachShadow({ mode: "open" });
+    const accent = { FAIL: "#c62828", CAUTION: "#a15c07", UNRESOLVED: "#5d6752" }[result.verdict] || "#4a7c0f";
     const rows = (result.checks || []).map((c) => {
-      const color = { ok: "#cfff04", warn: "#ffd682", fail: "#ff6b6b", unresolved: "#7e8a6d" }[c.status] || "#7e8a6d";
-      return `<div style="display:grid;grid-template-columns:8px 1fr;gap:9px;padding:5px 0;">
-        <i style="width:7px;height:7px;border-radius:50%;background:${color};margin-top:6px;"></i>
-        <span><b style="display:block;color:#eef0e4;font-size:10px;letter-spacing:.08em;text-transform:uppercase;">${E.esc(c.label)}</b>
-        <span style="color:#a3ab91;">${E.esc(c.detail)}</span></span></div>`;
+      const color = { ok: "#4a7c0f", warn: "#a15c07", fail: "#c62828", unresolved: "#b9c0aa" }[c.status] || "#b9c0aa";
+      return `<div class="row"><i style="background:${color}"></i>
+        <span><b>${E.esc(c.label)}</b><span>${E.esc(c.detail)}</span></span></div>`;
     }).join("");
-    wrap.innerHTML = `
-      <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;">
-        <b style="color:#eef0e4;letter-spacing:.06em;">EDGERUN</b>
-        <span style="font-size:10px;letter-spacing:.14em;padding:2px 6px;border:1px solid currentColor;color:${result.verdict === "FAIL" ? "#ff6b6b" : result.verdict === "CAUTION" ? "#ffd682" : result.verdict === "UNRESOLVED" ? "#7e8a6d" : "#cfff04"};">${E.esc(result.verdict)}</span>
-        <span style="margin-left:auto;font-size:10px;color:#6d7760;">${result.facts} fact(s) checked · ${result.unresolved} unresolved</span>
-      </div>
-      <div style="color:#eef0e4;margin-bottom:6px;">${E.esc(E.badgeLead(result))}</div>
-      ${rows}`;
+    root.innerHTML = `
+      <style>
+        :host { all: initial; display: block; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
+        * { box-sizing: border-box; }
+        /* re-declared inside the shadow root: the page's own rules beat :host on the host */
+        .card { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+          background: #fff; color: #151a11; border: 1px solid #e3e7d9; border-left: 6px solid ${accent};
+          border-radius: 14px; box-shadow: 0 6px 24px rgba(12,18,6,.16); overflow: hidden; }
+        .head { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #e3e7d9; flex-wrap: wrap; }
+        .brand { font-size: 13px; font-weight: 800; letter-spacing: .16em; color: #5d6752; }
+        .v { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+          padding: 6px 12px; border-radius: 999px; color: #fff; background: ${accent}; }
+        .count { margin-left: auto; font-size: 13px; color: #5d6752; }
+        .lead { margin: 0; padding: 16px 20px; font-size: 16px; line-height: 1.5; font-weight: 600; }
+        .rows { padding: 6px 0 14px; }
+        .row { display: grid; grid-template-columns: 10px 1fr; gap: 12px; padding: 9px 20px; }
+        .row i { width: 9px; height: 9px; border-radius: 50%; margin-top: 7px; }
+        .row b { display: block; font-size: 12px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #5d6752; margin-bottom: 2px; }
+        .row span { display: block; font-size: 14.5px; line-height: 1.5; }
+      </style>
+      <div class="card">
+        <div class="head"><span class="brand">EDGERUN</span><span class="v">${E.esc(result.verdict)}</span>
+          <span class="count">${result.facts} fact(s) checked · ${result.unresolved} unresolved</span></div>
+        <p class="lead">${E.esc(E.badgeLead(result))}</p>
+        <div class="rows">${rows}</div>
+      </div>`;
     return wrap;
   }
 

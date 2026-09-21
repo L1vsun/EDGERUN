@@ -102,7 +102,11 @@
       return;
     }
 
+    // A strip directly under the post text, not a chip tucked into the action bar. The
+    // action bar is cramped, low-contrast and below the fold of the eye's path — a warning
+    // about a fake contract has to sit in the reading flow, where it cannot be scrolled past.
     const badge = E.makeBadge({
+      mode: "block",
       onFull: async (address) => {
         try {
           const full = await E.ask({ type: "verdict", address, level: "full", fresh: true });
@@ -115,20 +119,15 @@
     });
     badge.update(result);
 
-    const bar = article.querySelector('[role="group"]');
-    if (bar) {
-      const slot = document.createElement("div");
-      slot.style.cssText = "display:inline-flex;align-items:center;margin-left:8px;";
-      slot.appendChild(badge);
-      bar.appendChild(slot);
+    const text = article.querySelector('[data-testid="tweetText"]');
+    const anchor = text?.parentElement?.contains(text) ? text : null;
+    if (anchor) {
+      anchor.insertAdjacentElement("afterend", badge);
     } else {
-      // no action bar (a quoted or embedded post): sit under the text instead
-      const text = article.querySelector('[data-testid="tweetText"]');
-      if (!text) return;
-      const slot = document.createElement("div");
-      slot.style.cssText = "margin:6px 0 2px;";
-      slot.appendChild(badge);
-      text.insertAdjacentElement("afterend", slot);
+      // no post text (a card-only or media-only post): fall back to the action bar row
+      const bar = article.querySelector('[role="group"]');
+      if (!bar) return;
+      bar.insertAdjacentElement("beforebegin", badge);
     }
   }
 
