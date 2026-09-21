@@ -459,5 +459,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-21T17:38:20+00:00",
+  "block": 68982401,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.27,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "GME",
+    "per_min": 4645.2,
+    "wallets": 71,
+    "one_addr_share": 0.69,
+    "flags": []
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 4348.8,
+    "wallets": 513,
+    "one_addr_share": 0.21,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 4005.6,
+    "wallets": 372,
+    "one_addr_share": 0.25,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "ALWAYS",
+    "per_min": 3622.8,
+    "wallets": 256,
+    "one_addr_share": 0.93,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "DRIP",
+    "per_min": 309.6,
+    "wallets": 142,
+    "one_addr_share": 0.91,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "Drip",
+    "per_min": 244.8,
+    "wallets": 83,
+    "one_addr_share": 0.64,
+    "flags": []
+   },
+   {
+    "symbol": "AMC",
+    "per_min": 210.0,
+    "wallets": 38,
+    "one_addr_share": 0.45,
+    "flags": []
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 181.2,
+    "wallets": 54,
+    "one_addr_share": 0.45,
+    "flags": [
+     "dex live"
+    ]
+   }
+  ]
  }
 ]
