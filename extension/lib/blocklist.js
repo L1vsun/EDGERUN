@@ -11,7 +11,7 @@
 
 import { spend } from "./budget.js";
 
-const URL = "https://l1vsun.github.io/EDGERUN/blocklist.json";
+const URL = "https://edgerun.live/blocklist.json";
 const KEY = "blocklist";
 const TTL_MS = 60 * 60 * 1000;
 

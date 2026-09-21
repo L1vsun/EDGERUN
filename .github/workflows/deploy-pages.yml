@@ -3,10 +3,10 @@
 # One-time setup before this runs successfully:
 #   1. Settings -> Pages -> Source: "GitHub Actions"
 #   2. Settings -> Secrets and variables -> Actions -> Variables tab, add:
-#        NEXT_PUBLIC_API_BASE               (required - your deployed backend URL, see DEPLOY.md)
-#        NEXT_PUBLIC_BASE_PATH               (optional - '/<repo-name>' for a project page)
-#        NEXT_PUBLIC_SITE_URL                (origin only, e.g. https://<user>.github.io - used for
-#                                               og:image so social cards unfurl; NO path, NO trailing slash)
+#        NEXT_PUBLIC_BASE_PATH               (leave UNSET for the custom domain edgerun.live;
+#                                               only a project page at <user>.github.io/<repo> needs it)
+#        NEXT_PUBLIC_SITE_URL                (https://edgerun.live - used for og:image so social
+#                                               cards unfurl; NO path, NO trailing slash)
 #        NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS (optional - set once the token deploys)
 #        NEXT_PUBLIC_EDGERUN_DEX_URL          (optional - set once the token deploys)
 #        NEXT_PUBLIC_EDGERUN_TICKER           (optional - defaults to $EDGERUN)
@@ -51,7 +51,6 @@ jobs:
       - name: Build static export
         working-directory: frontend
         env:
-          NEXT_PUBLIC_API_BASE: ${{ vars.NEXT_PUBLIC_API_BASE }}
           NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH }}
           NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
           NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS: ${{ vars.NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS }}

@@ -171,7 +171,7 @@ fixed bar. It runs in your browser too. See [`brain/README-council.md`](brain/RE
 
 <div align="center">
 
-[Site](https://l1vsun.github.io/EDGERUN/) · [X](https://x.com/L1vsun) · [Security](SECURITY.md) · [Roadmap](ROADMAP.md)
+[Site](https://edgerun.live) · [X](https://x.com/L1vsun) · [Security](SECURITY.md) · [Roadmap](ROADMAP.md)
 
 Circuit data: [FlyWire](https://flywire.ai) connectome (Dorkenwald et al., 2024).
 Chain data read live from the public Robinhood Chain RPC.
