@@ -1384,5 +1384,81 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-21T23:38:33+00:00",
+  "block": 69197630,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.16,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2479.2,
+    "wallets": 286,
+    "one_addr_share": 0.27,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1635.6,
+    "wallets": 327,
+    "one_addr_share": 0.3,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "LINGONBERRY",
+    "per_min": 460.8,
+    "wallets": 111,
+    "one_addr_share": 0.89,
+    "flags": []
+   },
+   {
+    "symbol": "META",
+    "per_min": 327.6,
+    "wallets": 35,
+    "one_addr_share": 0.84,
+    "flags": []
+   },
+   {
+    "symbol": "musebook",
+    "per_min": 225.6,
+    "wallets": 40,
+    "one_addr_share": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx3L",
+    "per_min": 142.8,
+    "wallets": 15,
+    "one_addr_share": 0.77,
+    "flags": []
+   },
+   {
+    "symbol": "JOLLYBOT",
+    "per_min": 140.4,
+    "wallets": 34,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "Groyper",
+    "per_min": 140.4,
+    "wallets": 117,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
