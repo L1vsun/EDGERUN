@@ -205,6 +205,33 @@ Verified 2026-09-21 (measured in a real browser against the live chain)
   sends `access-control-allow-origin: *`; it 429s on large unfiltered getLogs (3,000 blocks
   failed) but address-filtered queries over 9,000 blocks are fine. ~100 KB/s while open.
 
+## Design language + modules in the brain (2026-09-21)
+
+**The council modules now live inside the specimen.** Each is anchored to the neurons that
+actually do that job, not to an arbitrary spot:
+
+    SCOUT      antennal lobe (ORN)    sensory in
+    SKEPTIC    lateral horn + APL     innate valence
+    HISTORIAN  mushroom body (KC)     the fly's real memory
+    SYNTHESIS  MBON + DAN             where that computation converges
+    GATE       projection neurons     output
+
+They fire in sequence on a 2.1 s relay; the anchored neurons light up as each takes its
+turn, and the firing card shows that region's **actual line from the latest council round**
+(`council.json` is fetched and keyed by region id). Labels sit in the margin as a numbered
+stack with SVG leader lines to the moving anatomy — the lab-plate convention. Placing them
+at the structures directly was tried first and failed: KC/MBON/LH centroids are close
+together, so the text piled up.
+
+**Design language: instrument, not dashboard.** Graph-paper ground, cold graphite instead
+of black, chartreuse kept only as the signal colour, `RESTRICTED` stamp, specimen rail
+(`SPECIMEN / PREP / FEED / SIGNAL`), corner registration marks, tick rules top and bottom,
+a scale caption under the specimen, monospace labels throughout, hard edges and no blur
+except the instrument panels. Deliberately avoids the generic dark-gradient-and-glow look.
+
+Rendering still 60 fps at 1600x1050 and at 500 px, heap ~21 MB, zero console errors. The
+module stack is hidden below 1080 px (leader lines have nowhere to go on a phone).
+
 ## The council (2026-09-21): four regions, two versions
 
 The "cortical structures as agents" idea. Four regions with different jobs and different

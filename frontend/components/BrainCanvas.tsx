@@ -19,13 +19,29 @@ export interface Pulse {
   lead: boolean;
 }
 
+// Where each council region sits in the brain. These are not decorative placements: the
+// Scout is on the sensory neurons, the Historian on the Kenyon cells (the fly's actual
+// memory), Synthesis on the mushroom-body output neurons where that computation converges,
+// and the Gate on the descending neurons that carry a decision out of the brain.
+export const MODULES = [
+  { id: "scout", label: "SCOUT", sub: "antennal lobe · sensory in", layers: ["ORN"], order: 0 },
+  { id: "skeptic", label: "SKEPTIC", sub: "lateral horn · innate valence", layers: ["LH", "APL"], order: 1 },
+  { id: "historian", label: "HISTORIAN", sub: "mushroom body · memory", layers: ["KC"], order: 2 },
+  { id: "synthesis", label: "SYNTHESIS", sub: "MBON · convergence", layers: ["MBON", "DAN"], order: 3 },
+  { id: "gate", label: "GATE", sub: "descending · output", layers: ["PN"], order: 4 },
+] as const;
+
+export interface ModuleMark { id: string; x: number; y: number; depth: number; firing: number }
+
+const CYCLE_MS = 2100;   // how long each region holds the floor
+
 const D = { ORN: 0, ALLN: 150, PN: 230, LH: 330, KC: 470, APL: 520, MBON: 700, DAN: 760 } as Record<string, number>;
 const HOLD = 520;
 const LIFE = 1500;
 // depth shading for the silhouette, precomputed
 const SHELL_BANDS = 6;
 const SHELL_FILL = Array.from({ length: SHELL_BANDS }, (_, b) =>
-  `rgba(122,148,96,${(0.16 + 0.30 * (1 - b / (SHELL_BANDS - 1))).toFixed(3)})`);
+  `rgba(128,156,100,${(0.2 + 0.38 * (1 - b / (SHELL_BANDS - 1))).toFixed(3)})`);
 const shellBand = (d: number) => Math.min(SHELL_BANDS - 1, Math.max(0, Math.floor((d + 0.5) * SHELL_BANDS)));
 
 const COL: Record<string, [number, number, number]> = {
@@ -33,7 +49,15 @@ const COL: Record<string, [number, number, number]> = {
   MBON: [255, 120, 120], DAN: [255, 208, 120], LH: [120, 145, 85], APL: [130, 210, 255],
 };
 
-export default function BrainCanvas({ circuit, pulses }: { circuit: any | null; pulses: React.MutableRefObject<Pulse[]> }) {
+export default function BrainCanvas({
+  circuit,
+  pulses,
+  marks,
+}: {
+  circuit: any | null;
+  pulses: React.MutableRefObject<Pulse[]>;
+  marks?: React.MutableRefObject<ModuleMark[]>;
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -73,6 +97,8 @@ export default function BrainCanvas({ circuit, pulses }: { circuit: any | null; 
     const order = new Int32Array(N);
     for (let i = 0; i < N; i++) order[i] = i;
     const BULK = ["ALLN", "LH", "MBON", "DAN", "APL"].filter((k) => IDX[k]?.length);
+    // the neurons each module is anchored to, resolved once
+    const modNeurons = MODULES.map((m) => m.layers.flatMap((l) => IDX[l] || []));
 
     let W = 0, H = 0, dpr = 1;
     const resize = () => {
@@ -226,13 +252,45 @@ export default function BrainCanvas({ circuit, pulses }: { circuit: any | null; 
         const list = IDX[LAY[l]];
         if (!list) continue;
         const c = COL[LAY[l]];
-        ctx.fillStyle = `rgba(${c[0]},${c[1]},${c[2]},0.3)`;
+        ctx.fillStyle = `rgba(${c[0]},${c[1]},${c[2]},0.38)`;
         for (const i of list) {
           if (heat[i] >= 0.04) continue;
           ctx.fillRect(sx[i] - base * 0.5, sy[i] - base * 0.5, base, base);
         }
       }
       // then the ones that are firing, back to front
+      // ---- module anchors: centroid of the neurons each region owns ----
+      const speaking = Math.floor(now / CYCLE_MS) % MODULES.length;
+      const phase = ((now % CYCLE_MS) / CYCLE_MS);
+      const out: ModuleMark[] = [];
+      for (let m = 0; m < MODULES.length; m++) {
+        const list = modNeurons[m];
+        if (!list.length) continue;
+        let ax = 0, ay = 0, ad = 0;
+        for (const i of list) { ax += sx[i]; ay += sy[i]; ad += sd[i]; }
+        ax /= list.length; ay /= list.length; ad /= list.length;
+        // a short swell as each region takes its turn, so the sequence reads as a relay
+        const fire = m === speaking ? Math.sin(Math.min(1, phase * 1.6) * Math.PI) : 0;
+        out.push({ id: MODULES[m].id, x: ax / dpr, y: ay / dpr, depth: ad, firing: fire });
+        if (fire > 0.05) {
+          for (const i of list) bump(i, Math.max(heat[i], fire * 0.5));
+        }
+        // anchor mark
+        ctx.strokeStyle = `rgba(207,255,4,${0.22 + 0.6 * fire})`;
+        ctx.lineWidth = Math.max(0.7, dpr * 0.7);
+        const r = (7 + fire * 9) * dpr;
+        ctx.beginPath();
+        ctx.arc(ax, ay, r, 0, 6.283);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(ax - r - 4 * dpr, ay); ctx.lineTo(ax - r + 3 * dpr, ay);
+        ctx.moveTo(ax + r - 3 * dpr, ay); ctx.lineTo(ax + r + 4 * dpr, ay);
+        ctx.moveTo(ax, ay - r - 4 * dpr); ctx.lineTo(ax, ay - r + 3 * dpr);
+        ctx.moveTo(ax, ay + r - 3 * dpr); ctx.lineTo(ax, ay + r + 4 * dpr);
+        ctx.stroke();
+      }
+      if (marks) marks.current = out;
+
       order.sort((a, b) => sd[b] - sd[a]);
       for (let n = 0; n < N; n++) {
         const i = order[n];

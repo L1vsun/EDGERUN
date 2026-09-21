@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/config";
 import { ChainState, SCAN_BLOCKS, Signal, TokenStat, interest, odour, scanToken, signals, startChain } from "@/lib/chain";
-import BrainCanvas, { Pulse } from "./BrainCanvas";
+import BrainCanvas, { ModuleMark, Pulse } from "./BrainCanvas";
+import ModuleHUD from "./ModuleHUD";
 import Fly from "./Fly";
 
 // Live Robinhood Chain flow, smelled by a real fly's olfactory circuit.
@@ -53,6 +54,8 @@ export default function Nose() {
   const archive = useRef<{ address: string; code: Set<number> }[]>([]);
   const rowsRef = useRef<Scored[]>([]);
   const pulses = useRef<Pulse[]>([]);
+  const marks = useRef<ModuleMark[]>([]);
+  const [council, setCouncil] = useState<Record<string, string>>({});
   const watchRef = useRef<string[]>([]);
   const selectedRef = useRef<string | null>(null);
   const [query, setQuery] = useState("");
@@ -60,6 +63,23 @@ export default function Nose() {
   const [watch, setWatch] = useState<string[]>([]);
   const fired = useRef<Record<string, string>>({}); // token -> signals we have already announced
   const [ping, setPing] = useState<{ symbol: string; labels: string } | null>(null);
+
+  useEffect(() => {
+    fetch(asset("/brain/council.json"))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!d) return;
+        const by: Record<string, string> = {};
+        for (const r of d.regions || []) {
+          const v = r.says || {};
+          const line = v.headline || v.verdict || v.precedent || v.call;
+          if (line) by[r.id] = String(line);
+        }
+        if (d.gate) by.gate = `${d.gate.action} · ${d.gate.why}`;
+        setCouncil(by);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     try {
@@ -246,13 +266,24 @@ export default function Nose() {
   return (
     <>
       <section className="stage">
-        <BrainCanvas circuit={circuit} pulses={pulses} />
+        <BrainCanvas circuit={circuit} pulses={pulses} marks={marks} />
+        {phase === "run" && <ModuleHUD marks={marks} say={council} />}
         <div className="vignette" />
+        <div className="reticle" aria-hidden="true">
+          <span className="r-tl" /><span className="r-tr" /><span className="r-bl" /><span className="r-br" />
+          <span className="r-scale">FLYWIRE 783 · 9,515 NEURONS TRACED · 849,261 SYNAPSES</span>
+        </div>
 
         <div className="hero">
-          <div className="kicker">
-            <span className={`dot${state?.ok ? " on" : ""}`} />
-            {state?.ok ? "live · robinhood chain" : state ? "reconnecting" : "connecting"}
+          <div className="rail">
+            <span className="stamp">RESTRICTED</span>
+            <span><i>SPECIMEN</i> D. melanogaster</span>
+            <span><i>PREP</i> FlyWire 783</span>
+            <span><i>FEED</i> RH Chain 4663</span>
+            <span className={`rail-live${state?.ok ? " on" : ""}`}>
+              <span className={`dot${state?.ok ? " on" : ""}`} />
+              {state?.ok ? "SIGNAL" : state ? "RE-ACQUIRING" : "ACQUIRING"}
+            </span>
           </div>
           <div className="title">
             <Fly size={62} alert={!!ping} />
