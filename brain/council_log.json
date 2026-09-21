@@ -834,5 +834,83 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-21T20:09:59+00:00",
+  "block": 69073181,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.16,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2678.4,
+    "wallets": 383,
+    "one_addr_share": 0.14,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 2056.8,
+    "wallets": 377,
+    "one_addr_share": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "VALESTRA",
+    "per_min": 837.6,
+    "wallets": 100,
+    "one_addr_share": 0.89,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "QUOIN",
+    "per_min": 140.4,
+    "wallets": 61,
+    "one_addr_share": 0.7,
+    "flags": []
+   },
+   {
+    "symbol": "HEIR",
+    "per_min": 128.4,
+    "wallets": 109,
+    "one_addr_share": 0.93,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "META",
+    "per_min": 104.4,
+    "wallets": 27,
+    "one_addr_share": 0.69,
+    "flags": []
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 104.4,
+    "wallets": 29,
+    "one_addr_share": 0.39,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "DELTA",
+    "per_min": 100.8,
+    "wallets": 36,
+    "one_addr_share": 0.44,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
