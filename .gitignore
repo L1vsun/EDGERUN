@@ -15,3 +15,6 @@ next-env.d.ts
 .DS_Store
 *.tsbuildinfo
 extension/_metadata/
+
+# internal working docs - kept locally, not published
+.internal/
