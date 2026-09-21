@@ -992,5 +992,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-21T21:09:29+00:00",
+  "block": 69108734,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.16,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2186.4,
+    "wallets": 320,
+    "one_addr_share": 0.22,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 2173.2,
+    "wallets": 396,
+    "one_addr_share": 0.33,
+    "flags": []
+   },
+   {
+    "symbol": "CGX",
+    "per_min": 1200.0,
+    "wallets": 1001,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "AGE",
+    "per_min": 386.4,
+    "wallets": 113,
+    "one_addr_share": 0.75,
+    "flags": []
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 118.8,
+    "wallets": 37,
+    "one_addr_share": 0.46,
+    "flags": []
+   },
+   {
+    "symbol": "Agemica",
+    "per_min": 114.0,
+    "wallets": 27,
+    "one_addr_share": 0.78,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "AGE",
+    "per_min": 114.0,
+    "wallets": 89,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "DELTA",
+    "per_min": 103.2,
+    "wallets": 40,
+    "one_addr_share": 0.34,
+    "flags": []
+   }
+  ]
  }
 ]
