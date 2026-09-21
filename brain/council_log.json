@@ -1231,5 +1231,79 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-21T22:39:18+00:00",
+  "block": 69162332,
+  "mode": "rules",
+  "call": "PAIRPAD is the one to watch - heating",
+  "focus": "PAIRPAD",
+  "confidence": 0.79,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 1765.2,
+    "wallets": 235,
+    "one_addr_share": 0.19,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1386.0,
+    "wallets": 301,
+    "one_addr_share": 0.35,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "DIPLAB",
+    "per_min": 172.8,
+    "wallets": 50,
+    "one_addr_share": 0.61,
+    "flags": []
+   },
+   {
+    "symbol": "musebook",
+    "per_min": 135.6,
+    "wallets": 36,
+    "one_addr_share": 0.53,
+    "flags": []
+   },
+   {
+    "symbol": "HACHI",
+    "per_min": 129.6,
+    "wallets": 84,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "META",
+    "per_min": 105.6,
+    "wallets": 28,
+    "one_addr_share": 0.69,
+    "flags": []
+   },
+   {
+    "symbol": "Nautilo",
+    "per_min": 102.0,
+    "wallets": 21,
+    "one_addr_share": 0.82,
+    "flags": []
+   },
+   {
+    "symbol": "AN1",
+    "per_min": 81.6,
+    "wallets": 33,
+    "one_addr_share": 0.72,
+    "flags": []
+   }
+  ]
  }
 ]
