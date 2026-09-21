@@ -612,5 +612,79 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-21T18:43:27+00:00",
+  "block": 69021354,
+  "mode": "rules",
+  "call": "MSTR is the one to watch - heating",
+  "focus": "MSTR",
+  "confidence": 0.81,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 3057.6,
+    "wallets": 339,
+    "one_addr_share": 0.2,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 2696.4,
+    "wallets": 448,
+    "one_addr_share": 0.29,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "Nautilo",
+    "per_min": 402.0,
+    "wallets": 77,
+    "one_addr_share": 0.71,
+    "flags": []
+   },
+   {
+    "symbol": "HEIR",
+    "per_min": 304.8,
+    "wallets": 255,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 296.4,
+    "wallets": 67,
+    "one_addr_share": 0.56,
+    "flags": []
+   },
+   {
+    "symbol": "META",
+    "per_min": 210.0,
+    "wallets": 34,
+    "one_addr_share": 0.71,
+    "flags": []
+   },
+   {
+    "symbol": "Hoodpack",
+    "per_min": 180.0,
+    "wallets": 62,
+    "one_addr_share": 0.76,
+    "flags": []
+   },
+   {
+    "symbol": "CATBRAIN",
+    "per_min": 147.6,
+    "wallets": 54,
+    "one_addr_share": 0.58,
+    "flags": []
+   }
+  ]
  }
 ]
