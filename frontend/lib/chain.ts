@@ -14,8 +14,11 @@ const ZERO = "0x" + "0".repeat(64);
 
 export const WINDOW_MS = 180_000; // 3 minutes of history
 const RECENT_MS = 45_000; // "now" slice used for the acceleration reading
-const MAX_BLOCKS = 140; // cap per poll so a slow tab samples instead of backfilling
-const POLL_MS = 5000;
+const MAX_BLOCKS = 200;   // cap per poll so a slow tab samples instead of backfilling
+const POLL_MS = 9000;     // the window is 3 minutes; polling faster only costs bandwidth
+const HIDDEN_MS = 60_000; // a backgrounded tab still refreshes, but slowly
+const SWAP_EVERY = 4;     // swap logs move slowly and are only used for a count
+const BACKOFF_MAX = 90_000;
 
 export interface TokenStat {
   address: string;
@@ -91,6 +94,8 @@ export function startChain(onState: (s: ChainState) => void): () => void {
   const walletFirst = new Map<string, number>();
   let swapEvents: { t: number; pool: string }[] = [];
   let lastGood: ChainState | null = null;   // a dropped poll should not blank the screen
+  let cycle = 0;
+  let backoff = 0;                          // grows on failure, resets on success
 
   async function resolveSymbols(addrs: string[]) {
     const want = addrs.filter((a) => !symbols.has(a) && !pending.has(a)).slice(0, 12);
@@ -210,10 +215,14 @@ export function startChain(onState: (s: ChainState) => void): () => void {
         from = head - MAX_BLOCKS;
       }
       if (head >= from) {
+        // Transfers are the bulk of the payload and are needed every cycle. Swap logs are
+        // only used for a count, so they ride along every SWAP_EVERY cycles instead.
+        const range = { fromBlock: "0x" + from.toString(16), toBlock: "0x" + head.toString(16) };
+        const wantSwaps = cycle % SWAP_EVERY === 0;
         const [tr, s3, s2] = await Promise.all([
-          rpc({ jsonrpc: "2.0", id: 1, method: "eth_getLogs", params: [{ fromBlock: "0x" + from.toString(16), toBlock: "0x" + head.toString(16), topics: [TRANSFER] }] }),
-          rpc({ jsonrpc: "2.0", id: 2, method: "eth_getLogs", params: [{ fromBlock: "0x" + from.toString(16), toBlock: "0x" + head.toString(16), topics: [SWAP_V3] }] }),
-          rpc({ jsonrpc: "2.0", id: 3, method: "eth_getLogs", params: [{ fromBlock: "0x" + from.toString(16), toBlock: "0x" + head.toString(16), topics: [SWAP_V2] }] }),
+          rpc({ jsonrpc: "2.0", id: 1, method: "eth_getLogs", params: [{ ...range, topics: [TRANSFER] }] }),
+          wantSwaps ? rpc({ jsonrpc: "2.0", id: 2, method: "eth_getLogs", params: [{ ...range, topics: [SWAP_V3] }] }) : { result: [] },
+          wantSwaps ? rpc({ jsonrpc: "2.0", id: 3, method: "eth_getLogs", params: [{ ...range, topics: [SWAP_V2] }] }) : { result: [] },
         ]);
         const logs = (tr.result || []) as any[];
         txSeen = logs.length;
@@ -234,20 +243,37 @@ export function startChain(onState: (s: ChainState) => void): () => void {
       }
       const state = summarise(now);
       lastGood = state;
+      backoff = 0;
+      cycle++;
       if (!stopped) onState(state);
       resolveSymbols(state.tokens.slice(0, 30).map((t) => t.address));
       resolvePools([...new Set(swapEvents.map((s) => s.pool))]);
     } catch {
-      // keep the last good numbers on screen and just flag the connection
+      // Back off hard on failure. If the node is rate-limiting a crowd, every tab
+      // retrying at full speed is exactly what keeps it down.
+      backoff = Math.min(BACKOFF_MAX, backoff ? backoff * 2 : POLL_MS * 2);
       if (!stopped) onState(lastGood ? { ...lastGood, ok: false } : { ok: false, block: lastBlock, txPerSec: 0, transfersPerMin: 0, wallets: 0, tokens: [], lag });
     }
-    if (!stopped) timer = setTimeout(poll, POLL_MS);
+    if (stopped) return;
+    // A hidden tab barely polls. Jitter keeps a crowd from landing on the node together.
+    const base = backoff || (typeof document !== "undefined" && document.hidden ? HIDDEN_MS : POLL_MS);
+    timer = setTimeout(poll, base + Math.random() * base * 0.35);
   }
 
   poll();
+  const onVisible = () => {
+    if (!stopped && !document.hidden) {
+      clearTimeout(timer);
+      backoff = 0;
+      poll();
+    }
+  };
+  if (typeof document !== "undefined") document.addEventListener("visibilitychange", onVisible);
+
   return () => {
     stopped = true;
     clearTimeout(timer);
+    if (typeof document !== "undefined") document.removeEventListener("visibilitychange", onVisible);
   };
 }
 

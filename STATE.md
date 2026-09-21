@@ -163,11 +163,17 @@ activity and names the number behind it:
 - `cooling` / `just appeared` (neutral)
 Default sort is "worth a look" (flag severity x how much is moving), not raw volume.
 
-**The brain** is the full-bleed background in real 3-D anatomy, turning slowly. Every token
-in the window sends its own wave, staggered across the poll, so it is continuously firing
-with real traffic. For the focused token the PN->KC lines drawn are **real synapses** from
-the connectome (`circuit.kcInputs`). Novelty / "moves most like X" come from the sparse
-Kenyon code (FlyHash on real wiring).
+**The brain** is the full-bleed background and is meant to read as a brain, not a point
+cloud. Three layers in one shared anatomical space:
+1. `shell.bin.gz` — 26,000 neurons of the REST of the fly brain (151 KB), the silhouette
+2. ~2,600 real synapses of the olfactory circuit as a faint web (short edges only: long
+   ones cross the whole brain and turn it into a scribble)
+3. the circuit's 9,515 neurons, lighting up as each token is smelled
+Every token in the window sends its own wave, staggered across the poll, so it is always
+firing with real traffic. The focused token's PN->KC lines are real connectome synapses.
+
+**Mascot:** `components/Fly.tsx` — an SVG fly with beating wings; it turns red and beats
+faster when a watched token trips a flag. Headline is "The fly knows which one stinks."
 
 Files: `frontend/public/brain/{mb.bin.gz 1.66 MB, mb.json, flyhash.js}` (from
 `brain/export_mb.py`), `frontend/components/{BrainCanvas,Nose}.tsx`, `frontend/lib/chain.ts`,
@@ -181,7 +187,9 @@ Verified 2026-09-21 (measured in a real browser against the live chain)
 - **A full LIF sim of this subnetwork does NOT work** — saturates at 69% of KCs, all odours
   identical (0.995). Isolating the circuit loses the inhibition that sparsifies it; hence
   FlyHash with explicit APL winner-take-all.
-- Rendering 60 fps at 1600x1050 and at 500 px; heap 19-48 MB; zero console exceptions.
+- Rendering 60 fps at 1600x1050 and at 500 px with the whole brain + web drawn; heap 20-27 MB;
+  zero console exceptions. Draw calls are batched (shell by depth band, resting neurons by
+  layer) — doing it per-point cost 26,000 fillStyle changes a frame and dropped it to 48 fps.
   Frames 260 ms apart differ substantially, so the animation is data-driven.
 - Load: visible ~250 ms, table ~2.9 s on throttled 5 Mbps, ~2 MB total (was 37 MB).
 - Scan tested live: SPCX returned 1,898 transfers / 193 wallets over 17 min; `hello`
@@ -196,6 +204,86 @@ Verified 2026-09-21 (measured in a real browser against the live chain)
 - Chain: ~9 blocks/s, ~52 tx/s, 8,298 Transfer logs / 500 blocks, ~336 active tokens. RPC
   sends `access-control-allow-origin: *`; it 429s on large unfiltered getLogs (3,000 blocks
   failed) but address-filtered queries over 9,000 blocks are fine. ~100 KB/s while open.
+
+## The council (2026-09-21): four regions, two versions
+
+The "cortical structures as agents" idea. Four regions with different jobs and different
+slices of the data, then a CODE gate that decides whether to say anything:
+
+    SCOUT      sensory cortex          the chain numbers      -> what is happening
+    SKEPTIC    inhibitory prefrontal   numbers + Scout        -> why it is a trap
+    HISTORIAN  hippocampus             numbers + the run log  -> what followed before
+    SYNTHESIS  association cortex      all three              -> one call + confidence
+    GATE       basal ganglia           code, not a model      -> SPEAK or SILENCE
+
+**Two interchangeable versions, one schema, one gate:**
+- **v1 `--rules`** (`brain/council_rules.py`) — each region decides by rule. No API key,
+  no cost, real live chain data. This is what ships at launch. It is NOT a mock of v2: it
+  is the deterministic version of the same pipeline, and every sentence is computed from a
+  number measured on-chain seconds earlier.
+- **v2 live** (`brain/council.py` + `brain/council/cortex_*.md`) — the same four seats, each
+  an `claude-opus-5` call with its own prompt. Flip with one repo variable.
+
+The page states which version produced the round (`mode` in the JSON, a badge in the UI).
+It never implies a model wrote rule output — the site's whole pitch is calling out faked
+activity, so faking the reasoning would be the same sin and is trivially checkable.
+
+`.github/workflows/council.yml` runs `--rules` every 30 min for free. To go live: add
+`ANTHROPIC_API_KEY` as an Actions secret and set repo variable `COUNCIL_MODE=live`.
+Needs Settings -> Actions -> Workflow permissions = read and write (it commits the round).
+
+Verified 2026-09-21 against the live chain
+- `python brain/council.py --rules` produces a real round end to end, writes
+  `frontend/public/brain/council.json`, appends to `brain/council_log.json`, costs $0.
+- The panel renders all four regions + the gate in Chrome; build passes.
+- **Quote-asset detection:** a token on 2+ different pools is what everything is priced
+  against (WETH, USDG detected automatically) and is excluded from being the focus —
+  without it Synthesis just picked WETH every round, which is plumbing, not a call.
+- The Historian does real precedent matching over `council_log.json` (flag-set overlap,
+  then what that token's flow actually did after) and correctly returns "none yet" while
+  the log is short. The log is the only thing that compounds — commit it.
+- The gate frequently says SILENCE. That is the design, not a bug.
+- **NOT verified: a live (model) round.** No `ANTHROPIC_API_KEY` and no `ant` CLI in this
+  environment, so no region has ever been run by a model. Cost estimate for v2 stands at
+  ~$0.10-0.15/round, unmeasured.
+- **RPC blocks bot User-Agents** (403 on Python's default). `chain_snapshot.py` sets one
+  that passes, but Actions runs from datacenter IPs — run the workflow by hand once first.
+
+## Launch robustness — measured 2026-09-21
+
+Everything below is measured against the live chain, not estimated.
+
+**Per visitor, after the hardening in `lib/chain.ts`:** ~0.43 RPC requests/s and
+**~5.6 KB/s** of wire traffic (Chrome DevTools protocol accounting, 75 s sample).
+Earlier "48 KB/s" figures were wrong: they came from a Python probe that did not send
+`Accept-Encoding`. **The RPC gzips ~12.7x** (636 KB -> 50 KB on a 100-block getLogs), so
+the browser pays a fraction of the raw size.
+
+**What the public RPC tolerates:** 12 simultaneous getLogs served in 0.6 s, no errors.
+Not probed harder on purpose — it is someone else's endpoint. It **429s on very large
+ranges** (a 3,000-block getLogs failed; stay under ~500) and **403s bot User-Agents**
+(Python's default `Python-urllib/*` is blocked; `curl/*`, a browser UA, and
+`edgerun-council/1.0` all pass). That last one matters for the scheduled council runner —
+`chain_snapshot.py` sets a UA that works, but GitHub Actions runs from datacenter IPs and
+Cloudflare may judge those differently; **run the workflow manually once before trusting
+the cron.**
+
+**Extrapolated concurrency** (linear in visitors, since each browser pulls the whole log
+stream independently): 100 concurrent ~= 43 req/s and 0.6 MB/s; 1,000 ~= 430 req/s and
+5.6 MB/s; 10,000 ~= 4,300 req/s and 56 MB/s. There is no SLA and no recourse on that
+endpoint, and every visitor fails at the same moment if it throttles by origin.
+
+**GitHub Pages:** ~2 MB per first visit (mb.bin.gz 1.65 MB + shell 151 KB + JS/fonts).
+Pages' soft bandwidth limit is ~100 GB/month, so roughly **50,000 first visits/month**
+before GitHub throttles. A viral launch day can exceed that alone.
+
+Hardening already applied to `lib/chain.ts`: 9 s poll (was 5 s) with 35% jitter so a crowd
+does not synchronise, swap logs only every 4th cycle, `MAX_BLOCKS` 200 cap, exponential
+backoff to 90 s on failure, hidden tabs drop to 60 s, instant catch-up on refocus, and the
+last good numbers stay on screen during an outage. **Not verified: the hidden-tab path** —
+Chrome's visibility override no longer takes in headless, so that branch is code-reviewed
+only. Polling less often does NOT cut bytes proportionally (the same blocks are covered
+either way); only sampling, or a shared snapshot, does.
 
 **BLOCKER, still unresolved: data licence.** Third-party sources (not FlyWire's own terms;
 unconfirmed) say FlyWire data is CC BY-NC 4.0 — non-commercial. The site ships

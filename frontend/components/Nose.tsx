@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/config";
 import { ChainState, SCAN_BLOCKS, Signal, TokenStat, interest, odour, scanToken, signals, startChain } from "@/lib/chain";
 import BrainCanvas, { Pulse } from "./BrainCanvas";
+import Fly from "./Fly";
 
 // Live Robinhood Chain flow, smelled by a real fly's olfactory circuit.
 // Everything runs in this tab: the chain is read from the public RPC, the circuit from
@@ -253,11 +254,14 @@ export default function Nose() {
             <span className={`dot${state?.ok ? " on" : ""}`} />
             {state?.ok ? "live · robinhood chain" : state ? "reconnecting" : "connecting"}
           </div>
-          <h1>Which token is<br />actually moving.</h1>
+          <div className="title">
+            <Fly size={62} alert={!!ping} />
+            <h1>The fly knows<br />which one stinks.</h1>
+          </div>
           <p>
-            Every transfer and swap on Robinhood Chain, read live, and flagged the moment one wallet
-            is faking the volume, supply starts printing, or real new buyers pile in. Scored by a real
-            fly&apos;s olfactory circuit — <b>9,515 neurons</b> built to tell one smell from another.
+            Every transfer and swap on the chain, live. It calls out the wallet faking your volume,
+            the supply being printed under you, and the ones actually catching real buyers — before
+            you send it.
           </p>
           <form
             className="scan"

@@ -1,0 +1,59 @@
+# The council runs here, not in the browser.
+#
+# The site is a static page: anything it can read, a visitor can read, so the API key
+# can never live in it. This job runs on a schedule with the key as a repo secret,
+# writes frontend/public/brain/council.json, and commits it. The Pages deploy workflow
+# then picks it up because the file lives under frontend/.
+#
+# Two modes, same pipeline and same output file:
+#   --rules  (default) the regions decide by rule. No API key, no cost, real chain data.
+#   live     the regions decide by model. Needs ANTHROPIC_API_KEY. Costs money per round.
+#
+# Setup:
+#   1. Settings -> Actions -> General -> Workflow permissions: "Read and write permissions"
+#   2. To switch to the model version: add ANTHROPIC_API_KEY as an Actions secret and set
+#      the repo variable COUNCIL_MODE to "live". Nothing else changes.
+#   3. Adjust the cron. In rules mode it is free, so it can run often.
+
+name: Council round
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # every 30 min. Free in rules mode; see the cost note for live.
+  workflow_dispatch: {}
+
+concurrency:
+  group: council
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  think:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        if: vars.COUNCIL_MODE == 'live'
+        run: pip install anthropic
+
+      - name: Run the council
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        working-directory: brain
+        run: python council.py ${{ vars.COUNCIL_MODE == 'live' && ' ' || '--rules' }}
+
+      - name: Commit the round
+        run: |
+          git config user.name  "edgerun-council"
+          git config user.email "council@users.noreply.github.com"
+          git add frontend/public/brain/council.json brain/council_log.json
+          # nothing to commit is a normal outcome if the run failed upstream
+          git diff --staged --quiet || git commit -m "council round $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push

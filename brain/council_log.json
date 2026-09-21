@@ -1,0 +1,157 @@
+[
+ {
+  "at": "2026-09-21T02:47:20+00:00",
+  "block": 68450553,
+  "mode": "rules",
+  "call": "WETH is the one to watch \u2014 dex live",
+  "focus": "WETH",
+  "confidence": 0.78,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 1551.6,
+    "wallets": 250,
+    "one_addr_share": 0.26,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1470.0,
+    "wallets": 284,
+    "one_addr_share": 0.38,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "ILY",
+    "per_min": 260.4,
+    "wallets": 87,
+    "one_addr_share": 0.55,
+    "flags": []
+   },
+   {
+    "symbol": "NOSH",
+    "per_min": 157.2,
+    "wallets": 46,
+    "one_addr_share": 0.63,
+    "flags": []
+   },
+   {
+    "symbol": "BabyBull",
+    "per_min": 121.2,
+    "wallets": 103,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "DATACENTER",
+    "per_min": 118.8,
+    "wallets": 19,
+    "one_addr_share": 0.75,
+    "flags": []
+   },
+   {
+    "symbol": "RBLX",
+    "per_min": 110.4,
+    "wallets": 11,
+    "one_addr_share": 0.67,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "GME",
+    "per_min": 109.2,
+    "wallets": 18,
+    "one_addr_share": 0.57,
+    "flags": []
+   }
+  ]
+ },
+ {
+  "at": "2026-09-21T02:48:00+00:00",
+  "block": 68450948,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2145.6,
+    "wallets": 251,
+    "one_addr_share": 0.17,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1904.4,
+    "wallets": 327,
+    "one_addr_share": 0.25,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "ILY",
+    "per_min": 309.6,
+    "wallets": 102,
+    "one_addr_share": 0.62,
+    "flags": []
+   },
+   {
+    "symbol": "Sob",
+    "per_min": 152.4,
+    "wallets": 60,
+    "one_addr_share": 0.97,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "PEPEZILLA",
+    "per_min": 139.2,
+    "wallets": 96,
+    "one_addr_share": 0.95,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 134.4,
+    "wallets": 75,
+    "one_addr_share": 0.31,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 133.2,
+    "wallets": 31,
+    "one_addr_share": 0.42,
+    "flags": []
+   },
+   {
+    "symbol": "INU",
+    "per_min": 121.2,
+    "wallets": 103,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   }
+  ]
+ }
+]

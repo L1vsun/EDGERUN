@@ -53,16 +53,18 @@ assert delta.min() >= 0
 # Real anatomy in 3-D: the browser rotates it, so the mushroom body calyx, the antennal
 # lobe and the lobes read as the shapes they actually are. Normalised into 0..1 on one
 # shared scale so proportions survive; a neuron with no recorded soma sits at the median.
-xyz = ann[["pos_x", "pos_y", "pos_z"]].to_numpy(float)[sel]
-xyz *= np.array([4.0, 4.0, 40.0])                 # FlyWire voxels are 4x4x40 nm: z is 10x coarser
+VOX = np.array([4.0, 4.0, 40.0])                  # FlyWire voxels are 4x4x40 nm: z is 10x coarser
+all_xyz = ann[["pos_x", "pos_y", "pos_z"]].to_numpy(float) * VOX
 for c in range(3):
-    col = xyz[:, c]
+    col = all_xyz[:, c]
     col[np.isnan(col)] = np.nanmedian(col)
-    xyz[:, c] = col
-lo, hi = xyz.min(0), xyz.max(0)
+    all_xyz[:, c] = col
+# one transform for both files, derived from the WHOLE brain, so the circuit sits inside
+# the shell exactly where it really is
+lo, hi = all_xyz.min(0), all_xyz.max(0)
 scale = float((hi - lo).max())
-q = (xyz - (lo + hi) / 2) / scale + 0.5           # centred, aspect preserved
-q = np.clip(q, 0, 1)
+norm = lambda a: np.clip((a - (lo + hi) / 2) / scale + 0.5, 0, 1)
+q = norm(all_xyz[sel])
 X, Y, Z = q[:, 0], q[:, 1], q[:, 2]
 
 blob = (np.array([len(sel), len(w)], "<u4").tobytes() + layer.tobytes()
@@ -80,7 +82,20 @@ for i in groups["ORN"]:
     g = glom.iloc[i]
     if isinstance(g, str) and g != "nan":
         gl.setdefault(g, []).append(int(pos[i]))
-meta = {"layers": LAYERS, "neurons": int(len(sel)), "synapses": int(len(w)),
+# the rest of the brain, thinned to a silhouette the circuit can sit inside
+rest = np.setdiff1d(np.arange(len(comp)), sel)
+rng = np.random.default_rng(7)
+keep = rng.choice(rest, size=min(26000, len(rest)), replace=False)
+sq = norm(all_xyz[keep])
+shell = (np.array([len(keep)], "<u4").tobytes()
+         + (sq[:, 0] * 65535).round().astype("<u2").tobytes()
+         + (sq[:, 1] * 65535).round().astype("<u2").tobytes()
+         + (sq[:, 2] * 65535).round().astype("<u2").tobytes())
+with gzip.open(PUBLISHED / "shell.bin.gz", "wb", compresslevel=9) as f:
+    f.write(shell)
+print(f"shell: {len(keep)} neurons  gz {(PUBLISHED/'shell.bin.gz').stat().st_size/1e6:.2f} MB")
+
+meta = {"layers": LAYERS, "shell": int(len(keep)), "neurons": int(len(sel)), "synapses": int(len(w)),
         "counts": {k: int((layer == li).sum()) for li, k in enumerate(LAYERS)},
         "glomeruli": dict(sorted(gl.items()))}
 (PUBLISHED / "mb.json").write_text(json.dumps(meta, separators=(",", ":")))

@@ -80,6 +80,29 @@
       this.pn2kc.forEach((list, p) => {
         for (const [k] of list) this.kcInputs[k].push(p);
       });
+      // A sample of real synapses for the visible web. Only short ones: long-range edges
+      // cross the whole brain and turn the picture into a scribble, while short ones trace
+      // the structure the neurons actually form.
+      const px = mb.X, py = mb.Y, pz = mb.Z;
+      const cand = [];
+      const LIMIT = 6000; // in the 0..65535 coordinate space, ~9% of the brain's width
+      for (let i = 0; i < mb.N; i++) {
+        for (let e = mb.offsets[i], end = mb.offsets[i + 1]; e < end; e++) {
+          if (mb.w[e] < 16) continue;
+          const j = mb.post[e];
+          const dx = px[i] - px[j], dy = py[i] - py[j], dz = pz[i] - pz[j];
+          if (dx * dx + dy * dy + dz * dz < LIMIT * LIMIT) cand.push(i, j);
+        }
+      }
+      const want = 2600;
+      const stride = Math.max(1, Math.floor(cand.length / 2 / want));
+      const n = Math.min(want, Math.floor(cand.length / 2 / stride));
+      const web = new Int32Array(n * 2);
+      for (let k = 0, j = 0; j < web.length; k += stride * 2, j += 2) {
+        web[j] = cand[k];
+        web[j + 1] = cand[k + 1];
+      }
+      this.web = web;
       this.pn = new Float64Array(this.idx.PN.length);
       this.kc = new Float64Array(this.idx.KC.length);
     }
@@ -120,17 +143,36 @@
     return i / (a.size + b.size - i);
   };
 
-  async function load(base) {
-    const [metaRes, binRes] = await Promise.all([fetch(base + "mb.json"), fetch(base + "mb.bin.gz")]);
-    if (!binRes.ok) throw new Error("circuit HTTP " + binRes.status);
-    const meta = await metaRes.json();
-    let blob = await binRes.blob();
+  async function gunzip(res) {
+    let blob = await res.blob();
     const head = new Uint8Array(await blob.slice(0, 2).arrayBuffer());
     if (head[0] === 0x1f && head[1] === 0x8b) {
       if (typeof DecompressionStream === "undefined") throw new Error("browser too old to unpack the circuit");
       blob = await new Response(blob.stream().pipeThrough(new DecompressionStream("gzip"))).blob();
     }
-    return new Circuit(decode(await blob.arrayBuffer()), meta);
+    return blob.arrayBuffer();
+  }
+
+  // the rest of the brain, as a silhouette the circuit sits inside
+  async function loadShell(base) {
+    const res = await fetch(base + "shell.bin.gz");
+    if (!res.ok) return null;
+    const buf = await gunzip(res);
+    const n = new Uint32Array(buf, 0, 1)[0];
+    let o = 4;
+    const X = new Uint16Array(buf.slice(o, o + 2 * n)); o += 2 * n;
+    const Y = new Uint16Array(buf.slice(o, o + 2 * n)); o += 2 * n;
+    const Z = new Uint16Array(buf.slice(o, o + 2 * n));
+    return { n, X, Y, Z };
+  }
+
+  async function load(base) {
+    const [metaRes, binRes] = await Promise.all([fetch(base + "mb.json"), fetch(base + "mb.bin.gz")]);
+    if (!binRes.ok) throw new Error("circuit HTTP " + binRes.status);
+    const meta = await metaRes.json();
+    const circuit = new Circuit(decode(await gunzip(binRes)), meta);
+    circuit.shell = await loadShell(base).catch(() => null);
+    return circuit;
   }
 
   const api = { load, decode, Circuit, overlap, SPARSITY };
