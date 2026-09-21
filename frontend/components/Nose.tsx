@@ -300,11 +300,12 @@ export default function Nose() {
             </span>
           </div>
           <div className="title">
-            <h1>Five modules<br />read every block.</h1>
+            <h2 className="stage-title">Underneath: five modules<br />reading every block.</h2>
           </div>
           <p>
-            Four of them argue over the same live chain — what is moving, why it is a trap, what
-            followed last time, what it adds up to — and a fifth decides whether any of it is worth
+            The extension answers one question about one contract. This is the other half — the
+            whole chain, watched continuously. Four modules argue over what is moving, why it is a
+            trap and what followed last time; a fifth decides whether any of it is worth
             interrupting you for. Most rounds, it says nothing.
           </p>
           <form

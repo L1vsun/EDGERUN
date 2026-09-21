@@ -1,9 +1,12 @@
+import Hero from "@/components/Hero";
 import Nose from "@/components/Nose";
 import Council from "@/components/Council";
 
 export default function Home() {
   return (
     <>
+      {/* The product first. The circuit below is how it thinks, not what it is. */}
+      <Hero />
       <Nose />
       <Council />
       <footer className="credit">
