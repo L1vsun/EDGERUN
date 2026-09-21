@@ -234,5 +234,78 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-21T16:10:22+00:00",
+  "block": 68929572,
+  "mode": "rules",
+  "call": "SUPERINU is the one to watch - heating",
+  "focus": "SUPERINU",
+  "confidence": 0.86,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 4748.4,
+    "wallets": 521,
+    "one_addr_share": 0.28,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 4096.8,
+    "wallets": 407,
+    "one_addr_share": 0.25,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 1369.2,
+    "wallets": 95,
+    "one_addr_share": 0.63,
+    "flags": []
+   },
+   {
+    "symbol": "Glorp",
+    "per_min": 1029.6,
+    "wallets": 698,
+    "one_addr_share": 0.37,
+    "flags": []
+   },
+   {
+    "symbol": "SI",
+    "per_min": 870.0,
+    "wallets": 226,
+    "one_addr_share": 0.61,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx3L",
+    "per_min": 805.2,
+    "wallets": 22,
+    "one_addr_share": 0.78,
+    "flags": []
+   },
+   {
+    "symbol": "SUPERINU",
+    "per_min": 393.6,
+    "wallets": 40,
+    "one_addr_share": 0.89,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SUPERNU",
+    "per_min": 348.0,
+    "wallets": 91,
+    "one_addr_share": 0.76,
+    "flags": []
+   }
+  ]
  }
 ]
