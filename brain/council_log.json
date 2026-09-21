@@ -1069,5 +1069,88 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-21T21:38:21+00:00",
+  "block": 69125896,
+  "mode": "rules",
+  "call": "NVDA is the one to watch - heating",
+  "focus": "NVDA",
+  "confidence": 0.81,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2743.2,
+    "wallets": 380,
+    "one_addr_share": 0.21,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 2299.2,
+    "wallets": 405,
+    "one_addr_share": 0.3,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 1395.6,
+    "wallets": 60,
+    "one_addr_share": 0.69,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "XOGE",
+    "per_min": 312.0,
+    "wallets": 35,
+    "one_addr_share": 0.91,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "HT",
+    "per_min": 302.4,
+    "wallets": 32,
+    "one_addr_share": 0.79,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Underdog",
+    "per_min": 157.2,
+    "wallets": 33,
+    "one_addr_share": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "TWTR",
+    "per_min": 140.4,
+    "wallets": 13,
+    "one_addr_share": 0.97,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 136.8,
+    "wallets": 83,
+    "one_addr_share": 0.43,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
