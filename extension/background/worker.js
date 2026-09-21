@@ -8,9 +8,12 @@
 // MV3 kills this worker after ~30 s idle, so nothing important lives in a variable: the
 // registry, the verdict cache, the watchlist and the spend budget are all in storage.
 
+import { getBlocklist } from "../lib/blocklist.js";
 import { remaining } from "../lib/budget.js";
+import { deployerTrail, trailChecks } from "../lib/deployer.js";
+import { pruneMemory, rememberAndRecall } from "../lib/memory.js";
 import { getRegistry } from "../lib/registry.js";
-import { isAddress, lookupTicker, resolveTicker, scan, scanMany } from "../lib/verdict.js";
+import { isAddress, lookupTicker, rankCandidates, resolveTicker, scan, scanMany } from "../lib/verdict.js";
 
 const TTL = { identity: 15 * 60 * 1000, full: 5 * 60 * 1000 };
 const TICKER_TTL = 6 * 60 * 60 * 1000; // which contracts claim a ticker barely changes
@@ -47,7 +50,13 @@ async function getVerdict(address, level = "identity", { fresh = false } = {}) {
   const key = `${level}:${addr}`;
   if (inflight.has(key)) return inflight.get(key);
   const p = scan(addr, { level })
-    .then((r) => { cachePut(r); return r; })
+    .then(async (r) => {
+      // recorded once, on the fresh scan — a cached read must not inflate "seen 9 times"
+      const notes = await rememberAndRecall(r);
+      const out = notes.length ? { ...r, checks: [...r.checks, ...notes] } : r;
+      cachePut(out);
+      return out;
+    })
     .finally(() => inflight.delete(key));
   inflight.set(key, p);
   return p;
@@ -65,11 +74,26 @@ async function getVerdicts(addresses) {
   if (missing.length) {
     const fresh = await scanMany(missing);
     for (const [addr, r] of Object.entries(fresh)) {
-      out[addr] = r;
-      cachePut(r);
+      const notes = await rememberAndRecall(r);
+      const withNotes = notes.length ? { ...r, checks: [...r.checks, ...notes] } : r;
+      out[addr] = withNotes;
+      cachePut(withNotes);
     }
   }
   return out;
+}
+
+// The deployer trail is slow and expensive, so it is asked for explicitly and cached for an
+// hour — a wallet's launch history does not change minute to minute.
+const trailCache = new Map();
+async function getTrail(address) {
+  const addr = String(address).toLowerCase();
+  const hit = trailCache.get(addr);
+  if (hit && Date.now() - hit.at < 60 * 60 * 1000) return hit.data;
+  const trail = await deployerTrail(addr);
+  const data = { trail, checks: trailChecks(trail) };
+  trailCache.set(addr, { at: Date.now(), data });
+  return data;
 }
 
 // Dexscreener puts the *pair* in the URL, not the token — and on this chain some of those
@@ -142,6 +166,9 @@ const HANDLERS = {
     return out;
   },
   pair: (m) => resolvePair(m.pairId),
+  deployer: (m) => getTrail(m.address),
+  rank: (m) => rankCandidates(m.addresses),
+  blocklist: () => getBlocklist().then((b) => ({ count: b.count, updated: b.updated, source: b.source })),
   registry: () => getRegistry().then((r) => ({ loaded: r.loaded, count: r.count || 0, error: r.error, fetchedAt: r.fetchedAt })),
   budget: async () => ({ blockscout: await remaining("blockscout"), rpc: await remaining("rpc") }),
   "watch:list": () => watchList(),
@@ -160,9 +187,18 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 // Keep the registry warm so no badge ever waits on it.
 chrome.runtime.onInstalled.addListener(() => {
   chrome.alarms.create("registry", { periodInMinutes: 55 });
+  chrome.alarms.create("upkeep", { periodInMinutes: 180 });
   getRegistry({ force: true }).catch(() => {});
+  getBlocklist({ force: true }).catch(() => {});
 });
-chrome.runtime.onStartup.addListener(() => { getRegistry().catch(() => {}); });
+chrome.runtime.onStartup.addListener(() => {
+  getRegistry().catch(() => {});
+  getBlocklist().catch(() => {});
+});
 chrome.alarms.onAlarm.addListener((a) => {
-  if (a.name === "registry") getRegistry({ force: true }).catch(() => {});
+  if (a.name === "registry") {
+    getRegistry({ force: true }).catch(() => {});
+    getBlocklist({ force: true }).catch(() => {});
+  }
+  if (a.name === "upkeep") pruneMemory().catch(() => {});
 });

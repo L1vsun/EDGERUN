@@ -12,7 +12,8 @@
     "https://robinhoodchain.blockscout.com/*",
     "https://rpc.mainnet.chain.robinhood.com/*",
     "https://api.robinhood.com/*",
-    "https://api.dexscreener.com/*"
+    "https://api.dexscreener.com/*",
+    "https://l1vsun.github.io/*"
   ],
   "background": {
     "service_worker": "background/worker.js",

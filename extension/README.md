@@ -71,6 +71,31 @@ The strongest thing here is the cross-check: a post that says **$TSLA** and past
 that is not Robinhood's TSLA address is showing you a different token than the one it names.
 That is provable from the registry alone.
 
+## What it knows that a contract scan cannot
+
+Four things, none of which come from reading bytecode:
+
+- **The deployer's behaviour.** Not just "what else did this wallet launch" but *what it has
+  been calling on this token*. The fake TSLA at `0xD18F5e73…` reads clean as a contract —
+  verified source, no mint. Its deployer spent **40 `setBlacklistBatch` and 7 `setBlacklist`
+  calls on that token, 47 of its last 50 transactions.** That is an operator blocking buyers
+  in bulk, and no bytecode scan will ever show it. On demand, ~4 explorer requests.
+- **What *you* have seen before.** The extension is the only witness to your own feed, so it
+  remembers every address and ticker it has shown you: *"this was PASS when you checked it 5
+  days ago — it is FAIL now"*, *"you saw $PEPE yesterday pointing at a different contract"*.
+  A rug is a sequence, not a single bad contract, and a sequence is only visible to something
+  with a memory. Local only; it is never uploaded and there is nowhere for it to go.
+- **Which of the colliding contracts people actually hold.** Reporting "7 contracts use
+  $PEPE" is honest but leaves you stuck, so the panel can rank them by holder count. Measured
+  live: 31,906 / 7,200 / 1,958 / 1,516 / 339 / 26. When one dominates it says so; when two are
+  comparable — as here — it reports **contested** rather than picking a winner.
+- **A blocklist you can read.** `frontend/public/blocklist.json` in this repo, served from the
+  same Pages site, fetched hourly. Each entry carries the evidence that put it there and
+  `git log` says who added it. Everyone else in this category ships a list you cannot audit.
+
+Plus **copy proof** — a pasteable reply naming what was claimed, what the contract actually
+is, the two strongest measured facts and the explorer link, so nobody has to take our word.
+
 ## Design
 
 Light, on purpose. This sits on other people's pages — X in dark mode, Dexscreener's near

@@ -1,0 +1,27 @@
+{
+  "_comment": "edgerun's public blocklist. Every entry is a claim anyone can check: the evidence field says what was measured and how, and the commit history of this file says who added it and when. Nothing goes in here on a hunch — an entry needs a reproducible observation (a reverted transfer simulation, a registry mismatch, an on-chain fact), not a report. To add one, open a pull request against frontend/public/blocklist.json with the evidence filled in.",
+  "version": 1,
+  "updated": "2026-09-21",
+  "source": "https://github.com/l1vsun/edgerun/blob/main/frontend/public/blocklist.json",
+  "entries": [
+    {
+      "address": "0xd18f5e73ec5e2d0b18ebe97426dc5edc2c887715",
+      "symbol": "TSLA",
+      "name": "memestock",
+      "severity": "fail",
+      "reason": "holders cannot move this token",
+      "evidence": "eth_call transfer(0x…dEaD, 1) simulated from each of the 3 top holders with a live non-zero balance: all three reverted \"blacklisted\". Balances were read on chain immediately before simulating, so this is not a stale-balance artefact.",
+      "also": "Uses the ticker TSLA, which Robinhood publishes at 0x322f0929c4625ed5bad873c95208d54e1c003b2d.",
+      "added": "2026-09-21"
+    },
+    {
+      "address": "0x066ad1c8bf4edf5482d6994f18c27216e597f81a",
+      "symbol": "TSLA",
+      "name": "Tesla • Robinhood Token",
+      "severity": "fail",
+      "reason": "copies the official name exactly, and blocks some holders but not others",
+      "evidence": "Name is byte-for-byte the official \"Tesla • Robinhood Token\" while the address is not in Robinhood's registry. Transfer simulation succeeded for 2 of 3 live holders and reverted \"blacklisted\" for the third — a targeted restriction rather than a global one.",
+      "added": "2026-09-21"
+    }
+  ]
+}

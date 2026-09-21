@@ -37,6 +37,12 @@ export async function search(q) {
   return { items, capped: (data?.items || []).length >= 50 };
 }
 
+/** One transaction — used to find who actually signed a contract's creation. */
+export const transaction = (hash) => get(`/api/v2/transactions/${hash}`);
+
+/** A wallet's transactions, `filter` being "from" or "to". */
+export const addressTransactions = (a, filter) => get(`/api/v2/addresses/${a}/transactions?filter=${filter}`);
+
 /** Top holders. Their balances are a cached snapshot — read balanceOf live before using. */
 export async function holders(a, limit = 6) {
   const data = await get(`/api/v2/tokens/${a}/holders`);

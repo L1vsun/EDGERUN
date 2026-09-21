@@ -135,7 +135,9 @@
     .v.bad { background: var(--bad); } .v.ok { background: var(--ok); } .v.warn { background: var(--warn); }
     .lead { margin: 0; padding: 14px 16px; font-size: 14.5px; border-bottom: 1px solid var(--line); }
     .lead.bad { color: var(--bad); font-weight: 600; background: var(--bad-soft); }
-    .rows { margin: 0; padding: 6px 0; max-height: 46vh; overflow-y: auto; }
+    .rows { margin: 0; padding: 6px 0; max-height: 52vh; overflow-y: auto; border-bottom: 1px solid var(--line); }
+    .rows::-webkit-scrollbar { width: 10px; }
+    .rows::-webkit-scrollbar-thumb { background: #d7ddc8; border-radius: 99px; border: 3px solid var(--card); }
     .row { display: grid; grid-template-columns: 10px 1fr; gap: 11px; padding: 9px 16px; }
     .row i { width: 9px; height: 9px; border-radius: 50%; margin-top: 6px; background: var(--muted); }
     .row i.ok { background: var(--ok); } .row i.fail { background: var(--bad); }
@@ -173,6 +175,29 @@
     return "No claim on an official asset. The contract itself has not been checked yet.";
   }
   E.badgeLead = lead;
+
+  // the contracts a ticker-collision result is carrying, if any
+  const candidates = (r) =>
+    (r?.checks || []).filter((c) => String(c.id).startsWith("cand:")).map((c) => String(c.id).slice(5));
+
+  /**
+   * A reply you can paste. Short enough for a post, specific enough to be checked: what was
+   * claimed, what the address actually is, the two strongest measured facts, and the
+   * explorer link so nobody has to take our word for it.
+   */
+  function receipt(r) {
+    if (!r) return "";
+    const lines = [lead(r)];
+    const evidence = (r.checks || [])
+      .filter((c) => c.status === "fail" || c.status === "warn")
+      .slice(0, 2)
+      .map((c) => `· ${c.detail}`);
+    if (evidence.length) lines.push("", ...evidence);
+    lines.push("", `Check it yourself: ${r.explorerUrl}`);
+    lines.push("Checked with edgerun — runs in your own browser, against the chain.");
+    return lines.join("\n");
+  }
+  E.badgeReceipt = receipt;
 
   // One panel element for the whole page, parked at the document root.
   let panelHost = null;
@@ -328,6 +353,9 @@
         <div class="addr">${esc(r.address)}</div>
         <div class="foot">
           ${needsFull ? '<button class="go" data-act="full">run full check</button>' : ""}
+          ${candidates(r).length ? '<button data-act="rank">which one is real?</button>' : ""}
+          <button data-act="trail">who launched it</button>
+          <button data-act="copy">copy proof</button>
           <button data-act="watch">watch</button>
           <a href="${esc(r.explorerUrl)}" target="_blank" rel="noreferrer">explorer ↗</a>
           <span class="when">${r.cached ? "cached · " : ""}${ago(r.scannedAt)}</span>
@@ -343,6 +371,76 @@
         e.stopPropagation();
         opts.onWatch?.(r.address);
         e.target.textContent = "watching ✓";
+      });
+
+      // Who launched it, and what else they have launched. Costs ~4 explorer requests, so
+      // it is never run automatically — only when someone asks this question.
+      panel.querySelector('[data-act="trail"]')?.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const btn = e.target;
+        btn.disabled = true;
+        btn.textContent = "reading records…";
+        try {
+          const { checks } = await E.ask({ type: "deployer", address: r.address });
+          current = { ...current, checks: [...current.checks.filter((c) => !String(c.id).startsWith("deployer") && c.id !== "production_line" && c.id !== "explorer_scam"), ...checks] };
+          renderPanel(panel, current);
+          position(panel, chip);
+        } catch (err) {
+          btn.disabled = false;
+          btn.textContent = "records unavailable";
+          btn.title = err.message;
+        }
+      });
+
+      // Turn a ticker collision into an answer: which of these does anyone actually hold?
+      panel.querySelector('[data-act="rank"]')?.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const btn = e.target;
+        btn.disabled = true;
+        btn.textContent = "counting holders…";
+        try {
+          const { ranked, verdict } = await E.ask({ type: "rank", addresses: candidates(r) });
+          const rows = ranked.map((c, i) => ({
+            id: `cand:${c.address}`,
+            label: `${i + 1}. ${c.name || c.symbol || "unnamed"}`,
+            status: i === 0 && verdict === "clear" ? "ok" : "unresolved",
+            detail: `${c.address} · ${c.holders == null ? "holder count unreadable" : `${c.holders.toLocaleString()} holders`}`,
+          }));
+          const verdictRow = {
+            id: "rank", label: "which one",
+            status: verdict === "clear" ? "ok" : "warn",
+            detail: verdict === "clear"
+              ? `one contract holds the overwhelming majority of this ticker's holders — the rest are near-empty. That is the one people actually own; it is not a statement that it is safe.`
+              : verdict === "contested"
+                ? `no clear winner — two or more of these have comparable holder counts, so the ticker genuinely does not identify a token here.`
+                : `holder counts could not be read for enough of these to rank them.`,
+          };
+          current = { ...current, checks: [...current.checks.filter((c) => !String(c.id).startsWith("cand:")), verdictRow, ...rows] };
+          renderPanel(panel, current);
+          position(panel, chip);
+        } catch (err) {
+          btn.disabled = false;
+          btn.textContent = "could not rank";
+          btn.title = err.message;
+        }
+      });
+
+      // Something you can paste under the post as a reply.
+      panel.querySelector('[data-act="copy"]')?.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const btn = e.target;
+        try {
+          await navigator.clipboard.writeText(receipt(current));
+          btn.textContent = "copied ✓";
+        } catch {
+          btn.textContent = "press ⌘C";
+          const ta = document.createElement("textarea");
+          ta.value = receipt(current);
+          ta.style.cssText = "position:fixed;top:-1000px";
+          document.body.appendChild(ta);
+          ta.select();
+          setTimeout(() => ta.remove(), 8000);
+        }
       });
     }
 

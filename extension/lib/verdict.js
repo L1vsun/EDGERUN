@@ -24,6 +24,7 @@
 // request to a green badge.
 
 import * as bs from "./blockscout.js";
+import { listedEntry, listingCheck } from "./blocklist.js";
 import { BudgetExceeded, spend } from "./budget.js";
 import { SEL, addrWord, callData, decodeAddress, decodeString, decodeUint, ethCall, getCode, revertData, rpc, uintWord } from "./chain.js";
 import { EDIT_DISTANCE_THRESHOLD, REFERENCE_TOKENS, allowedDistance, levenshtein } from "./known.js";
@@ -255,7 +256,8 @@ export async function scan(address, { level = "identity" } = {}) {
   const official = reg.loaded ? officialForAddress(reg, addr) : null;
   const stock = stockCheck(reg, addr, id.symbol, id.name, id.uiMultiplier);
   const ref = referenceCheck(addr, id.symbol, id.name);
-  const impersonation = [stock, ref.check].filter(Boolean);
+  const listed = await listedEntry(addr);
+  const impersonation = [stock, ref.check, listed ? listingCheck(listed) : null].filter(Boolean);
 
   // what the badge leads with when it is red
   const claimed = !official && reg.loaded && id.symbol ? officialForTicker(reg, id.symbol) : null;
@@ -280,6 +282,11 @@ export async function scanMany(addresses) {
   const list = [...new Set(addresses.map((a) => String(a).toLowerCase()).filter(isAddress))];
   if (!list.length) return {};
   const reg = await getRegistry();
+  const blocked = {};
+  for (const addr of list) {
+    const hit = await listedEntry(addr);
+    if (hit) blocked[addr] = hit;
+  }
 
   // Anything already in the registry is answered with no network at all.
   const out = {};
@@ -338,12 +345,13 @@ export async function scanMany(addresses) {
       }
       const stock = stockCheck(reg, addr, symbol, name, mult);
       const ref = referenceCheck(addr, symbol, name);
+      const listed = blocked[addr] || null;
       const claimed = reg.loaded && symbol ? officialForTicker(reg, symbol) : null;
       out[addr] = {
         address: addr, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr), symbol, name,
         official: null,
         impersonates: claimed ? { ticker: claimed.ticker, officialAddress: claimed.address, name: claimed.name } : null,
-        ...assemble([stock, ref.check].filter(Boolean), [], "identity", null),
+        ...assemble([stock, ref.check, listed ? listingCheck(listed) : null].filter(Boolean), [], "identity", null),
       };
     });
   }
@@ -399,4 +407,47 @@ export async function lookupTicker(ticker) {
       verified: !!i.is_smart_contract_verified,
     })),
   };
+}
+
+/**
+ * Which of the contracts claiming a ticker is the one people actually hold.
+ *
+ * Reporting "7 contracts use $PEPE" is honest but it leaves the reader stuck. This resolves
+ * the ambiguity without inventing an answer: it asks the explorer how many holders each one
+ * has, and lets the numbers rank them. Usually one has thousands and the rest have single
+ * digits — a finding, not a guess. When two are genuinely comparable that is also a finding,
+ * and it says so rather than picking.
+ *
+ * On demand only: one explorer request per candidate.
+ */
+export async function rankCandidates(addresses) {
+  const list = [...new Set((addresses || []).map((a) => String(a).toLowerCase()).filter(isAddress))].slice(0, 6);
+  const out = [];
+  for (const address of list) {
+    let info = null;
+    try {
+      info = await bs.token(address);
+    } catch {
+      /* one unreadable candidate should not sink the ranking */
+    }
+    const holders = info?.holders_count ?? info?.holders ?? null;
+    out.push({
+      address,
+      symbol: info?.symbol || null,
+      name: info?.name || null,
+      holders: holders == null ? null : Number(holders),
+      unreadable: !info,
+    });
+  }
+  const known = out.filter((c) => c.holders != null).sort((a, b) => b.holders - a.holders);
+  const unknown = out.filter((c) => c.holders == null);
+
+  let verdict = "unresolved";
+  if (known.length >= 2) {
+    const [first, second] = known;
+    verdict = first.holders >= Math.max(20, second.holders * 5) ? "clear" : "contested";
+  } else if (known.length === 1) {
+    verdict = "single";
+  }
+  return { ranked: [...known, ...unknown], verdict };
 }

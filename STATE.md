@@ -232,6 +232,40 @@ except the instrument panels. Deliberately avoids the generic dark-gradient-and-
 Rendering still 60 fps at 1600x1050 and at 500 px, heap ~21 MB, zero console errors. The
 module stack is hidden below 1080 px (leader lines have nowhere to go on a phone).
 
+## Extension: the four things a contract scan cannot do (2026-09-21)
+
+Built on top of the base extension, all verified live:
+
+- **Deployer behaviour** (`lib/deployer.js`). The creator field is usually a launchpad
+  factory; the human is whoever signed the creation transaction. But the stronger signal
+  turned out to be *what that wallet calls on the token afterwards*: the fake TSLA's deployer
+  spent **40 `setBlacklistBatch` + 7 `setBlacklist` calls on its own token, 47 of its last 50
+  transactions**. The contract reads clean. The wallet does not. The official TSLA's deployer
+  shows nothing, correctly. On demand, ~4 explorer requests, cached an hour.
+- **Local memory** (`lib/memory.js`). Every address and ticker the extension has shown you,
+  with notes when the story changes: verdict flips ("was PASS 5 days ago, FAIL now") and
+  ticker migration ("you saw $PEPE yesterday pointing at a different contract"). Recorded on
+  fresh scans only, so a cached read cannot inflate the counts. Pruned at 4,000 addresses.
+- **Ranking a ticker collision** (`rankCandidates`). $PEPE's seven contracts by holders:
+  31,906 / 7,200 / 1,958 / 1,516 / 339 / 26 → reported as **contested**, because 31.9k vs 7.2k
+  is only 4.4x and the threshold for a clear winner is 5x. It does not pick when the data
+  does not.
+- **Public blocklist** (`frontend/public/blocklist.json` + `lib/blocklist.js`). Fetched hourly
+  from Pages; each entry carries its evidence and `git log` carries its provenance. Seeded
+  with the two verified honeypots. Needs `https://l1vsun.github.io/*` host permission — added.
+- **Copy proof** — a pasteable reply with the claim, the real contract, two measured facts and
+  the explorer link.
+
+**Blocklist is not live until the next push** — the extension fetches
+`https://l1vsun.github.io/EDGERUN/blocklist.json`, which 404s until Pages deploys it. Until
+then the listing check simply does not appear (a missing list contributes nothing; it never
+turns into a pass).
+
+Icons regenerated from `brand/logo.png`: the mark occupied 43% of the tile with a large
+chartreuse margin, which is why it looked tiny at 16px. Now cropped to the mark and re-rendered
+at 86% fill for every size (extension 16/48/128, site 192/512/apple-touch/favicon, and the
+transparent mark-* assets).
+
 ## The browser extension (2026-09-21) — `extension/`
 
 MV3 extension that puts a verdict next to the token on X, Dexscreener and Blockscout. Full
