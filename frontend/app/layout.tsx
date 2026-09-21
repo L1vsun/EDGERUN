@@ -21,7 +21,7 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 // Without this, Next resolves og:image against http://localhost:3000 and the
 // card fails to unfurl anywhere. Set NEXT_PUBLIC_SITE_URL to the deployed origin.
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://edgerun.netlify.app";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://l1vsun.github.io";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

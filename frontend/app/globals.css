@@ -257,9 +257,9 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
   background: linear-gradient(90deg, var(--rule), transparent 70%); }
 .shot-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px; }
 .shot { margin: 0; }
-.shot-frame { border: 1px solid var(--line); background: var(--card-soft); overflow: hidden;
+.shot-frame { border: 1px solid var(--line); background: #05070b; overflow: hidden;
   aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; }
-.shot-frame img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+.shot-frame img { width: 100%; height: 100%; object-fit: contain; display: block; background: #05070b; }
 .shot-todo { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px; text-align: center; }
 .shot-todo b { font-family: var(--mono); font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
 .shot-todo span { font-size: 14px; color: var(--text-4); }

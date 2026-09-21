@@ -9,25 +9,25 @@ import { asset } from "@/lib/config";
 
 const SHOTS = [
   {
-    file: "x-fake.png",
+    file: "x-fake.jpg",
     where: "On X",
-    caption: "A post names $TSLA and pastes a contract. The badge lands under the text and says it is a different token.",
+    caption: "A post names $NVDA and pastes a contract. The badge lands under the text and says it is a different token - with both addresses.",
     hint: "x.com - any post with a Robinhood Chain contract address in it",
   },
   {
-    file: "x-ticker.png",
-    where: "An ambiguous ticker",
-    caption: "$PEPE is seven different contracts on this chain. The panel lists every one of them.",
+    file: "x-ticker.jpg",
+    where: "A ticker, checked",
+    caption: "A ticker that does resolve: $HOOD here is GreenHood, an established token, and the panel names which contract that is.",
     hint: "x.com - a post that says a bare $TICKER with no address",
   },
   {
-    file: "explorer.png",
+    file: "explorer.jpg",
     where: "On the block explorer",
     caption: "The full report as a standing panel: source, mint selectors, ownership, and a simulated transfer out of a real holder's wallet.",
     hint: "robinhoodchain.blockscout.com/token/0xD18F5e73eC5E2D0b18eBe97426Dc5edC2C887715",
   },
   {
-    file: "dexscreener.png",
+    file: "dexscreener.jpg",
     where: "On Dexscreener",
     caption: "Next to the ticker in the pair header, before you trade it.",
     hint: "dexscreener.com/robinhood/<any pair>",

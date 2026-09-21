@@ -39,11 +39,6 @@ export function buyUrl(): string {
 
 export const DEX_URL = buyUrl();
 
-// Base URL of the FastAPI backend (see ../backend). Must be reachable from
-// the browser - set to your deployed backend's public URL. Static export
-// (GitHub Pages) cannot run this backend itself.
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8811";
-
 export const GITHUB_REPO_URL = process.env.NEXT_PUBLIC_GITHUB_REPO_URL || "https://github.com/L1vsun/EDGERUN";
 
 // Where the extension itself is downloaded from until it is in the Chrome Web Store.
