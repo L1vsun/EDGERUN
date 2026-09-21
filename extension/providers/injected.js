@@ -1,4 +1,4 @@
-// Transaction-time interception — the structure, not the feature.
+// Transaction-time interception - the structure, not the feature.
 //
 // This file exists now so the wiring decision is already made: it is the only script that
 // would ever run in the page's own JS context (`world: "MAIN"`), and nothing else in the
@@ -7,7 +7,7 @@
 //
 // It is deliberately inert. Two things have to be settled before it does anything:
 //
-//   1. EIP-6963. Patching `window.ethereum` is not enough any more — wallets announce
+//   1. EIP-6963. Patching `window.ethereum` is not enough any more - wallets announce
 //      themselves through `eip6963:announceProvider` events and a page may use a provider
 //      that never touches `window.ethereum` at all. Any real implementation has to listen
 //      for the announcement and wrap each provider it names.
@@ -19,7 +19,7 @@
 //
 // What it would watch for, once enabled: `eth_sendTransaction` carrying an `approve()` with
 // an unlimited allowance, and a swap whose destination token is not the token the page says
-// it is — both cross-checked against the verdict the badge already has for that address.
+// it is - both cross-checked against the verdict the badge already has for that address.
 
 (() => {
   const TAG = "[edgerun:injected]";
@@ -37,9 +37,9 @@
     return found;
   }
 
-  // Intentionally unused until the feature is turned on — kept referenced so it cannot rot
+  // Intentionally unused until the feature is turned on - kept referenced so it cannot rot
   // silently, and so the shape above is the one that ships.
   void report;
   void providers;
-  console.debug(TAG, "loaded inert — interception is not enabled in this build");
+  console.debug(TAG, "loaded inert - interception is not enabled in this build");
 })();

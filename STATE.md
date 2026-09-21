@@ -232,6 +232,32 @@ except the instrument panels. Deliberately avoids the generic dark-gradient-and-
 Rendering still 60 fps at 1600x1050 and at 500 px, heap ~21 MB, zero console errors. The
 module stack is hidden below 1080 px (leader lines have nowhere to go on a phone).
 
+## Site pass: header, install guide, typography (2026-09-21)
+
+- **Header** carries nav (Install / How it works / The council), X and GitHub icon links
+  (`X_URL`, `GITHUB_USER_URL` in `lib/config.ts`) and a "Get the extension" button. It was
+  otherwise empty apart from the logo.
+- **`GITHUB_REPO_URL` now defaults to `https://github.com/L1vsun/EDGERUN`** instead of `""`,
+  which is why the hero CTA was linking to `#`. `EXTENSION_URL` is the single place the
+  download link comes from.
+- **`components/Install.tsx`** - three install steps plus what happens on each surface, placed
+  on the front page rather than behind a route. The user asked for less friction, and making
+  somebody navigate to find out how to run it is the friction.
+- **The hero says what it covers**: X, Dexscreener, Blockscout, and paste-an-address. It read
+  as an X-only tool before.
+- **Demo fix**: the "checking" state was a full-width white bar with two words in it, which
+  read as a broken element. It is a compact pill with a spinner now (193 px, verified in a
+  live frame).
+- Demo handle changed from a plausible-looking one to `@someaccount` - the mock post accuses
+  its author of shilling a honeypot, and that should not land on a name anyone could hold.
+- **All em/en dashes replaced with `-`** across site, extension, Python engine, council
+  prompts and the published round data: 205 + 125 in source, plus JSON `—` escapes in
+  `council.json`, `council_log.json` and the extension manifest name (grep missed those
+  because Python's `json.dump` escapes non-ASCII by default). The one deliberate exception is
+  `normalizeName`'s character class in `lib/registry.js`, which must keep `-–—` to fold
+  "Tesla – Robinhood Token" onto the official "Tesla • Robinhood Token" - verified still equal
+  across all three forms. `edgerun/tests` 37 passing afterwards; page renders 0 long dashes.
+
 ## Extension: the four things a contract scan cannot do (2026-09-21)
 
 Built on top of the base extension, all verified live:

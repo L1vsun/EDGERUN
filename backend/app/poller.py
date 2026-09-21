@@ -1,6 +1,6 @@
 """Background job: polls Robinhood Chain for newly-verified contracts and
 newly-listed tokens, scans anything not already in the cache, and writes the
-result in — this is what makes /api/feed alive instead of manually curated.
+result in - this is what makes /api/feed alive instead of manually curated.
 """
 from __future__ import annotations
 
@@ -52,7 +52,7 @@ async def run_token_sampler(cache: ScanCache, config: Config) -> None:
 async def _sample_token(bs: BlockscoutClient, cache: ScanCache) -> None:
     """Record one real price/holders reading for $EDGERUN.
 
-    No contract address configured (pre-launch) means nothing to sample —
+    No contract address configured (pre-launch) means nothing to sample -
     the history stays genuinely empty rather than being seeded with
     placeholder points.
     """

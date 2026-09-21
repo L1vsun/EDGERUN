@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { GITHUB_REPO_URL } from "@/lib/config";
+import { EXTENSION_URL } from "@/lib/config";
 
 // What the product actually is, shown rather than described: a post, the badge landing on
-// it, the verdict. The demo is the extension's real output on a real contract — the fake
+// it, the verdict. The demo is the extension's real output on a real contract - the fake
 // TSLA at 0xD18F… is a live honeypot, and $PEPE really is seven different contracts.
 //
 // One loop, four steps, no libraries. Anything more elaborate here would be a worse use of
 // the first five seconds than simply showing the thing working.
 
-const POST = "$TSLA is live on Robinhood Chain 🚀 CA: 0xD18F5e73eC5E2D0b18eBe97426Dc5edC2C887715 — send it";
+const POST = "$TSLA is live on Robinhood Chain 🚀 CA: 0xD18F5e73eC5E2D0b18eBe97426Dc5edC2C887715 - send it";
 
 const STEPS = [
   { at: 0, type: 0 },          // empty
@@ -59,14 +59,21 @@ export default function Hero() {
         </h1>
         <p>
           Seven different contracts use <b>$PEPE</b> on this chain. Six use <b>$HOOD</b>. Anyone
-          can deploy a token called <b>Tesla • Robinhood Token</b> — and 213 of them already have.
+          can deploy a token called <b>Tesla • Robinhood Token</b> - and 213 of them already have.
           edgerun checks the contract while you are still reading the post, in your browser,
           against the chain and Robinhood&apos;s own published registry.
         </p>
         <div className="lead-cta">
-          <a className="cta" href={GITHUB_REPO_URL || "#"} target="_blank" rel="noreferrer">Get the extension</a>
-          <a className="cta cta-ghost" href="#council">See how it decides</a>
+          <a className="cta" href={EXTENSION_URL} target="_blank" rel="noreferrer">Get the extension</a>
+          <a className="cta cta-ghost" href="#install">How to install</a>
         </div>
+
+        <ul className="surfaces">
+          <li><b>X</b><span>a badge under any post naming a token</span></li>
+          <li><b>Dexscreener</b><span>on the pair page, before you trade it</span></li>
+          <li><b>Blockscout</b><span>the full check on any contract page</span></li>
+          <li><b>Anywhere</b><span>paste an address into the extension itself</span></li>
+        </ul>
         <div className="lead-facts">
           <div><b>194</b><span>official stock tokens, from Robinhood&apos;s registry</span></div>
           <div><b>213</b><span>counterfeits found across ten tickers</span></div>
@@ -77,7 +84,7 @@ export default function Hero() {
       <div className={`demo${still ? " still" : ""}`} aria-hidden="true">
         <div className="demo-chrome"><i /><i /><i /><span>x.com</span></div>
         <div className="post">
-          <div className="post-who"><span className="av" />@degen_calls</div>
+          <div className="post-who"><span className="av" />@someaccount</div>
           <p className="post-text">
             {typed}
             {phase === 1 && <i className="caret" />}
@@ -91,15 +98,17 @@ export default function Hero() {
                   <span className="b-body">
                     <b>$TSLA · not the real one</b>
                     <span>
-                      This post names $TSLA, which Robinhood publishes at 0x322f0929… — but the
+                      This post names $TSLA, which Robinhood publishes at 0x322f0929… - but the
                       contract in the post is 0xd18f5e73…, a different token.
                     </span>
                   </span>
                   <span className="b-more">details</span>
                 </>
               ) : (
+                // compact while it works: a full-width white bar with two words in it reads
+                // as a broken element rather than as progress
                 <>
-                  <span className="g">·</span>
+                  <span className="g spin" />
                   <span className="b-body"><b>checking the chain…</b></span>
                 </>
               )}

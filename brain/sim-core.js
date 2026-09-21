@@ -42,7 +42,7 @@
   function gauss() { return Math.sqrt(-2 * Math.log(1 - Math.random())) * Math.cos(2 * Math.PI * Math.random()); }
 
   class Sim {
-    /* channels: { name: Int32Array|number[] of neuron indices } — driven by Poisson events */
+    /* channels: { name: Int32Array|number[] of neuron indices } - driven by Poisson events */
     constructor(conn, channels) {
       this.N = conn.N; this.off = conn.offsets; this.post = conn.post; this.w = conn.w;
       const N = this.N;

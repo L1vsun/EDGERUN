@@ -1,4 +1,4 @@
-// The official Robinhood stock-token registry — the one check nothing else can do.
+// The official Robinhood stock-token registry - the one check nothing else can do.
 //
 // Robinhood publishes the authoritative contract address for every tokenised security it
 // deploys on chain 4663 at a public, keyless endpoint. That turns impersonation from a
@@ -7,8 +7,8 @@
 //
 // It matters because the fakes are already everywhere: a ten-ticker sweep of this chain
 // found 213 contracts using an official ticker that were not the official contract, six of
-// them named exactly "NVIDIA • Robinhood Token". Every one is a structurally clean ERC-20 —
-// verified source, no mint, ownership renounced — so a scanner that only reads the contract
+// them named exactly "NVIDIA • Robinhood Token". Every one is a structurally clean ERC-20 -
+// verified source, no mint, ownership renounced - so a scanner that only reads the contract
 // passes all of them.
 //
 // Cached in chrome.storage.local for an hour, and refreshed by an alarm rather than on
@@ -82,7 +82,7 @@ export async function getRegistry({ force = false } = {}) {
     chrome.storage.local.set({ [KEY]: mem }).catch(() => {});
     return mem;
   } catch (err) {
-    // Keep serving a stale copy if we have one — a day-old registry is still authoritative
+    // Keep serving a stale copy if we have one - a day-old registry is still authoritative
     // about which address is official, and the alternative is going blind.
     if (mem?.loaded) return { ...mem, error: `refresh failed: ${err.message} (serving cached)` };
     return { loaded: false, error: `registry unreachable: ${err.message}`, byTicker: {}, byAddress: {}, fetchedAt: 0 };

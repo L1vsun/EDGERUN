@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { asset } from "@/lib/config";
 
 // Four Claude calls with different prompts, wired like brain regions, arguing about what
-// the chain is doing — then a code gate that decides whether it is worth saying.
+// the chain is doing - then a code gate that decides whether it is worth saying.
 // They cannot run in the browser (a static page cannot hold an API key), so a scheduled
 // job publishes this file and the page reads it. See brain/README-council.md.
 
@@ -59,7 +59,7 @@ function Says({ r }: { r: Region }) {
         <>
           <p className="c-lead">{s.precedent}</p>
           {(s.matches || []).map((m: any, i: number) => (
-            <p key={i} className="c-line"><b>{m.now}</b> looks like <b>{m.before}</b> — {m.what_followed}</p>
+            <p key={i} className="c-line"><b>{m.now}</b> looks like <b>{m.before}</b> - {m.what_followed}</p>
           ))}
           <p className="c-meta">confidence in the match: {s.confidence}</p>
         </>
@@ -110,7 +110,7 @@ export default function Council() {
           </>
         ) : (
           <>
-            <b>v1 · rules</b> The pipeline is live and the data is real, measured on-chain seconds ago —
+            <b>v1 · rules</b> The pipeline is live and the data is real, measured on-chain seconds ago -
             but each region decides by rule, not by reasoning. The language models take over these four
             seats in v2; the wiring, the data and the gate do not change.
           </>
@@ -120,7 +120,7 @@ export default function Council() {
       <div className={`c-verdict ${spoke ? "on" : ""}`}>
         <span className="c-gate">{round.gate.action}</span>
         <div>
-          <b>{spoke ? (synth?.says?.call ?? "—") : "nothing worth acting on"}</b>
+          <b>{spoke ? (synth?.says?.call ?? "-") : "nothing worth acting on"}</b>
           <span>{round.gate.why}</span>
         </div>
       </div>
@@ -138,8 +138,8 @@ export default function Council() {
       </div>
 
       <p className="c-foot">
-        This is the scheduled run, minutes old — the board above is the same pipeline recomputed in
-        your tab on the numbers you can see. Four regions, each with its own slice of the data, reporting in order — Scout sees the chain,
+        This is the scheduled run, minutes old - the board above is the same pipeline recomputed in
+        your tab on the numbers you can see. Four regions, each with its own slice of the data, reporting in order - Scout sees the chain,
         Skeptic sees Scout, Historian sees the log of every past round, Synthesis sees all three. The
         gate is code in both versions: it stays silent unless confidence and evidence clear a fixed bar,
         which is why it often says nothing. Rounds are minutes old; the chain data above this is live.

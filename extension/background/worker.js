@@ -1,6 +1,6 @@
 // The only place that talks to the network.
 //
-// Content scripts never fetch anything themselves — they ask for a verdict and get one back,
+// Content scripts never fetch anything themselves - they ask for a verdict and get one back,
 // from cache where possible. That is what keeps a timeline with forty tickers on screen from
 // turning into forty requests: identical addresses collapse into one in-flight promise, the
 // whole batch resolves in a single JSON-RPC round trip, and everything is cached by address.
@@ -51,7 +51,7 @@ async function getVerdict(address, level = "identity", { fresh = false } = {}) {
   if (inflight.has(key)) return inflight.get(key);
   const p = scan(addr, { level })
     .then(async (r) => {
-      // recorded once, on the fresh scan — a cached read must not inflate "seen 9 times"
+      // recorded once, on the fresh scan - a cached read must not inflate "seen 9 times"
       const notes = await rememberAndRecall(r);
       const out = notes.length ? { ...r, checks: [...r.checks, ...notes] } : r;
       cachePut(out);
@@ -84,7 +84,7 @@ async function getVerdicts(addresses) {
 }
 
 // The deployer trail is slow and expensive, so it is asked for explicitly and cached for an
-// hour — a wallet's launch history does not change minute to minute.
+// hour - a wallet's launch history does not change minute to minute.
 const trailCache = new Map();
 async function getTrail(address) {
   const addr = String(address).toLowerCase();
@@ -96,7 +96,7 @@ async function getTrail(address) {
   return data;
 }
 
-// Dexscreener puts the *pair* in the URL, not the token — and on this chain some of those
+// Dexscreener puts the *pair* in the URL, not the token - and on this chain some of those
 // are Uniswap v4 pool ids (32 bytes), not addresses. Resolving pair -> baseToken is the
 // worker's job because it owns the network and the cache.
 async function resolvePair(pairId) {
@@ -147,7 +147,7 @@ const HANDLERS = {
   ticker: (m) => resolveTicker(m.ticker),
   tickers: async (m) => {
     // An official ticker costs nothing (the registry is already local). Anything else needs
-    // one explorer search, so it is cached hard — a ticker's contract set barely moves, and
+    // one explorer search, so it is cached hard - a ticker's contract set barely moves, and
     // a timeline full of $PEPE must not spend a search per post.
     const out = {};
     for (const t of [...new Set(m.tickers || [])].slice(0, 12)) {

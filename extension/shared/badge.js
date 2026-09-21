@@ -1,17 +1,17 @@
 // The badge. One visual unit, used by every surface.
 //
-// Light on purpose. This sits on other people's pages — X in dark mode, Dexscreener's near
-// black, Blockscout's grey — and a dark chip on a dark page is something you have to go
+// Light on purpose. This sits on other people's pages - X in dark mode, Dexscreener's near
+// black, Blockscout's grey - and a dark chip on a dark page is something you have to go
 // looking for. A bright card reads instantly against all three, and the status colour does
 // the talking before any text is read.
 //
 // Everything lives in a shadow root, because Dexscreener and X both ship aggressive global
-// CSS and a badge that breaks visually reads as unmaintained — which for a security tool is
+// CSS and a badge that breaks visually reads as unmaintained - which for a security tool is
 // the same as untrustworthy. `all: initial` on the host blocks inheritance the other way.
 //
 // The panel is NOT a child of the badge. X puts `transform` on timeline containers, and a
 // `position: fixed` element inside a transformed ancestor positions against that ancestor
-// rather than the viewport — which is why the panel used to open half off the right edge.
+// rather than the viewport - which is why the panel used to open half off the right edge.
 // It is appended to the document root instead and positioned from the chip's own rect.
 
 (() => {
@@ -62,7 +62,7 @@
        leaks in through inheritance. Declared again here, where nothing outside can reach. */
     .chip, .strip { font-family: ${FONT}; }
 
-    /* compact pill — used where there is a row to sit in */
+    /* compact pill - used where there is a row to sit in */
     .chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px 7px 10px;
       border-radius: 999px; cursor: pointer; border: 1px solid var(--line); background: var(--card);
       color: var(--ink); font-size: 13px; font-weight: 600; line-height: 18px; white-space: nowrap;
@@ -83,7 +83,7 @@
     .chip.warn { border-color: #f0dcb4; background: var(--warn-soft); }
     .chip.flat .g { background: var(--muted); }
 
-    /* the loud form — a strip in the reading flow, so a fake cannot be scrolled past */
+    /* the loud form - a strip in the reading flow, so a fake cannot be scrolled past */
     .strip { display: flex; align-items: flex-start; gap: 11px; width: 100%; text-align: left;
       padding: 12px 14px; border-radius: var(--radius); cursor: pointer; border: 1px solid var(--line);
       background: var(--card); color: var(--ink); font-size: 14px; line-height: 1.45;
@@ -94,7 +94,7 @@
     .strip .title { display: block; font-weight: 800; font-size: 14.5px; letter-spacing: -0.01em; margin-bottom: 2px; }
     .strip .say { display: block; color: var(--muted); font-size: 13px; }
     .strip .more { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; align-self: center; }
-    /* only a fake gets the full-volume treatment — if every post shouted, none of them would */
+    /* only a fake gets the full-volume treatment - if every post shouted, none of them would */
     .strip:not(.bad) { padding: 10px 13px; font-size: 13px; box-shadow: 0 2px 10px rgba(12,18,6,.10); }
     .strip:not(.bad) .title { font-size: 13.5px; }
     .strip:not(.bad) .say { font-size: 12.5px; }
@@ -166,7 +166,7 @@
   function lead(r) {
     if (r.lead) return r.lead; // a surface that knows more than the verdict alone (the X cross-check)
     if (r.verdict === "FAIL" && r.impersonates) {
-      return `$${r.impersonates.ticker} is an official Robinhood stock token at ${r.impersonates.officialAddress.slice(0, 10)}… — this is a different contract.`;
+      return `$${r.impersonates.ticker} is an official Robinhood stock token at ${r.impersonates.officialAddress.slice(0, 10)}… - this is a different contract.`;
     }
     if (r.verdict === "FAIL") return (r.checks || []).find((c) => c.status === "fail")?.detail || "failed a check";
     if (r.verdict === "OFFICIAL") return "This address is in Robinhood's published registry of tokenised stocks.";
@@ -194,7 +194,7 @@
       .map((c) => `· ${c.detail}`);
     if (evidence.length) lines.push("", ...evidence);
     lines.push("", `Check it yourself: ${r.explorerUrl}`);
-    lines.push("Checked with edgerun — runs in your own browser, against the chain.");
+    lines.push("Checked with edgerun - runs in your own browser, against the chain.");
     return lines.join("\n");
   }
   E.badgeReceipt = receipt;
@@ -245,7 +245,7 @@
   }
 
   window.addEventListener("resize", closePanel, true);
-  // Follow the badge while the page scrolls — X scrolls constantly, and slamming the panel
+  // Follow the badge while the page scrolls - X scrolls constantly, and slamming the panel
   // shut on the first pixel of scroll makes it unreadable. It closes only once the badge
   // it belongs to is actually gone.
   let ticking = false;
@@ -374,7 +374,7 @@
       });
 
       // Who launched it, and what else they have launched. Costs ~4 explorer requests, so
-      // it is never run automatically — only when someone asks this question.
+      // it is never run automatically - only when someone asks this question.
       panel.querySelector('[data-act="trail"]')?.addEventListener("click", async (e) => {
         e.stopPropagation();
         const btn = e.target;
@@ -410,9 +410,9 @@
             id: "rank", label: "which one",
             status: verdict === "clear" ? "ok" : "warn",
             detail: verdict === "clear"
-              ? `one contract holds the overwhelming majority of this ticker's holders — the rest are near-empty. That is the one people actually own; it is not a statement that it is safe.`
+              ? `one contract holds the overwhelming majority of this ticker's holders - the rest are near-empty. That is the one people actually own; it is not a statement that it is safe.`
               : verdict === "contested"
-                ? `no clear winner — two or more of these have comparable holder counts, so the ticker genuinely does not identify a token here.`
+                ? `no clear winner - two or more of these have comparable holder counts, so the ticker genuinely does not identify a token here.`
                 : `holder counts could not be read for enough of these to rank them.`,
           };
           current = { ...current, checks: [...current.checks.filter((c) => !String(c.id).startsWith("cand:")), verdictRow, ...rows] };

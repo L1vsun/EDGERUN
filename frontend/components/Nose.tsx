@@ -25,7 +25,7 @@ const COLS: { key: SortKey; label: string }[] = [
   { key: "novelty", label: "novelty" },
 ];
 
-// A pattern is remembered only when it is unlike everything already stored — the same
+// A pattern is remembered only when it is unlike everything already stored - the same
 // habituation that makes a fly stop reacting to a smell it knows.
 const NOVEL_ENOUGH = 0.45;
 const ARCHIVE_MAX = 600;
@@ -303,7 +303,7 @@ export default function Nose() {
             <h2 className="stage-title">Underneath: five modules<br />reading every block.</h2>
           </div>
           <p>
-            The extension answers one question about one contract. This is the other half — the
+            The extension answers one question about one contract. This is the other half - the
             whole chain, watched continuously. Four modules argue over what is moving, why it is a
             trap and what followed last time; a fifth decides whether any of it is worth
             interrupting you for. Most rounds, it says nothing.
@@ -315,7 +315,7 @@ export default function Nose() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="paste any token address — 0x…"
+              placeholder="paste any token address - 0x…"
               spellCheck={false}
               aria-label="token contract address"
             />
@@ -384,7 +384,7 @@ export default function Nose() {
               <button
                 className={`star${watch.includes(sel.address) ? " on" : ""}`}
                 onClick={() => toggleWatch(sel.address)}
-                title={watch.includes(sel.address) ? "stop watching" : "watch this — tell me when it changes"}
+                title={watch.includes(sel.address) ? "stop watching" : "watch this - tell me when it changes"}
               >★</button>
             </div>
 
@@ -410,10 +410,10 @@ export default function Nose() {
         )}
 
         <div className="ticker">
-          <div><b>{state?.block ? num(state.block) : "—"}</b><span>block</span></div>
-          <div><b>{state ? num(state.transfersPerMin) : "—"}</b><span>transfers/min</span></div>
-          <div><b>{state ? num(state.wallets) : "—"}</b><span>wallets</span></div>
-          <div><b>{state ? num(state.tokens.length) : "—"}</b><span>tokens moving</span></div>
+          <div><b>{state?.block ? num(state.block) : "-"}</b><span>block</span></div>
+          <div><b>{state ? num(state.transfersPerMin) : "-"}</b><span>transfers/min</span></div>
+          <div><b>{state ? num(state.wallets) : "-"}</b><span>wallets</span></div>
+          <div><b>{state ? num(state.tokens.length) : "-"}</b><span>tokens moving</span></div>
           <div><b>{phase === "run" ? "9,515" : "…"}</b><span>neurons live</span></div>
         </div>
 
@@ -467,9 +467,9 @@ export default function Nose() {
                   <td className={t.wallets && t.newWallets / t.wallets > 0.6 ? "hi" : ""}>{num(t.newWallets)}</td>
                   <td className={t.concentration > 0.4 ? "hi" : ""}>{pct(t.concentration)}</td>
                   <td className={t.accel > 1.6 ? "up" : t.accel < 0.5 ? "dn" : ""}>{t.accel.toFixed(1)}×</td>
-                  <td>{t.swaps || "—"}</td>
+                  <td>{t.swaps || "-"}</td>
                   <td>{t.novelty < 0 ? <span className="pend">·</span> : <span className="nov" style={{ ["--n" as any]: t.novelty }}>{pct(t.novelty)}</span>}</td>
-                  <td className="like">{t.nearest ? `${t.nearest.symbol} · ${pct(t.nearest.overlap)}` : t.novelty < 0 ? "·" : "—"}</td>
+                  <td className="like">{t.nearest ? `${t.nearest.symbol} · ${pct(t.nearest.overlap)}` : t.novelty < 0 ? "·" : "-"}</td>
                 </tr>
               ))}
               {!shown.length && <tr><td colSpan={11} className="empty">reading the chain…</td></tr>}
@@ -484,17 +484,17 @@ export default function Nose() {
           <p>
             The mushroom body turns an input into a sparse code: of 5,177 traced cells only ~5% fire, and
             which 5% depends on the input. Similar inputs share most of their code, unrelated ones almost
-            none — the same trick behind locality-sensitive hashing. Every synapse drawn here is measured,
+            none - the same trick behind locality-sensitive hashing. Every synapse drawn here is measured,
             not invented.
           </p>
         </div>
         <div>
           <h3>What the flags mean</h3>
           <p>
-            <b>one wallet</b> — a single address sits on most of the transfers, so the volume is one
-            actor. <b>printing</b> — new supply is being minted right now. <b>no dex</b> — plenty of
-            movement, no swaps. <b>heating</b> — flow is running well above the token&apos;s own average.
-            <b>fresh wallets</b> — the buyers are addresses we had not seen before.
+            <b>one wallet</b> - a single address sits on most of the transfers, so the volume is one
+            actor. <b>printing</b> - new supply is being minted right now. <b>no dex</b> - plenty of
+            movement, no swaps. <b>heating</b> - flow is running well above the token&apos;s own average.
+            <b>fresh wallets</b> - the buyers are addresses we had not seen before.
           </p>
         </div>
         <div>
@@ -502,7 +502,7 @@ export default function Nose() {
           <p>
             Not advice and not a price call. Every flag is a plain threshold on measured activity and
             names the number behind it, so you can check it yourself on the explorer. A token with no
-            flags is not safe — it is only unremarkable in the last three minutes.
+            flags is not safe - it is only unremarkable in the last three minutes.
           </p>
         </div>
       </section>

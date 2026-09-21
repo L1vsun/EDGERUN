@@ -2,7 +2,7 @@
 
 This is the one thing a generic contract scanner structurally cannot do, and
 it is specific to this chain: Robinhood Chain carries 194 *real tokenised
-securities* — TSLA, NVDA, AAPL, SPY, GME — issued by Robinhood Assets (Jersey)
+securities* - TSLA, NVDA, AAPL, SPY, GME - issued by Robinhood Assets (Jersey)
 Limited as ordinary ERC-20s. Robinhood publishes the authoritative contract
 address for every one of them at a public endpoint.
 
@@ -12,7 +12,7 @@ say "the official Tesla token is 0x322F0929…, and this is not it."
 
 It matters because the fakes are already everywhere. A search of ten tickers
 against the live chain on 2026-09-09 returned 213 contracts using an official
-ticker that were not the official contract — including six separate contracts
+ticker that were not the official contract - including six separate contracts
 named exactly "NVIDIA • Robinhood Token". Every one of them is a structurally
 clean ERC-20: verified source, renounced ownership, no mint. A scanner that
 only reads the contract gives all of them a green verdict.
@@ -38,7 +38,7 @@ OFFICIAL_NAME_MARKER = "robinhood token"
 
 # ERC-8056 corporate-action multiplier. Verified on-chain: the official TSLA
 # token returns 1e18; an ordinary meme token reverts. A positive fingerprint,
-# used only to corroborate — never to declare something official on its own,
+# used only to corroborate - never to declare something official on its own,
 # since anyone can implement a function that returns a number.
 UI_MULTIPLIER_SELECTOR = "0xa60bf13d"
 
@@ -50,7 +50,7 @@ def normalize_name(name: str) -> str:
     'Tesla - robinhood token' compare equal."""
     folded = unicodedata.normalize("NFKD", name or "")
     folded = "".join(c for c in folded if not unicodedata.combining(c))
-    for ch in "•·|-–—":
+    for ch in "•·|---":
         folded = folded.replace(ch, " ")
     return " ".join(folded.lower().split())
 

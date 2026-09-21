@@ -164,7 +164,7 @@ export function startChain(onState: (s: ChainState) => void): () => void {
 
     const swapsPerToken = new Map<string, number>();
     // a token quoted in two or more different pools is what everything else is priced
-    // against (WETH, a stable) — always busy, and never the interesting call
+    // against (WETH, a stable) - always busy, and never the interesting call
     const poolsPerToken = new Map<string, Set<string>>();
     for (const s of swapEvents) {
       for (const t of poolTokens.get(s.pool) || []) {
@@ -360,17 +360,17 @@ export function signals(t: TokenStat): Signal[] {
   // net issuance only: a wrapper like WETH mints on every deposit and burns on every
   // withdrawal, which is not dilution. Real printing is mints with no matching burns.
   if (t.mints >= 4 && t.mints > t.burns * 3 && t.transfers >= 8 && t.mints / t.transfers > 0.03) {
-    out.push({ id: "printing", label: "printing", tone: "bad", why: `${t.mints} mints from 0x0 against ${t.burns} burns — net new supply while you watch` });
+    out.push({ id: "printing", label: "printing", tone: "bad", why: `${t.mints} mints from 0x0 against ${t.burns} burns - net new supply while you watch` });
   }
   // concentration counts wallet slots (two per transfer), so double it to read as
   // "share of transfers this address touches"
   if (t.concentration > 0.45 && t.transfers >= 10) {
-    out.push({ id: "onewallet", label: "one wallet", tone: "bad", why: `one address touches ${pctOf(Math.min(1, t.concentration * 2))} of all transfers — that is a single actor, not a crowd` });
+    out.push({ id: "onewallet", label: "one wallet", tone: "bad", why: `one address touches ${pctOf(Math.min(1, t.concentration * 2))} of all transfers - that is a single actor, not a crowd` });
   }
   // Most tokens on this chain have no pool at all, so "no swaps" says nothing. The rare,
   // useful state is the opposite: something you can actually trade.
   if (t.swaps >= 3) {
-    out.push({ id: "dex", label: "dex live", tone: "good", why: `${t.swaps} DEX swaps in the window — there is a pool and it is being traded` });
+    out.push({ id: "dex", label: "dex live", tone: "good", why: `${t.swaps} DEX swaps in the window - there is a pool and it is being traded` });
   }
   if (t.accel >= 2 && t.transfers >= 20) {
     out.push({ id: "heating", label: "heating", tone: "good", why: `flow is ${t.accel.toFixed(1)}x its own 3-minute average in the last 45 seconds` });
@@ -379,7 +379,7 @@ export function signals(t: TokenStat): Signal[] {
     out.push({ id: "fresh", label: "fresh wallets", tone: "good", why: `${t.newWallets} of ${t.wallets} wallets are ones we had never seen before` });
   }
   if (t.accel <= 0.45 && t.transfers >= 25) {
-    out.push({ id: "cooling", label: "cooling", tone: "flat", why: `flow has fallen to ${t.accel.toFixed(1)}x its own average — interest is draining` });
+    out.push({ id: "cooling", label: "cooling", tone: "flat", why: `flow has fallen to ${t.accel.toFixed(1)}x its own average - interest is draining` });
   }
   if (t.isNew) {
     out.push({ id: "new", label: "just appeared", tone: "flat", why: "first seen on the chain since you opened this page" });

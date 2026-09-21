@@ -2,7 +2,7 @@
 //
 // This is the one thing no server-side scanner can do: the extension is the only witness to
 // your own feed. It remembers every address and ticker it has shown you, and says something
-// when the story changes —
+// when the story changes -
 //
 //   "you saw $PEPE four days ago, pointing at a different contract"
 //   "this token passed when you looked on Tuesday; it does not now"
@@ -53,7 +53,7 @@ export async function rememberAndRecall(result) {
     notes.push({
       id: "mem:verdict", label: "since you last looked",
       status: result.verdict === "FAIL" || result.verdict === "CAUTION" ? "fail" : "warn",
-      detail: `this was ${prior.verdict} when you checked it ${when(prior.lastSeen)} — it is ${result.verdict} now`,
+      detail: `this was ${prior.verdict} when you checked it ${when(prior.lastSeen)} - it is ${result.verdict} now`,
     });
   } else if (prior && prior.firstSeen && days(now - prior.firstSeen) >= 1) {
     notes.push({
@@ -78,7 +78,7 @@ export async function rememberAndRecall(result) {
       notes.push({
         id: "mem:ticker", label: "this ticker has moved",
         status: "warn",
-        detail: `you saw ${symbol} ${when(last.at)} pointing at ${last.address.slice(0, 10)}… — ${others.length === 1 ? "a different contract" : `${others.length} other contracts in total`}`,
+        detail: `you saw ${symbol} ${when(last.at)} pointing at ${last.address.slice(0, 10)}… - ${others.length === 1 ? "a different contract" : `${others.length} other contracts in total`}`,
       });
     }
     if (!seen.some((s) => s.address === result.address.toLowerCase())) {

@@ -2,7 +2,7 @@
 //
 // The extension talks to the chain itself rather than to an edgerun backend. Measured
 // 2026-09-21, the hosted backend cold-starts in 31.6 s and takes 14.1 s for an uncached
-// scan at 12 requests/minute/IP — numbers that cannot support a badge on a scrolling feed.
+// scan at 12 requests/minute/IP - numbers that cannot support a badge on a scrolling feed.
 // The RPC answers a batched call in well under a second and sends
 // `access-control-allow-origin: *`, and a service worker with host_permissions is not
 // subject to CORS at all.
@@ -71,7 +71,7 @@ const clean = (s) => {
 
 /**
  * One HTTP round trip for many calls. `items` is [{method, params}, ...]; the result is a
- * same-length array of {result, error} in the order given — the node may reorder a batch
+ * same-length array of {result, error} in the order given - the node may reorder a batch
  * response, so entries are matched back by id rather than by position.
  */
 export async function rpc(items, { signal } = {}) {

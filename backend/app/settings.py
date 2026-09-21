@@ -27,7 +27,7 @@ RATE_LIMIT_PER_MINUTE = int(os.environ.get("RATE_LIMIT_PER_MINUTE", 12))
 # Comma-separated list, e.g. "https://yourname.github.io"
 CORS_ORIGINS = [o.strip() for o in os.environ.get("CORS_ORIGINS", "*").split(",") if o.strip()]
 
-# Token identity — the one thing the frontend banner needs and the token
+# Token identity - the one thing the frontend banner needs and the token
 # isn't deployed yet, so these default to placeholders. Set the real values
 # as env vars at deploy time; nothing else needs to change.
 EDGERUN_TOKEN_TICKER = os.environ.get("EDGERUN_TOKEN_TICKER", "$EDGERUN")

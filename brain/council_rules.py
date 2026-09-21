@@ -1,6 +1,6 @@
 """The council without the language models.
 
-Same four regions, same data, same gate, same output schema — but each region reaches its
+Same four regions, same data, same gate, same output schema - but each region reaches its
 answer by rule instead of by judgement. This is not a mock of the LLM version: it is the
 deterministic version of the same pipeline, and every sentence it emits is computed from a
 number measured on-chain seconds earlier. When `ANTHROPIC_API_KEY` is set, `council.py`
@@ -51,15 +51,15 @@ def skeptic(snap: dict) -> dict:
     for t in toks:
         if "one wallet" in t["flags"]:
             traps.append({"symbol": t["symbol"],
-                          "why": f"one address is on {t['one_addr_share'] * 100:.0f}% of {t['transfers']} transfers — that is one actor, not demand"})
+                          "why": f"one address is on {t['one_addr_share'] * 100:.0f}% of {t['transfers']} transfers - that is one actor, not demand"})
         elif "printing" in t["flags"]:
             traps.append({"symbol": t["symbol"],
-                          "why": f"{t['mints']} mints against only {t['burns']} burns — supply is growing under whoever is buying"})
+                          "why": f"{t['mints']} mints against only {t['burns']} burns - supply is growing under whoever is buying"})
         elif t["transfers"] < 20:
             continue  # too small to judge either way; saying nothing is the correct answer
         elif t["swaps"] == 0 and t["per_min"] > 60:
             traps.append({"symbol": t["symbol"],
-                          "why": f"{t['per_min']:.0f} transfers/min and no DEX swap in the window — movement with no visible way out"})
+                          "why": f"{t['per_min']:.0f} transfers/min and no DEX swap in the window - movement with no visible way out"})
         elif t["swaps"] >= 3 and t["one_addr_share"] < 0.4:
             clean.append(t["symbol"])
     verdict = (f"{len(traps)} of the {len(toks)} busiest look like one actor or fresh supply"
@@ -69,9 +69,9 @@ def skeptic(snap: dict) -> dict:
 
 def historian(snap: dict, log: list[dict]) -> dict:
     """Real precedent: find past rounds whose token carried the same flags, and report what
-    that token's flow actually did afterwards. No log, no precedent — and it says so."""
+    that token's flow actually did afterwards. No log, no precedent - and it says so."""
     if len(log) < 3:
-        return {"precedent": "none yet — the log needs a few more rounds before it can compare",
+        return {"precedent": "none yet - the log needs a few more rounds before it can compare",
                 "matches": [], "confidence": "none"}
 
     # index every token we have ever logged: symbol -> [(round index, per_min, flags)]
@@ -141,7 +141,7 @@ def synthesis(snap: dict, sc: dict, sk: dict, hi: dict) -> dict:
         overruled = f"Skeptic flagged {best['symbol']} as a single actor; kept it because the flow is broad enough to be worth watching anyway"
         conf = round(conf - 0.2, 2)
     return {
-        "call": f"{best['symbol']} is the one to watch — {flags}",
+        "call": f"{best['symbol']} is the one to watch - {flags}",
         "focus": best["symbol"],
         "reason": (f"{best['per_min']:.0f} transfers/min across {best['wallets']} wallets, "
                    f"{best['accel']:.1f}x its own average, one address on "

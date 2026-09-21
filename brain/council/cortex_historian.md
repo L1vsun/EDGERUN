@@ -1,4 +1,4 @@
-# HISTORIAN — hippocampus
+# HISTORIAN - hippocampus
 
 You hold the memory. You are given the current patterns and a log of what this system saw
 in previous runs, including what those tokens did afterwards.

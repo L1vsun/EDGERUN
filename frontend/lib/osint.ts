@@ -1,4 +1,4 @@
-// Who is behind a token — from public records only.
+// Who is behind a token - from public records only.
 //
 // Everything here comes from the block explorer's public API, which sends
 // `access-control-allow-origin: *`, so the browser can ask it directly. No key, no
@@ -7,7 +7,7 @@
 //
 // What it does NOT do: read social networks. X's API is paid and cannot be called from a
 // page, and scraping it breaks their terms. Any social angle has to come from a proper
-// search tool running server-side — see the council.
+// search tool running server-side - see the council.
 
 const BS = "https://robinhoodchain.blockscout.com";
 const LIMIT = 150; // the explorer's own per-window budget; we spend ~6 per dossier
@@ -30,7 +30,7 @@ export interface Dossier {
   deployer: string | null; // the wallet that actually signed
   deployedAt: string | null;
   // what else that wallet has done
-  deployCount: number | null; // "at least this many" — one page of history
+  deployCount: number | null; // "at least this many" - one page of history
   deployCountCapped: boolean;
   firstDeploy: string | null;
   lastDeploy: string | null;
@@ -42,7 +42,7 @@ export interface Dossier {
 const cache = new Map<string, Dossier>();
 
 // The explorer is behind Cloudflare and 403s a request with no Referer at all. Browsers
-// attach one automatically (any origin satisfies it), so nothing needs setting here —
+// attach one automatically (any origin satisfies it), so nothing needs setting here -
 // scripts are not allowed to set Referer anyway.
 async function api(path: string, ms = 9000): Promise<any> {
   const stop = AbortSignal.timeout ? AbortSignal.timeout(ms) : undefined;
@@ -88,7 +88,7 @@ export async function investigate(address: string, onPartial?: (d: Dossier) => v
       d.deployer = tx.from?.hash || null;
       d.deployedAt = tx.timestamp || null;
       if (d.factory && d.deployer && d.factory.toLowerCase() !== d.deployer.toLowerCase()) {
-        d.notes.push("launched through a factory, so the contract itself is boilerplate — judge the wallet, not the code");
+        d.notes.push("launched through a factory, so the contract itself is boilerplate - judge the wallet, not the code");
       }
       onPartial?.({ ...d });
     }
@@ -142,7 +142,7 @@ export function readDossier(d: Dossier): { tone: "bad" | "good" | "flat"; text: 
       : "";
     out.push({
       tone: "bad",
-      text: `this wallet has launched ${d.deployCountCapped ? "at least " : ""}${d.deployCount} contracts${span} — a production line, not a project`,
+      text: `this wallet has launched ${d.deployCountCapped ? "at least " : ""}${d.deployCount} contracts${span} - a production line, not a project`,
     });
   } else if (d.deployCount !== null && d.deployCount <= 2 && !d.partial) {
     out.push({ tone: "good", text: `the deployer has only ${d.deployCount} launch${d.deployCount === 1 ? "" : "es"} on record` });
@@ -152,7 +152,7 @@ export function readDossier(d: Dossier): { tone: "bad" | "good" | "flat"; text: 
     const who = d.funders[d.funders.length - 1];
     out.push({
       tone: "flat",
-      text: `gas came from ${who.address.slice(0, 10)}…${who.address.slice(-4)} — follow that wallet to find the operator's other launches`,
+      text: `gas came from ${who.address.slice(0, 10)}…${who.address.slice(-4)} - follow that wallet to find the operator's other launches`,
     });
   }
   if (!d.verified) {
@@ -160,9 +160,9 @@ export function readDossier(d: Dossier): { tone: "bad" | "good" | "flat"; text: 
   } else if (!d.deployer) {
     // the factory question is not settled until the creation transaction is read, and
     // claiming either way before then would be a statement we would have to take back
-    out.push({ tone: "flat", text: "source is verified — checking whether it came out of a factory" });
+    out.push({ tone: "flat", text: "source is verified - checking whether it came out of a factory" });
   } else if (d.factory && d.factory.toLowerCase() !== d.deployer.toLowerCase()) {
-    out.push({ tone: "flat", text: "verified, but it is factory boilerplate — verification says nothing about intent here" });
+    out.push({ tone: "flat", text: "verified, but it is factory boilerplate - verification says nothing about intent here" });
   } else {
     out.push({ tone: "good", text: "source is verified and was not stamped out by a factory" });
   }

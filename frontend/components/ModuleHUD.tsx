@@ -6,7 +6,7 @@ import { MODULES, ModuleMark } from "./BrainCanvas";
 // Anatomical callouts, drawn the way a lab plate does it: the labels sit in the margin in
 // a fixed stack, and a leader line runs from each one to the structure it names. The
 // structures themselves are close together inside the brain, so labelling them in place
-// just piles the text up — which is exactly what the margin-and-leader convention is for.
+// just piles the text up - which is exactly what the margin-and-leader convention is for.
 //
 // BrainCanvas writes each module's live screen position into `marks` every frame; the
 // leader lines follow without going through React state.

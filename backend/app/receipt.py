@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 ASSETS = Path(__file__).resolve().parent / "assets"
 
-# Light, Robinhood-native palette — matches the site, so a shared card is
+# Light, Robinhood-native palette - matches the site, so a shared card is
 # recognisably ours in a feed full of dark-mode screenshots.
 CHARTREUSE = (207, 255, 4)
 INK = (10, 14, 4)
@@ -39,7 +39,7 @@ def render_og_image(result: dict) -> bytes:
     img = Image.new("RGB", (W, H), BONE)
     d = ImageDraw.Draw(img)
 
-    # Verdict band down the left edge — the thing you read at thumbnail size.
+    # Verdict band down the left edge - the thing you read at thumbnail size.
     d.rectangle([0, 0, 26, H], fill=ground)
     d.rectangle([26, 0, W, H], fill=BONE)
 
@@ -48,7 +48,7 @@ def render_og_image(result: dict) -> bytes:
     small = _font("JetBrainsMono-Regular.ttf", 22)
     tiny = _font("JetBrainsMono-Regular.ttf", 19)
 
-    # Brand mark, if present — a shared card should be recognisably ours.
+    # Brand mark, if present - a shared card should be recognisably ours.
     text_x = 70
     mark_path = ASSETS / "mark-ink.png"
     if mark_path.exists():
@@ -72,7 +72,7 @@ def render_og_image(result: dict) -> bytes:
     vw = d.textlength(verdict, font=bold)
     d.rectangle([70, 418, 70 + vw, 428], fill=ground)
 
-    # Two or three real facts underneath — never a summary we invented.
+    # Two or three real facts underneath - never a summary we invented.
     facts: list[str] = []
     for c in (result.get("contract") or {}).get("checks", []):
         if c.get("status") in ("fail", "warn"):
@@ -126,23 +126,23 @@ def render_receipt_page(result: dict, site_url: str, og_image_url: str, page_url
             )
     checks_html = "".join(rows)
 
-    desc = f"{ticker} — {verdict}. {checked} facts checked, {unresolved} unresolved on Robinhood Chain."
+    desc = f"{ticker} - {verdict}. {checked} facts checked, {unresolved} unresolved on Robinhood Chain."
 
     return f"""<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{ticker} — {verdict} · edgerun</title>
+<title>{ticker} - {verdict} · edgerun</title>
 <meta name="description" content="{html.escape(desc)}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="edgerun">
-<meta property="og:title" content="{ticker} — {verdict} · edgerun">
+<meta property="og:title" content="{ticker} - {verdict} · edgerun">
 <meta property="og:description" content="{html.escape(desc)}">
 <meta property="og:image" content="{html.escape(og_image_url)}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="{html.escape(page_url)}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{ticker} — {verdict} · edgerun">
+<meta name="twitter:title" content="{ticker} - {verdict} · edgerun">
 <meta name="twitter:description" content="{html.escape(desc)}">
 <meta name="twitter:image" content="{html.escape(og_image_url)}">
 <style>
@@ -179,5 +179,5 @@ box-shadow:4px 4px 0 var(--ink);padding:12px 22px;font-weight:800;text-decoratio
 </div>
 <a class="cta" href="{html.escape(site_url)}">scan another contract →</a>
 <div class="foot">Not financial advice. A PASS means the listed structural checks came back
-clean — it is not a buy signal.</div>
+clean - it is not a buy signal.</div>
 </div></body></html>"""

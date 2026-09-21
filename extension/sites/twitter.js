@@ -1,7 +1,7 @@
 // X / Twitter: a badge on any post that names a Robinhood Chain token.
 //
-// The timeline is virtualised — posts are unmounted as they scroll away and remounted when
-// they come back — so every article is tagged the moment it is first seen and never
+// The timeline is virtualised - posts are unmounted as they scroll away and remounted when
+// they come back - so every article is tagged the moment it is first seen and never
 // processed twice. Nothing is read until a post is near the viewport, and every address
 // found in a scroll batch is resolved in one message to the worker, which answers the whole
 // batch from the registry plus a single JSON-RPC round trip.
@@ -73,7 +73,7 @@
       .find((x) => x.given);
 
     // 2. Weaker but still a fact: the post names a ticker and hands over a contract whose
-    //    own symbol is something else. Stated as an observation, not an accusation — a post
+    //    own symbol is something else. Stated as an observation, not an accusation - a post
     //    can legitimately mention one token and link another.
     const wrongSymbol = !wrongOfficial && onchain
       .map((t) => ({ t, given: results.find((r) => r.symbol && r.symbol.toUpperCase().replace(/^\$/, "") !== t.ticker) }))
@@ -85,7 +85,7 @@
         ...given,
         verdict: "FAIL",
         symbol: `$${o.ticker}`,
-        lead: `This post names $${o.ticker}, which Robinhood publishes at ${o.address.slice(0, 10)}… — but the contract in the post is ${given.address.slice(0, 10)}…, a different token.`,
+        lead: `This post names $${o.ticker}, which Robinhood publishes at ${o.address.slice(0, 10)}… - but the contract in the post is ${given.address.slice(0, 10)}…, a different token.`,
       };
     } else if (wrongSymbol) {
       const { t, given } = wrongSymbol;
@@ -93,7 +93,7 @@
         ...given,
         verdict: given.verdict === "FAIL" ? "FAIL" : "CAUTION",
         symbol: `$${t.ticker}`,
-        lead: `The post says $${t.ticker}, but the contract it gives is ${given.symbol}. They are not the same token — check which one you actually want.`,
+        lead: `The post says $${t.ticker}, but the contract it gives is ${given.symbol}. They are not the same token - check which one you actually want.`,
       };
     } else if (results.length) {
       result = results.sort((a, b) => (RANK[b.verdict] || 0) - (RANK[a.verdict] || 0))[0];
@@ -108,7 +108,7 @@
         symbol: `$${o.ticker}`,
         verdict: "OFFICIAL",
         explorerUrl: url(o.address),
-        lead: `$${o.ticker} (${o.name}) is an official Robinhood tokenised stock at ${o.address}. This post names no contract address — check any address you are given against that one.`,
+        lead: `$${o.ticker} (${o.name}) is an official Robinhood tokenised stock at ${o.address}. This post names no contract address - check any address you are given against that one.`,
         checks: [{ id: "stock_token", label: "official address", status: "ok", detail: `${o.ticker} → ${o.address}, from Robinhood's published registry` }],
       };
     } else if (onchain.length) {
@@ -122,13 +122,13 @@
         verdict: many ? "CAUTION" : "UNRESOLVED",
         explorerUrl: url(t.candidates[0].address),
         lead: many
-          ? `$${t.ticker} is not one token here — at least ${t.count} different contracts use that ticker on this chain, and this post does not say which. That is how people buy the wrong one.`
+          ? `$${t.ticker} is not one token here - at least ${t.count} different contracts use that ticker on this chain, and this post does not say which. That is how people buy the wrong one.`
           : `$${t.ticker} matches one contract on this chain (${t.candidates[0].name || "unnamed"}). Nothing about that contract has been checked yet.`,
         checks: [
           {
             id: "ticker", label: "ticker", status: many ? "warn" : "unresolved",
             detail: many
-              ? `${t.count}${t.capped ? "+" : ""} contracts on Robinhood Chain use the symbol ${t.ticker}. No registry decides which is "the" one — only an address does.`
+              ? `${t.count}${t.capped ? "+" : ""} contracts on Robinhood Chain use the symbol ${t.ticker}. No registry decides which is "the" one - only an address does.`
               : `one contract on this chain uses the symbol ${t.ticker}`,
           },
           ...t.candidates.map((c) => ({
@@ -142,7 +142,7 @@
     }
 
     // A strip directly under the post text, not a chip tucked into the action bar. The
-    // action bar is cramped, low-contrast and below the fold of the eye's path — a warning
+    // action bar is cramped, low-contrast and below the fold of the eye's path - a warning
     // about a fake contract has to sit in the reading flow, where it cannot be scrolled past.
     const badge = E.makeBadge({
       mode: "block",

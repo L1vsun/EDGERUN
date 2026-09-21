@@ -1,7 +1,7 @@
 """SQLite-backed scan cache + feed store + $EDGERUN price history.
 
 Two tables. `scans` is the scan cache and live feed. `token_samples` is the
-price/holders history for our own token — Blockscout has no price-history
+price/holders history for our own token - Blockscout has no price-history
 endpoint (verified: /api/v2/tokens/{addr}/price-history returns 404), so the
 only honest way to draw a chart is to record real samples ourselves on each
 poll cycle and plot exactly those. Before launch the table is simply empty
@@ -125,7 +125,7 @@ class ScanCache:
             )
 
     def stalest(self, limit: int, min_age_seconds: float) -> list[dict]:
-        """Contracts not re-checked recently, oldest first — the watchtower's
+        """Contracts not re-checked recently, oldest first - the watchtower's
         work queue. `min_age_seconds` stops us re-scanning something we just
         looked at."""
         cutoff = time.time() - min_age_seconds
@@ -270,7 +270,7 @@ class ScanCache:
         return {"ts": row[0], "price": row[1], "market_cap": row[2], "volume_24h": row[3], "holders": row[4]}
 
     def token_sample_at_or_before(self, ts: float) -> dict | None:
-        """Used for a real change-over-window figure — never extrapolated."""
+        """Used for a real change-over-window figure - never extrapolated."""
         with self._lock, self._connect() as conn:
             row = conn.execute(
                 "SELECT ts, price, market_cap, volume_24h, holders FROM token_samples "

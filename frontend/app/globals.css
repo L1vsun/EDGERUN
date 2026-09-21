@@ -32,7 +32,21 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
   border-bottom: 1px solid var(--rule); box-shadow: inset 0 -1px 0 rgba(207,255,4,0.18); }
 .top::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--chart); }
 .brand img { display: block; height: 22px; filter: invert(1) brightness(1.6); }
-.top-actions { display: flex; gap: 9px; }
+.top-nav { display: flex; gap: 22px; margin-left: 30px; margin-right: auto; }
+.top-nav a { font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; text-decoration: none; color: var(--dim); }
+.top-nav a:hover { color: var(--bone); }
+.top-actions { display: flex; align-items: center; gap: 9px; }
+.ico { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px;
+  color: var(--dim); border: 1px solid var(--rule); }
+.ico:hover { color: var(--chart); border-color: var(--dim); }
+
+/* what the extension covers, said plainly next to the demo */
+.surfaces { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; padding: 0; }
+.surfaces li { flex: 1 1 150px; padding: 10px 12px; border: 1px solid var(--rule); background: rgba(10,15,9,0.5); }
+.surfaces b { display: block; font-family: var(--mono); font-size: 10.5px; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--chart); }
+.surfaces span { display: block; margin-top: 4px; font-size: 11.5px; line-height: 1.45; color: var(--dim); }
 .btn { font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
   text-decoration: none; padding: 8px 14px; background: transparent; color: var(--dim); border: 1px solid var(--rule); }
 .btn:hover { color: var(--bone); border-color: var(--dim); }
@@ -84,7 +98,12 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .badge .g { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px;
   border-radius: 50%; font-size: 14px; font-weight: 800; color: #fff; background: #5d6752; flex: none; }
 .badge.done .g { background: #c62828; }
-.badge.busy .g { animation: badge-spin 1s linear infinite; }
+/* while it works: a compact pill, not a full-width bar with two words adrift in it */
+.badge.busy { display: inline-flex; align-items: center; width: auto; border-radius: 999px;
+  padding: 8px 16px 8px 10px; gap: 9px; }
+.badge.busy .b-body b { font-size: 13.5px; color: #5d6752; font-weight: 700; }
+.badge .g.spin { border: 2.5px solid #dfe5d2; border-top-color: #5d6752; background: none;
+  width: 20px; height: 20px; animation: badge-spin 0.8s linear infinite; }
 .b-body { flex: 1; min-width: 0; }
 .b-body b { display: block; font-size: 14.5px; font-weight: 800; letter-spacing: -0.01em; }
 .badge.done .b-body b { color: #c62828; }
@@ -98,6 +117,35 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
   .lead { grid-template-columns: 1fr; gap: 30px; padding-top: 34px; }
   .lead-facts { gap: 18px; }
 }
+
+/* ================= install + how to use ================= */
+.install { max-width: 1500px; margin: 0 auto; padding: 52px 20px 0; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.step { position: relative; padding: 20px 20px 22px; border: 1px solid var(--line); border-top: 2px solid var(--chart);
+  background: linear-gradient(180deg, rgba(14,19,12,0.9), rgba(8,11,9,0.7)); }
+.step-n { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; color: #4e5845; }
+.step b { display: block; margin: 8px 0 7px; font-family: var(--mono); font-size: 14px; font-weight: 800;
+  letter-spacing: -0.01em; color: var(--bone); }
+.step p { margin: 0; font-size: 13.5px; line-height: 1.6; color: #a7af93; }
+.step code { font-family: var(--mono); font-size: 12.5px; padding: 1px 5px; color: var(--chart); background: #151d05; border: 1px solid #2c3a13; }
+.step a { color: var(--chart); text-decoration: none; border-bottom: 1px solid rgba(207,255,4,0.4); }
+.step b, .step p b { color: var(--bone); }
+
+.uses { margin-top: 34px; }
+.uses h3 { font-size: 13px; color: var(--chart); letter-spacing: 0.04em; margin-bottom: 14px; }
+.use-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.use { padding: 14px 15px; border-left: 2px solid var(--rule); background: rgba(10,15,9,0.45); }
+.use b { display: block; font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--bone); margin-bottom: 6px; }
+.use p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--dim); }
+.install-note { margin: 26px 0 0; max-width: 940px; font-size: 12.5px; line-height: 1.6; color: #7f8869; }
+
+@media (max-width: 1080px) {
+  .steps { grid-template-columns: 1fr; }
+  .use-grid { grid-template-columns: 1fr 1fr; }
+  .top-nav { display: none; }
+}
+@media (max-width: 620px) { .use-grid { grid-template-columns: 1fr; } }
 
 /* ---- the brain ---- */
 .stage { position: relative; height: calc(100vh - var(--top)); min-height: 620px; overflow: hidden; }
@@ -137,7 +185,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .dot.on { background: var(--chart); box-shadow: 0 0 10px var(--chart); animation: blip 2.2s infinite; }
 @keyframes blip { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
 .title { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
-/* a section heading now, not the page's claim — the product leads, this explains it */
+/* a section heading now, not the page's claim - the product leads, this explains it */
 .hero .stage-title { font-size: clamp(24px, 2.9vw, 38px); line-height: 0.98; letter-spacing: -0.04em; }
 .hero .stage-title::after { content: ""; display: block; width: 92px; height: 3px; margin-top: 16px;
   background: repeating-linear-gradient(90deg, var(--chart) 0 14px, transparent 14px 20px); }

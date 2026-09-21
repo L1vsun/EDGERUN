@@ -76,7 +76,7 @@ def stock_tokens() -> dict:
     """The official Robinhood tokenised-stock registry, as this tool sees it.
 
     Published so anyone can check our impersonation calls against the same
-    source we use — https://api.robinhood.com/rhj/assets.
+    source we use - https://api.robinhood.com/rhj/assets.
     """
     if not STOCK_REGISTRY.refresh():
         raise HTTPException(status_code=503, detail=STOCK_REGISTRY.error or "registry unavailable")
@@ -88,7 +88,7 @@ def stock_tokens() -> dict:
 def impersonators(limit: int = 50) -> dict:
     """Scanned contracts that claim to be an official stock token and aren't.
 
-    Drawn from real scans only — this is not a search of the whole chain, it
+    Drawn from real scans only - this is not a search of the whole chain, it
     is what the poller has actually checked.
     """
     limit = max(1, min(limit, 200))
@@ -119,7 +119,7 @@ def events(limit: int = 50, severity: str | None = None) -> dict:
 
 @app.get("/api/deployers")
 def deployers(limit: int = 25, min_launches: int = 2) -> dict:
-    """Deployer reputation, worst first — serial ruggers are only visible in
+    """Deployer reputation, worst first - serial ruggers are only visible in
     aggregate, which is why this is its own view rather than a scan field."""
     limit = max(1, min(limit, 100))
     return {"items": cache.deployers(limit=limit, min_launches=max(1, min_launches))}
@@ -176,7 +176,7 @@ def share_receipt(address: str, request: Request) -> HTMLResponse:
 def token_stats() -> dict:
     """Live $EDGERUN market state, straight from Blockscout.
 
-    `launched: false` until a contract address is configured — the frontend
+    `launched: false` until a contract address is configured - the frontend
     renders an explicit pre-launch state for that rather than zeros.
     """
     address = settings.EDGERUN_CONTRACT_ADDRESS
@@ -212,7 +212,7 @@ def token_stats() -> dict:
 
 @app.get("/api/token/history")
 def token_history(range: str = "24h") -> dict:
-    """Real samples only — one point per poll cycle, nothing interpolated."""
+    """Real samples only - one point per poll cycle, nothing interpolated."""
     windows = {"1h": 3600, "24h": 86400, "7d": 7 * 86400, "all": None}
     if range not in windows:
         raise HTTPException(status_code=400, detail=f"range must be one of {list(windows)}")

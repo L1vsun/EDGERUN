@@ -6,7 +6,7 @@ import { AgentOut, GATE_SEAT, RELAY_SEATS, RELAY_STEP, Round, Viz, appendLog, re
 
 // The council, running in front of you.
 //
-// Five seats relay in order — Scout reads the chain, Skeptic attacks what Scout said,
+// Five seats relay in order - Scout reads the chain, Skeptic attacks what Scout said,
 // Historian checks the log, Synthesis weighs all three, and a code gate decides whether
 // any of it is worth saying. Every round here is computed in this tab from the numbers
 // on screen; the relay animation is the actual order of execution, not decoration.
@@ -48,7 +48,7 @@ export default function Cortex({
     setRound(r);
     onRound(r);
     setHistory((h) => [...h, {
-      speak: r.gate.action === "SPEAK", symbol: r.focus?.symbol || "—", why: r.gate.why,
+      speak: r.gate.action === "SPEAK", symbol: r.focus?.symbol || "-", why: r.gate.why,
       flow: s.transfersPerMin, flagged: r.flagged,
     }].slice(-28));
     relay.current = { at: performance.now() };
@@ -164,7 +164,7 @@ export default function Cortex({
       <div className="cx-foot">
         <p>
           The gate stays silent unless confidence and evidence clear a fixed bar, so most rounds say
-          nothing — that is the design. Each seat is a rule here, not a language model: it can only
+          nothing - that is the design. Each seat is a rule here, not a language model: it can only
           see what a threshold already knows. The reasoning version runs the same five seats as
           separate model calls and publishes below.
         </p>

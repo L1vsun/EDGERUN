@@ -6,7 +6,7 @@
 // one and when. A list nobody can audit is just a rumour with an API in front of it.
 //
 // Fetched hourly and cached. A listed address is reported as a separate check with its own
-// evidence — it never silently changes another check's result, and a listing that cannot be
+// evidence - it never silently changes another check's result, and a listing that cannot be
 // fetched simply does not appear.
 
 import { spend } from "./budget.js";
@@ -58,6 +58,6 @@ export function listingCheck(entry) {
     id: "blocklist",
     label: "public blocklist",
     status: entry.severity === "fail" ? "fail" : "warn",
-    detail: `listed ${entry.added} — ${entry.reason}. ${entry.evidence}`,
+    detail: `listed ${entry.added} - ${entry.reason}. ${entry.evidence}`,
   };
 }

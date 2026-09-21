@@ -1,7 +1,7 @@
 """Export the fly's olfactory learning circuit for the browser.
 
 Not the whole brain: the real ORN -> PN -> Kenyon cell -> MBON pathway plus the APL
-feedback neuron and the dopaminergic neurons — the circuit that actually classifies
+feedback neuron and the dopaminergic neurons - the circuit that actually classifies
 odours in a fly. ~9.5k neurons, 88% of whose input edges are internal to it.
 
 Writes frontend/public/brain/mb.bin.gz:

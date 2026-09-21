@@ -1,6 +1,6 @@
 """Exit test: can holders actually move this token, right now?
 
-Every other check in this tool — and in every comparable tool on this chain —
+Every other check in this tool - and in every comparable tool on this chain -
 is static: does the bytecode contain a `pause()` selector, is the source
 verified, is ownership renounced. Static analysis answers "does a mechanism
 exist". It cannot answer "is it switched on".
@@ -8,7 +8,7 @@ exist". It cannot answer "is it switched on".
 This check answers that by executing the transfer. `eth_call` runs a real
 transfer against current chain state without broadcasting anything, costing
 nothing and signing nothing. If a genuine holder's transfer reverts, holders
-cannot sell — whatever the bytecode looks like.
+cannot sell - whatever the bytecode looks like.
 
 Verified against Robinhood Chain 2026-09-09:
   - real holder, 1 token   -> 0x...01 (true), the transfer would succeed
@@ -20,7 +20,7 @@ Limits, stated plainly (see docs/checks.md):
     between wallets. A pool with no liquidity, or a router-level tax, is a
     different failure this does not see.
   - It reflects state at scan time. That is exactly why the watchtower
-    re-runs it — see watch.py.
+    re-runs it - see watch.py.
 """
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ BURN_SINK = "0x000000000000000000000000000000000000dEaD"
 # rather than guessed at.
 KNOWN_REVERTS: dict[str, str] = {
     "e450d38c": "insufficient balance",          # ERC20InsufficientBalance (OZ v5)
-    "f4d678b8": "insufficient balance",          # InsufficientBalance() — verified selector
+    "f4d678b8": "insufficient balance",          # InsufficientBalance() - verified selector
     "ec442f05": "receiver rejected",             # ERC20InvalidReceiver
     "96c6fd1e": "sender rejected",               # ERC20InvalidSender
     "d93c0665": "transfers are PAUSED",          # EnforcedPause
@@ -51,7 +51,7 @@ KNOWN_REVERTS: dict[str, str] = {
 BENIGN_REVERTS = {"e450d38c", "f4d678b8"}
 
 # Same thing expressed as a require() string. Blockscout's holder list is a
-# cached snapshot, so a listed holder may already have moved their tokens —
+# cached snapshot, so a listed holder may already have moved their tokens -
 # every one of these means "this wallet is empty", never "this wallet is
 # blocked". Treating them as restrictions produced false blacklist accusations
 # against legitimate tokens (1INCH, SHRUB) in a live 45-token run.
@@ -81,7 +81,7 @@ def decode_revert(data: str | None) -> str:
     if selector in KNOWN_REVERTS:
         return KNOWN_REVERTS[selector]
 
-    # Error(string) — the classic require("...") message
+    # Error(string) - the classic require("...") message
     if selector == "08c379a0":
         try:
             body = bytes.fromhex(raw[8:])
@@ -130,7 +130,7 @@ def run_exit_test(
             f"cannot list holders to simulate a transfer from: {exc}",
         )
 
-    # Skip the burn sink and the contract itself — neither represents a holder
+    # Skip the burn sink and the contract itself - neither represents a holder
     # who might want to sell.
     candidates = [
         h for h in holders
@@ -173,14 +173,14 @@ def run_exit_test(
     if not passed and not blocked:
         return CheckResult(
             "exit_test", "exit test", "unresolved",
-            f"no holder with a live non-zero balance to test ({skipped} skipped) — inconclusive",
+            f"no holder with a live non-zero balance to test ({skipped} skipped) - inconclusive",
         )
 
     if blocked and not passed:
         who, reason = blocked[0]
         return CheckResult(
             "exit_test", "exit test", "fail",
-            f"simulated transfer FAILED for all {len(blocked)} holder(s) tested — "
+            f"simulated transfer FAILED for all {len(blocked)} holder(s) tested - "
             f"{reason}. Holders cannot move this token right now.",
         )
 
@@ -189,12 +189,12 @@ def run_exit_test(
         return CheckResult(
             "exit_test", "exit test", "warn",
             f"simulated transfer succeeded for {len(passed)} holder(s) but FAILED for "
-            f"{len(blocked)} ({who[:10]}… — {reason}) — selective restriction, "
+            f"{len(blocked)} ({who[:10]}… - {reason}) - selective restriction, "
             "the signature of a targeted blacklist",
         )
 
     return CheckResult(
         "exit_test", "exit test", "ok",
-        f"simulated transfer succeeded from {len(passed)} real holder(s) — tokens "
+        f"simulated transfer succeeded from {len(passed)} real holder(s) - tokens "
         "are movable at this block (transfer test, not a DEX sell test)",
     )

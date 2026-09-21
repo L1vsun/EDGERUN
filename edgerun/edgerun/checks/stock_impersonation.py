@@ -7,13 +7,13 @@ The three verdicts that matter:
 
   official     the address IS the registry entry for its ticker
   impersonator the ticker or the "• Robinhood Token" branding matches an
-               official asset, but the address does not — a provable fake,
+               official asset, but the address does not - a provable fake,
                not a similarity score
   unrelated    no claim on an official asset; the normal lanes apply
 
 The impersonator case is the one no generic scanner reaches. A fake
-"Tesla • Robinhood Token" is a structurally perfect ERC-20 — verified source,
-renounced ownership, fixed supply — so every contract-level check passes it.
+"Tesla • Robinhood Token" is a structurally perfect ERC-20 - verified source,
+renounced ownership, fixed supply - so every contract-level check passes it.
 It is only a scam because of what it claims to be, and that claim can only be
 falsified against Robinhood's own registry.
 """
@@ -55,7 +55,7 @@ def run_stock_check(
             return CheckResult(
                 "stock_token", "stock token", "unresolved",
                 f"cannot reach the official Robinhood stock-token registry "
-                f"({REGISTRY.error}) — cannot confirm or deny an official claim",
+                f"({REGISTRY.error}) - cannot confirm or deny an official claim",
             )
         return None
 
@@ -67,7 +67,7 @@ def run_stock_check(
     if official_here:
         return CheckResult(
             "stock_token", "stock token", "ok",
-            f"VERIFIED official Robinhood stock token — {official_here['ticker']} "
+            f"VERIFIED official Robinhood stock token - {official_here['ticker']} "
             f"({official_here['name']}), matches the registry published by Robinhood",
         )
 
@@ -80,7 +80,7 @@ def run_stock_check(
     if official_ticker:
         detail = (
             f'ticker "{symbol}" is an OFFICIAL Robinhood tokenised stock '
-            f'({official_ticker["name"]}) deployed at {_short(official_ticker["address"])} — '
+            f'({official_ticker["name"]}) deployed at {_short(official_ticker["address"])} - '
             f"this contract is {_short(address)}, which is NOT it"
         )
         if claims_branding:
@@ -95,12 +95,12 @@ def run_stock_check(
         )
 
     # 4. No claim on an official asset. Note an odd ERC-8056 implementation
-    #    only as a warning — it is suggestive, never proof on its own.
+    #    only as a warning - it is suggestive, never proof on its own.
     if _implements_ui_multiplier(rpc, address):
         return CheckResult(
             "stock_token", "stock token", "warn",
             "implements the ERC-8056 uiMultiplier() function used by official Robinhood "
-            "stock tokens, but is not in the official registry — unusual for an ordinary token",
+            "stock tokens, but is not in the official registry - unusual for an ordinary token",
         )
 
     return None

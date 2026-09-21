@@ -240,19 +240,19 @@
     "traps": [
      {
       "symbol": "ILY",
-      "why": "310 transfers/min and no DEX swap in the window \u2014 movement with no visible way out"
+      "why": "310 transfers/min and no DEX swap in the window - movement with no visible way out"
      },
      {
       "symbol": "Sob",
-      "why": "one address is on 97% of 127 transfers \u2014 that is one actor, not demand"
+      "why": "one address is on 97% of 127 transfers - that is one actor, not demand"
      },
      {
       "symbol": "PEPEZILLA",
-      "why": "one address is on 95% of 116 transfers \u2014 that is one actor, not demand"
+      "why": "one address is on 95% of 116 transfers - that is one actor, not demand"
      },
      {
       "symbol": "SPY",
-      "why": "134 transfers/min and no DEX swap in the window \u2014 movement with no visible way out"
+      "why": "134 transfers/min and no DEX swap in the window - movement with no visible way out"
      }
     ],
     "clean": [
@@ -266,7 +266,7 @@
    "name": "Historian",
    "region": "hippocampus",
    "says": {
-    "precedent": "none yet \u2014 the log needs a few more rounds before it can compare",
+    "precedent": "none yet - the log needs a few more rounds before it can compare",
     "matches": [],
     "confidence": "none"
    }

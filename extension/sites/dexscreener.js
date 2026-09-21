@@ -1,13 +1,13 @@
 // Dexscreener.
 //
-// The URL carries the *pair*, not the token — dexscreener.com/robinhood/<pairId> — and on
+// The URL carries the *pair*, not the token - dexscreener.com/robinhood/<pairId> - and on
 // this chain some of those ids are Uniswap v4 pools, which are 32-byte ids rather than
 // addresses. So the pair is resolved to its base token through the worker first. (The chain
 // slug is `robinhood`; `robinhoodchain` and `rhchain` both return nothing.)
 //
 // The anchor is found by looking for the token's own symbol in the page rather than by a
 // class-name chain. Dexscreener's markup changes across deploys and its classes are hashed,
-// but the page always writes the ticker near the top — and we know what that ticker is,
+// but the page always writes the ticker near the top - and we know what that ticker is,
 // because resolving the pair told us before we ever touch the DOM. If the symbol is not
 // found, the badge goes in a floating panel of its own: an obviously separate corner beats
 // guessing at a container and landing in the wrong row.
@@ -83,7 +83,7 @@
       const anchor = await E.waitFor(() => symbolAnchor(pair.baseSymbol), 6000);
       if (anchor) inlineSlot(anchor, badge);
       else {
-        E.log(`no "${pair.baseSymbol}" in the header — using the floating slot`);
+        E.log(`no "${pair.baseSymbol}" in the header - using the floating slot`);
         floatingSlot(badge);
       }
 

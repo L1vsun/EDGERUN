@@ -1,6 +1,6 @@
 // The maintained reference list, carried with the extension.
 //
-// Mirrors edgerun/data/known_tokens.json. These are not official Robinhood assets — the
+// Mirrors edgerun/data/known_tokens.json. These are not official Robinhood assets - the
 // registry handles those. They are the established hood-themed tokens on this chain, kept
 // so a new contract that lands two edits from one of them gets named.
 //

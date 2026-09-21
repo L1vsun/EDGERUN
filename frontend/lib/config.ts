@@ -26,11 +26,17 @@ export function buyUrl(): string {
 export const DEX_URL = buyUrl();
 
 // Base URL of the FastAPI backend (see ../backend). Must be reachable from
-// the browser — set to your deployed backend's public URL. Static export
+// the browser - set to your deployed backend's public URL. Static export
 // (GitHub Pages) cannot run this backend itself.
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8811";
 
-export const GITHUB_REPO_URL = process.env.NEXT_PUBLIC_GITHUB_REPO_URL || "";
+export const GITHUB_REPO_URL = process.env.NEXT_PUBLIC_GITHUB_REPO_URL || "https://github.com/L1vsun/EDGERUN";
+
+// Where the extension itself is downloaded from until it is in the Chrome Web Store.
+export const EXTENSION_URL = process.env.NEXT_PUBLIC_EXTENSION_URL || GITHUB_REPO_URL;
+
+export const GITHUB_USER_URL = "https://github.com/L1vsun";
+export const X_URL = "https://x.com/L1vsun";
 
 // Static files in /public are NOT basePath-prefixed automatically for plain
 // <img src>, so anything under /public must go through this. Netlify serves

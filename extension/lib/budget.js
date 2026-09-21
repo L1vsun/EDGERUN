@@ -1,14 +1,14 @@
 // A spend limit per upstream, so a fast scroll can never turn into a flood.
 //
 // Blockscout answers with `x-ratelimit-limit: 150` per window and 403s a request that
-// carries no Referer at all (both measured live 2026-09-21 — the Referer is put back by
+// carries no Referer at all (both measured live 2026-09-21 - the Referer is put back by
 // the declarativeNetRequest rule in rules/referer.json, since a service worker cannot set
 // that header from fetch). The caps here sit well under the upstream's, because the limit
 // is now spent from the *user's* IP, not a server's, and a badge is never worth burning
 // someone's explorer access.
 //
-// State lives in chrome.storage.session so that a service-worker restart — which MV3 does
-// aggressively, after ~30 s idle — cannot hand out a fresh allowance mid-window.
+// State lives in chrome.storage.session so that a service-worker restart - which MV3 does
+// aggressively, after ~30 s idle - cannot hand out a fresh allowance mid-window.
 
 // Counted in HTTP requests, not in calls: a JSON-RPC batch of forty eth_calls is one
 // request to the node, and budgeting it as forty would starve a single timeline scan.

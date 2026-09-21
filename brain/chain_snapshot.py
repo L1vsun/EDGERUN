@@ -2,7 +2,7 @@
 
 The browser does this in `frontend/lib/chain.ts`. This is a second implementation for
 the scheduled council runs, which have no browser. THRESHOLDS BELOW ARE DUPLICATED FROM
-`lib/chain.ts` — if you change one, change the other, or the council will disagree with
+`lib/chain.ts` - if you change one, change the other, or the council will disagree with
 the live page for no good reason.
 """
 from __future__ import annotations
@@ -126,7 +126,7 @@ def snapshot(top: int = 12) -> dict:
             swaps_per_token[t] = swaps_per_token.get(t, 0) + 1
             pools_per_token.setdefault(t, set()).add(pool)
     # A token that sits on one side of several different pools is the thing everything
-    # else is priced against (WETH, a stable) — plumbing, not an opportunity.
+    # else is priced against (WETH, a stable) - plumbing, not an opportunity.
     quote_assets = {t for t, ps in pools_per_token.items() if len(ps) >= 2}
 
     rows = []

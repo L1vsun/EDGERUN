@@ -2,12 +2,12 @@
 //
 // This is the deterministic version of the same pipeline `brain/council_rules.py` runs on
 // a schedule: same four seats, same thresholds, same gate, same order. The difference is
-// only where it runs — here it runs on the numbers that are on your screen, this second,
+// only where it runs - here it runs on the numbers that are on your screen, this second,
 // instead of on a snapshot taken up to half an hour ago.
 //
 // It is RULES, not reasoning, and the UI says so. Each sentence below is assembled from a
 // number measured on-chain seconds earlier; no model has seen any of it. The reasoning
-// version (each seat an `claude-opus-5` call) cannot run in a static page — it needs a key —
+// version (each seat an `claude-opus-5` call) cannot run in a static page - it needs a key -
 // so it publishes `council.json` from a scheduled job and the page reads that separately.
 
 import { ChainState, TokenStat, signals } from "./chain";
@@ -22,7 +22,7 @@ export interface AgentLine {
   address?: string;
 }
 
-// A small readout per seat, drawn from the same numbers it just judged — a split bar of
+// A small readout per seat, drawn from the same numbers it just judged - a split bar of
 // what it sorted the window into, a meter against the bar it has to clear, or a tick row
 // of how much memory it has. Every one names the number under it.
 export type Viz =
@@ -133,13 +133,13 @@ function skeptic(toks: Flagged[], scoutOut: AgentOut): AgentOut {
   const clean: string[] = [];
   for (const t of toks) {
     if (t.flags.includes("one wallet")) {
-      traps.push({ text: `one address is on ${pct(Math.min(1, t.concentration * 2))} of ${n0(t.transfers)} transfers — that is one actor, not demand`, tone: "bad", symbol: t.symbol, address: t.address });
+      traps.push({ text: `one address is on ${pct(Math.min(1, t.concentration * 2))} of ${n0(t.transfers)} transfers - that is one actor, not demand`, tone: "bad", symbol: t.symbol, address: t.address });
     } else if (t.flags.includes("printing")) {
-      traps.push({ text: `${t.mints} mints against only ${t.burns} burns — supply is growing under whoever is buying`, tone: "bad", symbol: t.symbol, address: t.address });
+      traps.push({ text: `${t.mints} mints against only ${t.burns} burns - supply is growing under whoever is buying`, tone: "bad", symbol: t.symbol, address: t.address });
     } else if (t.transfers < 20) {
       continue; // too small to judge either way; saying nothing is the correct answer
     } else if (t.swaps === 0 && t.perMin > 60) {
-      traps.push({ text: `${n0(t.perMin)} transfers/min and no DEX swap in the window — movement with no visible way out`, tone: "bad", symbol: t.symbol, address: t.address });
+      traps.push({ text: `${n0(t.perMin)} transfers/min and no DEX swap in the window - movement with no visible way out`, tone: "bad", symbol: t.symbol, address: t.address });
     } else if (t.swaps >= 3 && t.concentration * 2 < 0.4) {
       clean.push(t.symbol);
     }
@@ -177,7 +177,7 @@ function historian(toks: Flagged[], log: LogEntry[]): AgentOut {
     viz: { kind: "ticks" as const, filled: log.length, total: LOG_KEEP, note: `${log.length} of ${LOG_KEEP} rounds remembered · kept in this browser` },
   };
   if (log.length < 3) {
-    return { ...base, lead: "none yet — the log needs a few more rounds before it can compare", lines: [] };
+    return { ...base, lead: "none yet - the log needs a few more rounds before it can compare", lines: [] };
   }
 
   // index every token ever logged: symbol -> [round index, per_min, flags]
@@ -274,13 +274,13 @@ function synthesis(toks: Flagged[], sk: AgentOut, hi: AgentOut): { out: AgentOut
   }];
   if (trapped.has(b.symbol)) {
     conf = conf - 0.2;
-    lines.push({ text: `overruled: Skeptic flagged ${b.symbol} as a single actor — kept because the flow is broad enough to be worth watching anyway`, tone: "bad" });
+    lines.push({ text: `overruled: Skeptic flagged ${b.symbol} as a single actor - kept because the flow is broad enough to be worth watching anyway`, tone: "bad" });
   }
   return {
     out: {
       ...base,
       viz: meter(conf),
-      lead: `${b.symbol} is the one to watch — ${b.flags.join(", ") || "on flow alone"}`,
+      lead: `${b.symbol} is the one to watch - ${b.flags.join(", ") || "on flow alone"}`,
       lines,
     },
     focus: b,
@@ -293,7 +293,7 @@ function synthesis(toks: Flagged[], sk: AgentOut, hi: AgentOut): { out: AgentOut
 function gate(focus: Flagged | null, confidence: number): { action: "SPEAK" | "SILENCE"; why: string } {
   if (confidence < MIN_CONFIDENCE) return { action: "SILENCE", why: `confidence ${confidence.toFixed(2)} is under the ${MIN_CONFIDENCE} bar` };
   if (!focus) return { action: "SILENCE", why: "synthesis named nothing to stand behind" };
-  if (focus.transfers < 20) return { action: "SILENCE", why: `${focus.symbol} has only ${focus.transfers} transfers — too few to stand behind` };
+  if (focus.transfers < 20) return { action: "SILENCE", why: `${focus.symbol} has only ${focus.transfers} transfers - too few to stand behind` };
   return { action: "SPEAK", why: `confidence ${confidence.toFixed(2)} on ${focus.symbol}, ${n0(focus.transfers)} transfers behind it` };
 }
 
@@ -321,4 +321,4 @@ export function runCouncil(state: ChainState, log: LogEntry[]): { round: Round; 
   };
 }
 
-export const GATE_SEAT = { name: "GATE", seat: "basal ganglia · output", job: "decides whether any of this is worth saying out loud", reads: "Synthesis only — and it is code, not a model" };
+export const GATE_SEAT = { name: "GATE", seat: "basal ganglia · output", job: "decides whether any of this is worth saying out loud", reads: "Synthesis only - and it is code, not a model" };

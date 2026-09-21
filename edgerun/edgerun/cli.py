@@ -27,17 +27,17 @@ def _print_scan(result: ScanResult) -> None:
         click.echo(f"    {STATUS_ICON[c.status]}  {c.detail}")
     if flagged:
         for m in result.impersonation.nearest_matches[:1]:
-            click.echo(f"    ref   closest known match: {m.ticker} ({m.contract[:6]}...) — not the same contract")
+            click.echo(f"    ref   closest known match: {m.ticker} ({m.contract[:6]}...) - not the same contract")
 
     click.echo(f"\n  verdict: {result.verdict}")
     click.echo(f"  facts checked: {result.facts_checked} · unresolved: {result.unresolved} "
                f"· view on blockscout: {result.blockscout_url}\n")
-    click.echo("  Not financial advice. Verification only — read the linked page yourself.\n")
+    click.echo("  Not financial advice. Verification only - read the linked page yourself.\n")
 
 
 @click.group()
 def main() -> None:
-    """edgerun — contract safety + impersonation checker for Robinhood Chain."""
+    """edgerun - contract safety + impersonation checker for Robinhood Chain."""
 
 
 @main.command()
@@ -104,7 +104,7 @@ def verify_config(config_path: str | None) -> None:
     for t in cfg.reference_tokens:
         click.echo(f"    {t.ticker:10s} {t.name:20s} {t.contract}")
     if not cfg.dex_factory_address:
-        click.echo("  dex.factory_address: not set — LP lock checks will report unresolved")
+        click.echo("  dex.factory_address: not set - LP lock checks will report unresolved")
 
 
 @main.command()

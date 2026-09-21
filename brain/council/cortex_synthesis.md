@@ -1,4 +1,4 @@
-# SYNTHESIS — association cortex
+# SYNTHESIS - association cortex
 
 Three regions have reported: Scout (what is happening), Skeptic (why it is a trap),
 Historian (what happened last time). They may disagree. Reconcile them into one call a

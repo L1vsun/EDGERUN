@@ -66,7 +66,7 @@ def briefing(snap: dict) -> str:
         )
     lines += [
         "",
-        "You cannot see price, liquidity, or holders — only what is above. A window this",
+        "You cannot see price, liquidity, or holders - only what is above. A window this",
         "short makes small numbers meaningless; treat anything under ~20 transfers as noise.",
     ]
     return "\n".join(lines)
@@ -129,7 +129,7 @@ def gate(synth: dict, snap: dict) -> dict:
     if row is None:
         return {"action": "SILENCE", "why": "synthesis named a token that is not in the window"}
     if row["transfers"] < 20:
-        return {"action": "SILENCE", "why": f"{focus} has only {row['transfers']} transfers — too few to stand behind"}
+        return {"action": "SILENCE", "why": f"{focus} has only {row['transfers']} transfers - too few to stand behind"}
     return {"action": "SPEAK", "why": f"confidence {conf:.2f} on {focus}, {row['transfers']} transfers behind it"}
 
 
@@ -170,7 +170,7 @@ def main() -> int:
     print(f"council round · block {snap['block']} · {len(snap['tokens'])} tokens")
     scout = run("scout", "Report what is happening on the chain right now.")
     run("skeptic", "Scout reported:\n" + json.dumps(scout, indent=1) + "\n\nArgue the bear case.")
-    history = json.dumps(log[-LOG_KEEP:], indent=1) if log else "(the log is empty — this is an early run)"
+    history = json.dumps(log[-LOG_KEEP:], indent=1) if log else "(the log is empty - this is an early run)"
     run("historian", f"Previous rounds, oldest first:\n{history}\n\nWhat precedent applies now?")
     synth = run("synthesis",
                 "scout: " + json.dumps(regions.get("scout"), indent=1) +
@@ -190,7 +190,7 @@ def write_round(snap, regions, log, *, mode, model, usage, out) -> int:
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
 
     result = {
-        "mode": mode,                      # "rules" or "live" — the page says which
+        "mode": mode,                      # "rules" or "live" - the page says which
         "generated_at": now,
         "model": model,
         "block": snap["block"],
@@ -220,7 +220,7 @@ def write_round(snap, regions, log, *, mode, model, usage, out) -> int:
     })
     LOG.write_text(json.dumps(log[-400:], indent=1))
 
-    print(f"gate: {decision['action']} — {decision['why']}")
+    print(f"gate: {decision['action']} - {decision['why']}")
     if mode == "live":
         print(f"cost: ${cost} (in {usage['in']}, out {usage['out']}, "
               f"cache read {usage['cache_read']}, written {usage['cache_write']})")

@@ -1,6 +1,6 @@
 """Watchtower: re-scan known contracts and record what CHANGED.
 
-Every comparable tool on this chain ships a snapshot — you paste an address,
+Every comparable tool on this chain ships a snapshot - you paste an address,
 you get a verdict, and nothing watches it afterward. But a contract that
 passed every check at 14:02 can have ownership transferred at 14:40, or stop
 letting holders sell at 15:10. The snapshot was never wrong; it just stopped
@@ -27,7 +27,7 @@ from .cache import ScanCache
 log = logging.getLogger("edgerun.watchtower")
 
 # Only these checks raise an event. A wording tweak in a detail string, or a
-# check flipping to `unresolved` because the explorer hiccuped, is noise —
+# check flipping to `unresolved` because the explorer hiccuped, is noise -
 # and a false "OWNERSHIP TRANSFERRED" alert is worse than no alert at all.
 WATCHED_CHECKS = {
     "exit_test": "sellability",

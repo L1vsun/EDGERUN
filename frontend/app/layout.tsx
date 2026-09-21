@@ -25,7 +25,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://edgerun.netlify.ap
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "edgerun — five modules read every block",
+  title: "edgerun - five modules read every block",
   description:
     "A traced connectome wired to Robinhood Chain: five modules argue over live transfers in your browser, and a code gate decides whether any of it is worth saying.",
   icons: {
@@ -37,14 +37,14 @@ export const metadata: Metadata = {
     apple: `${BASE}/apple-touch-icon.png`,
   },
   openGraph: {
-    title: "edgerun — five modules read every block",
+    title: "edgerun - five modules read every block",
     description: "Five modules argue over live Robinhood Chain flow in your browser. Most rounds, the gate says nothing.",
     images: [{ url: `${BASE}/og.png`, width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "edgerun — five modules read every block",
+    title: "edgerun - five modules read every block",
     description: "Five modules argue over live Robinhood Chain flow in your browser. Most rounds, the gate says nothing.",
     images: [`${BASE}/og.png`],
   },

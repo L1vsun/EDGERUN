@@ -39,7 +39,7 @@ def run_contract_lane(address: str, bs: BlockscoutClient, rpc: RpcClient, config
         "source_verified", "source verification",
         "ok" if is_verified else "fail",
         "source verified on blockscout" if is_verified
-        else "source not verified — checks below are limited to bytecode-level signals",
+        else "source not verified - checks below are limited to bytecode-level signals",
     ))
 
     source_code = ""
@@ -83,7 +83,7 @@ def _mint_check(is_verified: bool, source_code: str, deployed_bytecode: str) -> 
     if standard_mint:
         return CheckResult(
             "supply_mint", "supply / mint", "fail",
-            "mint(address,uint256) selector present in deployed bytecode — supply is not fixed",
+            "mint(address,uint256) selector present in deployed bytecode - supply is not fixed",
         )
 
     if is_verified and source_code:
@@ -91,7 +91,7 @@ def _mint_check(is_verified: bool, source_code: str, deployed_bytecode: str) -> 
             return CheckResult(
                 "supply_mint", "supply / mint", "warn",
                 "a public/external function named *mint* exists in verified source with a "
-                "non-standard signature — not auto-detected by selector scan, read it yourself",
+                "non-standard signature - not auto-detected by selector scan, read it yourself",
             )
         return CheckResult(
             "supply_mint", "supply / mint", "ok",
@@ -101,12 +101,12 @@ def _mint_check(is_verified: bool, source_code: str, deployed_bytecode: str) -> 
     if deployed_bytecode:
         return CheckResult(
             "supply_mint", "supply / mint", "ok",
-            "no standard mint(address,uint256) selector in bytecode (bytecode-only scan — "
+            "no standard mint(address,uint256) selector in bytecode (bytecode-only scan - "
             "source not verified, a custom-signature mint function can't be ruled out)",
         )
 
     return CheckResult("supply_mint", "supply / mint", "unresolved",
-                        "cannot inspect bytecode for a mint path — no source and no code fetched")
+                        "cannot inspect bytecode for a mint path - no source and no code fetched")
 
 
 def _ownership_check(rpc: RpcClient, address: str, deployed_bytecode: str) -> CheckResult:
@@ -122,7 +122,7 @@ def _ownership_check(rpc: RpcClient, address: str, deployed_bytecode: str) -> Ch
             names = ", ".join(sig for sig, _ in dangerous)
             return CheckResult(
                 "ownership", "ownership", "warn",
-                f"owner() unreadable (no Ownable-style getter), but bytecode exposes: {names} — "
+                f"owner() unreadable (no Ownable-style getter), but bytecode exposes: {names} - "
                 "cannot confirm who can still call these",
             )
         return CheckResult("ownership", "ownership", "unresolved",
@@ -138,7 +138,7 @@ def _ownership_check(rpc: RpcClient, address: str, deployed_bytecode: str) -> Ch
         names = ", ".join(sig for sig, _ in dangerous)
         return CheckResult(
             "ownership", "ownership", "warn",
-            f"ownership renounced, but bytecode still exposes: {names} — selector presence doesn't "
+            f"ownership renounced, but bytecode still exposes: {names} - selector presence doesn't "
             "prove the modifier guarding it, verify the source",
         )
 
@@ -146,7 +146,7 @@ def _ownership_check(rpc: RpcClient, address: str, deployed_bytecode: str) -> Ch
         names = ", ".join(sig for sig, _ in dangerous)
         return CheckResult(
             "ownership", "ownership", "fail",
-            f"ownership held by {owner} AND contract exposes: {names} — live, callable risk",
+            f"ownership held by {owner} AND contract exposes: {names} - live, callable risk",
         )
 
     return CheckResult("ownership", "ownership", "warn", f"ownership not renounced (owner: {owner})")
@@ -156,10 +156,10 @@ def _lp_lock_check(config: Config) -> CheckResult:
     if not config.dex_factory_address:
         return CheckResult(
             "lp_lock", "LP lock", "unresolved",
-            "no DEX factory configured — set dex.factory_address in known_tokens.json to enable "
+            "no DEX factory configured - set dex.factory_address in known_tokens.json to enable "
             "pair resolution for this deployment (see ROADMAP.md)",
         )
     # Pair resolution against a real factory is implemented once a live RH Chain
-    # DEX factory address is confirmed and set in config — see ROADMAP.md.
+    # DEX factory address is confirmed and set in config - see ROADMAP.md.
     return CheckResult("lp_lock", "LP lock", "unresolved",
                         "pair contract not resolvable from creation tx")

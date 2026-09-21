@@ -2,12 +2,12 @@
 
 Every field name here was confirmed live against robinhoodchain.blockscout.com
 (and cross-checked against eth.blockscout.com, which runs the same Blockscout
-version) on 2026-09-08 — see docs/checks.md for the exact calls. Nothing here
+version) on 2026-09-08 - see docs/checks.md for the exact calls. Nothing here
 is inferred from Blockscout's general docs; it's the observed response shape.
 
 The instance sits behind Cloudflare and returns a bot-challenge page to
 requests with no browser-like User-Agent, so we always send one. A call that
-still fails (timeout, 5xx, challenge page) raises BlockscoutError — callers
+still fails (timeout, 5xx, challenge page) raises BlockscoutError - callers
 turn that into an `unresolved` check, never a silent pass.
 """
 from __future__ import annotations
@@ -36,7 +36,7 @@ def _browser_headers(base_url: str) -> dict[str, str]:
 
 
 class BlockscoutError(RuntimeError):
-    """Raised when Blockscout can't answer — network, 4xx/5xx, or a challenge page."""
+    """Raised when Blockscout can't answer - network, 4xx/5xx, or a challenge page."""
 
 
 class BlockscoutClient:
@@ -65,7 +65,7 @@ class BlockscoutClient:
             raise BlockscoutError(f"GET {path} failed: {exc}") from exc
         if resp.status_code == 403:
             raise BlockscoutError(
-                f"GET {path} -> HTTP 403 (blocked by the explorer's bot protection — "
+                f"GET {path} -> HTTP 403 (blocked by the explorer's bot protection - "
                 "check the request headers in blockscout.py::_browser_headers)"
             )
         if resp.status_code == 429:
@@ -80,19 +80,19 @@ class BlockscoutClient:
     # --- endpoints actually used by the scan pipeline ---
 
     def address(self, address: str) -> dict:
-        """GET /api/v2/addresses/{address} — is_contract, is_verified, creator, token summary."""
+        """GET /api/v2/addresses/{address} - is_contract, is_verified, creator, token summary."""
         return self._get(f"/api/v2/addresses/{address}")
 
     def smart_contract(self, address: str) -> dict:
-        """GET /api/v2/smart-contracts/{address} — source, bytecode, compiler, verification."""
+        """GET /api/v2/smart-contracts/{address} - source, bytecode, compiler, verification."""
         return self._get(f"/api/v2/smart-contracts/{address}")
 
     def token(self, address: str) -> dict:
-        """GET /api/v2/tokens/{address} — name, symbol, decimals, total_supply, holders_count."""
+        """GET /api/v2/tokens/{address} - name, symbol, decimals, total_supply, holders_count."""
         return self._get(f"/api/v2/tokens/{address}")
 
     def token_holders(self, address: str, limit: int = 10) -> list[dict]:
-        """GET /api/v2/tokens/{address}/holders — verified live 2026-09-09."""
+        """GET /api/v2/tokens/{address}/holders - verified live 2026-09-09."""
         data = self._get(f"/api/v2/tokens/{address}/holders")
         return [
             {"address": (i.get("address") or {}).get("hash", ""), "value": i.get("value", "0")}
@@ -100,12 +100,12 @@ class BlockscoutClient:
         ]
 
     def newest_smart_contracts(self, limit: int = 50) -> list[dict]:
-        """GET /api/v2/smart-contracts — most-recently-verified contracts, newest first."""
+        """GET /api/v2/smart-contracts - most-recently-verified contracts, newest first."""
         data = self._get("/api/v2/smart-contracts")
         return data.get("items", [])[:limit]
 
     def newest_tokens(self, limit: int = 50) -> list[dict]:
-        """GET /api/v2/tokens — token list as surfaced by the explorer, newest activity first."""
+        """GET /api/v2/tokens - token list as surfaced by the explorer, newest activity first."""
         data = self._get("/api/v2/tokens")
         return data.get("items", [])[:limit]
 

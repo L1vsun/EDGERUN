@@ -23,7 +23,7 @@ class ContractLane:
     source_verified: bool | None
     checks: list[CheckResult] = field(default_factory=list)
     # Who deployed it. Kept on the result so a deployer's whole launch history
-    # can be assembled across scans — one contract at a time hides serial rugs.
+    # can be assembled across scans - one contract at a time hides serial rugs.
     deployer: str | None = None
 
 

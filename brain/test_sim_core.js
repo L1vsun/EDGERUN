@@ -1,4 +1,4 @@
-// Regression test for frontend/public/brain/sim-core.js — needs no data files. Run: node brain/test_sim_core.js
+// Regression test for frontend/public/brain/sim-core.js - needs no data files. Run: node brain/test_sim_core.js
 // Golden values come from Brian2 running the paper's equations on the same two-neuron network:
 // neuron 0 is held at g = 50 mV every step and drives neuron 1 through a 100-synapse excitatory edge.
 // It pins exact integration, the 1.8 ms synaptic delay and the 2.2 ms refractory period.

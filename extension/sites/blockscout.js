@@ -2,7 +2,7 @@
 //
 // The address is in the path here, which makes this the simplest surface. Someone on an
 // explorer page is already reading detail, so this renders the full check as a standing
-// panel rather than hiding it behind a hover — the badge goes next to the heading, the
+// panel rather than hiding it behind a hover - the badge goes next to the heading, the
 // panel sits under it.
 
 (() => {
@@ -16,7 +16,7 @@
 
   // The heading mounts after the shell, so this waits for it rather than grabbing whatever
   // exists at document_idle. No heading after the timeout means a floating panel, not a
-  // guess at a container — putting a security badge in the wrong row is worse than putting
+  // guess at a container - putting a security badge in the wrong row is worse than putting
   // it in an obvious corner of its own.
   const findHeading = () => document.querySelector("main h1") || document.querySelector("h1");
 
@@ -97,7 +97,7 @@
       slot.appendChild(badge);
       heading.appendChild(slot);
     } else {
-      E.log("no heading found — using the floating slot");
+      E.log("no heading found - using the floating slot");
       floatingSlot(badge);
     }
 

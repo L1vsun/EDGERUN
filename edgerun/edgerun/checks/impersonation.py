@@ -1,6 +1,6 @@
 """Impersonation lane: edit-distance the new token's ticker/name against every
 entry in the maintained reference list (`known_tokens.json`). Distance, not a
-percentage — see docs/impersonation.md for why.
+percentage - see docs/impersonation.md for why.
 """
 from __future__ import annotations
 
@@ -58,14 +58,14 @@ def run_impersonation_lane(
     if not config.reference_tokens:
         checks.append(CheckResult(
             "impersonation", "impersonation", "unresolved",
-            "reference list (known_tokens.json) is empty — nothing to compare against",
+            "reference list (known_tokens.json) is empty - nothing to compare against",
         ))
         return ImpersonationLane(checks=checks, nearest_matches=matches)
 
     if not token_symbol and not token_name:
         checks.append(CheckResult(
             "impersonation", "impersonation", "unresolved",
-            "this address has no token metadata (symbol/name) to compare — not an ERC-20, "
+            "this address has no token metadata (symbol/name) to compare - not an ERC-20, "
             "or Blockscout hasn't indexed it as one",
         ))
         return ImpersonationLane(checks=checks, nearest_matches=matches)
@@ -108,7 +108,7 @@ def run_impersonation_lane(
         flagged = True
 
     # Don't append a reassuring "no match" line when the stock-registry check
-    # already proved this is a counterfeit — a FAIL and an OK side by side in
+    # already proved this is a counterfeit - a FAIL and an OK side by side in
     # the same lane reads as contradictory.
     already_failed = any(c.status == "fail" for c in checks)
     if not flagged and not already_failed:

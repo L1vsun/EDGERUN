@@ -1,5 +1,5 @@
 {
-  "_comment": "edgerun's public blocklist. Every entry is a claim anyone can check: the evidence field says what was measured and how, and the commit history of this file says who added it and when. Nothing goes in here on a hunch — an entry needs a reproducible observation (a reverted transfer simulation, a registry mismatch, an on-chain fact), not a report. To add one, open a pull request against frontend/public/blocklist.json with the evidence filled in.",
+  "_comment": "edgerun's public blocklist. Every entry is a claim anyone can check: the evidence field says what was measured and how, and the commit history of this file says who added it and when. Nothing goes in here on a hunch - an entry needs a reproducible observation (a reverted transfer simulation, a registry mismatch, an on-chain fact), not a report. To add one, open a pull request against frontend/public/blocklist.json with the evidence filled in.",
   "version": 1,
   "updated": "2026-09-21",
   "source": "https://github.com/l1vsun/edgerun/blob/main/frontend/public/blocklist.json",
@@ -20,7 +20,7 @@
       "name": "Tesla • Robinhood Token",
       "severity": "fail",
       "reason": "copies the official name exactly, and blocks some holders but not others",
-      "evidence": "Name is byte-for-byte the official \"Tesla • Robinhood Token\" while the address is not in Robinhood's registry. Transfer simulation succeeded for 2 of 3 live holders and reverted \"blacklisted\" for the third — a targeted restriction rather than a global one.",
+      "evidence": "Name is byte-for-byte the official \"Tesla • Robinhood Token\" while the address is not in Robinhood's registry. Transfer simulation succeeded for 2 of 3 live holders and reverted \"blacklisted\" for the third - a targeted restriction rather than a global one.",
       "added": "2026-09-21"
     }
   ]

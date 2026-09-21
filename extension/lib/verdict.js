@@ -2,10 +2,10 @@
 //
 // Two tiers, because a scrolling feed and a token page want different things:
 //
-//   identity — registry + reference list. One batched RPC round trip per address, and the
+//   identity - registry + reference list. One batched RPC round trip per address, and the
 //              registry is already in storage, so a whole timeline resolves in one call.
 //              This is the tier that catches "this is not the official TSLA".
-//   full     — everything identity does, plus the contract lane: verified source, mint
+//   full     - everything identity does, plus the contract lane: verified source, mint
 //              selectors, ownership, LP lock, and a real simulated transfer out of a live
 //              holder's wallet. Costs ~2 explorer + ~3 RPC calls, so it runs on a token
 //              page or on an explicit click, never per row of a feed.
@@ -56,13 +56,13 @@ async function readIdentity(address, { withOwner = false } = {}) {
 
 /**
  * The stock lane. Returns a check, or null when the token makes no claim on an official
- * asset — so the check only appears on scans where it has something to say.
+ * asset - so the check only appears on scans where it has something to say.
  */
 function stockCheck(reg, address, symbol, name, uiMultiplier) {
   if (!reg.loaded) {
     if (symbol || name) {
       return check("stock_token", "stock token", "unresolved",
-        `cannot reach the official Robinhood stock-token registry (${reg.error}) — cannot confirm or deny an official claim`);
+        `cannot reach the official Robinhood stock-token registry (${reg.error}) - cannot confirm or deny an official claim`);
     }
     return null;
   }
@@ -70,14 +70,14 @@ function stockCheck(reg, address, symbol, name, uiMultiplier) {
   const official = officialForAddress(reg, address);
   if (official) {
     return check("stock_token", "stock token", "ok",
-      `VERIFIED official Robinhood stock token — ${official.ticker} (${official.name}), matches the registry Robinhood publishes`);
+      `VERIFIED official Robinhood stock token - ${official.ticker} (${official.name}), matches the registry Robinhood publishes`);
   }
 
   const claimed = symbol ? officialForTicker(reg, symbol) : null;
   const wearsBranding = normalizeName(name || "").includes(OFFICIAL_NAME_MARKER);
 
   if (claimed) {
-    let detail = `ticker "${symbol.toUpperCase()}" is an OFFICIAL Robinhood tokenised stock (${claimed.name}) deployed at ${short(claimed.address)} — this contract is ${short(address)}, which is NOT it`;
+    let detail = `ticker "${symbol.toUpperCase()}" is an OFFICIAL Robinhood tokenised stock (${claimed.name}) deployed at ${short(claimed.address)} - this contract is ${short(address)}, which is NOT it`;
     if (wearsBranding) detail += '. It also copies the official "• Robinhood Token" name format';
     return check("stock_token", "stock token", "fail", detail);
   }
@@ -90,7 +90,7 @@ function stockCheck(reg, address, symbol, name, uiMultiplier) {
   // Suggestive on its own, never proof: anyone can implement a function that returns a number.
   if (uiMultiplier !== null && uiMultiplier > 0n) {
     return check("stock_token", "stock token", "warn",
-      "implements the ERC-8056 uiMultiplier() used by the official stock tokens, but is not in the official registry — unusual for an ordinary token");
+      "implements the ERC-8056 uiMultiplier() used by the official stock tokens, but is not in the official registry - unusual for an ordinary token");
   }
   return null;
 }
@@ -114,8 +114,8 @@ function referenceCheck(address, symbol, name) {
   }
   const best = matches.sort((a, b) => a.distance - b.distance)[0];
   const detail = best.exact
-    ? `uses the same ${best.what} as ${best.ref.name} (${short(best.ref.contract)}), an established token on this chain — check which one you mean`
-    : `${best.distance} edit(s) from ${best.ref.name} (${best.ref.ticker}, ${short(best.ref.contract)}) — near-miss of an established token`;
+    ? `uses the same ${best.what} as ${best.ref.name} (${short(best.ref.contract)}), an established token on this chain - check which one you mean`
+    : `${best.distance} edit(s) from ${best.ref.name} (${best.ref.ticker}, ${short(best.ref.contract)}) - near-miss of an established token`;
   return { check: check("impersonation", "impersonation", "warn", detail), matches };
 }
 
@@ -129,7 +129,7 @@ async function sourceCheck(address) {
       info,
       check: info.is_verified
         ? check("source_verified", "source verification", "ok", "source is verified on the explorer")
-        : check("source_verified", "source verification", "fail", "source is NOT verified — nobody can read what this contract actually does"),
+        : check("source_verified", "source verification", "fail", "source is NOT verified - nobody can read what this contract actually does"),
     };
   } catch (err) {
     return { check: check("source_verified", "source verification", "unresolved", `explorer unreachable: ${err.message}`), info: null };
@@ -141,7 +141,7 @@ function mintCheck(code) {
   const found = selectorsPresent(code);
   const mint = found.find((f) => f.sig.startsWith("mint("));
   if (mint) {
-    return check("supply_mint", "supply / mint", "fail", "mint(address,uint256) is present in the runtime bytecode — supply can be increased after deploy");
+    return check("supply_mint", "supply / mint", "fail", "mint(address,uint256) is present in the runtime bytecode - supply can be increased after deploy");
   }
   return check("supply_mint", "supply / mint", "ok", "no mint selector in the runtime bytecode");
 }
@@ -156,16 +156,16 @@ function ownershipCheck(owner, code) {
   }
   if (dangerous.length) {
     const names = dangerous.slice(0, 3).map((d) => d.sig).join(", ");
-    return check("ownership", "ownership", "fail", `owned by ${short(owner)}, and the bytecode carries ${names} — that wallet can still change how this token behaves`);
+    return check("ownership", "ownership", "fail", `owned by ${short(owner)}, and the bytecode carries ${names} - that wallet can still change how this token behaves`);
   }
-  return check("ownership", "ownership", "warn", `owned by ${short(owner)} — no dangerous selectors found, but ownership is not renounced`);
+  return check("ownership", "ownership", "warn", `owned by ${short(owner)} - no dangerous selectors found, but ownership is not renounced`);
 }
 
 // Honest placeholder. There is no confirmed DEX factory/router address for chain 4663, and
-// the pools that do exist are Uniswap v4 — liquidity sits in a singleton PoolManager, so a
+// the pools that do exist are Uniswap v4 - liquidity sits in a singleton PoolManager, so a
 // v2/v3-style "is the LP token locked" question does not even have the same shape here.
 const lpCheck = () => check("lp_lock", "LP lock", "unresolved",
-  "no confirmed DEX factory on this chain and the pools seen are Uniswap v4 (liquidity in a singleton) — LP lock cannot be established, and is not being guessed at");
+  "no confirmed DEX factory on this chain and the pools seen are Uniswap v4 (liquidity in a singleton) - LP lock cannot be established, and is not being guessed at");
 
 async function exitCheck(address) {
   let list;
@@ -180,18 +180,18 @@ async function exitCheck(address) {
     .slice(0, 3);
   if (!candidates.length) return check("exit_test", "exit test", "unresolved", "no holder with a non-zero balance to simulate a transfer from");
 
-  // The explorer's holder balances are a cached snapshot. Read each one live first — without
+  // The explorer's holder balances are a cached snapshot. Read each one live first - without
   // this, a stale balance turns an ordinary "you have no tokens" revert into a false
   // accusation of a targeted blacklist. That bug was real; it cost 5 false positives in 45.
-  if (!(await spend("rpc"))) return check("exit_test", "exit test", "unresolved", "local rate budget spent — not run");
+  if (!(await spend("rpc"))) return check("exit_test", "exit test", "unresolved", "local rate budget spent - not run");
   const balances = await rpc(candidates.map((h) => ethCall(address, callData(SEL.balanceOf, addrWord(h.address)))));
   const live = candidates.filter((_, i) => (decodeUint(balances[i].result) || 0n) > 0n);
   let skipped = candidates.length - live.length;
-  if (!live.length) return check("exit_test", "exit test", "unresolved", `no holder with a live non-zero balance to test (${skipped} skipped) — inconclusive`);
+  if (!live.length) return check("exit_test", "exit test", "unresolved", `no holder with a live non-zero balance to test (${skipped} skipped) - inconclusive`);
 
   // 1 wei of the token: the smallest amount that still runs the whole transfer path.
   const data = callData(SEL.transfer, addrWord(BURN_SINK), uintWord(1));
-  if (!(await spend("rpc"))) return check("exit_test", "exit test", "unresolved", "local rate budget spent — not run");
+  if (!(await spend("rpc"))) return check("exit_test", "exit test", "unresolved", "local rate budget spent - not run");
   const sims = await rpc(live.map((h) => ethCall(address, data, h.address)));
 
   const passed = [];
@@ -203,14 +203,14 @@ async function exitCheck(address) {
     blocked.push([live[i].address, decodeRevert(rd) || r.error.message || "reverted, no reason given"]);
   });
 
-  if (!passed.length && !blocked.length) return check("exit_test", "exit test", "unresolved", `no holder with a live non-zero balance to test (${skipped} skipped) — inconclusive`);
+  if (!passed.length && !blocked.length) return check("exit_test", "exit test", "unresolved", `no holder with a live non-zero balance to test (${skipped} skipped) - inconclusive`);
   if (blocked.length && !passed.length) {
-    return check("exit_test", "exit test", "fail", `simulated transfer FAILED for all ${blocked.length} holder(s) tested — ${blocked[0][1]}. Holders cannot move this token right now.`);
+    return check("exit_test", "exit test", "fail", `simulated transfer FAILED for all ${blocked.length} holder(s) tested - ${blocked[0][1]}. Holders cannot move this token right now.`);
   }
   if (blocked.length) {
-    return check("exit_test", "exit test", "warn", `simulated transfer succeeded for ${passed.length} holder(s) but FAILED for ${blocked.length} (${short(blocked[0][0])} — ${blocked[0][1]}) — selective restriction, the signature of a targeted blacklist`);
+    return check("exit_test", "exit test", "warn", `simulated transfer succeeded for ${passed.length} holder(s) but FAILED for ${blocked.length} (${short(blocked[0][0])} - ${blocked[0][1]}) - selective restriction, the signature of a targeted blacklist`);
   }
-  return check("exit_test", "exit test", "ok", `simulated transfer succeeded from ${passed.length} real holder(s) — tokens are movable at this block (a transfer test, not a DEX sell test)`);
+  return check("exit_test", "exit test", "ok", `simulated transfer succeeded from ${passed.length} real holder(s) - tokens are movable at this block (a transfer test, not a DEX sell test)`);
 }
 
 // ---- assembly ----
@@ -244,12 +244,12 @@ export async function scan(address, { level = "identity" } = {}) {
     id = await readIdentity(addr, { withOwner: level === "full" });
   } catch (err) {
     return { ...base, verdict: "UNRESOLVED", symbol: null, name: null, official: null, impersonates: null, facts: 0, unresolved: 1,
-      checks: [check("identity", "identity", "unresolved", err instanceof BudgetExceeded ? "local rate budget spent — try again in a minute" : `could not read the contract: ${err.message}`)] };
+      checks: [check("identity", "identity", "unresolved", err instanceof BudgetExceeded ? "local rate budget spent - try again in a minute" : `could not read the contract: ${err.message}`)] };
   }
 
   if (!id.code || id.code === "0x") {
     return { ...base, verdict: "UNRESOLVED", symbol: null, name: null, official: null, impersonates: null, facts: 0, unresolved: 1,
-      checks: [check("identity", "identity", "unresolved", "there is no contract code at this address — it is a wallet, or nothing at all")] };
+      checks: [check("identity", "identity", "unresolved", "there is no contract code at this address - it is a wallet, or nothing at all")] };
   }
 
   const reg = await getRegistry();
@@ -266,7 +266,7 @@ export async function scan(address, { level = "identity" } = {}) {
   const contract = [];
   if (level === "full") {
     // The explorer is the slow part of this check, and the source lookup and the holder
-    // list do not depend on each other — run them together rather than one after the other.
+    // list do not depend on each other - run them together rather than one after the other.
     const [src, exit] = await Promise.all([sourceCheck(addr), exitCheck(addr)]);
     contract.push(src.check, mintCheck(id.code), ownershipCheck(id.owner, id.code), lpCheck(), exit);
   }
@@ -275,7 +275,7 @@ export async function scan(address, { level = "identity" } = {}) {
 }
 
 /**
- * Identity for many addresses in one RPC round trip — what a timeline scan uses. Falls back
+ * Identity for many addresses in one RPC round trip - what a timeline scan uses. Falls back
  * to per-address scans only for the ones that need more than the batch can answer.
  */
 export async function scanMany(addresses) {
@@ -297,7 +297,7 @@ export async function scanMany(addresses) {
       out[addr] = {
         address: addr, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr),
         symbol: official.ticker, name: official.name, official, impersonates: null, verdict: "OFFICIAL", facts: 1, unresolved: 0,
-        checks: [check("stock_token", "stock token", "ok", `VERIFIED official Robinhood stock token — ${official.ticker} (${official.name}), matches the registry Robinhood publishes`)],
+        checks: [check("stock_token", "stock token", "ok", `VERIFIED official Robinhood stock token - ${official.ticker} (${official.name}), matches the registry Robinhood publishes`)],
       };
     } else {
       need.push(addr);
@@ -311,14 +311,14 @@ export async function scanMany(addresses) {
     checks: [check("identity", "identity", "unresolved", why)],
   });
 
-  // One request per chunk, not per address. 12 addresses is 48 eth_calls in a single POST —
+  // One request per chunk, not per address. 12 addresses is 48 eth_calls in a single POST -
   // big enough that a whole screen of posts costs one round trip, small enough that the
   // public node is never handed something it might refuse.
   const CHUNK = 12;
   for (let start = 0; start < need.length; start += CHUNK) {
     const slice = need.slice(start, start + CHUNK);
     if (!(await spend("rpc"))) {
-      for (const addr of slice) out[addr] = unresolvedFor(addr, "local rate budget spent — try again in a minute");
+      for (const addr of slice) out[addr] = unresolvedFor(addr, "local rate budget spent - try again in a minute");
       continue;
     }
     const calls = [];
@@ -340,7 +340,7 @@ export async function scanMany(addresses) {
       const mult = res[i * 4 + 3]?.error ? null : decodeUint(res[i * 4 + 3]?.result);
 
       if (!code || code === "0x") {
-        out[addr] = unresolvedFor(addr, "there is no contract code at this address — it is a wallet, or nothing at all");
+        out[addr] = unresolvedFor(addr, "there is no contract code at this address - it is a wallet, or nothing at all");
         return;
       }
       const stock = stockCheck(reg, addr, symbol, name, mult);
@@ -363,8 +363,8 @@ export async function scanMany(addresses) {
  *
  * Two different answers, and the difference is the whole point:
  *
- *   official — Robinhood publishes exactly one address for this ticker. We can name it.
- *   onchain  — the ticker exists on this chain but belongs to no one. Measured live:
+ *   official - Robinhood publishes exactly one address for this ticker. We can name it.
+ *   onchain  - the ticker exists on this chain but belongs to no one. Measured live:
  *              $PEPE is 7 different contracts, $HOOD 6, $DOGE 5. The honest answer is the
  *              count, not a pick. Choosing one of seven would be inventing an answer, and
  *              that ambiguity is exactly how somebody buys the wrong one.
@@ -393,7 +393,7 @@ export async function lookupTicker(ticker) {
     return null; // explorer unreachable: say nothing rather than guess
   }
   const exact = found.items.filter((i) => String(i.symbol || "").toUpperCase() === t);
-  if (!exact.length) return null; // not a token on this chain — no badge, per the rule above
+  if (!exact.length) return null; // not a token on this chain - no badge, per the rule above
 
   return {
     ticker: t,
@@ -415,7 +415,7 @@ export async function lookupTicker(ticker) {
  * Reporting "7 contracts use $PEPE" is honest but it leaves the reader stuck. This resolves
  * the ambiguity without inventing an answer: it asks the explorer how many holders each one
  * has, and lets the numbers rank them. Usually one has thousands and the rest have single
- * digits — a finding, not a guess. When two are genuinely comparable that is also a finding,
+ * digits - a finding, not a guess. When two are genuinely comparable that is also a finding,
  * and it says so rather than picking.
  *
  * On demand only: one explorer request per candidate.

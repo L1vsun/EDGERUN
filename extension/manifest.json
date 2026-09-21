@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "edgerun \u2014 Robinhood Chain token checks",
+  "name": "edgerun - Robinhood Chain token checks",
   "version": "0.1.0",
   "description": "Tells you whether the $TICKER in that post is the real contract. Checks run in your browser, against the chain, with no server in between.",
   "permissions": [

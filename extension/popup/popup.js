@@ -75,7 +75,7 @@ async function loadWatch() {
   let items = [];
   try { items = await ask({ type: "watch:list" }); } catch {}
   if (!items.length) {
-    list.innerHTML = `<li class="quiet">nothing yet — check a token and hit watch</li>`;
+    list.innerHTML = `<li class="quiet">nothing yet - check a token and hit watch</li>`;
     return;
   }
   list.innerHTML = items.map((w) => `

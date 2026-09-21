@@ -41,7 +41,7 @@ const KNOWN_REVERTS = {
 };
 
 // "This wallet is empty" is not "this wallet is blocked". The explorer's holder list is a
-// cached snapshot, so a listed holder may already have moved their tokens — treating that
+// cached snapshot, so a listed holder may already have moved their tokens - treating that
 // as a restriction produced false blacklist accusations against legitimate tokens (1INCH,
 // SHRUB) in a live 45-token run. Balances are re-read on chain before simulating, and these
 // reverts are still treated as benign on top of that.

@@ -1,12 +1,14 @@
 import Hero from "@/components/Hero";
+import Install from "@/components/Install";
 import Nose from "@/components/Nose";
 import Council from "@/components/Council";
 
 export default function Home() {
   return (
     <>
-      {/* The product first. The circuit below is how it thinks, not what it is. */}
+      {/* The product first, then how to run it. The circuit below is how it thinks. */}
       <Hero />
+      <Install />
       <Nose />
       <Council />
       <footer className="credit">

@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import httpx
 
-OWNER_SELECTOR = "0x8da5cb5b"  # owner() — keccak256("owner()")[:4], verified locally
+OWNER_SELECTOR = "0x8da5cb5b"  # owner() - keccak256("owner()")[:4], verified locally
 ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 

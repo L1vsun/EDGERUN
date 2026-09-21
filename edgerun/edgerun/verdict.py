@@ -4,7 +4,7 @@ Priority, derived directly from the README's own worked examples:
   - exit test at "fail"                      -> FAIL    (holders provably cannot move it)
   - any impersonation check at "fail"        -> FAIL    (you may be looking at the wrong contract)
   - else any contract check at "fail"        -> CAUTION (unverified source, live mint, etc.)
-  - else the contract lane resolved nothing  -> CAUTION (Blockscout/RPC unreachable — we didn't
+  - else the contract lane resolved nothing  -> CAUTION (Blockscout/RPC unreachable - we didn't
                                                  verify anything, so this can't read as a pass)
   - else                                     -> PASS    (warns are shown but don't block PASS)
 """

@@ -2,8 +2,8 @@
 //
 // Two things are being looked for, and they are not equally trustworthy:
 //
-//   a contract address — unambiguous. 0x + 40 hex, and the chain settles the rest.
-//   a $TICKER          — ambiguous by construction on this chain. A ten-ticker sweep found
+//   a contract address - unambiguous. 0x + 40 hex, and the chain settles the rest.
+//   a $TICKER          - ambiguous by construction on this chain. A ten-ticker sweep found
 //                        213 contracts using an official ticker. So a ticker is only ever
 //                        resolved against Robinhood's own registry: if it is an official
 //                        stock ticker we can name the one true address, and if it is not,
@@ -64,7 +64,7 @@
 
   /**
    * Batched DOM watching. The callback fires at most once per `ms` no matter how much the
-   * page mutates — both X and Dexscreener rewrite their DOM constantly, and re-walking on
+   * page mutates - both X and Dexscreener rewrite their DOM constantly, and re-walking on
    * every mutation is how an extension makes a host page feel broken.
    */
   E.watch = function watch(target, fn, ms = 250) {
@@ -92,7 +92,7 @@
   /**
    * Waits for a host-page element to exist. Both of these sites render their heading after
    * the shell, so "look once at document_idle" finds nothing and the badge ends up wherever
-   * the fallback puts it. Resolves null on timeout, and the caller decides what to do then —
+   * the fallback puts it. Resolves null on timeout, and the caller decides what to do then -
    * which is never "inject it somewhere random".
    */
   E.waitFor = function waitFor(find, timeout = 8000) {

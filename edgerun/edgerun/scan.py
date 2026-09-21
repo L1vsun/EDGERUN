@@ -1,5 +1,5 @@
 """Top-level entry point: scan_address() runs both lanes and returns a
-ScanResult. This is what the CLI and the FastAPI backend both call — one
+ScanResult. This is what the CLI and the FastAPI backend both call - one
 scan engine, two entry points, per the project's own design brief.
 """
 from __future__ import annotations

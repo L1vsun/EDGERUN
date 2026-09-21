@@ -6,8 +6,8 @@ import { RELAY_STEP } from "@/lib/council";
 // The whole fly brain, with the smell circuit burning inside it.
 //
 // Three layers, back to front:
-//   1. 26,000 neurons of the rest of the brain — the silhouette, so you can see it IS a brain
-//   2. 7,000 real synapses of the olfactory circuit — the web, always faintly there
+//   1. 26,000 neurons of the rest of the brain - the silhouette, so you can see it IS a brain
+//   2. 7,000 real synapses of the olfactory circuit - the web, always faintly there
 //   3. the circuit's own neurons, lighting up as each token is smelled
 // Everything is in true anatomical position, on one shared scale.
 
