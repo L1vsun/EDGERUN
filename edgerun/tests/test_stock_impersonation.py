@@ -1,7 +1,7 @@
 """Stock-token authenticity.
 
-The claims this check makes are the strongest in the tool — "this is not the
-real Tesla" — so the cases that must NOT fire are as important as the ones
+The claims this check makes are the strongest in the tool - "this is not the
+real Tesla" - so the cases that must NOT fire are as important as the ones
 that must. A false accusation against a legitimate meme token would be worse
 than missing a fake.
 """
@@ -53,14 +53,14 @@ def test_official_ticker_at_wrong_address_is_fail(registry):
 
 
 def test_forged_branding_without_official_ticker_is_fail(registry):
-    """No official ticker, but wears '• Robinhood Token' — still a false claim."""
+    """No official ticker, but wears '• Robinhood Token' - still a false claim."""
     r = run_stock_check(FAKE, "WOOF", "Doge • Robinhood Token", FakeRpc())
     assert r.status == "fail"
     assert "branding" in r.detail
 
 
 def test_ordinary_token_returns_nothing(registry):
-    """No claim on an official asset must produce no check at all — silence,
+    """No claim on an official asset must produce no check at all - silence,
     not a reassuring green line that would dilute the real ones."""
     assert run_stock_check(FAKE, "HOODRAT", "Hoodrat", FakeRpc()) is None
 

@@ -40,29 +40,49 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .ico { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px;
   color: var(--dim); border: 1px solid var(--rule); }
 .ico:hover { color: var(--chart); border-color: var(--dim); }
+/* the header does not wrap, so on a phone the secondary button goes rather than pushing the
+   row past the viewport - the hero carries the same call to action anyway */
+@media (max-width: 760px) {
+  .top { padding: 0 12px; }
+  .top-actions { gap: 6px; }
+  .top-actions .btn:not(.btn-accent) { display: none; }
+  .ico { width: 28px; height: 28px; }
+}
 
-/* what the extension covers, said plainly next to the demo */
-.surfaces { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; padding: 0; }
-.surfaces li { flex: 1 1 150px; padding: 10px 12px; border: 1px solid var(--rule); background: rgba(10,15,9,0.5); }
-.surfaces b { display: block; font-family: var(--mono); font-size: 10.5px; font-weight: 800;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--chart); }
-.surfaces span { display: block; margin-top: 4px; font-size: 11.5px; line-height: 1.45; color: var(--dim); }
 .btn { font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
   text-decoration: none; padding: 8px 14px; background: transparent; color: var(--dim); border: 1px solid var(--rule); }
 .btn:hover { color: var(--bone); border-color: var(--dim); }
 .btn-accent { background: var(--chart); color: #0a0e04; border-color: var(--chart); font-weight: 800; }
 
-/* ================= the lead: what the product is, shown ================= */
-.lead { max-width: 1500px; margin: 0 auto; padding: 60px 20px 20px; display: grid;
+/* ================= the lead: what the product is, shown =================
+   The first screen carries one idea and then points down. Everything else on the page gets
+   its own screen-height band, because stacking four unrelated blocks into one viewport is
+   what made this feel like homework rather than a product. */
+.lead { position: relative; min-height: calc(100vh - var(--top)); display: flex;
+  flex-direction: column; justify-content: center; padding: 40px 20px 92px; }
+.lead-grid { width: 100%; max-width: 1500px; margin: 0 auto; display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 620px); gap: 54px; align-items: center; }
+
+/* the cue: what the next screen is, and an arrow that says it is down there */
+.next { position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; }
+.next span { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.next:hover span { color: var(--bone); }
+.chev { width: 13px; height: 13px; border-right: 2px solid var(--chart); border-bottom: 2px solid var(--chart);
+  transform: rotate(45deg); animation: nudge 1.9s ease-in-out infinite; }
+@keyframes nudge { 0%, 100% { transform: rotate(45deg) translate(0, 0); opacity: 0.55; } 50% { transform: rotate(45deg) translate(4px, 4px); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .chev { animation: none; } }
 .kicker { display: inline-block; font-family: var(--mono); font-size: 9.5px; font-weight: 700;
   letter-spacing: 0.2em; text-transform: uppercase; color: var(--chart);
   border: 1px solid #3b4a10; background: #151d05; padding: 5px 9px; margin-bottom: 20px; }
 .lead h1 { font-size: clamp(32px, 4.4vw, 58px); line-height: 0.96; letter-spacing: -0.045em; }
 .lead h1::after { content: ""; display: block; width: 96px; height: 3px; margin-top: 18px;
   background: repeating-linear-gradient(90deg, var(--chart) 0 14px, transparent 14px 20px); }
-.lead-in > p { margin: 20px 0 0; max-width: 520px; font-size: 15px; line-height: 1.6; color: #a8b096; }
+.lead-in > p { margin: 22px 0 0; max-width: 540px; font-size: 18px; line-height: 1.55; color: #c2cab0; }
+.lead-in > p.lead-sub { font-size: 15.5px; color: #97a084; }
 .lead-in > p b { color: var(--bone); }
+.works-on { font-size: 14px !important; color: var(--dim) !important; margin-top: 18px !important; }
+.works-on b { color: var(--chart) !important; font-weight: 700; }
 .lead-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
 .cta { font-family: var(--mono); font-size: 11.5px; font-weight: 800; letter-spacing: 0.12em;
   text-transform: uppercase; text-decoration: none; padding: 14px 22px; background: var(--chart); color: #0a0e04;
@@ -70,10 +90,10 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .cta:hover { filter: brightness(1.06); }
 .cta-ghost { background: transparent; color: var(--dim); border: 1px solid var(--rule); clip-path: none; }
 .cta-ghost:hover { color: var(--bone); border-color: var(--dim); }
-.lead-facts { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--rule); }
-.lead-facts > div { flex: 1 1 140px; }
-.lead-facts b { display: block; font-family: var(--mono); font-size: 24px; font-weight: 800; letter-spacing: -0.04em; color: var(--bone); }
-.lead-facts span { display: block; max-width: 210px; margin-top: 4px; font-size: 11.5px; line-height: 1.45; color: var(--dim); }
+.lead-facts { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 38px; padding-top: 24px; border-top: 1px solid var(--rule); }
+.lead-facts > div { flex: 1 1 150px; }
+.lead-facts b { display: block; font-family: var(--mono); font-size: 27px; font-weight: 800; letter-spacing: -0.04em; color: var(--bone); }
+.lead-facts span { display: block; max-width: 220px; margin-top: 5px; font-size: 13px; line-height: 1.45; color: var(--dim); }
 
 /* the demo: a post, the badge landing on it, the verdict */
 .demo { border: 1px solid var(--rule); background: #000; box-shadow: 0 30px 70px rgba(0,0,0,0.5); }
@@ -114,31 +134,45 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .demo.still .badge, .demo.still .caret { animation: none; }
 
 @media (max-width: 1080px) {
-  .lead { grid-template-columns: 1fr; gap: 30px; padding-top: 34px; }
+  .lead { min-height: 0; padding: 34px 20px 40px; }
+  .lead-grid { grid-template-columns: 1fr; gap: 30px; }
+  .next { display: none; }
   .lead-facts { gap: 18px; }
 }
 
+/* Every major block gets the same generous band and a hairline above it, so the page reads
+   as separate ideas in sequence instead of one continuous wall. */
+.install, .feed, .cortex, .council { position: relative; padding-top: 104px; }
+.install::before, .feed::before, .cortex::before, .council::before {
+  content: ""; position: absolute; top: 0; left: 20px; right: 20px; height: 1px;
+  background: linear-gradient(90deg, var(--rule), transparent 70%); }
+.install > .fhead, .feed > .fhead, .cortex > .cx-top, .council > .fhead { margin-bottom: 26px; }
+.fhead h2 { font-size: 23px; }
+.fhead small { font-size: 12px; }
+
 /* ================= install + how to use ================= */
-.install { max-width: 1500px; margin: 0 auto; padding: 52px 20px 0; }
+.install { max-width: 1500px; margin: 0 auto; padding: 104px 20px 0; }
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .step { position: relative; padding: 20px 20px 22px; border: 1px solid var(--line); border-top: 2px solid var(--chart);
   background: linear-gradient(180deg, rgba(14,19,12,0.9), rgba(8,11,9,0.7)); }
 .step-n { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; color: #4e5845; }
-.step b { display: block; margin: 8px 0 7px; font-family: var(--mono); font-size: 14px; font-weight: 800;
+/* only the step's own title is a block - a <b> inside the body text stays inline */
+.step > b { display: block; margin: 9px 0 8px; font-family: var(--mono); font-size: 15.5px; font-weight: 800;
   letter-spacing: -0.01em; color: var(--bone); }
-.step p { margin: 0; font-size: 13.5px; line-height: 1.6; color: #a7af93; }
+.step p b { display: inline; font-family: inherit; font-size: inherit; font-weight: 700; color: var(--bone); }
+.step p { margin: 0; font-size: 15px; line-height: 1.65; color: #a7af93; }
 .step code { font-family: var(--mono); font-size: 12.5px; padding: 1px 5px; color: var(--chart); background: #151d05; border: 1px solid #2c3a13; }
 .step a { color: var(--chart); text-decoration: none; border-bottom: 1px solid rgba(207,255,4,0.4); }
-.step b, .step p b { color: var(--bone); }
+
 
 .uses { margin-top: 34px; }
-.uses h3 { font-size: 13px; color: var(--chart); letter-spacing: 0.04em; margin-bottom: 14px; }
+.uses h3 { font-size: 14px; color: var(--chart); letter-spacing: 0.04em; margin-bottom: 14px; }
 .use-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .use { padding: 14px 15px; border-left: 2px solid var(--rule); background: rgba(10,15,9,0.45); }
-.use b { display: block; font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: 0.12em;
+.use b { display: block; font-family: var(--mono); font-size: 12px; font-weight: 800; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--bone); margin-bottom: 6px; }
-.use p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--dim); }
-.install-note { margin: 26px 0 0; max-width: 940px; font-size: 12.5px; line-height: 1.6; color: #7f8869; }
+.use p { margin: 0; font-size: 14px; line-height: 1.6; color: #97a084; }
+.install-note { margin: 30px 0 0; max-width: 820px; font-size: 14px; line-height: 1.65; color: #8b9478; }
 
 @media (max-width: 1080px) {
   .steps { grid-template-columns: 1fr; }
@@ -190,7 +224,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .hero .stage-title::after { content: ""; display: block; width: 92px; height: 3px; margin-top: 16px;
   background: repeating-linear-gradient(90deg, var(--chart) 0 14px, transparent 14px 20px); }
 
-.hero p { margin: 0; font-size: 14px; line-height: 1.55; color: #a8b096; max-width: 440px; }
+.hero p { margin: 0; font-size: 15.5px; line-height: 1.6; color: #a8b096; max-width: 470px; }
 .hero b { color: var(--bone); }
 
 .focus { position: absolute; top: 44px; right: 44px; width: 330px; background: var(--panel); border: 1px solid var(--line); backdrop-filter: blur(9px); }
@@ -295,7 +329,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .hint { position: absolute; left: 44px; bottom: 82px; font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: #4d5639; pointer-events: none; }
 
 /* ---- the feed ---- */
-.feed { max-width: 1500px; margin: 0 auto; padding: 44px 20px 0; }
+.feed { max-width: 1500px; margin: 0 auto; padding: 104px 20px 0; }
 .fhead { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-bottom: 14px; flex-wrap: wrap; }
 .fhead h2 { font-size: 19px; }
 .fhead small { font-family: var(--mono); font-size: 10.5px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; }
@@ -328,11 +362,17 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .tbl .empty { text-align: center; color: var(--dim); padding: 40px; }
 .nov { display: inline-block; min-width: 40px; padding: 2px 6px; color: #0a0e04; background: color-mix(in srgb, var(--chart) calc(var(--n) * 100%), #222c15); }
 
-.how { max-width: 1500px; margin: 0 auto; padding: 34px 20px 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.how h3 { font-size: 11.5px; color: var(--chart); margin-bottom: 7px; letter-spacing: 0.05em; }
-.how p { margin: 0; font-size: 12.5px; line-height: 1.6; color: #a7af93; }
+.how { max-width: 1500px; margin: 0 auto; padding: 56px 20px 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.how h3 { font-size: 13px; color: var(--chart); margin-bottom: 7px; letter-spacing: 0.05em; }
+.how p { margin: 0; font-size: 14.5px; line-height: 1.65; color: #a7af93; }
 .how b { color: var(--bone); }
-.credit { padding: 26px 20px 30px; font-family: var(--mono); font-size: 10.5px; color: #5d6449; text-align: center; }
+/* a key reads faster as a list than as a paragraph of definitions run together */
+.flagkey { list-style: none; margin: 0; padding: 0; }
+.flagkey li { padding: 6px 0; border-top: 1px solid #161c11; font-size: 14px; line-height: 1.5; color: #a7af93; }
+.flagkey li:first-child { border-top: none; }
+.flagkey b { display: inline-block; min-width: 116px; font-family: var(--mono); font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--chart); }
+.credit { padding: 70px 20px 40px; font-family: var(--mono); font-size: 10.5px; color: #5d6449; text-align: center; }
 
 @media (max-width: 1080px) {
   .hud-stack { display: none; }
@@ -348,7 +388,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 }
 
 /* ================= the live board: five modules relaying ================= */
-.cortex { max-width: 1500px; margin: 0 auto; padding: 46px 20px 0; }
+.cortex { max-width: 1500px; margin: 0 auto; padding: 104px 20px 0; }
 .cx-top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;
   padding-bottom: 11px; border-bottom: 1px solid var(--rule); margin-bottom: 20px; }
 .cx-title { display: flex; align-items: center; gap: 11px; }
@@ -438,7 +478,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .cx-acts .cx-act-go { color: #0a0e04; background: var(--chart); border-color: var(--chart); font-weight: 800; }
 
 .cx-foot { display: flex; align-items: flex-start; gap: 22px; margin-top: 18px; flex-wrap: wrap; }
-.cx-foot p { margin: 0; flex: 1; min-width: 300px; font-size: 12px; line-height: 1.6; color: #7f8869; max-width: 820px; }
+.cx-foot p { margin: 0; flex: 1; min-width: 300px; font-size: 13.5px; line-height: 1.65; color: #8b9478; max-width: 760px; }
 
 /* each seat's own working, drawn: what it sorted, how close it is to the bar, what it remembers */
 .cx-viz { margin: 2px 0 11px; animation: cx-in 0.34s ease both; }
@@ -476,9 +516,9 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 }
 
 /* ================= the council ================= */
-.council { max-width: 1500px; margin: 0 auto; padding: 40px 20px 0; }
-.c-mode { margin: 0 0 14px; padding: 10px 14px; border-left: 3px solid var(--dim);
-  background: rgba(10,15,9,0.6); font-size: 12px; line-height: 1.55; color: #9aa285; max-width: 940px; }
+.council { max-width: 1500px; margin: 0 auto; padding: 104px 20px 0; }
+.c-mode { margin: 0 0 16px; padding: 12px 16px; border-left: 3px solid var(--dim);
+  background: rgba(10,15,9,0.6); font-size: 13.5px; line-height: 1.6; color: #9aa285; max-width: 820px; }
 .c-mode.live { border-left-color: var(--chart); }
 .c-mode b { display: inline-block; margin-right: 8px; font-family: var(--mono); font-size: 10px;
   font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: #0a0e04;
@@ -510,7 +550,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .c-ok { color: var(--chart); }
 .c-meta { color: var(--dim); font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
 .c-none, .c-err { margin: 0; font-family: var(--mono); font-size: 11px; color: var(--warn); }
-.c-foot { margin: 16px 0 0; font-size: 12px; line-height: 1.6; color: #7f8869; max-width: 940px; }
+.c-foot { margin: 20px 0 0; font-size: 13.5px; line-height: 1.65; color: #8b9478; max-width: 820px; }
 
 @media (max-width: 1080px) { .c-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 620px) { .c-grid { grid-template-columns: 1fr; } }

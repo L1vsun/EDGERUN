@@ -2,7 +2,7 @@
 # Fetch the fly connectome data into brain/data/fly/ (gitignored, ~135 MB).
 # Connectivity + completeness: Shiu et al., MIT code repo (FlyWire release 783).
 # Annotations: flyconnectome/flywire_annotations supplemental file 1 (release 783).
-# LICENCE OF THE DATA IS NOT VERIFIED — check FlyWire's terms before commercial use.
+# LICENCE OF THE DATA IS NOT VERIFIED - check FlyWire's terms before commercial use.
 set -e
 D="$(dirname "$0")/data/fly"; mkdir -p "$D"
 M=https://github.com/philshiu/Drosophila_brain_model/raw/HEAD

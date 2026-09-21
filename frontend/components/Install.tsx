@@ -91,9 +91,8 @@ export default function Install() {
       </div>
 
       <p className="install-note">
-        A red badge is a claim you can check yourself: every panel names the number behind it and
-        links to the explorer. Nothing here is advice, and a token with no flags is not safe - it is
-        only unremarkable right now.
+        Every badge names the number behind it and links to the explorer, so a red verdict is a
+        claim you can check yourself. A token with no flags is not safe - only unremarkable.
       </p>
     </section>
   );

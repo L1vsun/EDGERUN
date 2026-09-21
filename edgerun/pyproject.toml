@@ -18,6 +18,6 @@ edgerun = "edgerun.cli:main"
 [tool.setuptools.packages.find]
 include = ["edgerun*"]
 
-# known_tokens.json is deliberately NOT packaged as bundled data — it's the
+# known_tokens.json is deliberately NOT packaged as bundled data - it's the
 # one file operators edit directly (see README). `edgerun.config` finds it
 # next to this pyproject.toml by default, or via $EDGERUN_CONFIG / --config.

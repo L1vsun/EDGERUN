@@ -51,6 +51,7 @@ export default function Hero() {
 
   return (
     <section className="lead">
+      <div className="lead-grid">
       <div className="lead-in">
         <span className="kicker">Robinhood Chain · browser extension</span>
         <h1>
@@ -58,22 +59,23 @@ export default function Hero() {
           is not one token.
         </h1>
         <p>
-          Seven different contracts use <b>$PEPE</b> on this chain. Six use <b>$HOOD</b>. Anyone
-          can deploy a token called <b>Tesla • Robinhood Token</b> - and 213 of them already have.
-          edgerun checks the contract while you are still reading the post, in your browser,
-          against the chain and Robinhood&apos;s own published registry.
+          Seven contracts use <b>$PEPE</b> here. Six use <b>$HOOD</b>. Anyone can deploy a token
+          called <b>Tesla • Robinhood Token</b>, and 213 already have.
+        </p>
+        <p className="lead-sub">
+          edgerun checks the contract while you are still reading the post - in your browser,
+          against the chain and Robinhood&apos;s own registry.
         </p>
         <div className="lead-cta">
           <a className="cta" href={EXTENSION_URL} target="_blank" rel="noreferrer">Get the extension</a>
           <a className="cta cta-ghost" href="#install">How to install</a>
         </div>
 
-        <ul className="surfaces">
-          <li><b>X</b><span>a badge under any post naming a token</span></li>
-          <li><b>Dexscreener</b><span>on the pair page, before you trade it</span></li>
-          <li><b>Blockscout</b><span>the full check on any contract page</span></li>
-          <li><b>Anywhere</b><span>paste an address into the extension itself</span></li>
-        </ul>
+        {/* named here in one line; the install section below says what each one does */}
+        <p className="works-on">
+          Works on <b>X</b>, <b>Dexscreener</b> and <b>Blockscout</b> - or paste any address into
+          the extension itself.
+        </p>
         <div className="lead-facts">
           <div><b>194</b><span>official stock tokens, from Robinhood&apos;s registry</span></div>
           <div><b>213</b><span>counterfeits found across ten tickers</span></div>
@@ -118,6 +120,13 @@ export default function Hero() {
           <div className="post-bar"><span>12</span><span>48</span><span>301</span></div>
         </div>
       </div>
+      </div>
+
+      {/* the first screen says one thing and then says where to go next */}
+      <a className="next" href="#install">
+        <span>Next - install it in two minutes</span>
+        <i className="chev" aria-hidden="true" />
+      </a>
     </section>
   );
 }

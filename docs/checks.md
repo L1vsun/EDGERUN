@@ -3,7 +3,7 @@
 Every check below, the exact call behind it, and what an unresolved result means for
 that specific check. Field names and endpoint paths were confirmed live against
 `robinhoodchain.blockscout.com` on 2026-09-08 (same Blockscout version as
-`eth.blockscout.com`) — not taken from general docs.
+`eth.blockscout.com`) - not taken from general docs.
 
 ## Reaching the explorer
 
@@ -23,14 +23,14 @@ Cloudflare bot-challenge page instead of JSON), this is `unresolved`, not a sile
 
 ### supply_mint
 Primary signal: a bytecode selector scan for `mint(address,uint256)` (selector
-`0x40c10f19`) against `deployed_bytecode` — pulled from
+`0x40c10f19`) against `deployed_bytecode` - pulled from
 `GET /api/v2/smart-contracts/{address}` when verified, or `eth_getCode` over RPC
 otherwise. This works regardless of verification status, because bytecode is always
 public even when source isn't.
 
 When source *is* verified, a secondary regex pass over `source_code` +
 `additional_sources` flags any other public/external function named `*mint*` with a
-non-standard signature — the selector scan above only recognizes the standard
+non-standard signature - the selector scan above only recognizes the standard
 `mint(address,uint256)` shape, so a custom-signature mint function gets a `warn`
 ("non-standard signature, not auto-detected, read it yourself") rather than a silent
 pass.
@@ -39,7 +39,7 @@ pass.
 
 ### ownership
 `eth_call` to `owner()` (selector `0x8da5cb5b`) against
-`https://rpc.mainnet.chain.robinhood.com` — a live read of chain state at scan time,
+`https://rpc.mainnet.chain.robinhood.com` - a live read of chain state at scan time,
 not a source-code inference. Zero address = renounced.
 
 Cross-checked against the same bytecode selector scan used for `supply_mint`, this time
@@ -50,14 +50,14 @@ the full table and how each selector was computed and verified).
 
 - ownership held + dangerous selector present → `fail` (live, callable risk)
 - ownership renounced + dangerous selector present → `warn` (selector presence doesn't
-  prove the modifier guarding it — verify the source)
+  prove the modifier guarding it - verify the source)
 - ownership not renounced, no dangerous selector → `warn`
 - ownership renounced, no dangerous selector → `ok`
 - `owner()` reverts (contract may not implement Ownable) → `unresolved`, unless a
-  dangerous selector is present anyway, in which case it's a `warn` — we can't tell you
+  dangerous selector is present anyway, in which case it's a `warn` - we can't tell you
   who can call it, but we can tell you it exists
 
-### exit_test  — the one check that executes rather than inspects
+### exit_test  - the one check that executes rather than inspects
 `eth_call` a real `transfer(address,uint256)` of 1 wei from each of the top
 holders (`GET /api/v2/tokens/{address}/holders`) to the burn sink. Nothing is
 broadcast or signed; `eth_call` runs it against current state and discards it.
@@ -71,7 +71,7 @@ read plus string-level benign-revert matching took the false-positive rate from
 5/45 to 0/100.
 
 - all tested holders can transfer -> `ok`
-- some can, some cannot -> `warn` (selective restriction — a targeted blacklist)
+- some can, some cannot -> `warn` (selective restriction - a targeted blacklist)
 - none can -> `fail`, and this alone forces an overall FAIL verdict, because it
   is not a heuristic: we ran the transfer and it reverted
 - no holder with a live non-zero balance -> `unresolved`
@@ -83,11 +83,11 @@ Revert reasons are decoded, not guessed: known custom-error selectors
 
 **What it does not prove:** it is a transfer test, not a DEX sell test. Tokens
 moving between wallets does not mean a pool exists, has liquidity, or lacks a
-router-level tax. And it is true only at the block it ran — which is what the
+router-level tax. And it is true only at the block it ran - which is what the
 watchtower exists to handle.
 
 ### lp_lock
-Unresolved until `dex.factory_address` is set in `known_tokens.json` — see
+Unresolved until `dex.factory_address` is set in `known_tokens.json` - see
 `ROADMAP.md` for why this isn't wired to a live factory yet.
 
 ## impersonation lane

@@ -1,190 +1,179 @@
+<div align="center">
+
+<img src="frontend/public/icon-192.png" width="88" alt="edgerun" />
+
 # edgerun
 
-[![tests](https://img.shields.io/badge/tests-15%20passing-4FD1A5?style=flat-square&labelColor=0B0B09)](edgerun/tests)
-[![python](https://img.shields.io/badge/python-%E2%89%A53.10-D8DEE9?style=flat-square&labelColor=0B0B09)](https://www.python.org/)
-[![deps](https://img.shields.io/badge/runtime%20deps-2-D8DEE9?style=flat-square&labelColor=0B0B09)](edgerun/pyproject.toml)
-[![chain](https://img.shields.io/badge/chain-4663-D8DEE9?style=flat-square&labelColor=0B0B09)](https://docs.robinhood.com/chain)
+**Is that the real contract? Answered before you finish reading the post.**
+
+A browser extension for [Robinhood Chain](https://docs.robinhood.com/chain) that checks the
+token in front of you - on X, on Dexscreener, on the block explorer - in your own browser,
+against the chain and Robinhood's published stock-token registry.
+
+[![chain](https://img.shields.io/badge/chain-4663-cfff04?style=flat-square&labelColor=0B0B09)](https://docs.robinhood.com/chain)
+[![tests](https://img.shields.io/badge/engine%20tests-37%20passing-4FD1A5?style=flat-square&labelColor=0B0B09)](edgerun/tests)
+[![backend](https://img.shields.io/badge/servers%20required-none-4FD1A5?style=flat-square&labelColor=0B0B09)](#no-backend-and-why-that-was-a-measurement-not-a-preference)
 [![keys](https://img.shields.io/badge/keys%20held-none-4FD1A5?style=flat-square&labelColor=0B0B09)](SECURITY.md)
 [![license](https://img.shields.io/badge/license-MIT-E8B339?style=flat-square&labelColor=0B0B09)](LICENSE)
 
-**$EDGERUN** · `not launched yet`
+`$EDGERUN` · not launched yet
 
-<!-- AT LAUNCH: replace the line above with, on one line:
-     **$EDGERUN** · `0xTHE_CONTRACT_ADDRESS`
-     and set NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS / EDGERUN_CONTRACT_ADDRESS
-     per DEPLOY.md — that's the only other place it needs to change. -->
-
-**Check a Robinhood Chain contract before you touch it. Not a score, a verdict.**
-
-A rug and an impersonation are two different attacks. Checking for one tells you nothing
-about the other.
-
-```bash
-git clone https://github.com/<org>/edgerun.git
-cd edgerun/edgerun
-pip install -e .
-
-edgerun scan 0x1a2b3c...
-```
-
-No wallet connection needed to run a scan. Read-only against Blockscout, nothing signed,
-nothing custodied.
+</div>
 
 ---
 
-## Run it on a real contract
+## The problem, in numbers from this chain
 
-```
-$ edgerun scan 0xDAA8f3f54c66E9BE2c44C1B6b566cBD07229CED3
+| | |
+|---:|---|
+| **213** | contracts using an official stock ticker that are **not** the official contract, across a ten-ticker sample |
+| **7** | different contracts using `$PEPE`. Six use `$HOOD`. Five use `$DOGE` |
+| **6** | contracts named exactly `NVIDIA • Robinhood Token` |
+| **194** | real tokenised securities Robinhood publishes addresses for |
 
-  edgerun  0xDAA8...CED3  scanned just now
-
-  contract
-    ok    source verified on blockscout
-    ok    supply fixed at deploy, no mint function in verified source
-    ??    owner() call reverted or contract has no Ownable-style owner()
-    ??    no DEX factory configured — set dex.factory_address in known_tokens.json
-
-  impersonation
-    ok    this address is itself the reference-list entry for this ticker
-
-  verdict: PASS
-  facts checked: 3 · unresolved: 2 · view on blockscout: robinhoodchain.blockscout.com/...
-```
-
-Two lanes, run every time, reported separately. A token can pass one and fail the other —
-that split is the point. A perfectly locked, fixed-supply contract is still a scam if the
-name is one character off from something real. Nothing above is a mock — this is a live
-scan against a real, currently-deployed Robinhood Chain contract.
+A ticker is not an identifier here. Every one of those fakes is a structurally clean ERC-20 -
+verified source, no mint function, ownership renounced - so a scanner that only reads the
+contract gives all of them a green light.
 
 ---
 
-## What actually gets checked
+## What you see
 
-**contract lane** — pulled straight from Blockscout and a live `eth_call`, nothing inferred:
-- source verified, yes or no
-- supply fixed at deploy vs a `mint(address,uint256)` selector reachable in bytecode
-  (works even on unverified contracts — bytecode is always public)
-- ownership renounced (live `owner()` read) vs held, cross-checked against a bytecode
-  scan for pause/blacklist/setFee-style functions the owner could still call
-- LP token holder and lock status where the pair contract resolves — locked, unlocked,
-  or unresolved, with the unlock date when there is one
-
-**impersonation lane** — checked against a maintained list of established RH Chain
-tokens (`edgerun/data/known_tokens.json`, update this file, not the code):
-- ticker edit-distance against every known ticker
-- name similarity against every known name
-- flags near-misses as a specific claim, not a fuzzy score: "1 edit from HOOD," not
-  "73% similar"
-
-Both lanes report **unresolved**, not a false pass, when the underlying data isn't there.
-An unverified contract is not silently skipped — it's reported as its own condition,
-because unverified source is itself the single most common trait shared by contracts
-already documented as scams on this chain. See `docs/checks.md` for the exact call
-behind every line, and `docs/impersonation.md` for why the reference list is "established
-tokens," not an official registry — there is no single canonical on-chain "$HOOD."
-
----
-
-## The live feed
-
-`edgerun watch` polls new deployments on Robinhood Chain and runs them through both
-lanes automatically — the same pipeline that backs the live feed on the website
-(`backend/app/poller.py`), run continuously instead of on demand.
+A post pastes a contract under a ticker. The badge lands under the text before you have
+finished reading it:
 
 ```
-$ edgerun watch
-
-  watching robinhood chain · poll every 45s
-
-  14:02:11  0x4f2a...  CASHPUP        verdict: CAUTION
-  14:02:56  0x88c1...  SOLARDOG       verdict: PASS
-  14:03:40  0x0e9f...  H00D           verdict: FAIL
+  ✕  $TSLA · not the real one                                          details
+     This post names $TSLA, which Robinhood publishes at 0x322f0929... -
+     but the contract in the post is 0xd18f5e73..., a different token.
 ```
 
----
+Open it and you get every check, each naming the number behind it:
 
-## This repo
-
-Three parts, one scan engine:
-
-| path         | what it is                                                              |
-| ------------ | ------------------------------------------------------------------------ |
-| `edgerun/`   | the scan engine + `edgerun` CLI (pip-installable, no server needed)      |
-| `backend/`   | FastAPI service wrapping the same engine — REST API + live-feed poller   |
-| `frontend/`  | Next.js site (scan box, live feed, docs) — static-exportable for Pages   |
-| `docs/`      | exact check-by-check mechanism docs                                      |
-
-Run everything locally or deploy it — see **[DEPLOY.md](DEPLOY.md)** for both, including
-the GitHub Pages + separate backend-host split a static frontend needs.
-
-## Config
-
-One file you'll actually touch: `edgerun/data/known_tokens.json`.
-
-```json
-{
-  "reference_tokens": [
-    {"ticker": "HOOD", "name": "GreenHood", "contract": "0x...", "note": "..."}
-  ],
-  "thresholds": { "max_edit_distance_flag": 2, "lp_lock_warn_days_remaining": 180 },
-  "rpc": { "explorer_base": "https://robinhoodchain.blockscout.com" }
-}
+```
+  ● STOCK TOKEN        ticker "TSLA" is an OFFICIAL Robinhood tokenised stock
+                       deployed at 0x322f...3b2d - this contract is 0xd18f...7715
+  ● PUBLIC BLOCKLIST   listed 2026-09-21 - holders cannot move this token
+  ● EXIT TEST          simulated transfer FAILED for all 3 holders tested -
+                       reverted: "blacklisted"
+  ● WHAT THE DEPLOYER  called setBlacklistBatch x40, setBlacklist x7 on this token -
+    DOES               47 of its last 50 transactions
+  ○ LP LOCK            no confirmed DEX factory on this chain and the pools seen are
+                       Uniswap v4 - cannot be established, and is not being guessed at
 ```
 
-`max_edit_distance_flag: 2` means anything within 2 character edits of a known ticker
-gets flagged. Lower it and you catch fewer near-misses; raise it and you start flagging
-tokens that just share a common word. Tune it against real false-positive reports.
+Every line above is real output on a real contract, not an illustration.
 
 ---
 
-## What this does not catch
+## Verdicts, and what each is allowed to mean
 
-Say this part out loud, don't bury it.
+| verdict | meaning |
+|---|---|
+| **OFFICIAL** | this address is in Robinhood's published registry. A fact, not a score |
+| **FAIL** | it claims an official asset and is not it, or holders provably cannot move it |
+| **CAUTION** | the contract lane found something, or resolved nothing at all |
+| **PASS** | the full check ran and found nothing. Only reachable at the `full` tier |
+| **UNRESOLVED** | nothing established yet |
 
-- **Team-controlled unlocked supply.** LP can be perfectly locked while the deployer
-  wallet still holds 90% of circulating supply across other addresses. Not shipped —
-  see `ROADMAP.md`.
-- **Post-launch admin key changes.** A scan is a snapshot, not a guarantee — every
-  verdict shows a scan timestamp, and `watch` re-scans on new deployments.
-- **Off-chain social engineering.** Phishing, hacked accounts, fake support DMs — none
-  of this is a contract-level signal.
-- **Novel honeypot bytecode patterns.** Static analysis catches known selectors. A
-  genuinely new obfuscation technique can slip past until the pattern is added.
-
-A PASS verdict means: the specific, listed structural checks came back clean. It does
-not mean safe in any broader sense. Read the facts, not the color.
+An identity-clean token is **UNRESOLVED on purpose**. "Not impersonating anything" is not
+"safe", and the badge must never let the first read as the second. There is no path in this
+codebase from a failed request to a green badge.
 
 ---
 
-## Commands
+## Install
 
-|                          |                                                          |
-| ------------------------ | -------------------------------------------------------- |
-| `edgerun scan <address>` | run both lanes once on one contract                       |
-| `edgerun watch`          | poll new deployments continuously, scan each on arrival  |
-| `edgerun verify-config`  | check `known_tokens.json` and thresholds without scanning |
-| `edgerun explain`        | print what each check does and what it needs to resolve  |
+```
+Download this repo  ->  chrome://extensions  ->  Developer mode  ->  Load unpacked
+                        pick the extension/ folder
+```
 
-## Docs
-
-- [`docs/checks.md`](docs/checks.md) — every check, the exact Blockscout/RPC call behind it
-- [`docs/impersonation.md`](docs/impersonation.md) — why edit distance, and what the
-  reference list actually is
-- [`ROADMAP.md`](ROADMAP.md) — holder-concentration check, LP-lock resolution, what's
-  not being built and why
-- [`SECURITY.md`](SECURITY.md) — scope, contract address (once deployed), reporting
+No account, no API key, nothing to configure. Chrome, Brave, Edge, Arc.
+Not in the Chrome Web Store yet, which means you can read every line before you run it.
 
 ---
 
-## $EDGERUN
+## What it checks that a contract scan cannot
 
-Token utility, kept to what it actually does:
-- priority position in the scan queue during high-deployment periods
-- access to the real-time verdict alert feed
-- a vote on additions to `known_tokens.json` and new check modules
+- **What the deployer *does*.** Not just what a wallet launched - what it has been calling on
+  this token since. The fake TSLA at `0xD18F5e73…` reads perfectly clean as a contract. Its
+  deployer spent **40 `setBlacklistBatch` and 7 `setBlacklist` calls on it, 47 of its last 50
+  transactions**: an operator blocking buyers in bulk. No bytecode scan will ever show that.
+- **What you have seen before.** The extension is the only witness to your own feed, so it
+  remembers: *"this was PASS when you checked it 5 days ago - it is FAIL now"*, *"you saw
+  $PEPE yesterday pointing at a different contract"*. A rug is a sequence, not a single bad
+  contract. Stored locally; it is never uploaded and there is nowhere for it to go.
+- **Which colliding contract people actually hold.** `$PEPE`'s seven, by holder count:
+  31,906 / 7,200 / 1,958 / 1,516 / 339 / 26. When one dominates it says so. When two are
+  comparable, it reports **contested** rather than picking a winner.
+- **A blocklist you can read.** [`frontend/public/blocklist.json`](frontend/public/blocklist.json) -
+  each entry carries the evidence that put it there, and `git log` carries who added it.
+  Open a PR to add one; a reproducible observation is required, not a report.
 
-Not a signal service. A PASS is not a buy recommendation. Read the verdict, then read
-the linked Blockscout page yourself before you decide anything.
+---
 
-MIT. Contract address and audit status: see [`SECURITY.md`](SECURITY.md).
+## No backend, and why that was a measurement, not a preference
+
+Every check runs in the extension's service worker. The hosted API was measured first:
+
+| | hosted backend | reading the chain directly |
+|---|---|---|
+| first request of the day | **31.6 s** (free-tier cold start) | - |
+| one address | **14.1 s** uncached | **~200 ms** |
+| five addresses | 5 requests, rate limited | **206 ms**, one round trip |
+| rate limit | **12 req/min/IP** | the node's own, spent per user |
+| batch endpoint | none | native JSON-RPC batching |
+
+A badge on a scrolling feed cannot be built on the left-hand column. A service worker with
+`host_permissions` is also better placed than a web page: no CORS, and no page CSP on its
+requests.
+
+---
+
+## Repository
+
+```
+extension/      the browser extension - MV3, no build step, no dependencies
+  lib/          chain RPC, explorer, registry, verdict engine, blocklist, memory
+  shared/       address + ticker detection, the shadow-DOM badge
+  sites/        one thin adapter per surface (twitter, dexscreener, blockscout)
+edgerun/        the original Python scan engine + CLI (37 tests)
+backend/        FastAPI service - optional, not on the extension's path
+frontend/       the site (Next.js static export) + the public blocklist
+brain/          the council: five modules reading the whole chain, offline tools
+```
+
+The extension has no build step and no dependencies. What is in the folder is what runs.
+
+---
+
+## The rules this was built under
+
+- **Never a false pass.** `unresolved` is a real state and is used often.
+- **No invented numbers.** No "X people watching", no fabricated stats, anywhere.
+- **Every claim names its evidence** and links to the explorer so it can be checked.
+- **State what is not covered.** LP lock cannot be established on this chain today, and the
+  check says exactly that instead of guessing.
+
+It is a security tool for an audience that reads Solidity and will test it within the hour.
+A false accusation against a legitimate token costs more than a missing feature.
+
+---
+
+## Also here
+
+The site runs a live view of the whole chain: five modules reading every block, arguing about
+what is moving, with a code gate that stays silent unless confidence and evidence clear a
+fixed bar. It runs in your browser too. See [`brain/README-council.md`](brain/README-council.md).
+
+---
+
+<div align="center">
+
+[Site](https://l1vsun.github.io/EDGERUN/) · [X](https://x.com/L1vsun) · [Security](SECURITY.md) · [Roadmap](ROADMAP.md)
+
+Circuit data: [FlyWire](https://flywire.ai) connectome (Dorkenwald et al., 2024).
+Chain data read live from the public Robinhood Chain RPC.
+
+</div>

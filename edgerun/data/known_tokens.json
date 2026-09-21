@@ -1,5 +1,5 @@
 {
-  "_comment": "This is the file operators actually maintain — not the code. Every address below was pulled live from robinhoodchain.blockscout.com on 2026-09-08 and is a real, currently-deployed, verified contract. IMPORTANT: there is no single 'official' $HOOD token on Robinhood Chain — GreenHood, Hoodrat, Robin Hood (FOX), Good In The Hood (GOOD) and others all independently claim hood-themed branding. Listing a token here is NOT an endorsement or a claim that it is official; it means the token is an established, already-deployed contract, which is the baseline the impersonation lane flags NEW near-miss clones against. Add entries you've manually verified; don't auto-populate this from search results.",
+  "_comment": "This is the file operators actually maintain - not the code. Every address below was pulled live from robinhoodchain.blockscout.com on 2026-09-08 and is a real, currently-deployed, verified contract. IMPORTANT: there is no single 'official' $HOOD token on Robinhood Chain - GreenHood, Hoodrat, Robin Hood (FOX), Good In The Hood (GOOD) and others all independently claim hood-themed branding. Listing a token here is NOT an endorsement or a claim that it is official; it means the token is an established, already-deployed contract, which is the baseline the impersonation lane flags NEW near-miss clones against. Add entries you've manually verified; don't auto-populate this from search results.",
   "reference_tokens": [
     {"ticker": "HOOD", "name": "GreenHood", "contract": "0xDAA8f3f54c66E9BE2c44C1B6b566cBD07229CED3", "note": "established HOOD-ticker token on RH Chain, not an official Robinhood asset"},
     {"ticker": "GOOD", "name": "Good In The Hood", "contract": "0x5f62C57e5C537887117EeF828b7E3Ad41C009FEb", "note": "established token, hood-themed branding"},
@@ -20,6 +20,6 @@
   },
   "dex": {
     "factory_address": null,
-    "_comment": "Set this once a specific Robinhood Chain DEX factory address is confirmed, to enable LP pair resolution. Until then, lp_lock always reports unresolved — see ROADMAP.md."
+    "_comment": "Set this once a specific Robinhood Chain DEX factory address is confirmed, to enable LP pair resolution. Until then, lp_lock always reports unresolved - see ROADMAP.md."
   }
 }

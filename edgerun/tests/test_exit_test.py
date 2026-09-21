@@ -61,7 +61,7 @@ def test_all_transfers_succeed_is_ok():
 
 
 def test_all_transfers_blocked_is_fail():
-    """The whole point of the check — holders provably cannot move the token."""
+    """The whole point of the check - holders provably cannot move the token."""
     rpc = FakeRpc({A: 100, B: 100}, {A: "0xd93c0665", B: "0xd93c0665"})  # EnforcedPause
     r = run_exit_test("0xtok", FakeBlockscout([A, B]), rpc)
     assert r.status == "fail"

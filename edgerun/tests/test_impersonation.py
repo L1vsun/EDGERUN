@@ -58,7 +58,7 @@ def test_short_tickers_do_not_collide_on_flat_threshold():
     """Regression: a live poller run flagged 'AI' as 2 edits from 'HD'.
 
     Both are 2 chars, so a flat distance-2 threshold matches any pair of
-    2-char tickers — the strings share nothing. This must not flag.
+    2-char tickers - the strings share nothing. This must not flag.
     """
     cfg = _config(reference_tokens=[ReferenceToken("HD", "Hood Domains", "0x" + "1" * 40)])
     lane = run_impersonation_lane("0x" + "2" * 40, "AI", "Artificial", cfg)
@@ -66,7 +66,7 @@ def test_short_tickers_do_not_collide_on_flat_threshold():
 
 
 def test_real_lookalike_still_flags():
-    """H00D vs HOOD is 2 edits of 4 chars — the exact attack we exist to catch."""
+    """H00D vs HOOD is 2 edits of 4 chars - the exact attack we exist to catch."""
     lane = run_impersonation_lane("0x" + "2" * 40, "H00D", "Something Else", _config())
     assert any(c.status == "fail" for c in lane.checks)
 

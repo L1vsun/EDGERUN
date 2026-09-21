@@ -1,6 +1,6 @@
 # Netlify build config for the edgerun frontend.
 #
-# The "Base directory" in Netlify's UI must be set to `frontend` — this file
+# The "Base directory" in Netlify's UI must be set to `frontend` - this file
 # lives there, and the paths below are relative to it.
 #
 # NOTE ON basePath: do NOT set NEXT_PUBLIC_BASE_PATH here. Netlify serves the

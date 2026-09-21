@@ -3,14 +3,14 @@
 # One-time setup before this runs successfully:
 #   1. Settings -> Pages -> Source: "GitHub Actions"
 #   2. Settings -> Secrets and variables -> Actions -> Variables tab, add:
-#        NEXT_PUBLIC_API_BASE               (required — your deployed backend URL, see DEPLOY.md)
-#        NEXT_PUBLIC_BASE_PATH               (optional — '/<repo-name>' for a project page)
-#        NEXT_PUBLIC_SITE_URL                (origin only, e.g. https://<user>.github.io — used for
+#        NEXT_PUBLIC_API_BASE               (required - your deployed backend URL, see DEPLOY.md)
+#        NEXT_PUBLIC_BASE_PATH               (optional - '/<repo-name>' for a project page)
+#        NEXT_PUBLIC_SITE_URL                (origin only, e.g. https://<user>.github.io - used for
 #                                               og:image so social cards unfurl; NO path, NO trailing slash)
-#        NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS (optional — set once the token deploys)
-#        NEXT_PUBLIC_EDGERUN_DEX_URL          (optional — set once the token deploys)
-#        NEXT_PUBLIC_EDGERUN_TICKER           (optional — defaults to $EDGERUN)
-#        NEXT_PUBLIC_GITHUB_REPO_URL          (optional — this repo's URL, for the
+#        NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS (optional - set once the token deploys)
+#        NEXT_PUBLIC_EDGERUN_DEX_URL          (optional - set once the token deploys)
+#        NEXT_PUBLIC_EDGERUN_TICKER           (optional - defaults to $EDGERUN)
+#        NEXT_PUBLIC_GITHUB_REPO_URL          (optional - this repo's URL, for the
 #                                               "verify it yourself" section)
 # These are all NEXT_PUBLIC_* values baked into the public client bundle anyway,
 # so plain repo Variables (not Secrets) are the right place for them.

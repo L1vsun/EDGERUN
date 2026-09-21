@@ -303,10 +303,8 @@ export default function Nose() {
             <h2 className="stage-title">Underneath: five modules<br />reading every block.</h2>
           </div>
           <p>
-            The extension answers one question about one contract. This is the other half - the
-            whole chain, watched continuously. Four modules argue over what is moving, why it is a
-            trap and what followed last time; a fifth decides whether any of it is worth
-            interrupting you for. Most rounds, it says nothing.
+            The extension answers one question about one contract. This is the other half: the
+            whole chain, watched continuously, by five modules that mostly decide to say nothing.
           </p>
           <form
             className="scan"
@@ -490,12 +488,12 @@ export default function Nose() {
         </div>
         <div>
           <h3>What the flags mean</h3>
-          <p>
-            <b>one wallet</b> - a single address sits on most of the transfers, so the volume is one
-            actor. <b>printing</b> - new supply is being minted right now. <b>no dex</b> - plenty of
-            movement, no swaps. <b>heating</b> - flow is running well above the token&apos;s own average.
-            <b>fresh wallets</b> - the buyers are addresses we had not seen before.
-          </p>
+          <ul className="flagkey">
+            <li><b>one wallet</b> one address sits on most of the transfers</li>
+            <li><b>printing</b> new supply is being minted right now</li>
+            <li><b>heating</b> flow is well above the token&apos;s own average</li>
+            <li><b>fresh wallets</b> the buyers are addresses not seen before</li>
+          </ul>
         </div>
         <div>
           <h3>What it is not</h3>
