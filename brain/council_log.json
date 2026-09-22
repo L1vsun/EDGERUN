@@ -1460,5 +1460,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-22T00:13:08+00:00",
+  "block": 69218292,
+  "mode": "rules",
+  "call": "GOOGL is the one to watch - heating",
+  "focus": "GOOGL",
+  "confidence": 0.63,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2196.0,
+    "wallets": 302,
+    "one_addr_share": 0.21,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1924.8,
+    "wallets": 377,
+    "one_addr_share": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "KIN",
+    "per_min": 313.2,
+    "wallets": 71,
+    "one_addr_share": 0.55,
+    "flags": []
+   },
+   {
+    "symbol": "AI",
+    "per_min": 252.0,
+    "wallets": 211,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "PONS",
+    "per_min": 248.4,
+    "wallets": 192,
+    "one_addr_share": 0.77,
+    "flags": []
+   },
+   {
+    "symbol": "GOOGL",
+    "per_min": 183.6,
+    "wallets": 35,
+    "one_addr_share": 0.35,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 182.4,
+    "wallets": 94,
+    "one_addr_share": 0.44,
+    "flags": []
+   },
+   {
+    "symbol": "HACHI",
+    "per_min": 182.4,
+    "wallets": 116,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   }
+  ]
  }
 ]
