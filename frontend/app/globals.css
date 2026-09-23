@@ -261,19 +261,6 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .shots { max-width: 1500px; margin: 0 auto; padding-inline: 20px; position: relative; padding-block: var(--band); }
 .shots::before { content: ""; position: absolute; top: 0; left: 20px; right: 20px; height: 1px;
   background: linear-gradient(90deg, var(--rule), transparent 70%); }
-.shot-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px; }
-.shot { margin: 0; }
-.shot-frame { border: 1px solid var(--line); background: #05070b; overflow: hidden;
-  aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; }
-.shot-frame img { width: 100%; height: 100%; object-fit: contain; display: block; background: #05070b; }
-.shot-todo { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px; text-align: center; }
-.shot-todo b { font-family: var(--mono); font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
-.shot-todo span { font-size: 14px; color: var(--text-4); }
-.shot-todo code { font-family: var(--mono); font-size: 12.5px; color: var(--accent-ink);
-  background: var(--accent-bg); border: 1px solid var(--accent-dim); padding: 4px 8px; word-break: break-all; max-width: 100%; }
-.shot figcaption { margin-top: 12px; font-size: 15px; line-height: 1.55; color: var(--text-2); }
-.shot figcaption b { display: block; font-family: var(--mono); font-size: 13px; font-weight: 800;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-ink); margin-bottom: 5px; }
 @media (max-width: 860px) { .shot-grid { grid-template-columns: 1fr; } }
 
 /* ---- the brain ---- */
@@ -742,4 +729,43 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
   .modal-wrap { padding: 0; place-items: end stretch; }
   .modal { max-height: 92vh; border-radius: 18px 18px 0 0; }
   .modal-head, .modal-foot { border-radius: 0; }
+}
+
+/* chrome:// cannot be linked to from a web page, so it copies instead - see ChromeLink.tsx */
+.copyurl {
+  display: inline-flex; align-items: baseline; gap: 8px; vertical-align: baseline;
+  padding: 2px 8px; font: inherit; cursor: pointer; text-align: left;
+  background: var(--card-soft); border: 1px solid var(--line); border-radius: 7px;
+}
+.copyurl:hover { border-color: var(--accent-dim); }
+.copyurl code { font-family: var(--mono); font-size: 0.92em; color: var(--accent-ink); }
+.copyurl span { font-size: 11px; font-weight: 700; color: var(--text-4); white-space: nowrap; }
+.copyurl:hover span { color: var(--text-3); }
+
+.shot-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px; }
+.shot { margin: 0; }
+.shot-frame { border: 1px solid var(--line); background: #05070b; overflow: hidden;
+  aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; }
+.shot-frame img { width: 100%; height: 100%; object-fit: contain; display: block; background: #05070b; }
+.shot-todo { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px; text-align: center; }
+.shot-todo b { font-family: var(--mono); font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+.shot-todo span { font-size: 14px; color: var(--text-4); }
+.shot-todo code { font-family: var(--mono); font-size: 12.5px; color: var(--accent-ink);
+  background: var(--accent-bg); border: 1px solid var(--accent-dim); padding: 4px 8px; word-break: break-all; max-width: 100%; }
+.shot figcaption { margin-top: 12px; font-size: 15px; line-height: 1.55; color: var(--text-2); }
+.shot figcaption b { display: block; font-family: var(--mono); font-size: 13px; font-weight: 800;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-ink); margin-bottom: 5px; }
+
+/* One real screenshot under the hero's animated demo. Framed and lifted off the page so it
+   reads as the product rather than as an illustration; it removes itself when the file is
+   missing, so the top of the page never shows a broken image. */
+.pshot { margin: 22px 0 0; }
+.pshot img {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--line); border-radius: 14px;
+  background: #05070b;
+  box-shadow: 0 26px 64px rgba(0, 0, 0, 0.34), 0 2px 6px rgba(0, 0, 0, 0.22);
+}
+.pshot figcaption {
+  margin-top: 11px; font-size: 13.5px; line-height: 1.55; color: var(--text-4);
 }

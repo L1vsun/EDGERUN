@@ -1,3 +1,4 @@
+import ChromeLink from "./ChromeLink";
 import GetExtension from "./GetExtension";
 
 // Deliberately on the front page rather than behind a link. Someone who has just read what
@@ -21,7 +22,7 @@ const STEPS = [
     t: "Load it in your browser",
     d: (
       <>
-        Open <code>chrome://extensions</code>, turn on <b>Developer mode</b> (top right), click{" "}
+        Open <ChromeLink />, turn on <b>Developer mode</b> (top right), click{" "}
         <b>Load unpacked</b> and pick that <code>extension/</code> folder. Works in Chrome, Brave,
         Edge and Arc.
       </>

@@ -12,6 +12,7 @@ against the chain and Robinhood's published stock-token registry.
 
 [![chain](https://img.shields.io/badge/chain-4663-cfff04?style=flat-square&labelColor=0B0B09)](https://docs.robinhood.com/chain)
 [![tests](https://img.shields.io/badge/engine%20tests-37%20passing-4FD1A5?style=flat-square&labelColor=0B0B09)](edgerun/tests)
+[![extension tests](https://img.shields.io/badge/extension%20tests-passing-4FD1A5?style=flat-square&labelColor=0B0B09)](extension/tests)
 [![backend](https://img.shields.io/badge/servers%20required-none-4FD1A5?style=flat-square&labelColor=0B0B09)](#no-backend-and-why-that-was-a-measurement-not-a-preference)
 [![keys](https://img.shields.io/badge/keys%20held-none-4FD1A5?style=flat-square&labelColor=0B0B09)](SECURITY.md)
 [![license](https://img.shields.io/badge/license-MIT-E8B339?style=flat-square&labelColor=0B0B09)](LICENSE)
@@ -66,6 +67,38 @@ Every line above is real output on a real contract, not an illustration.
 
 ---
 
+## The side panel
+
+The badge answers one question about one token. The panel is what the extension
+*accumulates* - click the toolbar icon, or any badge, and it opens beside the page and stays
+there while you read.
+
+```
+  EDGERUN                                            ◐    clear
+  ┌────────────────────────────────────────────────────────┐
+  │ paste a contract address                      [check]  │
+  └────────────────────────────────────────────────────────┘
+   session 23      flagged 4      watching 6
+
+   ✕  $TSLA                                            FAIL
+      simulated transfer reverted "blacklisted", 3 of 3 holders
+      2m ago · x.com · seen 3x
+```
+
+- **The session ledger.** Everything this tab has checked, in order. Scroll a timeline for
+  ten minutes and the question stops being *"is this one real"* and becomes *"what did I just
+  scroll past"* - which a popover structurally cannot answer, because it dies with the post.
+- **Claim against reality.** What the post said, what the address actually is, both
+  addresses side by side.
+- **The deployer dossier.** The wallet, what it has launched, and a table of what it has been
+  calling on this token since.
+- **Ticker collisions**, ranked by holders, reporting *contested* when there is no honest winner.
+- **A watchlist that tells you what moved** - *was PASS, now FAIL* - instead of asking you to
+  remember what it said last time.
+- **A reply you can paste**, and a report that opens a prefilled blocklist issue.
+
+---
+
 ## Verdicts, and what each is allowed to mean
 
 | verdict | meaning |
@@ -84,12 +117,20 @@ codebase from a failed request to a green badge.
 
 ## Install
 
+**From the site.** [edgerun.live](https://edgerun.live) -> *Get the extension* -> download the
+zip. The dialog carries that archive's SHA-256, so you can check the file you received before
+you run it. The hash and the file are generated in the same build step and cannot drift apart.
+
+**From here.**
+
 ```
 Download this repo  ->  chrome://extensions  ->  Developer mode  ->  Load unpacked
                         pick the extension/ folder
 ```
 
-No account, no API key, nothing to configure. Chrome, Brave, Edge, Arc.
+No account, no API key, nothing to configure. Chrome, Brave, Edge, Arc. The side panel needs
+Chrome 114 or newer.
+
 Not in the Chrome Web Store yet, which means you can read every line before you run it.
 
 ---
@@ -100,6 +141,12 @@ Not in the Chrome Web Store yet, which means you can read every line before you 
   this token since. The fake TSLA at `0xD18F5e73…` reads perfectly clean as a contract. Its
   deployer spent **40 `setBlacklistBatch` and 7 `setBlacklist` calls on it, 47 of its last 50
   transactions**: an operator blocking buyers in bulk. No bytecode scan will ever show that.
+- **How much can actually leave.** A 1-wei transfer test passes on any contract with a
+  `maxTxAmount`, a sell limit, or a blacklist that only bites above a threshold - and those
+  are exactly the traps that keep a chart looking alive. So the panel sweeps sizes instead of
+  asserting one: 1 wei, then 1%, 10%, 50% and 100% of a real holder's *own* balance, and
+  reports the size where it stops working. Three holders x five sizes is fifteen `eth_call`s
+  in a single batched request. Nothing is signed, nothing is sent, no wallet is involved.
 - **What you have seen before.** The extension is the only witness to your own feed, so it
   remembers: *"this was PASS when you checked it 5 days ago - it is FAIL now"*, *"you saw
   $PEPE yesterday pointing at a different contract"*. A rug is a sequence, not a single bad
@@ -135,13 +182,17 @@ requests.
 
 ```
 extension/      the browser extension - MV3, no build step, no dependencies
-  lib/          chain RPC, explorer, registry, verdict engine, blocklist, memory
+  lib/          chain RPC, explorer, registry, verdict engine, blocklist, memory,
+                deployer trail, exit-size sweep, the session ledger
   shared/       address + ticker detection, the shadow-DOM badge
   sites/        one thin adapter per surface (twitter, dexscreener, blockscout)
+  sidepanel/    the side panel - the extension's main surface
+  tests/        plain `node` suites, no dependencies: `node tests/ledger.test.mjs`
 edgerun/        the original Python scan engine + CLI (37 tests)
 backend/        FastAPI service - optional, not on the extension's path
 frontend/       the site (Next.js static export) + the public blocklist
 brain/          the council: five modules reading the whole chain, offline tools
+scripts/        pack-extension.sh - builds the download and records its hash
 ```
 
 The extension has no build step and no dependencies. What is in the folder is what runs.

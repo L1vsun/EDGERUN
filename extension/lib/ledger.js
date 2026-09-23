@@ -35,6 +35,32 @@ function summarize(r) {
 }
 
 /**
+ * One sighting, shaped for a list row. Shared by both record paths - they had drifted into
+ * near-copies of each other, which meant every new field had to be added twice and would
+ * eventually be added once.
+ */
+function entryFor(result, url, prev, at) {
+  const address = result.address.toLowerCase();
+  return {
+    address,
+    symbol: result.symbol || null,
+    verdict: result.verdict,
+    level: result.level,
+    say: summarize(result),
+    // trimmed to what a row and its expansion need - the full result stays in the verdict cache
+    checks: (result.checks || []).map(({ id, label, detail, status }) => ({ id, label, detail, status })),
+    // what it claimed to be, when that claim is why it failed: the claim/reality view needs
+    // both sides and the checks only carry the prose version
+    impersonates: result.impersonates || null,
+    explorerUrl: result.explorerUrl || null,
+    url: url || prev?.url || null,
+    first: prev?.first ?? at,
+    at,
+    seen: (prev?.seen || 0) + 1,
+  };
+}
+
+/**
  * Record a sighting. Re-seeing an address moves it to the top and bumps its count rather
  * than adding a second row - a timeline that re-renders the same post four times is still
  * one token you looked at.
@@ -47,21 +73,7 @@ export async function record(tabId, url, result) {
     const rows = got[k] || [];
     const address = result.address.toLowerCase();
     const prev = rows.find((e) => e.address === address);
-    const at = Date.now();
-    const entry = {
-      address,
-      symbol: result.symbol || null,
-      verdict: result.verdict,
-      level: result.level,
-      say: summarize(result),
-      // trimmed to what a row and its expansion need - the full result stays in the verdict cache
-      checks: (result.checks || []).map(({ id, label, detail, status }) => ({ id, label, detail, status })),
-      explorerUrl: result.explorerUrl || null,
-      url: url || prev?.url || null,
-      first: prev?.first ?? at,
-      at,
-      seen: (prev?.seen || 0) + 1,
-    };
+    const entry = entryFor(result, url, prev, Date.now());
     await chrome.storage.session.set({ [k]: [entry, ...rows.filter((e) => e.address !== address)].slice(0, CAP) });
   } catch {
     // The ledger is a convenience and never a dependency: if session storage is unavailable
@@ -87,19 +99,7 @@ export async function recordMany(tabId, url, results) {
     for (const result of list) {
       const address = result.address.toLowerCase();
       const prev = rows.find((e) => e.address === address);
-      const entry = {
-        address,
-        symbol: result.symbol || null,
-        verdict: result.verdict,
-        level: result.level,
-        say: summarize(result),
-        checks: (result.checks || []).map(({ id, label, detail, status }) => ({ id, label, detail, status })),
-        explorerUrl: result.explorerUrl || null,
-        url: url || prev?.url || null,
-        first: prev?.first ?? at,
-        at,
-        seen: (prev?.seen || 0) + 1,
-      };
+      const entry = entryFor(result, url, prev, at);
       rows = [entry, ...rows.filter((e) => e.address !== address)];
     }
     await chrome.storage.session.set({ [k]: rows.slice(0, CAP) });

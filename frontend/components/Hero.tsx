@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import GetExtension from "./GetExtension";
+import ProductShot from "./ProductShot";
 
 // What the product actually is, shown rather than described: a post, the badge landing on
 // it, the verdict. The demo is the extension's real output on a real contract - the fake
@@ -120,6 +121,9 @@ export default function Hero() {
           <div className="post-bar"><span>12</span><span>48</span><span>301</span></div>
         </div>
       </div>
+
+      {/* the animation above says what happens; this says what it actually looks like */}
+      <ProductShot />
       </div>
 
       {/* the first screen says one thing and then says where to go next */}

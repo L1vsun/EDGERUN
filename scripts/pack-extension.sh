@@ -29,7 +29,7 @@ version="$(node -p "require('$src/manifest.json').version")"
 
 rm -f "$out"
 mkdir -p "$(dirname "$out")" "$(dirname "$meta")"
-( cd "$src" && zip -qr "$out" . -x '_metadata/*' '.DS_Store' '*/.DS_Store' '*.map' )
+( cd "$src" && zip -qr "$out" . -x '_metadata/*' 'tests/*' '.DS_Store' '*/.DS_Store' '*.map' )
 
 bytes="$(wc -c < "$out" | tr -d ' ')"
 if command -v shasum >/dev/null 2>&1; then

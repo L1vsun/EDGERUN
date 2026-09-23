@@ -11,6 +11,7 @@
 import { getBlocklist } from "../lib/blocklist.js";
 import { remaining } from "../lib/budget.js";
 import { deployerTrail, trailChecks } from "../lib/deployer.js";
+import { exitSweep } from "../lib/exit.js";
 import * as ledger from "../lib/ledger.js";
 import { pruneMemory, rememberAndRecall } from "../lib/memory.js";
 import { getRegistry } from "../lib/registry.js";
@@ -97,6 +98,19 @@ async function getTrail(address) {
   return data;
 }
 
+// The size sweep is one batched POST but still a real round trip, and the answer only moves
+// when the contract's limits do. Ten minutes is short enough to catch a limit being switched
+// on mid-session and long enough that reopening a row is free.
+const exitCache = new Map();
+async function getExitSweep(address) {
+  const addr = String(address).toLowerCase();
+  const hit = exitCache.get(addr);
+  if (hit && Date.now() - hit.at < 10 * 60 * 1000) return hit.data;
+  const data = await exitSweep(addr);
+  exitCache.set(addr, { at: Date.now(), data });
+  return data;
+}
+
 // Dexscreener puts the *pair* in the URL, not the token - and on this chain some of those
 // are Uniswap v4 pool ids (32 bytes), not addresses. Resolving pair -> baseToken is the
 // worker's job because it owns the network and the cache.
@@ -142,6 +156,30 @@ async function watchToggle(address) {
   return next;
 }
 
+/**
+ * Fold fresh verdicts into the watchlist and report what moved.
+ *
+ * This is the whole point of watching something. A list that only ever shows the current
+ * verdict makes you remember what it said last time, which nobody does - so the verdict at
+ * each sighting is stored and the change is what gets surfaced. Ownership un-renounced, a
+ * blacklist switched on after launch, a PASS that quietly became a FAIL: all of it is a
+ * comparison against a number we kept, not something the chain will tell you.
+ */
+async function watchSync(verdicts) {
+  const list = await watchList();
+  const byAddress = new Map(list.map((w) => [w.address, w]));
+  const changes = [];
+  const now = Date.now();
+  for (const [address, verdict] of Object.entries(verdicts || {})) {
+    const w = byAddress.get(address);
+    if (!w) continue;
+    if (w.verdict && w.verdict !== verdict) changes.push({ address, from: w.verdict, to: verdict, since: w.checkedAt || w.at });
+    byAddress.set(address, { ...w, verdict, checkedAt: now });
+  }
+  await chrome.storage.local.set({ watch: [...byAddress.values()] });
+  return changes;
+}
+
 // Every handler gets the sender, because a verdict is only half the story - which tab asked
 // is what turns a stream of one-off checks into a readable session.
 const HANDLERS = {
@@ -181,12 +219,14 @@ const HANDLERS = {
   },
   pair: (m) => resolvePair(m.pairId),
   deployer: (m) => getTrail(m.address),
+  exit: (m) => getExitSweep(m.address),
   rank: (m) => rankCandidates(m.addresses),
   blocklist: () => getBlocklist().then((b) => ({ count: b.count, updated: b.updated, source: b.source })),
   registry: () => getRegistry().then((r) => ({ loaded: r.loaded, count: r.count || 0, error: r.error, fetchedAt: r.fetchedAt })),
   budget: async () => ({ blockscout: await remaining("blockscout"), rpc: await remaining("rpc") }),
   "watch:list": () => watchList(),
   "watch:toggle": (m) => watchToggle(m.address),
+  "watch:sync": (m) => watchSync(m.verdicts),
 
   // ---- the sidebar ----
   "ledger:get": (m, sender) => ledger.read(m.tabId ?? sender?.tab?.id),

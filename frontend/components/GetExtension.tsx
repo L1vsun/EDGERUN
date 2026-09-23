@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import ChromeLink from "./ChromeLink";
 import {
   EXTENSION_KB,
   EXTENSION_SHA256,
@@ -83,7 +84,7 @@ export default function GetExtension({ className = "cta", children = "Get the ex
               <ol className="steps-mini">
                 <li>Unzip the folder</li>
                 <li>
-                  Open <code>chrome://extensions</code> and turn on <b>Developer mode</b>
+                  Open <ChromeLink /> and turn on <b>Developer mode</b>
                 </li>
                 <li>
                   Click <b>Load unpacked</b> and pick that folder
