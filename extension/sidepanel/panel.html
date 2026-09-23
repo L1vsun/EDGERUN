@@ -17,9 +17,16 @@
       <button id="clear" class="ghost" title="Forget this tab's session">clear</button>
     </header>
 
+    <form class="check" id="check">
+      <input id="q" placeholder="paste a contract address" spellcheck="false" autocomplete="off" />
+      <button class="go" type="submit">check</button>
+    </form>
+    <p class="err" id="err" hidden></p>
+
     <nav class="tabs" role="tablist">
-      <button class="tab on" data-filter="all" role="tab">everything <span class="n" id="n-all">0</span></button>
+      <button class="tab on" data-filter="all" role="tab">session <span class="n" id="n-all">0</span></button>
       <button class="tab" data-filter="flagged" role="tab">flagged <span class="n bad" id="n-flagged">0</span></button>
+      <button class="tab" data-filter="watch" role="tab">watching <span class="n" id="n-watch">0</span></button>
     </nav>
 
     <p class="where" id="where"></p>
@@ -29,7 +36,7 @@
     <template id="empty-none">
       <div class="empty">
         <b>nothing checked yet</b>
-        <span>Scroll a timeline, or open a token on the explorer. Everything this tab checks lands here, in order.</span>
+        <span>Scroll a timeline, open a token on the explorer, or paste an address above. Everything this tab checks lands here, in order.</span>
       </div>
     </template>
 
@@ -37,6 +44,13 @@
       <div class="empty">
         <b>nothing flagged</b>
         <span>Every token checked on this tab so far came back without a failing check.</span>
+      </div>
+    </template>
+
+    <template id="empty-watch">
+      <div class="empty">
+        <b>not watching anything</b>
+        <span>Hit watch on any token and it lands here, rechecked each time you open this tab.</span>
       </div>
     </template>
 

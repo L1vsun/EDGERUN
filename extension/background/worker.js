@@ -145,14 +145,17 @@ async function watchToggle(address) {
 // Every handler gets the sender, because a verdict is only half the story - which tab asked
 // is what turns a stream of one-off checks into a readable session.
 const HANDLERS = {
+  // A check asked for by the side panel has no sender.tab - it is an extension page - so the
+  // tab it belongs to is passed explicitly. Without this, anything typed into the panel would
+  // run and then vanish from the very list it was typed into.
   verdict: async (m, sender) => {
     const r = await getVerdict(m.address, m.level || "identity", { fresh: m.fresh });
-    await ledger.record(sender?.tab?.id, sender?.tab?.url, r);
+    await ledger.record(sender?.tab?.id ?? m.tabId, sender?.tab?.url ?? m.url, r);
     return r;
   },
   verdicts: async (m, sender) => {
     const out = await getVerdicts(m.addresses);
-    await ledger.recordMany(sender?.tab?.id, sender?.tab?.url, Object.values(out));
+    await ledger.recordMany(sender?.tab?.id ?? m.tabId, sender?.tab?.url ?? m.url, Object.values(out));
     return out;
   },
   ticker: (m) => resolveTicker(m.ticker),
@@ -220,14 +223,21 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 // anyway, but a long-lived window should not accumulate ledgers for tabs that are gone.
 chrome.tabs.onRemoved.addListener((tabId) => ledger.drop(tabId));
 
+// The toolbar icon opens the side panel directly. There is no popup any more: two surfaces
+// meant every feature had to be decided twice, and the sidebar is the one with room.
+const useSidePanel = () =>
+  chrome.sidePanel?.setPanelBehavior?.({ openPanelOnActionClick: true }).catch(() => {});
+
 // Keep the registry warm so no badge ever waits on it.
 chrome.runtime.onInstalled.addListener(() => {
+  useSidePanel();
   chrome.alarms.create("registry", { periodInMinutes: 55 });
   chrome.alarms.create("upkeep", { periodInMinutes: 180 });
   getRegistry({ force: true }).catch(() => {});
   getBlocklist({ force: true }).catch(() => {});
 });
 chrome.runtime.onStartup.addListener(() => {
+  useSidePanel();
   getRegistry().catch(() => {});
   getBlocklist().catch(() => {});
 });

@@ -11,11 +11,11 @@ import {
 
 // The download dialog.
 //
-// Handing someone a zip and telling them to load it unpacked is, on its face, exactly what a
-// malicious extension would ask for. So the dialog does not say "trust us" - it hands over
-// the things that let someone not have to: the SHA-256 of the file they are about to get,
-// the source to build it from, and a plain statement of what the thing can and cannot reach.
-// Every claim here is checkable against the manifest in the same archive.
+// Kept to one screen and one decision. Someone opening this wants the file and the three
+// steps after it - everything else is reassurance they did not ask for yet, so the safety
+// claims are four chips rather than four paragraphs, and the hash lives behind a disclosure
+// for the minority who will actually check it. It stays available because handing out a zip
+// with nothing to verify it against is not something a security tool should do.
 
 type Props = {
   className?: string;
@@ -40,7 +40,6 @@ export default function GetExtension({ className = "cta", children = "Get the ex
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
     };
-    // the page behind a modal should not scroll away under it
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
@@ -76,63 +75,50 @@ export default function GetExtension({ className = "cta", children = "Get the ex
             </div>
 
             <div className="modal-body">
-              <p className="modal-lead">
-                It is not in the Chrome Web Store yet, so it installs as an unpacked extension. That takes
-                about a minute and you can read every line of it first.
-              </p>
-
-              <ul className="safe">
-                <li>
-                  <b>No account, no wallet, no server.</b> Checks run in your browser against the chain,
-                  Robinhood&rsquo;s published registry and a public blocklist.
-                </li>
-                <li>
-                  <b>It cannot reach your funds.</b> There is no wallet connection and no signing - the code
-                  requests no such permission, which you can confirm in the manifest.
-                </li>
-                <li>
-                  <b>It only wakes on four sites.</b> X, Dexscreener, the Robinhood Chain explorer, and this
-                  one. Everything else you browse is invisible to it.
-                </li>
-                <li>
-                  <b>Nothing is sent anywhere.</b> Your watchlist and session history stay on the machine.
-                </li>
-              </ul>
-
               <a className="dl" href={EXTENSION_ZIP} download>
                 Download v{EXTENSION_VERSION}
-                <span>{EXTENSION_KB} KB &middot; .zip</span>
+                <span>{EXTENSION_KB} KB</span>
               </a>
 
-              <div className="hashline">
-                <span>SHA-256</span>
-                <code>{EXTENSION_SHA256}</code>
-                <button type="button" onClick={copyHash}>
-                  {copied ? "copied" : "copy"}
-                </button>
-              </div>
-              <p className="hashnote">
-                Run <code>shasum -a 256</code> on the file you downloaded. If it does not match this, do not
-                install it.
+              <ol className="steps-mini">
+                <li>Unzip the folder</li>
+                <li>
+                  Open <code>chrome://extensions</code> and turn on <b>Developer mode</b>
+                </li>
+                <li>
+                  Click <b>Load unpacked</b> and pick that folder
+                </li>
+              </ol>
+
+              <p className="modal-lead">
+                Not in the Chrome Web Store yet, so it loads as an unpacked folder. Takes about a minute.
               </p>
 
-              <ol className="steps-mini">
-                <li>Unzip it somewhere you will not delete by accident.</li>
-                <li>
-                  Open <code>chrome://extensions</code> and turn on <b>Developer mode</b>.
-                </li>
-                <li>
-                  Click <b>Load unpacked</b> and pick the unzipped folder.
-                </li>
-                <li>Open a post with a contract address in it. The badge appears by itself.</li>
-              </ol>
+              <ul className="chips">
+                <li>no wallet</li>
+                <li>no account</li>
+                <li>no server</li>
+                <li>4 sites only</li>
+              </ul>
+
+              <details className="verify">
+                <summary>Verify this download</summary>
+                <div className="hashline">
+                  <code>{EXTENSION_SHA256}</code>
+                  <button type="button" onClick={copyHash}>
+                    {copied ? "copied" : "copy"}
+                  </button>
+                </div>
+                <p className="hashnote">
+                  Run <code>shasum -a 256</code> on the file you got. If it does not match, do not install it.
+                </p>
+              </details>
             </div>
 
             <div className="modal-foot">
               <a href={GITHUB_REPO_URL} target="_blank" rel="noreferrer">
-                Read the source on GitHub
+                Source on GitHub
               </a>
-              <span>Build it yourself and you never have to trust this file.</span>
             </div>
           </div>
         </div>

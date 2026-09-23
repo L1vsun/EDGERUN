@@ -1,4 +1,4 @@
-// The side panel.
+// The side panel. The only surface the extension has, now that the popup is gone.
 //
 // It owns no data. The worker writes the ledger into chrome.storage.session and this
 // subscribes to it, which matters more than it looks: MV3 kills the worker every ~30 s, so
@@ -31,6 +31,9 @@ const ago = (ts) => {
   return `${Math.round(m / 60)}h ago`;
 };
 
+const short = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
+const isAddress = (s) => /^0x[0-9a-fA-F]{40}$/.test(String(s || "").trim());
+
 const TONE = { FAIL: "fail", CAUTION: "warn", OFFICIAL: "ok", PASS: "ok" };
 const tone = (v) => TONE[v] || "flat";
 const isFlagged = (e) => e.verdict === "FAIL" || e.verdict === "CAUTION";
@@ -45,11 +48,53 @@ const host = (url) => {
 
 let tabId = null;
 let rows = [];
+let watching = [];       // addresses on the watchlist
+let watchRows = [];      // their verdicts, resolved when the tab is opened
 let filter = "all";
 let focusAddress = null;
-const open = new Set(); // addresses expanded by the reader, kept across re-renders
+const open = new Set();          // addresses expanded by the reader, kept across re-renders
+const dossiers = new Map();      // address -> deployer trail, once asked for
 
-// ---- rendering ----
+// ---- the deployer dossier ----
+//
+// The trail is the one thing here that is about a person rather than a contract, so it gets
+// its own block instead of being flattened into check rows. What the wallet *calls on this
+// token after launch* is the part worth the space: the fake TSLA's deployer spent 47 of its
+// last 50 transactions blacklisting buyers, and that reads as a table, not a sentence.
+
+function renderDossier(t) {
+  if (!t || t.error) return `<div class="dossier"><p class="d-none">${esc(t?.error || "no record")}</p></div>`;
+  const methods = (t.control || [])
+    .map((c) => {
+      const hot = /blacklist|blocklist|denylist|ban/i.test(c.method);
+      return `<tr class="${hot ? "hot" : ""}"><td>${esc(c.method)}</td><td>${c.count}</td></tr>`;
+    })
+    .join("");
+  const span = t.firstSeen ? `${esc(t.firstSeen)} to ${esc(t.lastSeen)}` : "";
+  return `
+    <div class="dossier">
+      <div class="d-head">
+        <span class="d-label">deployer</span>
+        <code>${esc(t.deployer ? short(t.deployer) : "unknown")}</code>
+        ${t.deployerIsFactoryFallback ? '<em title="the creation transaction could not be read, so this may be a factory">unconfirmed</em>' : ""}
+      </div>
+      <div class="d-stats">
+        <div><b>${t.deployCount}${t.capped ? "+" : ""}</b><span>contracts launched</span></div>
+        <div><b>${t.controlTotal}</b><span>owner calls on this token</span></div>
+        <div><b>${t.sampled}</b><span>transactions read</span></div>
+      </div>
+      ${span ? `<p class="d-span">${span}</p>` : ""}
+      ${
+        methods
+          ? `<table class="d-methods"><tbody>${methods}</tbody></table>
+             <p class="d-note">What this wallet has been calling on this token since launch.</p>`
+          : `<p class="d-none">No owner-only calls on this token in the transactions read.</p>`
+      }
+      ${t.deployer ? `<a class="d-link" href="https://robinhoodchain.blockscout.com/address/${esc(t.deployer)}" target="_blank" rel="noreferrer">open the wallet ↗</a>` : ""}
+    </div>`;
+}
+
+// ---- rows ----
 
 function renderRow(e) {
   const t = tone(e.verdict);
@@ -61,10 +106,12 @@ function renderRow(e) {
     )
     .join("");
   const where = host(e.url);
+  const watched = watching.includes(e.address);
+  const dossier = dossiers.has(e.address) ? renderDossier(dossiers.get(e.address)) : "";
   return `
     <article class="row ${t}${e.address === focusAddress ? " focus" : ""}" data-address="${esc(e.address)}">
       <button class="head" data-act="toggle" aria-expanded="${expanded}">
-        <span class="sym">${esc(e.symbol || `${e.address.slice(0, 10)}…`)}</span>
+        <span class="sym">${esc(e.symbol || short(e.address))}</span>
         <span class="verdict ${t}">${esc(e.verdict)}</span>
         <span class="say">${esc(e.say)}</span>
         <span class="meta">${esc(ago(e.at))}${where ? ` · ${esc(where)}` : ""}${
@@ -73,11 +120,13 @@ function renderRow(e) {
       </button>
       <div class="detail" ${expanded ? "" : "hidden"}>
         ${checks || '<div class="check"><i></i><span><span>nothing established yet</span></span></div>'}
+        ${dossier}
         <div class="addr">${esc(e.address)}</div>
         <div class="acts">
           ${e.level !== "full" && e.verdict !== "FAIL" ? '<button data-act="full">run full check</button>' : ""}
-          <button data-act="trail">who launched it</button>
+          ${dossier ? "" : '<button data-act="trail">who launched it</button>'}
           <button data-act="copy">copy proof</button>
+          <button data-act="watch">${watched ? "unwatch" : "watch"}</button>
           ${e.explorerUrl ? `<a href="${esc(e.explorerUrl)}" target="_blank" rel="noreferrer">explorer ↗</a>` : ""}
         </div>
       </div>
@@ -87,15 +136,16 @@ function renderRow(e) {
 function render() {
   const flagged = rows.filter(isFlagged);
   $("#n-all").textContent = rows.length;
+  $("#n-watch").textContent = watching.length;
   const nf = $("#n-flagged");
   nf.textContent = flagged.length;
   nf.dataset.hot = flagged.length ? "1" : "0";
 
-  const shown = filter === "flagged" ? flagged : rows;
+  const shown = filter === "flagged" ? flagged : filter === "watch" ? watchRows : rows;
   const list = $("#list");
 
   if (!shown.length) {
-    const tpl = rows.length && filter === "flagged" ? "#empty-clean" : "#empty-none";
+    const tpl = filter === "watch" ? "#empty-watch" : filter === "flagged" && rows.length ? "#empty-clean" : "#empty-none";
     list.replaceChildren($(tpl).content.cloneNode(true));
     return;
   }
@@ -121,12 +171,50 @@ async function load() {
   render();
 }
 
+async function loadWatch({ resolve = false } = {}) {
+  try {
+    watching = ((await ask({ type: "watch:list" })) || []).map((w) => w.address);
+  } catch {
+    watching = [];
+  }
+  if (!resolve || !watching.length) {
+    watchRows = watching.length ? watchRows.filter((r) => watching.includes(r.address)) : [];
+    return;
+  }
+  // Opening the watch tab is the recheck: these are tokens somebody already decided to keep
+  // an eye on, so a stale verdict is the one thing this list must not show.
+  try {
+    const out = await ask({ type: "verdicts", addresses: watching, tabId });
+    watchRows = watching
+      .map((a) => out[a])
+      .filter(Boolean)
+      .map((r) => ({
+        address: r.address.toLowerCase(),
+        symbol: r.symbol || null,
+        verdict: r.verdict,
+        level: r.level,
+        say:
+          (r.checks || []).find((c) => c.status === "fail")?.detail ||
+          (r.checks || []).find((c) => c.status === "warn")?.detail ||
+          (r.verdict === "OFFICIAL" ? "in Robinhood's published registry" : "no failing check"),
+        checks: r.checks || [],
+        explorerUrl: r.explorerUrl || null,
+        url: null,
+        at: r.scannedAt || Date.now(),
+        seen: 1,
+      }));
+  } catch {
+    /* leave whatever was there rather than blanking the list */
+  }
+}
+
 async function bindTab() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const next = tab?.id ?? null;
   if (next === tabId) return;
   tabId = next;
   open.clear();
+  dossiers.clear();
   focusAddress = null;
   await readFocus();
   await load();
@@ -166,8 +254,7 @@ async function stats() {
   }
   try {
     const b = await ask({ type: "budget" });
-    const low = b.blockscout < 20;
-    set("#stat-budget", `budget ${b.blockscout}/${b.rpc}`, low);
+    set("#stat-budget", `budget ${b.blockscout}/${b.rpc}`, b.blockscout < 20);
   } catch {
     set("#stat-budget", "budget -");
   }
@@ -180,7 +267,8 @@ $("#list").addEventListener("click", async (ev) => {
   if (!btn) return;
   const address = btn.closest(".row")?.dataset.address;
   if (!address) return;
-  const entry = rows.find((e) => e.address === address);
+  const entry = (filter === "watch" ? watchRows : rows).find((e) => e.address === address);
+  if (!entry) return;
 
   if (btn.dataset.act === "toggle") {
     if (open.has(address)) open.delete(address);
@@ -194,7 +282,11 @@ $("#list").addEventListener("click", async (ev) => {
     btn.textContent = "checking…";
     try {
       await ask({ type: "verdict", address, level: "full", tabId });
-      // the worker records it, storage.onChanged repaints - nothing to do here
+      if (filter === "watch") {
+        await loadWatch({ resolve: true });
+        render();
+      }
+      // on the session list the worker records it and storage.onChanged repaints
     } catch (err) {
       btn.disabled = false;
       btn.textContent = "check failed";
@@ -207,7 +299,8 @@ $("#list").addEventListener("click", async (ev) => {
     btn.disabled = true;
     btn.textContent = "reading records…";
     try {
-      const { checks } = await ask({ type: "deployer", address });
+      const { trail, checks } = await ask({ type: "deployer", address });
+      dossiers.set(address, trail);
       entry.checks = [
         ...(entry.checks || []).filter(
           (c) => !String(c.id).startsWith("deployer") && c.id !== "production_line" && c.id !== "explorer_scam",
@@ -220,6 +313,13 @@ $("#list").addEventListener("click", async (ev) => {
       btn.textContent = "records unavailable";
       btn.title = err.message;
     }
+    return;
+  }
+
+  if (btn.dataset.act === "watch") {
+    await ask({ type: "watch:toggle", address }).catch(() => {});
+    await loadWatch({ resolve: filter === "watch" });
+    render();
     return;
   }
 
@@ -241,15 +341,49 @@ $("#list").addEventListener("click", async (ev) => {
   }
 });
 
+// paste an address and check it without leaving the panel (this was the popup's one job)
+$("#check").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const input = $("#q");
+  const err = $("#err");
+  const address = input.value.trim();
+  err.hidden = true;
+  if (!isAddress(address)) {
+    err.textContent = "that is not a contract address";
+    err.hidden = false;
+    return;
+  }
+  const go = $("#check button");
+  go.disabled = true;
+  go.textContent = "…";
+  try {
+    await ask({ type: "verdict", address, level: "full", tabId });
+    input.value = "";
+    filter = "all";
+    for (const t of document.querySelectorAll(".tab")) t.classList.toggle("on", t.dataset.filter === "all");
+    open.add(address.toLowerCase());
+    await load();
+  } catch (e) {
+    err.textContent = e.message;
+    err.hidden = false;
+  } finally {
+    go.disabled = false;
+    go.textContent = "check";
+  }
+});
+
 for (const tab of document.querySelectorAll(".tab")) {
-  tab.addEventListener("click", () => {
+  tab.addEventListener("click", async () => {
     filter = tab.dataset.filter;
     for (const t of document.querySelectorAll(".tab")) t.classList.toggle("on", t === tab);
+    if (filter === "watch") {
+      $("#list").innerHTML = '<div class="empty"><b>rechecking…</b></div>';
+      await loadWatch({ resolve: true });
+    }
     render();
   });
 }
 
-// Light is the default; theme.js has already applied whatever was stored before first paint.
 $("#theme").addEventListener("click", () => {
   const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
   document.documentElement.dataset.theme = next;
@@ -263,20 +397,20 @@ $("#clear").addEventListener("click", async () => {
   await ask({ type: "ledger:clear", tabId }).catch(() => {});
   rows = [];
   open.clear();
+  dossiers.clear();
   renderWhere();
   render();
 });
 
-// The worker writes, we repaint. Covers both a fresh scan and a full check run from here.
-// Falls back to the generic listener, and then to polling, so a browser missing the
-// per-area event still gets a live panel rather than a frozen one.
+// The worker writes, we repaint. Falls back to the generic listener, then to polling, so a
+// browser missing the per-area event still gets a live panel rather than a frozen one.
 const onLedgerChange = (changes) => {
   if (tabId == null) return;
   const hit = changes[`ledger:${tabId}`];
   if (!hit) return;
   rows = hit.newValue || [];
   renderWhere();
-  render();
+  if (filter !== "watch") render();
 };
 
 if (chrome.storage.session?.onChanged) {
@@ -289,13 +423,13 @@ if (chrome.storage.session?.onChanged) {
 
 chrome.tabs.onActivated.addListener(bindTab);
 chrome.tabs.onUpdated.addListener((id, info) => {
-  // a navigation in the tab we are showing keeps the same ledger, but the location line moves
   if (id === tabId && info.status === "complete") load();
 });
 chrome.windows?.onFocusChanged?.addListener(bindTab);
 
 await bindTab();
 await readFocus();
+await loadWatch();
 render();
 stats();
 setInterval(stats, 30000);

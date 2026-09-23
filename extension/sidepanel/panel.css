@@ -248,3 +248,60 @@ button { font: inherit; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* ---- check an address (this was the popup's only job) ---- */
+
+.check { display: flex; gap: 7px; padding: 12px 14px 0; }
+.check input {
+  flex: 1; min-width: 0; font: inherit; font-size: 13px; color: var(--ink);
+  background: var(--card); border: 1px solid var(--line); border-radius: 9px;
+  padding: 9px 11px; outline: none;
+}
+.check input:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(207, 255, 4, 0.22); }
+.check input::placeholder { color: var(--muted); }
+.check .go {
+  padding: 9px 14px; font-size: 13px; font-weight: 800; color: var(--on-signal);
+  background: var(--signal); border: 1px solid var(--signal); border-radius: 9px;
+}
+.check .go:hover { filter: brightness(1.05); }
+.check .go:disabled { opacity: 0.6; cursor: default; }
+.err { margin: 8px 14px 0; font-size: 12.5px; font-weight: 600; color: var(--bad); }
+.err[hidden] { display: none; }
+
+/* ---- the deployer dossier ----
+   About a person, not a contract, so it gets its own block rather than being flattened into
+   check rows. The method table is the point: "setBlacklistBatch 40" lands in a way the same
+   fact written as a sentence does not. */
+
+.dossier {
+  margin-top: 12px; padding: 12px;
+  background: var(--soft); border: 1px solid var(--line); border-radius: 10px;
+}
+.d-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.d-label {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+}
+.d-head code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+.d-head em {
+  font-size: 10.5px; font-style: normal; font-weight: 700; color: var(--warn);
+  padding: 2px 6px; background: var(--warn-soft); border-radius: 999px; cursor: help;
+}
+
+.d-stats { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+.d-stats div { display: flex; flex-direction: column; }
+.d-stats b { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; }
+.d-stats span { font-size: 10.5px; color: var(--muted); }
+
+.d-span { margin: 8px 0 0; font-size: 11px; color: var(--muted); }
+
+.d-methods { width: 100%; margin-top: 10px; border-collapse: collapse; }
+.d-methods td {
+  padding: 5px 0; font-size: 12px; border-top: 1px solid var(--line);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.d-methods td:last-child { width: 1%; text-align: right; font-weight: 800; white-space: nowrap; }
+.d-methods tr.hot td { color: var(--bad); font-weight: 700; }
+
+.d-note, .d-none { margin: 8px 0 0; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
+.d-link { display: inline-block; margin-top: 10px; font-size: 12px; font-weight: 700; color: var(--ok); text-decoration: none; }
+.d-link:hover { text-decoration: underline; }

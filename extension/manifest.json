@@ -69,7 +69,6 @@
     "default_path": "sidepanel/panel.html"
   },
   "action": {
-    "default_popup": "popup/popup.html",
     "default_title": "EDGERUN",
     "default_icon": {
       "16": "icons/icon-16.png",

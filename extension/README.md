@@ -46,7 +46,7 @@ CORS, and no page CSP on its requests.
 | tier | what it runs | cost | used by |
 |---|---|---|---|
 | `identity` | the registry + the reference list | one batched RPC call for up to 12 addresses | the X timeline |
-| `full` | identity + source verification, mint selectors, ownership, LP lock, and a simulated transfer out of a live holder's wallet | ~2 explorer + ~3 RPC calls | token pages, the popup, "run full check" |
+| `full` | identity + source verification, mint selectors, ownership, LP lock, and a simulated transfer out of a live holder's wallet | ~2 explorer + ~3 RPC calls | token pages, the side panel, "run full check" |
 
 ## Verdicts, and what each is allowed to mean
 
@@ -141,7 +141,8 @@ shared/detect.js         address/ticker detection, DOM watching, messaging
 shared/badge.js          the shadow-DOM badge
 sites/{twitter,dexscreener,blockscout}.js
 providers/injected.js    inert - see "transaction interception"
-popup/                   paste-an-address + the local watchlist
+sidepanel/               the side panel: session ledger, paste-an-address,
+                         the watchlist and the deployer dossier
 ```
 
 **Blockscout needs a `Referer`.** It 403s a request that carries none (verified: 403 without,
