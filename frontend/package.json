@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
+    "prebuild": "bash ../scripts/pack-extension.sh",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

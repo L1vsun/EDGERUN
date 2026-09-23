@@ -11,6 +11,7 @@
 import { getBlocklist } from "../lib/blocklist.js";
 import { remaining } from "../lib/budget.js";
 import { deployerTrail, trailChecks } from "../lib/deployer.js";
+import * as ledger from "../lib/ledger.js";
 import { pruneMemory, rememberAndRecall } from "../lib/memory.js";
 import { getRegistry } from "../lib/registry.js";
 import { isAddress, lookupTicker, rankCandidates, resolveTicker, scan, scanMany } from "../lib/verdict.js";
@@ -141,9 +142,19 @@ async function watchToggle(address) {
   return next;
 }
 
+// Every handler gets the sender, because a verdict is only half the story - which tab asked
+// is what turns a stream of one-off checks into a readable session.
 const HANDLERS = {
-  verdict: (m) => getVerdict(m.address, m.level || "identity", { fresh: m.fresh }),
-  verdicts: (m) => getVerdicts(m.addresses),
+  verdict: async (m, sender) => {
+    const r = await getVerdict(m.address, m.level || "identity", { fresh: m.fresh });
+    await ledger.record(sender?.tab?.id, sender?.tab?.url, r);
+    return r;
+  },
+  verdicts: async (m, sender) => {
+    const out = await getVerdicts(m.addresses);
+    await ledger.recordMany(sender?.tab?.id, sender?.tab?.url, Object.values(out));
+    return out;
+  },
   ticker: (m) => resolveTicker(m.ticker),
   tickers: async (m) => {
     // An official ticker costs nothing (the registry is already local). Anything else needs
@@ -173,16 +184,41 @@ const HANDLERS = {
   budget: async () => ({ blockscout: await remaining("blockscout"), rpc: await remaining("rpc") }),
   "watch:list": () => watchList(),
   "watch:toggle": (m) => watchToggle(m.address),
+
+  // ---- the sidebar ----
+  "ledger:get": (m, sender) => ledger.read(m.tabId ?? sender?.tab?.id),
+  "ledger:clear": (m, sender) => ledger.clear(m.tabId ?? sender?.tab?.id).then(() => ({ cleared: true })),
+
+  /**
+   * Open the side panel beside the tab that asked.
+   *
+   * chrome.sidePanel.open() needs a user gesture, and the gesture here happened in a content
+   * script (a click on the badge) rather than in an extension page. Whether that survives the
+   * hop through sendMessage is not something we can rely on, so this is allowed to fail and
+   * the badge falls back to its in-page panel when it does.
+   */
+  "panel:open": async (m, sender) => {
+    const tabId = sender?.tab?.id ?? m.tabId;
+    if (!tabId) throw new Error("no tab to open beside");
+    if (m.address) await ledger.setFocus(tabId, m.address);
+    if (!chrome.sidePanel?.open) throw new Error("this browser has no side panel");
+    await chrome.sidePanel.open({ tabId });
+    return { opened: true };
+  },
 };
 
-chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   const handler = HANDLERS[msg?.type];
   if (!handler) return false;
-  Promise.resolve(handler(msg))
+  Promise.resolve(handler(msg, sender))
     .then((data) => sendResponse({ ok: true, data }))
     .catch((err) => sendResponse({ ok: false, error: String(err?.message || err) }));
   return true; // keep the channel open for the async reply
 });
+
+// A closed tab's reading session is over. Session storage would clear on browser exit
+// anyway, but a long-lived window should not accumulate ledgers for tabs that are gone.
+chrome.tabs.onRemoved.addListener((tabId) => ledger.drop(tabId));
 
 // Keep the registry warm so no badge ever waits on it.
 chrome.runtime.onInstalled.addListener(() => {

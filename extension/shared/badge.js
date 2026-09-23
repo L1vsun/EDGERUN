@@ -94,6 +94,19 @@
     .strip .title { display: block; font-weight: 800; font-size: 14.5px; letter-spacing: -0.01em; margin-bottom: 2px; }
     .strip .say { display: block; color: var(--muted); font-size: 13px; }
     .strip .more { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; align-self: center; }
+
+    /* Window mode. The sidebar is the default because it carries the whole session, but the
+       panel sometimes needs to sit right next to the post it is talking about - so the escape
+       hatch stays one click away rather than buried. Deliberately quiet: it is the exception. */
+    .win { display: inline-flex; align-items: center; justify-content: center; flex: none;
+      width: 23px; height: 23px; margin-left: 2px; padding: 0; font: inherit; font-size: 12px;
+      line-height: 1; cursor: pointer; color: var(--muted); background: transparent;
+      border: none; border-radius: 7px; align-self: center; }
+    .win:hover { background: rgba(21, 26, 17, .09); color: var(--ink); }
+    .chip.bad .win, .strip.bad .win { color: rgba(255,255,255,.82); }
+    .strip.bad .win { color: var(--bad); }
+    .chip.bad .win:hover { background: rgba(255,255,255,.2); color: #fff; }
+    .strip.bad .win:hover { background: rgba(198,40,40,.12); }
     /* only a fake gets the full-volume treatment - if every post shouted, none of them would */
     .strip:not(.bad) { padding: 10px 13px; font-size: 13px; box-shadow: 0 2px 10px rgba(12,18,6,.10); }
     .strip:not(.bad) .title { font-size: 13.5px; }
@@ -319,7 +332,7 @@
     // the post this badge belongs to - the panel opens beside it, never over it
     const anchorOf = () => host.closest('article, [data-testid="tweet"]') || host;
 
-    const toggle = () => {
+    const openInPage = () => {
       const r = ensurePanel();
       const panel = r.querySelector(".panel");
       if (openFor?.chip === chip && !panel.hidden) return closePanel();
@@ -330,7 +343,26 @@
       openFor = { chip, anchor: anchorOf() };
       position(panel, chip, anchorOf());
     };
-    chip.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); toggle(); });
+
+    // The sidebar is the real surface: it carries the whole reading session, not just the one
+    // token this chip belongs to. It is allowed to refuse - chrome.sidePanel.open() wants a
+    // user gesture and this one has to survive the hop into the worker - so the in-page panel
+    // stays behind it as a fallback. A click is never a no-op.
+    const toggle = async () => {
+      if (!current) return;
+      try {
+        await E.ask({ type: "panel:open", address: current.address });
+      } catch {
+        openInPage();
+      }
+    };
+    chip.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // the small button is the only way to the in-page window; everything else goes to the sidebar
+      if (e.target?.closest?.(".win")) return openInPage();
+      toggle();
+    });
     chip.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
 
     host.update = function update(result) {
@@ -340,12 +372,13 @@
       const ticker = result.symbol || (result.address ? `${result.address.slice(0, 8)}…` : "token");
       const base = block ? "strip" : "chip";
       chip.className = `${base} ${tone.cls}${result.verdict === "FAIL" ? " attn" : ""}`;
+      const win = `<button class="win" data-win title="open as a window on this page" aria-label="open as a window on this page">⧉</button>`;
       chip.innerHTML = block
         ? `<span class="g">${tone.glyph}</span>
            <span class="body"><span class="title">${esc(ticker)} · ${esc(tone.label)}</span>
            <span class="say">${esc(lead(result))}</span></span>
-           <span class="more">details</span>`
-        : `<span class="g">${tone.glyph}</span><span class="sym">${esc(ticker)}</span><span class="mark">${esc(tone.label)}</span>`;
+           <span class="more">details</span>${win}`
+        : `<span class="g">${tone.glyph}</span><span class="sym">${esc(ticker)}</span><span class="mark">${esc(tone.label)}</span>${win}`;
       chip.title = lead(result);
       if (openFor?.chip === chip && panelRoot) {
         const panel = panelRoot.querySelector(".panel");

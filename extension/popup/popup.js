@@ -89,3 +89,22 @@ async function loadWatch() {
 }
 
 loadWatch();
+
+// Opening the sidebar from here is the reliable path: a click in an extension page is
+// unambiguously a user gesture, where a click on an in-page badge has to survive a hop
+// through the worker first.
+document.getElementById("side")?.addEventListener("click", async () => {
+  const btn = document.getElementById("side");
+  if (!chrome.sidePanel?.open) {
+    btn.textContent = "unsupported";
+    return;
+  }
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    await chrome.sidePanel.open({ tabId: tab.id });
+    window.close();
+  } catch (err) {
+    btn.textContent = "blocked";
+    btn.title = String(err?.message || err);
+  }
+});

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { EXTENSION_URL } from "@/lib/config";
+import GetExtension from "./GetExtension";
 
 // What the product actually is, shown rather than described: a post, the badge landing on
 // it, the verdict. The demo is the extension's real output on a real contract - the fake
@@ -67,7 +67,7 @@ export default function Hero() {
           against the chain and Robinhood&apos;s own registry.
         </p>
         <div className="lead-cta">
-          <a className="cta" href={EXTENSION_URL} target="_blank" rel="noreferrer">Get the extension</a>
+          <GetExtension />
           <a className="cta cta-ghost" href="#install">How to install</a>
         </div>
 

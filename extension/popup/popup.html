@@ -17,6 +17,8 @@
     border-bottom: 1px solid var(--line); }
   header b { font-size: 15px; font-weight: 800; letter-spacing: 0.14em; }
   header .reg { margin-left: auto; font-size: 12.5px; color: var(--muted); }
+  /* the one entry point to the sidebar that is guaranteed to carry a user gesture */
+  header .side { padding: 7px 12px; font-size: 12.5px; }
 
   form { display: flex; gap: 9px; padding: 16px 18px; background: var(--card); border-bottom: 1px solid var(--line); }
   input { flex: 1; min-width: 0; font: inherit; font-size: 14px; color: var(--ink); background: var(--card);
@@ -62,7 +64,7 @@
 </style>
 </head>
 <body>
-  <header><b>EDGERUN</b><span class="reg" id="reg">registry…</span></header>
+  <header><b>EDGERUN</b><span class="reg" id="reg">registry…</span><button class="side" id="side" type="button">sidebar</button></header>
   <form id="f">
     <input id="q" placeholder="paste a token address - 0x…" spellcheck="false" autocomplete="off" />
     <button class="go" id="go" type="submit">check</button>

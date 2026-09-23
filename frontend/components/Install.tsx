@@ -1,4 +1,4 @@
-import { EXTENSION_URL } from "@/lib/config";
+import GetExtension from "./GetExtension";
 
 // Deliberately on the front page rather than behind a link. Someone who has just read what
 // this does should not have to navigate to find out how to run it - three steps and the
@@ -10,11 +10,9 @@ const STEPS = [
     t: "Download it",
     d: (
       <>
-        Grab the repo from{" "}
-        <a href={EXTENSION_URL} target="_blank" rel="noreferrer">
-          GitHub
-        </a>{" "}
-        (Code &rarr; Download ZIP) and unzip it. The extension is the <code>extension/</code> folder.
+        <GetExtension className="cta cta-sm">Download the .zip</GetExtension> and unzip it somewhere you
+        will not delete by accident. The dialog carries the file&rsquo;s SHA-256 so you can check what you
+        got, and a link to the source if you would rather build it yourself.
       </>
     ),
   },

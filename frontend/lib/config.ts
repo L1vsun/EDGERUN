@@ -1,3 +1,5 @@
+import extensionMeta from "./extension-meta.json";
+
 // Single source for the values the coder brief requires be "trivial to drop
 // in from one config/env variable, not scattered across multiple files."
 // Set these as env vars at build time (see ../.env.example and ../DEPLOY.md).
@@ -44,6 +46,7 @@ export const GITHUB_REPO_URL = process.env.NEXT_PUBLIC_GITHUB_REPO_URL || "https
 // Where the extension itself is downloaded from until it is in the Chrome Web Store.
 export const EXTENSION_URL = process.env.NEXT_PUBLIC_EXTENSION_URL || GITHUB_REPO_URL;
 
+
 export const GITHUB_USER_URL = "https://github.com/L1vsun";
 export const X_URL = "https://x.com/L1vsun";
 
@@ -55,3 +58,12 @@ export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 export function asset(path: string): string {
   return `${BASE_PATH}${path.startsWith("/") ? path : `/${path}`}`;
 }
+
+// The archive the site hands out directly, plus what was in it. Both are produced by
+// scripts/pack-extension.sh - re-run it after changing anything under extension/, or the
+// published hash stops matching the published file, which is worse than publishing neither.
+// Declared below asset() on purpose: it reads BASE_PATH, which is a const further up.
+export const EXTENSION_ZIP = asset("/edgerun-extension.zip");
+export const EXTENSION_VERSION = extensionMeta.version;
+export const EXTENSION_SHA256 = extensionMeta.sha256;
+export const EXTENSION_KB = Math.round(extensionMeta.bytes / 1024);

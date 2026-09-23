@@ -1,5 +1,6 @@
 import ThemeToggle from "./ThemeToggle";
-import { DEX_URL, EXTENSION_URL, GITHUB_USER_URL, TOKEN_TICKER, X_URL, asset } from "@/lib/config";
+import { DEX_URL, GITHUB_USER_URL, TOKEN_TICKER, X_URL, asset } from "@/lib/config";
+import GetExtension from "./GetExtension";
 
 export default function Header() {
   return (
@@ -26,9 +27,7 @@ export default function Header() {
             <path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.300-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2Z" />
           </svg>
         </a>
-        <a className="btn" href={EXTENSION_URL} target="_blank" rel="noreferrer">
-          Get the extension
-        </a>
+        <GetExtension className="btn" />
         {DEX_URL ? (
           <a className="btn btn-accent" href={DEX_URL} target="_blank" rel="noreferrer">
             Buy {TOKEN_TICKER}

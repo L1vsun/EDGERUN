@@ -56,12 +56,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     // the inline script below rewrites data-theme before hydration, which React would
     // otherwise report as a server/client mismatch
-    <html lang="en" className={`${display.variable} ${mono.variable}`} data-theme="dark" suppressHydrationWarning>
+    <html lang="en" className={`${display.variable} ${mono.variable}`} data-theme="light" suppressHydrationWarning>
       <head>
-        {/* Applied before first paint, so a light-theme visitor never sees a dark flash. */}
+        {/* Applied before first paint, so a dark-theme visitor never sees a light flash.
+            Light is the default and the OS preference is deliberately not consulted: only a
+            stored choice moves it, so the site looks the same to everyone until they say
+            otherwise. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('edgerun.theme');if(!t){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('edgerun.theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();`,
           }}
         />
       </head>
