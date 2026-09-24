@@ -1696,5 +1696,79 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-24T19:24:06+00:00",
+  "block": 71617665,
+  "mode": "rules",
+  "call": "PROP is the one to watch - heating",
+  "focus": "PROP",
+  "confidence": 0.82,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 3382.8,
+    "wallets": 415,
+    "one_addr_share": 0.17,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 3295.2,
+    "wallets": 460,
+    "one_addr_share": 0.43,
+    "flags": []
+   },
+   {
+    "symbol": "FOOMS",
+    "per_min": 1138.8,
+    "wallets": 282,
+    "one_addr_share": 0.5,
+    "flags": []
+   },
+   {
+    "symbol": "META",
+    "per_min": 769.2,
+    "wallets": 67,
+    "one_addr_share": 0.44,
+    "flags": []
+   },
+   {
+    "symbol": "RESTRMS",
+    "per_min": 362.4,
+    "wallets": 98,
+    "one_addr_share": 0.57,
+    "flags": []
+   },
+   {
+    "symbol": "SI",
+    "per_min": 250.8,
+    "wallets": 109,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "LOUIS",
+    "per_min": 199.2,
+    "wallets": 68,
+    "one_addr_share": 0.6,
+    "flags": []
+   },
+   {
+    "symbol": "PROP",
+    "per_min": 156.0,
+    "wallets": 71,
+    "one_addr_share": 0.77,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
