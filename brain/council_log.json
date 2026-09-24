@@ -1536,5 +1536,86 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-24T10:21:25+00:00",
+  "block": 71293983,
+  "mode": "rules",
+  "call": "MOO is the one to watch - dex live, heating",
+  "focus": "MOO",
+  "confidence": 0.86,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 1959.6,
+    "wallets": 285,
+    "one_addr_share": 0.12,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1542.0,
+    "wallets": 331,
+    "one_addr_share": 0.19,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "MOO",
+    "per_min": 236.4,
+    "wallets": 63,
+    "one_addr_share": 0.55,
+    "flags": [
+     "dex live",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 133.2,
+    "wallets": 55,
+    "one_addr_share": 0.29,
+    "flags": []
+   },
+   {
+    "symbol": "Agrippa",
+    "per_min": 121.2,
+    "wallets": 103,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "AAPL",
+    "per_min": 118.8,
+    "wallets": 91,
+    "one_addr_share": 0.81,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "META",
+    "per_min": 98.4,
+    "wallets": 30,
+    "one_addr_share": 0.55,
+    "flags": []
+   },
+   {
+    "symbol": "MU",
+    "per_min": 87.6,
+    "wallets": 20,
+    "one_addr_share": 0.59,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
