@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "EDGERUN - Robinhood Chain token checks",
+  "name": "EDGERUN - token and caller checks",
   "version": "0.1.0",
-  "description": "Tells you whether the $TICKER in that post is the real contract. Checks run in your browser, against the chain, with no server in between.",
+  "description": "Whether the token in that post is the contract it claims to be - six chains, checked in your browser, no server.",
   "permissions": [
     "storage",
     "alarms",
@@ -14,7 +14,13 @@
     "https://rpc.mainnet.chain.robinhood.com/*",
     "https://api.robinhood.com/*",
     "https://api.dexscreener.com/*",
-    "https://edgerun.live/*"
+    "https://edgerun.live/*",
+    "https://ethereum-rpc.publicnode.com/*",
+    "https://mainnet.base.org/*",
+    "https://arb1.arbitrum.io/*",
+    "https://bsc-rpc.publicnode.com/*",
+    "https://tokens.uniswap.org/*",
+    "https://solana-rpc.publicnode.com/*"
   ],
   "background": {
     "service_worker": "background/worker.js",

@@ -54,7 +54,7 @@ export default function Hero() {
     <section className="lead">
       <div className="lead-grid">
       <div className="lead-in">
-        <span className="kicker">Robinhood Chain · browser extension</span>
+        <span className="kicker">Six chains · browser extension · no server</span>
         <h1>
           The ticker in that post<br />
           is not one token.
@@ -65,7 +65,8 @@ export default function Hero() {
         </p>
         <p className="lead-sub">
           EDGERUN checks the contract while you are still reading the post - in your browser,
-          against the chain and Robinhood&apos;s own registry.
+          across Robinhood Chain, Ethereum, Base, Arbitrum, BNB Chain and Solana. Then it keeps
+          the half every scanner throws away: <b>who put it in front of you.</b>
         </p>
         <div className="lead-cta">
           <GetExtension />
@@ -74,13 +75,13 @@ export default function Hero() {
 
         {/* named here in one line; the install section below says what each one does */}
         <p className="works-on">
-          Works on <b>X</b>, <b>Dexscreener</b> and <b>Blockscout</b> - or paste any address into
-          the extension itself.
+          Works on <b>X</b>, <b>Dexscreener</b> and <b>Blockscout</b> - or paste any contract
+          address or Solana mint into the extension itself.
         </p>
         <div className="lead-facts">
-          <div><b>194</b><span>official stock tokens, from Robinhood&apos;s registry</span></div>
+          <div><b>6</b><span>chains read live, no API key anywhere</span></div>
           <div><b>213</b><span>counterfeits found across ten tickers</span></div>
-          <div><b>~200ms</b><span>to check an address, with no server involved</span></div>
+          <div><b>0</b><span>servers on the path, and nothing of yours leaves</span></div>
         </div>
       </div>
 
@@ -99,7 +100,7 @@ export default function Hero() {
                 <>
                   <span className="g">✕</span>
                   <span className="b-body">
-                    <b>$TSLA · not the real one</b>
+                    <b>$TSLA · Robinhood Chain · not the real one</b>
                     <span>
                       This post names $TSLA, which Robinhood publishes at 0x322f0929… - but the
                       contract in the post is 0xd18f5e73…, a different token.

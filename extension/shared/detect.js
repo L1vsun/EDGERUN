@@ -19,6 +19,12 @@
   // mistaken for one when it shows up in a URL or a post.
   const POOL_ID_RE = /0x[0-9a-fA-F]{64}/g;
   const TICKER_RE = /\$([A-Za-z]{2,8})\b/g;
+  // Solana mints are base58, which has no 0, O, I or l. This only finds CANDIDATES - whether
+  // 32 to 44 base58 characters are actually a 32-byte public key needs a decode, and that
+  // lives in lib/base58.js where the worker can import it. A content script is a classic
+  // script with no imports, and duplicating a decoder into it is how the two copies start
+  // disagreeing.
+  const MINT_RE = /(?<![1-9A-HJ-NP-Za-km-z])[1-9A-HJ-NP-Za-km-z]{32,44}(?![1-9A-HJ-NP-Za-km-z])/g;
 
   E.ADDRESS_RE = ADDRESS_RE;
   E.POOL_ID_RE = POOL_ID_RE;
@@ -26,11 +32,14 @@
 
   /** Everything worth asking about in a blob of text. */
   E.findTokens = function findTokens(text) {
-    if (!text) return { addresses: [], tickers: [] };
+    if (!text) return { addresses: [], tickers: [], mints: [] };
     const withoutPools = text.replace(POOL_ID_RE, " ");
     const addresses = [...new Set((withoutPools.match(ADDRESS_RE) || []).map((a) => a.toLowerCase()))];
     const tickers = [...new Set([...text.matchAll(TICKER_RE)].map((m) => m[1].toUpperCase()))];
-    return { addresses, tickers };
+    // 0x addresses are stripped first so a hex string is never offered as a base58 candidate,
+    // and the candidates are capped: a post is allowed to name a few tokens, not forty.
+    const mints = [...new Set((withoutPools.replace(ADDRESS_RE, " ").match(MINT_RE) || []))].slice(0, 6);
+    return { addresses, tickers, mints };
   };
 
   /** Promise wrapper over the worker's message API. Resolves to data, throws on error. */
@@ -129,6 +138,50 @@
     window.addEventListener("popstate", () => setTimeout(fire, 0));
     // some routers swap the view without touching history at all
     setInterval(fire, 1200);
+  };
+
+  // X handles: 1-15 of [A-Za-z0-9_], and nothing else has ever been issued.
+  const HANDLE_RE = /^[A-Za-z0-9_]{1,15}$/;
+  // /i18n, /home, /settings and friends sit at the same depth as a profile and are not people
+  const NOT_PEOPLE = new Set([
+    "home", "explore", "notifications", "messages", "i", "settings", "search",
+    "compose", "login", "signup", "tos", "privacy", "about", "download",
+  ]);
+
+  /**
+   * Who posted this, from the pieces of a User-Name block.
+   *
+   * Pure, and separate from the DOM walk, because getting it wrong is expensive in both
+   * directions: attribute a contract to the wrong account and the caller record becomes
+   * libel, attribute nothing and the graph never fills.
+   *
+   * The href is trusted first - a profile link is `/handle` exactly, and it cannot be spoofed
+   * by what someone types. The text is the fallback, and it is second for a reason: display
+   * names routinely contain an "@", so the first @-looking thing in the block is not reliably
+   * the handle. In the text path the LAST match wins, because the display name comes first.
+   *
+   * @returns {{handle: string, display: string|null}|null}
+   */
+  E.authorFrom = function authorFrom({ hrefs = [], text = "" } = {}) {
+    let handle = null;
+    for (const href of hrefs) {
+      const m = /^(?:https?:\/\/(?:www\.)?(?:twitter|x)\.com)?\/([A-Za-z0-9_]{1,15})\/?$/.exec(String(href || ""));
+      if (!m) continue;
+      const h = m[1];
+      if (NOT_PEOPLE.has(h.toLowerCase())) continue;
+      handle = h;
+      break;
+    }
+    if (!handle) {
+      const found = [...String(text || "").matchAll(/@([A-Za-z0-9_]{1,15})(?![A-Za-z0-9_])/g)].map((m) => m[1]);
+      handle = found.length ? found[found.length - 1] : null;
+    }
+    if (!handle || !HANDLE_RE.test(handle) || NOT_PEOPLE.has(handle.toLowerCase())) return null;
+
+    // the display name is the first line, and only when it is not just the handle again
+    const first = String(text || "").split("\n").map((s) => s.trim()).filter(Boolean)[0] || null;
+    const display = first && first !== `@${handle}` && !first.startsWith("@") ? first : null;
+    return { handle: handle.toLowerCase(), display };
   };
 
   /**
@@ -240,10 +293,9 @@
     }
 
     if (results.length) {
-      const best = [...results].sort((a, b) => (RANK[b.verdict] || 0) - (RANK[a.verdict] || 0))[0];
-      return results.length > 1
-        ? { ...best, lead: `${results.length} tokens named in this post; showing the one that matters most.` }
-        : best;
+      // The worst one leads. The others are not dropped any more - decideBadges shows them
+      // all - so this no longer needs to apologise for picking one.
+      return [...results].sort((a, b) => (RANK[b.verdict] || 0) - (RANK[a.verdict] || 0))[0];
     }
 
     if (collision) {
@@ -269,6 +321,37 @@
     }
 
     return null;
+  };
+
+  // A post naming four tokens used to get one badge and a line saying so. That is the wrong
+  // trade: the reason somebody pastes four contracts is that they are talking about four
+  // things, and answering about one of them is answering a question nobody asked.
+  const MAX_BADGES = 4;
+
+  /**
+   * Every token this post is worth saying something about, worst first.
+   *
+   * The decisive finding - an impersonation, a mismatched ticker - still leads and keeps the
+   * sentence that explains it, because it is a statement about the post rather than about one
+   * contract. Everything else follows in the order it was named.
+   */
+  E.decideBadges = function decideBadges({ results = [], official = [], onchain = [], namedTickers = [], solana = [] }) {
+    const out = [];
+    const seen = new Set();
+    const push = (r) => {
+      const key = String(r?.address || "");
+      if (!r || !key || seen.has(key)) return;
+      seen.add(key);
+      out.push(r);
+    };
+
+    // the decisive finding carries a rewritten verdict and lead, so it must be pushed before
+    // the raw result for the same address, which the seen-set then skips
+    push(E.decideBadge({ results, official, onchain, namedTickers }));
+    for (const r of results) push(r);
+    for (const r of solana) push(r);
+
+    return out.slice(0, MAX_BADGES);
   };
 
   E.log = (...args) => console.debug("[edgerun]", ...args);

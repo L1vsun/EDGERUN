@@ -17,6 +17,7 @@ const LIMITS = {
   rpc: { max: 60, windowMs: 60_000 },
   dexscreener: { max: 30, windowMs: 60_000 },
   registry: { max: 6, windowMs: 60_000 },
+  solana: { max: 40, windowMs: 60_000 },
 };
 
 const KEY = "budget";

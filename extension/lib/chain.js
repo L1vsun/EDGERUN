@@ -7,8 +7,12 @@
 // `access-control-allow-origin: *`, and a service worker with host_permissions is not
 // subject to CORS at all.
 
-export const RPC_URL = "https://rpc.mainnet.chain.robinhood.com";
-export const CHAIN_ID = 4663;
+import { HOME } from "./chains.js";
+
+// Kept as names because they read better at the call sites that only ever mean this chain.
+// The table in chains.js is the single source of truth for both.
+export const RPC_URL = HOME.rpc;
+export const CHAIN_ID = HOME.id;
 
 // 4-byte selectors, the same table the Python engine verified against real deployed
 // bytecode on this chain (edgerun/edgerun/selectors.py).
@@ -73,11 +77,14 @@ const clean = (s) => {
  * One HTTP round trip for many calls. `items` is [{method, params}, ...]; the result is a
  * same-length array of {result, error} in the order given - the node may reorder a batch
  * response, so entries are matched back by id rather than by position.
+ *
+ * `chain` defaults to the home chain, so every existing call site means what it always
+ * meant. Only code that is deliberately looking somewhere else passes it.
  */
-export async function rpc(items, { signal } = {}) {
+export async function rpc(items, { signal, chain = HOME } = {}) {
   if (!items.length) return [];
   const body = items.map((c, i) => ({ jsonrpc: "2.0", id: i, method: c.method, params: c.params || [] }));
-  const res = await fetch(RPC_URL, {
+  const res = await fetch(chain.rpc, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),

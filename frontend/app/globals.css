@@ -216,7 +216,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 /* Every major block is its own band: the same vertical room, a hairline above it, and an
    alternating ground so the eye can see where one idea ends and the next begins. The bleed
    pseudo-element lets a max-width section paint edge to edge without extra markup. */
-.install, .feed, .cortex, .council { position: relative; padding-block: var(--band); }
+.install, .feed, .cortex, .council, .chains { position: relative; padding-block: var(--band); }
 .install::before, .feed::before, .cortex::before, .council::before {
   content: ""; position: absolute; top: 0; left: 20px; right: 20px; height: 1px;
   background: linear-gradient(90deg, var(--rule), transparent 70%); }
@@ -225,6 +225,52 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
   left: calc(50% - 50vw); width: 100vw; background: var(--bg-2); z-index: -1; }
 .install > .fhead, .feed > .fhead, .cortex > .cx-top, .council > .fhead { margin-bottom: 26px; }
 .fhead h2 { font-size: 27px; }
+
+/* ================= chains, and what each can prove =================
+   The honest answer is the pitch. One chain has an issuer publishing the truth; the rest have
+   curated lists, which are weaker in both directions. Rendering those two identically would be
+   a lie, so the tier is a visible label rather than a footnote. */
+
+.chains { max-width: 1500px; margin: 0 auto; padding-inline: 20px; }
+
+.chain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.chain { padding: 20px 20px 22px; border: 1px solid var(--line); border-top: 2px solid var(--rule);
+  background: var(--card); }
+.chain-home { border-top-color: var(--accent); }
+.chain-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 9px; margin-bottom: 9px; }
+.chain-head b { font-family: var(--mono); font-size: 17px; font-weight: 800; letter-spacing: -0.01em;
+  color: var(--bone); }
+.chain-head code { font-family: var(--mono); font-size: 13px; color: var(--text-4); }
+.chain p { margin: 0; font-size: 16.5px; line-height: 1.6; color: var(--text-2); }
+
+.tier { margin-left: auto; padding: 2px 8px; font-family: var(--mono); font-size: 11px; font-weight: 800;
+  letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--line); color: var(--text-4); }
+.tier-registry { color: var(--accent-ink); background: var(--accent-bg); border-color: var(--accent-dim); }
+
+.tiers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 14px; }
+.tier-card { padding: 18px 20px 20px; border: 1px solid var(--line); background: var(--bg-2); }
+.tier-card > b { display: block; margin-bottom: 7px; font-family: var(--mono); font-size: 13px; font-weight: 800;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-4); }
+.tier-card p { margin: 0; font-size: 16.5px; line-height: 1.6; color: var(--text-2); }
+.tier-card p b { color: var(--bone); }
+
+.chain-note { max-width: 78ch; margin: 18px 0 0; font-size: 17px; line-height: 1.65; color: var(--text-2); }
+.chain-note b { color: var(--bone); }
+
+.xchain { margin-top: 16px; padding: 20px 22px 22px; border: 1px solid var(--line);
+  border-left: 2px solid var(--accent); background: var(--card); }
+.xchain > b { display: block; margin-bottom: 8px; font-size: 19px; line-height: 1.45; color: var(--bone); }
+.xchain code { font-family: var(--mono); font-size: 0.92em; padding: 1px 5px; color: var(--accent-ink);
+  background: var(--accent-bg); border: 1px solid var(--accent-dim); }
+.xchain p { margin: 0; max-width: 82ch; font-size: 17px; line-height: 1.65; color: var(--text-2); }
+
+@media (max-width: 1000px) {
+  .chain-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 680px) {
+  .chain-grid, .tiers { grid-template-columns: 1fr; }
+  .tier { margin-left: 0; }
+}
 
 /* ================= install + how to use ================= */
 .install { max-width: 1500px; margin: 0 auto; padding-inline: 20px; }

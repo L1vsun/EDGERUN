@@ -43,19 +43,19 @@ const STEPS = [
 const USES = [
   {
     where: "On X",
-    what: "Scroll normally. Any post naming a contract address or a ticker gets a badge under the text: red if the contract is not what the post claims, amber if the ticker is ambiguous, quiet otherwise.",
+    what: "Scroll normally. A post naming a contract address or a Solana mint gets a badge under the text - one per token, because a post naming three contracts is talking about three things. A bare $TICKER with no address stays quiet on purpose.",
   },
   {
-    where: "On Dexscreener",
-    what: "Open any Robinhood Chain pair. The badge sits next to the ticker in the header and runs the full contract check on the token being traded.",
+    where: "Who posted it",
+    what: "Every contract arrived attached to an account, and the panel keeps that half: how many contracts an account has put in front of you, how many came back flagged, and whether several accounts arrived on the same contract inside the same few minutes. Local only, with one button that forgets all of it.",
   },
   {
-    where: "On the block explorer",
-    what: "Any token or address page gets the whole report as a panel: source verification, mint selectors, ownership, and a simulated transfer out of a real holder's wallet.",
+    where: "On Dexscreener and the explorer",
+    what: "Open any pair or token page. The badge sits in the header and runs the full check: source verification, mint selectors, ownership, deployer history, and a simulated transfer out of a real holder's wallet.",
   },
   {
     where: "Anywhere else",
-    what: "Click the toolbar icon and paste an address. Same checks, plus a local watchlist that never leaves your browser.",
+    what: "Click the toolbar icon and paste a contract address or a Solana mint - one box, both alphabets. Same checks, plus a watchlist that tells you what moved since you last looked.",
   },
 ];
 
@@ -90,8 +90,9 @@ export default function Install() {
       </div>
 
       <p className="install-note">
-        Every badge names the number behind it and links to the explorer, so a red verdict is a
-        claim you can check yourself. A token with no flags is not safe - only unremarkable.
+        Every badge names the number behind it and links to the explorer, and a report carries
+        the exact commands that check it - so a red verdict is never something you have to take
+        on trust. A token with no flags is not safe, only unremarkable.
       </p>
     </section>
   );

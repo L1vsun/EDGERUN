@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "EDGERUN - is that the real contract?",
   description:
-    "A browser extension for Robinhood Chain: checks the token in the post you are reading, in your browser, against the chain and Robinhood's published registry.",
+    "A browser extension that checks whether the token in the post you are reading is the contract it claims to be - six chains, in your browser, with no server on the path.",
   icons: {
     icon: [
       { url: `${BASE}/favicon.ico`, sizes: "any" },
@@ -38,14 +38,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "EDGERUN - is that the real contract?",
-    description: "Seven contracts use $PEPE on this chain. EDGERUN tells you which one you are actually looking at.",
+    description: "Seven contracts use $PEPE on one chain alone. EDGERUN tells you which one you are actually looking at - across six chains, in your browser.",
     images: [{ url: `${BASE}/og.png`, width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "EDGERUN - is that the real contract?",
-    description: "Seven contracts use $PEPE on this chain. EDGERUN tells you which one you are actually looking at.",
+    description: "Seven contracts use $PEPE on one chain alone. EDGERUN tells you which one you are actually looking at - across six chains, in your browser.",
     images: [`${BASE}/og.png`],
   },
 };

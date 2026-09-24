@@ -11,14 +11,20 @@ const SHOTS = [
   {
     file: "x-fake.jpg",
     where: "On X",
-    caption: "A post names $NVDA and pastes a contract. The badge lands under the text and says it is a different token - with both addresses.",
+    caption: "A post names $NVDA and pastes a contract. The badge lands under the text and says it is a different token - with both addresses and the chain it is on.",
     hint: "x.com - any post with a Robinhood Chain contract address in it",
   },
   {
-    file: "x-ticker.jpg",
-    where: "A ticker, checked",
-    caption: "A ticker that does resolve: $HOOD here is GreenHood, an established token, and the panel names which contract that is.",
-    hint: "x.com - a post that says a bare $TICKER with no address",
+    file: "x-callers.jpg",
+    where: "Who posted it",
+    caption: "The callers tab: accounts ranked by how many of the contracts they put in front of you came back flagged.",
+    hint: "the side panel, callers tab, after scrolling a timeline",
+  },
+  {
+    file: "solana.jpg",
+    where: "On Solana",
+    caption: "A mint read from the chain: who can create supply, who can freeze your account, and whether a transfer hook can reject the sale.",
+    hint: "x.com - a post naming a Solana mint, or paste one into the panel",
   },
   {
     file: "explorer.jpg",

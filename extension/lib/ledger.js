@@ -1,4 +1,4 @@
-// The session ledger: everything a tab has checked, in the order it was seen.
+// The session ledger: everything checked this session, in the order it was seen.
 //
 // This is the thing a popover structurally cannot do. A popover is per-token and dies with
 // the DOM node that opened it, so the only question it can ever answer is "is this one real".
@@ -6,8 +6,14 @@
 // scroll past" - which needs a record that outlives the badge, the navigation and the worker.
 //
 // So it lives in chrome.storage.session: it survives the ~30 s MV3 worker death, never
-// touches disk, and is gone when the browser closes. Keyed by tab, because two tabs are two
-// separate reading sessions and merging them would make the list meaningless.
+// touches disk, and is gone when the browser closes.
+//
+// ONE list, not one per tab (changed 2026-09-24). It was keyed by tab on the theory that two
+// tabs are two reading sessions, which read well and was wrong in use: you check things on X,
+// open the contract on the explorer to look closer, and the panel empties - the list is gone
+// exactly when you went looking for it. The tab was never the unit anybody thought in. The
+// source page is still kept per row, so "where did I see this" survives the merge, which is
+// the only thing the split was actually buying.
 //
 // Session storage is TRUSTED_CONTEXTS only by default, which is exactly the boundary we
 // want: the worker writes, the side panel reads, and a content script on x.com can do
@@ -15,7 +21,7 @@
 
 const CAP = 200; // a long reading session, bounded - the tail is never what you want anyway
 
-export const ledgerKey = (tabId) => `ledger:${tabId}`;
+export const LEDGER_KEY = "ledger";
 export const focusKey = (tabId) => `focus:${tabId}`;
 
 /**
@@ -39,11 +45,17 @@ function summarize(r) {
  * near-copies of each other, which meant every new field had to be added twice and would
  * eventually be added once.
  */
+// Hex is case-insensitive and gets folded so one contract is one row. A Solana mint is
+// base58 and folding it produces a string that is not the address - the same trap that bit
+// lists.js. Fold only what is safe to fold.
+const fold = (a) => (/^0x[0-9a-fA-F]{40}$/.test(a) ? a.toLowerCase() : a);
+
 function entryFor(result, url, prev, at) {
-  const address = result.address.toLowerCase();
+  const address = fold(result.address);
   return {
     address,
     symbol: result.symbol || null,
+    chainName: result.chainName || null,
     verdict: result.verdict,
     level: result.level,
     say: summarize(result),
@@ -65,13 +77,13 @@ function entryFor(result, url, prev, at) {
  * than adding a second row - a timeline that re-renders the same post four times is still
  * one token you looked at.
  */
-export async function record(tabId, url, result) {
-  if (!tabId || !result?.address) return;
-  const k = ledgerKey(tabId);
+export async function record(url, result) {
+  if (!result?.address) return;
+  const k = LEDGER_KEY;
   try {
     const got = await chrome.storage.session.get(k);
     const rows = got[k] || [];
-    const address = result.address.toLowerCase();
+    const address = fold(result.address);
     const prev = rows.find((e) => e.address === address);
     const entry = entryFor(result, url, prev, Date.now());
     await chrome.storage.session.set({ [k]: [entry, ...rows.filter((e) => e.address !== address)].slice(0, CAP) });
@@ -88,16 +100,16 @@ export async function record(tabId, url, result) {
  * and writes it back, so concurrent ones silently drop each other's rows. A timeline resolves
  * twelve addresses at a time, so this is the common path, not the exotic one.
  */
-export async function recordMany(tabId, url, results) {
+export async function recordMany(url, results) {
   const list = (results || []).filter((r) => r?.address);
-  if (!tabId || !list.length) return;
-  const k = ledgerKey(tabId);
+  if (!list.length) return;
+  const k = LEDGER_KEY;
   try {
     const got = await chrome.storage.session.get(k);
     let rows = got[k] || [];
     const at = Date.now();
     for (const result of list) {
-      const address = result.address.toLowerCase();
+      const address = fold(result.address);
       const prev = rows.find((e) => e.address === address);
       const entry = entryFor(result, url, prev, at);
       rows = [entry, ...rows.filter((e) => e.address !== address)];
@@ -106,19 +118,18 @@ export async function recordMany(tabId, url, results) {
   } catch {}
 }
 
-export async function read(tabId) {
+export async function read() {
   try {
-    const k = ledgerKey(tabId);
-    const got = await chrome.storage.session.get(k);
-    return got[k] || [];
+    const got = await chrome.storage.session.get(LEDGER_KEY);
+    return got[LEDGER_KEY] || [];
   } catch {
     return [];
   }
 }
 
-export async function clear(tabId) {
+export async function clear() {
   try {
-    await chrome.storage.session.remove(ledgerKey(tabId));
+    await chrome.storage.session.remove(LEDGER_KEY);
   } catch {}
 }
 
@@ -130,9 +141,12 @@ export async function setFocus(tabId, address) {
   } catch {}
 }
 
-/** A closed tab's reading session is over - drop it rather than waiting for the browser. */
+/**
+ * A closed tab takes its focus hint with it and nothing else. The ledger is shared now, so
+ * closing the tab you happened to check something in must not delete the record of it.
+ */
 export async function drop(tabId) {
   try {
-    await chrome.storage.session.remove([ledgerKey(tabId), focusKey(tabId)]);
+    await chrome.storage.session.remove(focusKey(tabId));
   } catch {}
 }

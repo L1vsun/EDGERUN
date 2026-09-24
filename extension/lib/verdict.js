@@ -14,8 +14,10 @@
 //
 //   OFFICIAL    this address IS in Robinhood's published registry. A fact, not a score.
 //   FAIL        it claims an official asset and is not it, or holders provably cannot move it.
-//   CAUTION     the contract lane found something, or resolved nothing at all.
-//   PASS        the full check ran and found nothing. Only reachable at the `full` tier.
+//   CAUTION     something was found - a failing contract check, a warning in any lane, or a
+//               lane that resolved nothing at all.
+//   PASS        the full check ran and found nothing at all - no fail, no warning. Only
+//               reachable at the `full` tier.
 //   UNRESOLVED  nothing has been established yet. Identity-clean lands here on purpose:
 //               "not impersonating anything" is not the same as "safe", and the badge must
 //               never let the first read as the second.
@@ -27,7 +29,9 @@ import * as bs from "./blockscout.js";
 import { listedEntry, listingCheck } from "./blocklist.js";
 import { BudgetExceeded, spend } from "./budget.js";
 import { SEL, addrWord, callData, decodeAddress, decodeString, decodeUint, ethCall, getCode, revertData, rpc, uintWord } from "./chain.js";
+import { HOME } from "./chains.js";
 import { EDIT_DISTANCE_THRESHOLD, REFERENCE_TOKENS, allowedDistance, levenshtein } from "./known.js";
+import { crossChainNameCheck, getList } from "./lists.js";
 import { OFFICIAL_NAME_MARKER, getRegistry, normalizeName, officialForAddress, officialForTicker } from "./registry.js";
 import { decodeRevert, isBenignRevert, selectorsPresent } from "./selectors.js";
 
@@ -221,10 +225,16 @@ function assemble(impersonation, contract, level, official) {
   const contractFail = contract.some((c) => c.status === "fail");
   const contractResolvedNothing = contract.length > 0 && contract.every((c) => c.status === "unresolved");
 
+  // PASS says "found nothing against it", so a warning anywhere has to deny it. Without this
+  // a contract wearing a $1.8bn token's name off-chain, or one with a *selective* transfer
+  // block - the signature of a targeted blacklist - reads as green, because neither of those
+  // is a hard `fail` and nothing else was looking.
+  const anyWarn = [...impersonation, ...contract].some((c) => c.status === "warn");
+
   let verdict;
   if (exitBlocked || impersonationFail) verdict = "FAIL";
   else if (official) verdict = "OFFICIAL";
-  else if (contractFail || contractResolvedNothing) verdict = "CAUTION";
+  else if (contractFail || contractResolvedNothing || anyWarn) verdict = "CAUTION";
   else if (level === "full" && contract.length) verdict = "PASS";
   else verdict = "UNRESOLVED"; // identity-clean: nothing bad claimed, nothing yet verified
 
@@ -237,7 +247,9 @@ export async function scan(address, { level = "identity" } = {}) {
   const addr = String(address).trim().toLowerCase();
   if (!isAddress(addr)) throw new Error("that is not a contract address");
 
-  const base = { address: addr, level, scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr) };
+  // Every verdict says which chain it is about. The same address exists on all of them, so
+  // a result with no chain on it is an answer to an unstated question.
+  const base = { address: addr, chainId: HOME.id, chainName: HOME.name, level, scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr) };
 
   let id;
   try {
@@ -257,7 +269,14 @@ export async function scan(address, { level = "identity" } = {}) {
   const stock = stockCheck(reg, addr, id.symbol, id.name, id.uiMultiplier);
   const ref = referenceCheck(addr, id.symbol, id.name);
   const listed = await listedEntry(addr);
-  const impersonation = [stock, ref.check, listed ? listingCheck(listed) : null].filter(Boolean);
+
+  // The check a single-chain scanner cannot run. The token being copied usually does not live
+  // on the chain being scanned, so every check that only knows this chain passes the copy.
+  const crossName = crossChainNameCheck(await getList(), {
+    chainId: HOME.id, address: addr, symbol: id.symbol, name: id.name,
+  });
+
+  const impersonation = [stock, ref.check, listed ? listingCheck(listed) : null, crossName].filter(Boolean);
 
   // what the badge leads with when it is red
   const claimed = !official && reg.loaded && id.symbol ? officialForTicker(reg, id.symbol) : null;
@@ -295,7 +314,7 @@ export async function scanMany(addresses) {
     const official = reg.loaded ? officialForAddress(reg, addr) : null;
     if (official) {
       out[addr] = {
-        address: addr, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr),
+        address: addr, chainId: HOME.id, chainName: HOME.name, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr),
         symbol: official.ticker, name: official.name, official, impersonates: null, verdict: "OFFICIAL", facts: 1, unresolved: 0,
         checks: [check("stock_token", "stock token", "ok", `VERIFIED official Robinhood stock token - ${official.ticker} (${official.name}), matches the registry Robinhood publishes`)],
       };
@@ -306,7 +325,7 @@ export async function scanMany(addresses) {
   if (!need.length) return out;
 
   const unresolvedFor = (addr, why) => ({
-    address: addr, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr), symbol: null, name: null,
+    address: addr, chainId: HOME.id, chainName: HOME.name, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr), symbol: null, name: null,
     official: null, impersonates: null, verdict: "UNRESOLVED", facts: 0, unresolved: 1,
     checks: [check("identity", "identity", "unresolved", why)],
   });
@@ -348,7 +367,7 @@ export async function scanMany(addresses) {
       const listed = blocked[addr] || null;
       const claimed = reg.loaded && symbol ? officialForTicker(reg, symbol) : null;
       out[addr] = {
-        address: addr, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr), symbol, name,
+        address: addr, chainId: HOME.id, chainName: HOME.name, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr), symbol, name,
         official: null,
         impersonates: claimed ? { ticker: claimed.ticker, officialAddress: claimed.address, name: claimed.name } : null,
         ...assemble([stock, ref.check, listed ? listingCheck(listed) : null].filter(Boolean), [], "identity", null),

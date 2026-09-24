@@ -10,8 +10,14 @@
 
 import { getBlocklist } from "../lib/blocklist.js";
 import { remaining } from "../lib/budget.js";
+import { ALL as ALL_CHAINS } from "../lib/chains.js";
+import { whereItLives } from "../lib/crosschain.js";
+import { getList, listCheck } from "../lib/lists.js";
+import { isSolanaAddress } from "../lib/base58.js";
+import * as solana from "../lib/solana.js";
 import { deployerTrail, trailChecks } from "../lib/deployer.js";
 import { exitSweep } from "../lib/exit.js";
+import * as graph from "../lib/graph.js";
 import * as ledger from "../lib/ledger.js";
 import { pruneMemory, rememberAndRecall } from "../lib/memory.js";
 import { getRegistry } from "../lib/registry.js";
@@ -111,6 +117,46 @@ async function getExitSweep(address) {
   return data;
 }
 
+// ---- Solana ----
+//
+// Same cache shape as the EVM side and a separate key space, because a base58 mint and a hex
+// address can never collide but the two scans answer different questions and have different
+// costs.
+const SOL_TTL = 10 * 60 * 1000;
+const solCache = new Map();
+
+async function getMint(mint, { fresh = false } = {}) {
+  const hit = solCache.get(mint);
+  if (!fresh && hit && Date.now() - hit.at < SOL_TTL) return hit.data;
+  const data = await solana.scanMint(mint);
+  solCache.set(mint, { at: Date.now(), data });
+  return data;
+}
+
+/**
+ * Resolve base58 candidates found in page text.
+ *
+ * The content script cannot decode base58, so what arrives here is "32 to 44 characters that
+ * could be a key" - most of which are not. Validation drops the junk, and anything that is a
+ * real account but not a MINT is dropped too rather than badged: a wallet address in a post
+ * is not a token, and putting "this is not a mint" under every post that quotes one is the
+ * bare-ticker noise problem in a new alphabet.
+ */
+async function resolveMints(candidates, { fresh = false } = {}) {
+  const wanted = [...new Set(candidates || [])].filter(isSolanaAddress).slice(0, 4);
+  const out = [];
+  for (const mint of wanted) {
+    try {
+      const r = await getMint(mint, { fresh });
+      if (r.verdict === "UNRESOLVED" && !r.symbol) continue; // not a mint, or unreadable
+      out.push(r);
+    } catch {
+      /* one bad mint must not sink the batch */
+    }
+  }
+  return out;
+}
+
 // Dexscreener puts the *pair* in the URL, not the token - and on this chain some of those
 // are Uniswap v4 pool ids (32 bytes), not addresses. Resolving pair -> baseToken is the
 // worker's job because it owns the network and the cache.
@@ -184,16 +230,16 @@ async function watchSync(verdicts) {
 // is what turns a stream of one-off checks into a readable session.
 const HANDLERS = {
   // A check asked for by the side panel has no sender.tab - it is an extension page - so the
-  // tab it belongs to is passed explicitly. Without this, anything typed into the panel would
-  // run and then vanish from the very list it was typed into.
+  // source page is passed explicitly. Without this, anything typed into the panel would be
+  // recorded with no idea where it came from.
   verdict: async (m, sender) => {
     const r = await getVerdict(m.address, m.level || "identity", { fresh: m.fresh });
-    await ledger.record(sender?.tab?.id ?? m.tabId, sender?.tab?.url ?? m.url, r);
+    await ledger.record(sender?.tab?.url ?? m.url, r);
     return r;
   },
   verdicts: async (m, sender) => {
     const out = await getVerdicts(m.addresses);
-    await ledger.recordMany(sender?.tab?.id ?? m.tabId, sender?.tab?.url ?? m.url, Object.values(out));
+    await ledger.recordMany(sender?.tab?.url ?? m.url, Object.values(out));
     return out;
   },
   ticker: (m) => resolveTicker(m.ticker),
@@ -228,9 +274,51 @@ const HANDLERS = {
   "watch:toggle": (m) => watchToggle(m.address),
   "watch:sync": (m) => watchSync(m.verdicts),
 
+  /**
+   * Where else this address exists, and what a curated list says about it there.
+   *
+   * On demand only, never on the feed. It is one request per chain, and a timeline batch
+   * that fanned out across five chains per post would spend a minute's budget in a scroll -
+   * the same reason the deployer trail and the exit sweep are buttons rather than automatic.
+   */
+  crosschain: async (m) => {
+    const found = await whereItLives(m.address, { fresh: m.fresh });
+    const list = await getList();
+    const chains = found.chains.map((row) =>
+      row.present === true
+        ? { ...row, list: listCheck(list, { chainId: row.id, address: found.address, symbol: row.symbol }) }
+        : row,
+    );
+    return { ...found, chains, listLoaded: Boolean(list.loaded) };
+  },
+
+  // Solana. A separate provider, not a chain row - see lib/solana.js.
+  mint: (m) => getMint(m.address, { fresh: m.fresh }),
+  mints: async (m, sender) => {
+    const out = await resolveMints(m.candidates, { fresh: m.fresh });
+    await ledger.recordMany(sender?.tab?.url ?? m.url, out);
+    return out;
+  },
+
+  chains: () => ALL_CHAINS.map(({ key, id, name, authority, explorer }) => ({ key, id, name, authority, explorer: Boolean(explorer) })),
+
+  // ---- the account graph: who put that contract in front of you ----
+  //
+  // Written by the X surface, read by the panel. It lives in the worker for the same reason
+  // the ledger does: a content script on x.com must not be able to read back the record of
+  // every account you have ever scrolled past.
+  "graph:record": (m) => graph.recordSightings(m.sightings),
+  "graph:caller": (m) => graph.callerRecord(m.handle),
+  "graph:token": (m) => graph.tokenCallers(m.address),
+  "graph:tokens": (m) => graph.tokenCallersMany(m.addresses),
+  "graph:top": (m) => graph.topCallers(m.limit),
+  "graph:stats": () => graph.graphStats(),
+  "graph:pause": (m) => graph.setPaused(m.paused),
+  "graph:wipe": () => graph.wipeGraph(),
+
   // ---- the sidebar ----
-  "ledger:get": (m, sender) => ledger.read(m.tabId ?? sender?.tab?.id),
-  "ledger:clear": (m, sender) => ledger.clear(m.tabId ?? sender?.tab?.id).then(() => ({ cleared: true })),
+  "ledger:get": () => ledger.read(),
+  "ledger:clear": () => ledger.clear().then(() => ({ cleared: true })),
 
   /**
    * Open the side panel beside the tab that asked.
@@ -286,5 +374,8 @@ chrome.alarms.onAlarm.addListener((a) => {
     getRegistry({ force: true }).catch(() => {});
     getBlocklist({ force: true }).catch(() => {});
   }
-  if (a.name === "upkeep") pruneMemory().catch(() => {});
+  if (a.name === "upkeep") {
+    pruneMemory().catch(() => {});
+    graph.pruneGraph().catch(() => {});
+  }
 });

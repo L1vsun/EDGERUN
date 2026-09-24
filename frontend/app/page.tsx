@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import Install from "@/components/Install";
+import Chains from "@/components/Chains";
 import Shots from "@/components/Shots";
 import Nose from "@/components/Nose";
 import Council from "@/components/Council";
@@ -8,9 +9,11 @@ import { DEX_URL, TOKEN_TICKER } from "@/lib/config";
 export default function Home() {
   return (
     <>
-      {/* The product first, then how to run it. The circuit below is how it thinks. */}
+      {/* The product first, then how to run it, then what it reads and what each chain
+          can actually prove. The circuit below is how it thinks. */}
       <Hero />
       <Install />
+      <Chains />
       <Shots />
       <Nose />
       <Council />

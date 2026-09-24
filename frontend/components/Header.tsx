@@ -12,6 +12,7 @@ export default function Header() {
       <nav className="top-nav">
         <a href="#install">Install</a>
         <a href="#how">How it works</a>
+        <a href="#chains">Chains</a>
         <a href="#council">The council</a>
       </nav>
 

@@ -99,8 +99,11 @@ button { font: inherit; cursor: pointer; }
 
 /* ---- filters ---- */
 
+/* Four filters do not fit on one line in a narrow panel, and a filter the reader cannot
+   see is a filter that does not exist - so the row wraps rather than clipping. */
 .tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   padding: 10px 14px 0;
 }
@@ -108,7 +111,7 @@ button { font: inherit; cursor: pointer; }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 12px;
+  padding: 7px 10px;
   font-size: 13px;
   font-weight: 700;
   color: var(--muted);
@@ -169,6 +172,7 @@ button { font: inherit; cursor: pointer; }
   color: inherit;
 }
 .head:hover { background: var(--hover); }
+.who-what { display: flex; align-items: baseline; gap: 7px; min-width: 0; flex-wrap: wrap; }
 .sym { font-size: 14px; font-weight: 800; letter-spacing: -0.01em; }
 .verdict {
   align-self: start;
@@ -225,6 +229,11 @@ button { font: inherit; cursor: pointer; }
   border-radius: 8px;
 }
 .acts button:hover, .acts a:hover { background: var(--raise); }
+.acts button:disabled { opacity: 0.6; cursor: default; }
+/* The one button worth pressing next reads as such; the rest are the same weight as each
+   other, because a row of six equally loud buttons is a row with no answer in it. */
+.acts .go-act { color: var(--on-signal); background: var(--signal); border-color: var(--signal); }
+.acts .go-act:hover { filter: brightness(0.94); background: var(--signal); }
 
 /* ---- empty + footer ---- */
 
@@ -402,6 +411,91 @@ button { font: inherit; cursor: pointer; }
   font-size: 10.5px; font-weight: 800; color: var(--on-status);
   background: var(--warn); border-radius: 999px;
 }
+
+/* Which chain the answer is about. The same address exists on every EVM chain, so a verdict
+   without one is an answer to an unstated question. */
+.chain {
+  padding: 1px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Checks that resolved nothing. They are kept - "we could not establish this" is honest and
+   occasionally load-bearing - but they do not get to outweigh the findings above them. */
+.quiet { margin-top: 2px; }
+.quiet > summary {
+  padding: 5px 0;
+  font-size: 11.5px;
+  color: var(--muted);
+  cursor: pointer;
+  list-style: none;
+}
+.quiet > summary::-webkit-details-marker { display: none; }
+.quiet > summary::before { content: "▸ "; }
+.quiet[open] > summary::before { content: "▾ "; }
+.quiet > summary:hover { color: var(--ink); }
+
+/* ---- the same address on other chains ---- */
+
+.xc {
+  margin-top: 10px;
+  padding: 10px 11px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.xc.fail { border-color: var(--bad); background: var(--bad-soft); }
+.xc-grid { width: 100%; margin-top: 8px; border-collapse: collapse; font-size: 11.5px; }
+.xc-grid td { padding: 4px 6px 4px 0; vertical-align: top; border-top: 1px solid var(--line); }
+.xc-grid td:first-child { white-space: nowrap; color: var(--muted); }
+.xc-grid tr.off td { color: var(--muted); opacity: 0.7; }
+.xc-grid a { color: inherit; }
+.xc-list { display: block; color: var(--muted); }
+.xc-list.ok { color: var(--ok); }
+.xc-list.warn { color: var(--warn); }
+
+/* ---- the account graph ----
+   The controls sit directly above the list they govern. A record of who you have been
+   reading is the most personal thing this extension holds, so what it is and how to end it
+   are on the same screen as the data, not behind a settings gear. */
+
+.privacy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px 14px 0;
+  padding: 9px 11px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.privacy p {
+  flex: 1 1 160px;
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.privacy-acts { display: flex; gap: 6px; }
+.privacy .ghost { font-size: 11.5px; padding: 5px 9px; }
+.ghost.danger { color: var(--bad); }
+.ghost.danger:hover { color: var(--on-status); background: var(--bad); }
+.ghost.danger[data-armed="1"] { color: var(--on-status); background: var(--bad); }
+
+.who {
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+}
+.who:hover { border-bottom-color: currentColor; }
 
 /* ---- the reply composer ---- */
 

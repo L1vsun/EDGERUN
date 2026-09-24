@@ -27,9 +27,21 @@
       <button class="tab on" data-filter="all" role="tab">session <span class="n" id="n-all">0</span></button>
       <button class="tab" data-filter="flagged" role="tab">flagged <span class="n bad" id="n-flagged">0</span></button>
       <button class="tab" data-filter="watch" role="tab">watching <span class="n" id="n-watch">0</span></button>
+      <button class="tab" data-filter="callers" role="tab">callers <span class="n" id="n-callers">0</span></button>
     </nav>
 
     <p class="where" id="where"></p>
+
+    <!-- Shown only on the callers tab. The graph is the most personal thing the extension
+         holds, so the controls for it sit on top of it rather than buried in a settings
+         screen: what is stored, a switch, and a way to destroy it. -->
+    <div class="privacy" id="privacy" hidden>
+      <p id="privacy-say">stays on this machine. there is no server to send it to.</p>
+      <div class="privacy-acts">
+        <button id="graph-pause" class="ghost">pause</button>
+        <button id="graph-wipe" class="ghost danger">forget everyone</button>
+      </div>
+    </div>
 
     <main id="list" class="list" aria-live="polite"></main>
 
@@ -51,6 +63,20 @@
       <div class="empty">
         <b>not watching anything</b>
         <span>Hit watch on any token and it lands here, rechecked each time you open this tab.</span>
+      </div>
+    </template>
+
+    <template id="empty-callers">
+      <div class="empty">
+        <b>nobody recorded yet</b>
+        <span>Scroll a timeline on X. Every account that posts a contract address lands here, with what those contracts came back as. Nothing is recorded for a post that only names a ticker.</span>
+      </div>
+    </template>
+
+    <template id="empty-paused">
+      <div class="empty">
+        <b>recording is paused</b>
+        <span>Accounts posting contracts are not being logged. Anything recorded before you paused is still here.</span>
       </div>
     </template>
 
