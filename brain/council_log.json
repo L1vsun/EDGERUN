@@ -1770,5 +1770,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-24T22:38:08+00:00",
+  "block": 71733561,
+  "mode": "rules",
+  "call": "GOLEM is the one to watch - heating",
+  "focus": "GOLEM",
+  "confidence": 0.66,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 1952.4,
+    "wallets": 365,
+    "one_addr_share": 0.37,
+    "flags": []
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 1756.8,
+    "wallets": 238,
+    "one_addr_share": 0.11,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "GOLEM",
+    "per_min": 595.2,
+    "wallets": 474,
+    "one_addr_share": 0.77,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "META",
+    "per_min": 199.2,
+    "wallets": 33,
+    "one_addr_share": 0.61,
+    "flags": []
+   },
+   {
+    "symbol": "JOLLY",
+    "per_min": 190.8,
+    "wallets": 63,
+    "one_addr_share": 0.48,
+    "flags": []
+   },
+   {
+    "symbol": "SHROOM",
+    "per_min": 153.6,
+    "wallets": 33,
+    "one_addr_share": 0.77,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "FOMIES",
+    "per_min": 138.0,
+    "wallets": 115,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HYPERCAT",
+    "per_min": 121.2,
+    "wallets": 103,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
