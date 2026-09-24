@@ -15,12 +15,6 @@ const SHOTS = [
     hint: "x.com - any post with a Robinhood Chain contract address in it",
   },
   {
-    file: "x-callers.jpg",
-    where: "Who posted it",
-    caption: "The callers tab: accounts ranked by how many of the contracts they put in front of you came back flagged.",
-    hint: "the side panel, callers tab, after scrolling a timeline",
-  },
-  {
     file: "solana.jpg",
     where: "On Solana",
     caption: "A mint read from the chain: who can create supply, who can freeze your account, and whether a transfer hook can reject the sale.",

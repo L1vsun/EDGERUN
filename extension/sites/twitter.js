@@ -73,7 +73,7 @@
       render(article, found, verdicts, resolved, byMint);
     }
 
-    record(batch, verdicts);
+    record(batch, verdicts, byMint);
   }, 220);
 
   /**
@@ -84,9 +84,13 @@
    * number is "nine of the forty-seven contracts you posted failed", and the forty-seven is
    * half of that sentence. A clean call is still a call.
    *
-   * Only addresses count. A post that says "$TSLA earnings tomorrow" has named a ticker, not
-   * made a call, and counting it would turn every finance account on the timeline into a
-   * caller.
+   * Only contracts count - an 0x address or a resolved Solana mint. A post that says "$TSLA
+   * earnings tomorrow" has named a ticker, not made a call, and counting it would turn every
+   * finance account on the timeline into a caller.
+   *
+   * Mints were missed entirely at first: this bailed on `!found.addresses.length` and looped
+   * only over addresses, so on a Solana-heavy feed the graph stayed empty while the badges
+   * worked fine. Reported from the field 2026-09-24 as "0 accounts after scrolling a lot".
    *
    * And only addresses in the author's OWN text count. The badge reads the whole article -
    * quoted post, link card and all - because anything on screen can be what the reader acts
@@ -99,22 +103,29 @@
    * nothing here can tell a warning from a shill. The per-contract list in the panel is what
    * a reader checks before believing the headline count.
    */
-  function record(batch, verdicts) {
+  function record(batch, verdicts, byMint) {
     const sightings = [];
     for (const [article, found] of batch) {
-      if (!found.addresses.length || !article.isConnected) continue;
+      // Only mints the worker actually resolved count. `found.mints` are raw base58
+      // candidates and most of them are not keys at all.
+      const mints = (found.mints || []).filter((m) => byMint.has(m));
+      if ((!found.addresses.length && !mints.length) || !article.isConnected) continue;
+
       const author = authorOf(article);
       if (!author) continue;
       const own = article.querySelector('[data-testid="tweetText"]');
       if (!own) continue; // media- or card-only post: nothing the author themselves wrote
-      const written = new Set(E.findTokens(own.innerText || "").addresses);
-      for (const address of found.addresses) {
-        if (!written.has(address)) continue; // it came from a quoted post, not from them
-        const v = verdicts[address];
+
+      const theirs = E.findTokens(own.innerText || "");
+      const written = new Set([...theirs.addresses, ...theirs.mints]);
+
+      for (const token of [...found.addresses, ...mints]) {
+        if (!written.has(token)) continue; // it came from a quoted post, not from them
+        const v = verdicts[token] || byMint.get(token) || null;
         sightings.push({
           handle: author.handle,
           display: author.display,
-          address,
+          address: token,
           symbol: v?.symbol || null,
           verdict: v?.verdict || null,
         });
@@ -184,7 +195,10 @@
       article.setAttribute(SEEN, "1");
       E.whenNear(article, () => {
         const found = E.findTokens(textOf(article));
-        if (!found.addresses.length && !found.tickers.length) return;
+        // Mints count here too. Leaving them out of this gate meant a post whose only
+        // contract was a Solana mint never entered the batch at all - no scan, no badge, no
+        // sighting - which on a pump.fun-shaped feed is most of the posts that matter.
+        if (!found.addresses.length && !found.tickers.length && !found.mints.length) return;
         pending.set(article, found);
         flush();
       });

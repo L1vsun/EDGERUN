@@ -801,7 +801,17 @@ $("#list").addEventListener("click", async (ev) => {
     say("digging…");
     const failed = [];
     for (const [label, run] of [
-      ["who launched it", () => ask({ type: "deployer", address }).then((d) => dossiers.set(address, d))],
+      // The worker answers { trail, checks }. Storing the whole envelope where the renderer
+      // expects the trail is what put "undefined contracts launched" on screen.
+      ["who launched it", () => ask({ type: "deployer", address }).then(({ trail, checks }) => {
+        dossiers.set(address, trail);
+        entry.checks = [
+          ...(entry.checks || []).filter(
+            (c) => !String(c.id).startsWith("deployer") && c.id !== "production_line" && c.id !== "explorer_scam",
+          ),
+          ...checks,
+        ];
+      })],
       ["how much can leave", () => ask({ type: "exit", address }).then((d) => sweeps.set(address, d))],
       ["other chains", () => ask({ type: "crosschain", address }).then((d) => elsewhere.set(address, d))],
     ]) {

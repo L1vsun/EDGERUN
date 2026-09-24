@@ -3,10 +3,9 @@
 # One-time setup before this runs successfully:
 #   1. Settings -> Pages -> Source: "GitHub Actions"
 #   2. Settings -> Secrets and variables -> Actions -> Variables tab, add:
-#        NEXT_PUBLIC_BASE_PATH               (leave UNSET for the custom domain edgerun.live;
-#                                               only a project page at <user>.github.io/<repo> needs it)
-#        NEXT_PUBLIC_SITE_URL                (https://edgerun.live - used for og:image so social
-#                                               cards unfurl; NO path, NO trailing slash)
+#      NEXT_PUBLIC_BASE_PATH and NEXT_PUBLIC_SITE_URL are NOT variables. They are derived
+#      from frontend/public/CNAME at build time - see the "Work out where this is being
+#      served from" step. To move the site, change that one file.
 #        NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS (optional - set once the token deploys)
 #        NEXT_PUBLIC_EDGERUN_DEX_URL          (optional - set once the token deploys)
 #        NEXT_PUBLIC_EDGERUN_TICKER           (optional - defaults to $EDGERUN)
@@ -48,11 +47,34 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      - name: Work out where this is being served from
+        id: where
+        run: |
+          # frontend/public/CNAME is the single source of truth for the deploy target.
+          # Present  -> a custom domain serving from the root: no base path.
+          # Absent   -> the project page at <user>.github.io/<repo>: base path is the repo.
+          # Switching domains is then a one-line change to one file, and the site, the og
+          # images and the asset paths cannot disagree about where they are.
+          if [ -s frontend/public/CNAME ]; then
+            domain="$(tr -d '[:space:]' < frontend/public/CNAME)"
+            echo "base_path=" >> "$GITHUB_OUTPUT"
+            echo "site_url=https://$domain" >> "$GITHUB_OUTPUT"
+            echo "serving from the custom domain $domain"
+          else
+            echo "base_path=/${GITHUB_REPOSITORY#*/}" >> "$GITHUB_OUTPUT"
+            echo "site_url=https://${GITHUB_REPOSITORY%%/*}.github.io" >> "$GITHUB_OUTPUT"
+            echo "serving from the project page"
+          fi
+
       - name: Build static export
         working-directory: frontend
         env:
-          NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH }}
-          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+          # Derived from the CNAME file by the step above, not from a repo variable. A
+          # variable could not express "custom domain" anyway: an empty BASE_PATH is falsy, so
+          # `vars.X || default` can never be overridden back to empty, which is exactly the
+          # value a domain at the root needs.
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.where.outputs.base_path }}
+          NEXT_PUBLIC_SITE_URL: ${{ steps.where.outputs.site_url }}
           NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS: ${{ vars.NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS }}
           NEXT_PUBLIC_EDGERUN_DEX_URL: ${{ vars.NEXT_PUBLIC_EDGERUN_DEX_URL }}
           NEXT_PUBLIC_EDGERUN_TICKER: ${{ vars.NEXT_PUBLIC_EDGERUN_TICKER }}

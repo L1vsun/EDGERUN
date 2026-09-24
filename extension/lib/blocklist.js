@@ -11,7 +11,16 @@
 
 import { spend } from "./budget.js";
 
-const URL = "https://edgerun.live/blocklist.json";
+// Two origins, tried in order. The project page is first because it cannot lapse: on
+// 2026-09-24 the then-custom domain (edgerun.live) was suspended by its registrar over an
+// unanswered WHOIS verification, DNS went NXDOMAIN, and every installed copy of this
+// extension quietly lost its blocklist. The failure degraded safely - the catch below returns an empty list rather
+// than throwing - but a shipped extension pointing at a single domain that can be switched
+// off by a registrar is one bad email away from losing a check.
+const SOURCES = [
+  "https://l1vsun.github.io/EDGERUN/blocklist.json",
+  "https://edgerun.pro/blocklist.json",
+];
 const KEY = "blocklist";
 const TTL_MS = 60 * 60 * 1000;
 
@@ -31,9 +40,7 @@ export async function getBlocklist({ force = false } = {}) {
   if (!(await spend("registry"))) return mem || { by: {}, fetchedAt: 0, count: 0 };
 
   try {
-    const res = await fetch(URL, { cache: "no-cache" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    const data = await fetchFirst();
     const by = {};
     for (const e of data.entries || []) {
       if (!e.address) continue;
@@ -46,6 +53,21 @@ export async function getBlocklist({ force = false } = {}) {
     // a stale list is still useful; no list at all simply contributes nothing
     return mem || { by: {}, fetchedAt: 0, count: 0 };
   }
+}
+
+/** The first source that answers wins. A dead origin costs one failed request, not the list. */
+async function fetchFirst() {
+  let last = null;
+  for (const url of SOURCES) {
+    try {
+      const res = await fetch(url, { cache: "no-cache" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      last = err;
+    }
+  }
+  throw last || new Error("no blocklist source answered");
 }
 
 export async function listedEntry(address) {

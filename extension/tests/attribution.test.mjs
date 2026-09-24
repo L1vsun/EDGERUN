@@ -52,6 +52,7 @@ const post = ({ handle, display = "Someone", text, quoting = null }) =>
 
 // ---- the vm ----
 
+const MINT_HOISTED = 1;
 const sent = [];
 const ctx = {
   globalThis: {},
@@ -72,7 +73,9 @@ const ctx = {
           msg.type === "verdicts"
             ? Object.fromEntries(msg.addresses.map((a) => [a, { address: a, symbol: "FAKE", verdict: "FAIL" }]))
             : msg.type === "mints"
-              ? []
+              ? msg.candidates
+                  .filter((c) => c === MINT)
+                  .map((c) => ({ address: c, symbol: "PUMP", verdict: "PASS", chainName: "Solana" }))
               : {};
         cb({ ok: true, data });
       },
@@ -93,6 +96,7 @@ load("../shared/detect.js");
 ctx.EDGERUN.makeBadge = () => Object.assign(new El("badge", "", []), { update() {}, fail() {} });
 ctx.EDGERUN.log = () => {};
 
+const MINT = "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn";
 const CA = "0xD18F5e73eC5E2D0b18eBe97426Dc5edC2C887715";
 const OTHER = "0xa9eFe2Fc94dE79734C03051515F48f254Ce61e18";
 
@@ -103,6 +107,9 @@ ctx.document.kids = [
   post({ handle: "quoter", text: "lol look at this", quoting: { handle: "scammer", text: `buy ${OTHER} now` } }),
   // 3. a ticker with no contract: named something, called nothing
   post({ handle: "newsaccount", text: "$TSLA earnings tomorrow" }),
+  // 4. a Solana mint the author wrote. Missed entirely until 2026-09-24: record() bailed on
+  //    "no 0x addresses" and never looked at mints, so a Solana-heavy feed left the graph empty.
+  post({ handle: "solcaller", text: `aping ${MINT} right now` }),
 ];
 
 load("../sites/twitter.js");
@@ -125,6 +132,11 @@ assert.equal(
 assert.equal(by("scammer").length, 0, "and the quoted account is not credited either: they are not in this feed");
 
 assert.equal(by("newsaccount").length, 0, "a bare ticker is not a call");
-assert.equal(records.length, 1, "exactly one sighting from three posts");
+
+assert.equal(by("solcaller").length, 1, "a Solana mint the author wrote is a call");
+assert.equal(by("solcaller")[0].address, MINT, "and it keeps its base58 casing");
+assert.equal(by("solcaller")[0].symbol, "PUMP", "carrying the verdict the worker reached for it");
+
+assert.equal(records.length, 2, "exactly two sightings from four posts");
 
 console.log("attribution: ok");

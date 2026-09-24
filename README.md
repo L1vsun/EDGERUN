@@ -187,7 +187,7 @@ different symbols"* starts a better one.
 
 ## Install
 
-**From the site.** [edgerun.live](https://edgerun.live) -> *Get the extension* -> download the
+**From the site.** [edgerun.pro](https://edgerun.pro) -> *Get the extension* -> download the
 zip. The dialog carries that archive's SHA-256, so you can check the file you received before
 you run it. The hash and the file are generated in the same build step and cannot drift apart.
 
@@ -331,7 +331,7 @@ fixed bar. It runs in your browser too. See [`brain/README-council.md`](brain/RE
 
 <div align="center">
 
-[Site](https://edgerun.live) · [X](https://x.com/L1vsun) · [Security](SECURITY.md) · [Roadmap](ROADMAP.md)
+[Site](https://edgerun.pro) · [X](https://x.com/L1vsun) · [Security](SECURITY.md) · [Roadmap](ROADMAP.md)
 
 Circuit data: [FlyWire](https://flywire.ai) connectome (Dorkenwald et al., 2024).
 Chain data read live from the public Robinhood Chain RPC.

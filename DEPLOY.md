@@ -58,7 +58,7 @@ load but show an empty feed until you do this. On Render → **Environment**:
 - `CORS_ORIGINS` = your Netlify origin, e.g. `https://edgerun.xyz`
   (scheme + host, no path, no trailing slash). Comma-separate to keep the old
   Pages origin working during the switchover:
-  `https://edgerun.live,https://l1vsun.github.io`
+  `https://edgerun.pro,https://l1vsun.github.io`
 - `SITE_URL` = the same Netlify URL - this is the "scan another contract" link
   on shared receipt pages, which otherwise still points at GitHub Pages.
 

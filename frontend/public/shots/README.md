@@ -7,7 +7,6 @@ that are missing, so a absent file never renders as a broken image.
 |---|---|
 | `product.jpg` | **the hero shot** - see below. The one image on the first screen |
 | `x-fake.jpg` | a post on x.com naming a ticker and a contract, with the red badge under the text |
-| `x-callers.jpg` | the panel's **callers** tab after a real scroll - accounts, their contract counts and how many were flagged. Crop or blur every handle before this goes on the site |
 | `solana.jpg` | a Solana mint in the panel: mint authority, freeze authority, and the token program row |
 | `explorer.jpg` | robinhoodchain.blockscout.com token page with the EDGERUN panel at the top |
 | `dexscreener.jpg` | dexscreener.com/robinhood/<pair> with the badge next to the ticker |
@@ -29,6 +28,10 @@ can produce that picture.
 Use your own post. Crop out any other account's avatar, name or handle.
 
 ---
+
+The grid is a masonry layout, so a shot keeps its own proportions - a tall side panel and a
+wide in-feed badge both sit correctly without being cropped or letterboxed. Nothing needs to
+match anything else's shape.
 
 Capture at 2x and crop tight. Save as **JPEG, ~1500px wide, quality 82**: these are dense UI
 screenshots and PNG costs three to five times as much for no visible gain. Every visitor pays

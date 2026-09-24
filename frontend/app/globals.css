@@ -307,7 +307,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .shots { max-width: 1500px; margin: 0 auto; padding-inline: 20px; position: relative; padding-block: var(--band); }
 .shots::before { content: ""; position: absolute; top: 0; left: 20px; right: 20px; height: 1px;
   background: linear-gradient(90deg, var(--rule), transparent 70%); }
-@media (max-width: 860px) { .shot-grid { grid-template-columns: 1fr; } }
+@media (max-width: 860px) { .shot-grid { columns: 1; } }
 
 /* ---- the brain ---- */
 .stage { position: relative; height: calc(100vh - var(--top)); min-height: 620px; overflow: hidden; }
@@ -788,12 +788,20 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .copyurl span { font-size: 11px; font-weight: 700; color: var(--text-4); white-space: nowrap; }
 .copyurl:hover span { color: var(--text-3); }
 
-.shot-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px; }
-.shot { margin: 0; }
+/* Masonry, not a grid of equal boxes.
+   These screenshots are genuinely different shapes - a side panel is tall (962x1874), an
+   in-feed badge is wide (1178x540). Forcing them into one aspect ratio meant either cropping
+   away the content or, as it did here, letterboxing the tall one into a 16/9 frame until it
+   was a sliver between two black bars. Columns let each shot keep its own proportions and
+   still line up, and it needs no per-image configuration when the next one is a new shape. */
+.shot-grid { columns: 2; column-gap: 26px; }
+.shot { margin: 0 0 26px; break-inside: avoid; -webkit-column-break-inside: avoid; }
 .shot-frame { border: 1px solid var(--line); background: #05070b; overflow: hidden;
-  aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; }
-.shot-frame img { width: 100%; height: 100%; object-fit: contain; display: block; background: #05070b; }
-.shot-todo { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px; text-align: center; }
+  border-radius: 12px; box-shadow: 0 18px 44px rgba(0, 0, 0, 0.20), 0 1px 4px rgba(0, 0, 0, 0.16); }
+.shot-frame img { width: 100%; height: auto; display: block; }
+/* the pending-shot placeholder has no image to give it a height, so it brings its own */
+.shot-todo { aspect-ratio: 16 / 9; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 8px; padding: 24px; text-align: center; }
 .shot-todo b { font-family: var(--mono); font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
 .shot-todo span { font-size: 14px; color: var(--text-4); }
 .shot-todo code { font-family: var(--mono); font-size: 12.5px; color: var(--accent-ink);
