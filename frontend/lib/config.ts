@@ -59,6 +59,21 @@ export function asset(path: string): string {
   return `${BASE_PATH}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+import shotHashes from "./shot-hashes.json";
+
+/**
+ * A screenshot URL that changes when the screenshot does.
+ *
+ * Pages serves these with `cache-control: max-age=600` and the filenames never change, so
+ * replacing one leaves anybody who visited in the last ten minutes looking at the old image.
+ * The hash is written by scripts/hash-shots.sh at prebuild, so this cannot drift from what is
+ * actually on disk. Falls back to the plain path for a file the script has not seen.
+ */
+export function shot(file: string): string {
+  const v = (shotHashes as Record<string, string>)[file];
+  return asset(`/shots/${file}${v ? `?v=${v}` : ""}`);
+}
+
 // The archive the site hands out directly, plus what was in it. Both are produced by
 // scripts/pack-extension.sh - re-run it after changing anything under extension/, or the
 // published hash stops matching the published file, which is worse than publishing neither.

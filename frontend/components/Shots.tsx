@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { asset } from "@/lib/config";
+import { shot } from "@/lib/config";
+import Zoomable from "./Zoomable";
 
 // Real screenshots of the extension doing its job. Each one degrades to a labelled frame if
 // the image is not there yet, so a missing file never renders as a broken icon - drop the
@@ -46,7 +47,7 @@ function Shot({ s }: { s: (typeof SHOTS)[number] }) {
             <code>{s.hint}</code>
           </div>
         ) : (
-          <img src={asset(`/shots/${s.file}`)} alt={s.caption} loading="lazy" onError={() => setFailed(true)} />
+          <Zoomable src={shot(s.file)} alt={s.caption} onError={() => setFailed(true)} />
         )}
       </div>
       <figcaption>

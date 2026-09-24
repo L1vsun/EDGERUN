@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { asset } from "@/lib/config";
+import { shot } from "@/lib/config";
+import Zoomable from "./Zoomable";
 
 // One real screenshot, high on the page.
 //
@@ -18,13 +19,12 @@ export default function ProductShot() {
 
   return (
     <figure className="pshot">
-      <img
-        src={asset("/shots/product.jpg")}
+      <Zoomable
+        src={shot("product.jpg")}
         alt="The EDGERUN side panel open next to a post on X, flagging a contract that does not match the ticker it was posted under"
-        loading="lazy"
         onError={() => setFailed(true)}
       />
-      <figcaption>The panel, open on a real post. Every number in it was read from the chain.</figcaption>
+      <figcaption>The panel, open on a real post. Every number in it was read from the chain. Click to enlarge.</figcaption>
     </figure>
   );
 }

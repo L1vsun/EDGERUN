@@ -134,7 +134,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .lead { position: relative; min-height: calc(100vh - var(--top)); display: flex;
   flex-direction: column; justify-content: center; padding: 40px 20px 92px; }
 .lead-grid { width: 100%; max-width: 1500px; margin: 0 auto; display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 620px); gap: 54px 54px; align-items: center; }
+  grid-template-columns: minmax(0, 1fr) minmax(0, 620px); gap: 20px 54px; align-items: center; }
 
 /* Three children in a two-column grid: the copy, the animated demo, and the real screenshot.
    Left to itself the screenshot wrapped onto row two COLUMN ONE and sat under the prose,
@@ -235,6 +235,44 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
   left: calc(50% - 50vw); width: 100vw; background: var(--bg-2); z-index: -1; }
 .install > .fhead, .feed > .fhead, .cortex > .cx-top, .council > .fhead { margin-bottom: 26px; }
 .fhead h2 { font-size: 27px; }
+
+/* ================= click to enlarge =================
+   A screenshot in a gallery cell is a thumbnail of dense UI. The cue only appears on hover so
+   it does not sit on top of the image for people who were never going to click it. */
+
+.zoom { position: relative; display: block; width: 100%; padding: 0; border: 0;
+  background: none; cursor: zoom-in; line-height: 0; }
+.zoom img { transition: transform 240ms ease; }
+.zoom:hover img { transform: scale(1.012); }
+.zoom-cue {
+  position: absolute; right: 10px; bottom: 10px; width: 30px; height: 30px;
+  display: grid; place-items: center; font-size: 15px; line-height: 1;
+  color: var(--on-accent); background: var(--accent); border-radius: 8px;
+  opacity: 0; transition: opacity 160ms ease; pointer-events: none;
+}
+.zoom:hover .zoom-cue, .zoom:focus-visible .zoom-cue { opacity: 1; }
+
+.lightbox {
+  position: fixed; inset: 0; z-index: 90; display: grid; place-items: center;
+  padding: 28px; background: rgba(6, 8, 5, 0.9); cursor: zoom-out;
+  animation: lb-in 140ms ease;
+}
+.lightbox img {
+  max-width: min(1500px, 100%); max-height: 100%; width: auto; height: auto;
+  border-radius: 10px; cursor: default;
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
+}
+.lightbox-x {
+  position: absolute; top: 18px; right: 20px; width: 40px; height: 40px;
+  font-size: 17px; color: var(--bone); background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 10px;
+}
+.lightbox-x:hover { background: rgba(255, 255, 255, 0.18); }
+@keyframes lb-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .lightbox { animation: none; }
+  .zoom:hover img { transform: none; }
+}
 
 /* ================= chains, and what each can prove =================
    The honest answer is the pitch. One chain has an issuer publishing the truth; the rest have
@@ -812,7 +850,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
      dwarfing the wide ones beside it. Capped and cropped from the top, because the top of a
      panel is the part that carries the verdict. */
   max-height: 560px; }
-.shot-frame img { width: 100%; height: auto; display: block; }
+.shot-frame .zoom, .shot-frame img { width: 100%; height: auto; display: block; }
 /* the pending-shot placeholder has no image to give it a height, so it brings its own */
 .shot-todo { aspect-ratio: 16 / 9; display: flex; flex-direction: column; align-items: center;
   justify-content: center; gap: 8px; padding: 24px; text-align: center; }
@@ -828,8 +866,15 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
    reads as the product rather than as an illustration; it removes itself when the file is
    missing, so the top of the page never shows a broken image. */
 .pshot { margin: 0; }
+/* Height-capped, not width-capped. The demo and this stack in one column inside a section
+   that wants to be one screen tall; at full column width the shot is ~450px and the pair
+   overflowed the viewport, pushing the scroll cue off the bottom. Capping the HEIGHT and
+   letting the width follow keeps it proportional instead of cropping it, and the detail it
+   loses at this size is one click away now. The cap is in vh as well as px so it holds on a
+   short laptop screen too, where a fixed 330px would overflow again. */
+.pshot .zoom { display: block; margin: 0 auto; max-width: 100%; }
 .pshot img {
-  display: block; width: 100%; height: auto;
+  display: block; width: auto; max-width: 100%; max-height: clamp(190px, 30vh, 340px); height: auto;
   border: 1px solid var(--line); border-radius: 14px;
   background: #05070b;
   box-shadow: 0 26px 64px rgba(0, 0, 0, 0.34), 0 2px 6px rgba(0, 0, 0, 0.22);
