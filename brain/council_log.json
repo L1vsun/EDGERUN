@@ -1617,5 +1617,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-24T15:22:47+00:00",
+  "block": 71473584,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.07,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 2280.0,
+    "wallets": 447,
+    "one_addr_share": 0.26,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 2068.8,
+    "wallets": 263,
+    "one_addr_share": 0.14,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "musebook",
+    "per_min": 600.0,
+    "wallets": 501,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 512.4,
+    "wallets": 28,
+    "one_addr_share": 0.62,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "MACCA",
+    "per_min": 376.8,
+    "wallets": 46,
+    "one_addr_share": 0.95,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "META",
+    "per_min": 164.4,
+    "wallets": 38,
+    "one_addr_share": 0.7,
+    "flags": []
+   },
+   {
+    "symbol": "Agrippa",
+    "per_min": 147.6,
+    "wallets": 53,
+    "one_addr_share": 0.4,
+    "flags": []
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 130.8,
+    "wallets": 44,
+    "one_addr_share": 0.46,
+    "flags": []
+   }
+  ]
  }
 ]
