@@ -277,6 +277,7 @@ function proofText(e) {
     .map((c) => `- ${c.detail}`);
   if (evidence.length) lines.push("", ...evidence);
   if (e.explorerUrl) lines.push("", `Check it yourself: ${e.explorerUrl}`);
+  if (e.dexUrl) lines.push(`Chart: ${e.dexUrl}`);
   lines.push("Checked with EDGERUN - runs in your own browser, against the chain.");
   return lines.join("\n");
 }
@@ -504,6 +505,7 @@ function renderRow(e) {
           <button data-act="reply">reply</button>
           <button data-act="watch">${watched ? "unwatch" : "watch"}</button>
           ${e.explorerUrl ? `<a href="${esc(e.explorerUrl)}" target="_blank" rel="noreferrer">explorer ↗</a>` : ""}
+          ${e.dexUrl ? `<a href="${esc(e.dexUrl)}" target="_blank" rel="noreferrer">chart ↗</a>` : ""}
         </div>
       </div>
     </article>`;

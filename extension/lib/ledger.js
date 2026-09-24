@@ -65,6 +65,7 @@ function entryFor(result, url, prev, at) {
     // both sides and the checks only carry the prose version
     impersonates: result.impersonates || null,
     explorerUrl: result.explorerUrl || null,
+    dexUrl: result.dexUrl || null,
     url: url || prev?.url || null,
     first: prev?.first ?? at,
     at,

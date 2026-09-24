@@ -36,6 +36,7 @@ const TOKEN_PROGRAM = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
 const TOKEN_2022 = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
 
 export const explorerUrl = (mint) => `https://solscan.io/token/${mint}`;
+export const dexUrl = (mint) => `https://dexscreener.com/solana/${mint}`;
 
 const check = (id, label, status, detail) => ({ id, label, status, detail });
 
@@ -97,6 +98,7 @@ export async function scanMint(mint) {
     level: "full",
     scannedAt: Date.now(),
     explorerUrl: explorerUrl(address),
+    dexUrl: dexUrl(address),
   };
 
   if (!(await spend("solana"))) {

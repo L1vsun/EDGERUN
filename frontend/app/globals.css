@@ -134,7 +134,15 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .lead { position: relative; min-height: calc(100vh - var(--top)); display: flex;
   flex-direction: column; justify-content: center; padding: 40px 20px 92px; }
 .lead-grid { width: 100%; max-width: 1500px; margin: 0 auto; display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 620px); gap: 54px; align-items: center; }
+  grid-template-columns: minmax(0, 1fr) minmax(0, 620px); gap: 54px 54px; align-items: center; }
+
+/* Three children in a two-column grid: the copy, the animated demo, and the real screenshot.
+   Left to itself the screenshot wrapped onto row two COLUMN ONE and sat under the prose,
+   colliding with it. It belongs directly beneath the demo it is the still version of, so it
+   is pinned to the second column and the copy spans both rows to stay centred against them. */
+.lead-in { grid-column: 1; grid-row: 1 / span 2; }
+.demo { grid-column: 2; grid-row: 1; }
+.pshot { grid-column: 2; grid-row: 2; align-self: start; }
 
 /* the cue: what the next screen is, and an arrow that says it is down there */
 .next { position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%);
@@ -209,6 +217,8 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 @media (max-width: 1080px) {
   .lead { min-height: 0; padding: 34px 20px 40px; }
   .lead-grid { grid-template-columns: 1fr; gap: 30px; }
+  /* one column: the pinning above would strand items in a column that no longer exists */
+  .lead-in, .demo, .pshot { grid-column: 1; grid-row: auto; }
   .next { display: none; }
   .lead-facts { gap: 18px; }
 }
@@ -797,7 +807,11 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .shot-grid { columns: 2; column-gap: 26px; }
 .shot { margin: 0 0 26px; break-inside: avoid; -webkit-column-break-inside: avoid; }
 .shot-frame { border: 1px solid var(--line); background: #05070b; overflow: hidden;
-  border-radius: 12px; box-shadow: 0 18px 44px rgba(0, 0, 0, 0.20), 0 1px 4px rgba(0, 0, 0, 0.16); }
+  border-radius: 12px; box-shadow: 0 18px 44px rgba(0, 0, 0, 0.20), 0 1px 4px rgba(0, 0, 0, 0.16);
+  /* A side-panel capture is ~1:2 and would otherwise run for most of a screen on its own,
+     dwarfing the wide ones beside it. Capped and cropped from the top, because the top of a
+     panel is the part that carries the verdict. */
+  max-height: 560px; }
 .shot-frame img { width: 100%; height: auto; display: block; }
 /* the pending-shot placeholder has no image to give it a height, so it brings its own */
 .shot-todo { aspect-ratio: 16 / 9; display: flex; flex-direction: column; align-items: center;
@@ -813,7 +827,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 /* One real screenshot under the hero's animated demo. Framed and lifted off the page so it
    reads as the product rather than as an illustration; it removes itself when the file is
    missing, so the top of the page never shows a broken image. */
-.pshot { margin: 22px 0 0; }
+.pshot { margin: 0; }
 .pshot img {
   display: block; width: 100%; height: auto;
   border: 1px solid var(--line); border-radius: 14px;

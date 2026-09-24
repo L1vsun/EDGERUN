@@ -29,7 +29,7 @@ import * as bs from "./blockscout.js";
 import { listedEntry, listingCheck } from "./blocklist.js";
 import { BudgetExceeded, spend } from "./budget.js";
 import { SEL, addrWord, callData, decodeAddress, decodeString, decodeUint, ethCall, getCode, revertData, rpc, uintWord } from "./chain.js";
-import { HOME } from "./chains.js";
+import { HOME, dexUrl } from "./chains.js";
 import { EDIT_DISTANCE_THRESHOLD, REFERENCE_TOKENS, allowedDistance, levenshtein } from "./known.js";
 import { crossChainNameCheck, getList } from "./lists.js";
 import { OFFICIAL_NAME_MARKER, getRegistry, normalizeName, officialForAddress, officialForTicker } from "./registry.js";
@@ -249,7 +249,7 @@ export async function scan(address, { level = "identity" } = {}) {
 
   // Every verdict says which chain it is about. The same address exists on all of them, so
   // a result with no chain on it is an answer to an unstated question.
-  const base = { address: addr, chainId: HOME.id, chainName: HOME.name, level, scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr) };
+  const base = { address: addr, chainId: HOME.id, chainName: HOME.name, level, scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr), dexUrl: dexUrl(HOME, addr) };
 
   let id;
   try {
@@ -314,7 +314,7 @@ export async function scanMany(addresses) {
     const official = reg.loaded ? officialForAddress(reg, addr) : null;
     if (official) {
       out[addr] = {
-        address: addr, chainId: HOME.id, chainName: HOME.name, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr),
+        address: addr, chainId: HOME.id, chainName: HOME.name, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr), dexUrl: dexUrl(HOME, addr),
         symbol: official.ticker, name: official.name, official, impersonates: null, verdict: "OFFICIAL", facts: 1, unresolved: 0,
         checks: [check("stock_token", "stock token", "ok", `VERIFIED official Robinhood stock token - ${official.ticker} (${official.name}), matches the registry Robinhood publishes`)],
       };
@@ -325,7 +325,7 @@ export async function scanMany(addresses) {
   if (!need.length) return out;
 
   const unresolvedFor = (addr, why) => ({
-    address: addr, chainId: HOME.id, chainName: HOME.name, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr), symbol: null, name: null,
+    address: addr, chainId: HOME.id, chainName: HOME.name, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr), dexUrl: dexUrl(HOME, addr), symbol: null, name: null,
     official: null, impersonates: null, verdict: "UNRESOLVED", facts: 0, unresolved: 1,
     checks: [check("identity", "identity", "unresolved", why)],
   });
@@ -367,7 +367,7 @@ export async function scanMany(addresses) {
       const listed = blocked[addr] || null;
       const claimed = reg.loaded && symbol ? officialForTicker(reg, symbol) : null;
       out[addr] = {
-        address: addr, chainId: HOME.id, chainName: HOME.name, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr), symbol, name,
+        address: addr, chainId: HOME.id, chainName: HOME.name, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr), dexUrl: dexUrl(HOME, addr), symbol, name,
         official: null,
         impersonates: claimed ? { ticker: claimed.ticker, officialAddress: claimed.address, name: claimed.name } : null,
         ...assemble([stock, ref.check, listed ? listingCheck(listed) : null].filter(Boolean), [], "identity", null),

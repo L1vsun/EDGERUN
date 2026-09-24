@@ -23,6 +23,7 @@
 export const CHAINS = {
   robinhood: {
     key: "robinhood",
+    dex: "robinhood",
     id: 4663,
     name: "Robinhood Chain",
     rpc: "https://rpc.mainnet.chain.robinhood.com",
@@ -31,6 +32,7 @@ export const CHAINS = {
   },
   ethereum: {
     key: "ethereum",
+    dex: "ethereum",
     id: 1,
     name: "Ethereum",
     rpc: "https://ethereum-rpc.publicnode.com",
@@ -39,6 +41,7 @@ export const CHAINS = {
   },
   base: {
     key: "base",
+    dex: "base",
     id: 8453,
     name: "Base",
     rpc: "https://mainnet.base.org",
@@ -47,6 +50,7 @@ export const CHAINS = {
   },
   arbitrum: {
     key: "arbitrum",
+    dex: "arbitrum",
     id: 42161,
     name: "Arbitrum One",
     rpc: "https://arb1.arbitrum.io/rpc",
@@ -55,6 +59,7 @@ export const CHAINS = {
   },
   bsc: {
     key: "bsc",
+    dex: "bsc",
     id: 56,
     name: "BNB Chain",
     rpc: "https://bsc-rpc.publicnode.com",
@@ -118,6 +123,18 @@ export const explorerAddressUrl = (chain, address) =>
 
 export const explorerTokenUrl = (chain, address) =>
   chain?.explorer ? `${chain.explorer}/token/${address}` : null;
+
+/**
+ * Where to go to actually look at the thing trading.
+ *
+ * Chain-scoped on purpose. Dexscreener's token endpoint is cross-chain, so the same address
+ * can answer with pairs from a chain nobody meant - asking it about USDT's Ethereum address
+ * returns PulseChain first, because that address exists there too and has pairs. An unscoped
+ * link is the "an 0x address is a slot number on every chain" problem with a chart on top.
+ * Slugs verified against the live API 2026-09-24.
+ */
+export const dexUrl = (chain, address) =>
+  chain?.dex ? `https://dexscreener.com/${chain.dex}/${address}` : null;
 
 /**
  * What a verdict on this chain is permitted to assert.

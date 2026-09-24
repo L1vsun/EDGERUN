@@ -210,6 +210,7 @@
       .map((c) => `· ${c.detail}`);
     if (evidence.length) lines.push("", ...evidence);
     lines.push("", `Check it yourself: ${r.explorerUrl}`);
+    if (r.dexUrl) lines.push(`Chart: ${r.dexUrl}`);
     lines.push("Checked with EDGERUN - runs in your own browser, against the chain.");
     return lines.join("\n");
   }
@@ -424,6 +425,7 @@
           <button data-act="copy">copy proof</button>
           <button data-act="watch">watch</button>
           <a href="${esc(r.explorerUrl)}" target="_blank" rel="noreferrer">explorer ↗</a>
+          ${r.dexUrl ? `<a href="${esc(r.dexUrl)}" target="_blank" rel="noreferrer">chart ↗</a>` : ""}
           <span class="when">${r.cached ? "cached · " : ""}${ago(r.scannedAt)}</span>
         </div>`;
       panel.querySelector('[data-act="close"]')?.addEventListener("click", (e) => { e.stopPropagation(); closePanel(); });

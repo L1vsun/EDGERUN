@@ -239,6 +239,32 @@
    * Order is by strength of claim. Anything that reaches the end without a claim gets no
    * badge - silence is the default, not a fallback.
    */
+  /**
+   * A ticker several contracts answer to. A finding that needs no address at all.
+   */
+  E.collisionResult = function collisionResult(t) {
+    const url = (a) => `https://robinhoodchain.blockscout.com/address/${a}`;
+    return {
+      level: "identity",
+      scannedAt: Date.now(),
+      address: t.candidates[0].address,
+      symbol: `$${t.ticker}`,
+      verdict: "CAUTION",
+      explorerUrl: url(t.candidates[0].address),
+      lead: `$${t.ticker} is not one token here - at least ${t.count} different contracts use that ticker on this chain, and this post does not say which. That is how people buy the wrong one.`,
+      checks: [
+        {
+          id: "ticker", label: "ticker", status: "warn",
+          detail: `${t.count}${t.capped ? "+" : ""} contracts on Robinhood Chain use the symbol ${t.ticker}. No registry decides which is "the" one - only an address does.`,
+        },
+        ...t.candidates.map((c) => ({
+          id: `cand:${c.address}`, label: c.name || "unnamed", status: "unresolved",
+          detail: `${c.address}${c.verified ? " · source verified" : " · source not verified"}`,
+        })),
+      ],
+    };
+  };
+
   E.decideBadge = function decideBadge({ results = [], official = [], onchain = [], namedTickers = [] }) {
     const url = (a) => `https://robinhoodchain.blockscout.com/address/${a}`;
     const stamp = { level: "identity", scannedAt: Date.now() };
@@ -298,27 +324,7 @@
       return [...results].sort((a, b) => (RANK[b.verdict] || 0) - (RANK[a.verdict] || 0))[0];
     }
 
-    if (collision) {
-      const t = collision;
-      return {
-        ...stamp,
-        address: t.candidates[0].address,
-        symbol: `$${t.ticker}`,
-        verdict: "CAUTION",
-        explorerUrl: url(t.candidates[0].address),
-        lead: `$${t.ticker} is not one token here - at least ${t.count} different contracts use that ticker on this chain, and this post does not say which. That is how people buy the wrong one.`,
-        checks: [
-          {
-            id: "ticker", label: "ticker", status: "warn",
-            detail: `${t.count}${t.capped ? "+" : ""} contracts on Robinhood Chain use the symbol ${t.ticker}. No registry decides which is "the" one - only an address does.`,
-          },
-          ...t.candidates.map((c) => ({
-            id: `cand:${c.address}`, label: c.name || "unnamed", status: "unresolved",
-            detail: `${c.address}${c.verified ? " · source verified" : " · source not verified"}`,
-          })),
-        ],
-      };
-    }
+    if (collision) return E.collisionResult(collision);
 
     return null;
   };
@@ -350,6 +356,11 @@
     push(E.decideBadge({ results, official, onchain, namedTickers }));
     for (const r of results) push(r);
     for (const r of solana) push(r);
+    // Every ticker the post names that several contracts answer to, in the order it was
+    // named. decideBadge only ever returns the first collision, so a post about two contested
+    // tickers used to get one answer about the wrong one: a post whose subject was $PONS
+    // (15 contracts here) was handed a badge about $PUMP because $PUMP appeared first.
+    for (const t of onchain) if (t.count > 1) push(E.collisionResult(t));
 
     return out.slice(0, MAX_BADGES);
   };

@@ -65,6 +65,31 @@ assert.equal(decideBadges({ results: [], namedTickers: ["TSLA"] }).length, 0,
   "a bare ticker with no contract still says nothing");
 assert.equal(decideBadges({}).length, 0);
 
+// ---- two contested tickers, two answers ----
+// From the field 2026-09-24: a post whose subject was $PONS (15 contracts share it on this
+// chain) got a single badge about $PUMP, because $PUMP was named first and decideBadge only
+// ever returns the first collision it finds.
+out = decideBadges({
+  results: [],
+  onchain: [
+    { ticker: "PUMP", count: 6, capped: false, candidates: [{ address: A, name: "Pump", verified: true }] },
+    { ticker: "PONS", count: 15, capped: false, candidates: [{ address: B, name: "Pons", verified: false }] },
+  ],
+  namedTickers: ["PUMP", "PONS"],
+});
+assert.equal(out.length, 2, "both contested tickers are answered");
+assert.equal(out.map((r) => r.symbol).join(","), "$PUMP,$PONS", "in the order the post named them");
+assert.match(out[1].lead, /at least 15 different contracts/);
+assert.equal(out.filter((r) => r.symbol === "$PUMP").length, 1, "and neither is answered twice");
+
+// a ticker only one contract uses is still not a finding
+out = decideBadges({
+  results: [],
+  onchain: [{ ticker: "SOLO", count: 1, capped: false, candidates: [{ address: A, name: "Solo" }] }],
+  namedTickers: ["SOLO"],
+});
+assert.equal(out.length, 0, "one contract, one meaning, nothing to say");
+
 // ---- a shared ticker is still a finding with no address at all ----
 out = decideBadges({
   results: [],
