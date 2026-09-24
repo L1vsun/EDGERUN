@@ -35,6 +35,7 @@
   --sans: var(--font-display), -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --top: 66px;
   --band: 116px;
+  --hero-shot: 580px;   /* the demo and the hero screenshot share this, and are centred on it */
 }
 
 /* ---- dark ----
@@ -141,7 +142,10 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
    colliding with it. It belongs directly beneath the demo it is the still version of, so it
    is pinned to the second column and the copy spans both rows to stay centred against them. */
 .lead-in { grid-column: 1; grid-row: 1 / span 2; }
-.demo { grid-column: 2; grid-row: 1; width: 100%; max-width: 505px; margin-left: auto; }
+/* The animated mock and the real screenshot sit one above the other and are read as a pair,
+   so they share a width and a centre line. The demo used to be right-aligned while the shot
+   was centred, which put their left edges ~85px apart and made the column look broken. */
+.demo { grid-column: 2; grid-row: 1; width: 100%; max-width: var(--hero-shot); margin-inline: auto; }
 .pshot { grid-column: 2; grid-row: 2; align-self: start; }
 
 /* the cue: what the next screen is, and an arrow that says it is down there */
@@ -870,14 +874,16 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 /* Height-capped, not width-capped. The demo and this stack in one column inside a section
    that wants to be one screen tall, so capping the HEIGHT and letting the width follow keeps
    the shot proportional instead of cropping it, and keeps the pair inside the viewport. The
-   cap is in vh as well as px so it holds on a short laptop screen.
+   cap is in vh as well as px so it holds on a short laptop screen. 42vh is chosen so that on
+   a normal screen the width constraint binds first and the shot comes out exactly as wide as
+   the demo above it; on a short one the height cap takes over and it shrinks, still centred.
 
    The button shrinks to the image rather than filling the column. Left at 100% it drew its
    frame around empty space beside a narrower image, which is the odd border that showed up
    around the hero. */
-.pshot .zoom { display: block; width: auto; margin: 0 auto; max-width: 100%; }
+.pshot .zoom { display: block; width: auto; margin-inline: auto; max-width: var(--hero-shot); }
 .pshot img {
-  display: block; width: auto; max-width: 100%; max-height: clamp(240px, 40vh, 470px); height: auto;
+  display: block; width: auto; max-width: 100%; max-height: clamp(240px, 42vh, 470px); height: auto;
   border-radius: 14px;
   box-shadow: 0 26px 64px rgba(0, 0, 0, 0.34), 0 2px 6px rgba(0, 0, 0, 0.22);
 }
