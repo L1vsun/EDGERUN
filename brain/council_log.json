@@ -2091,5 +2091,78 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-25T17:25:12+00:00",
+  "block": 72403861,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.16,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2562.0,
+    "wallets": 344,
+    "one_addr_share": 0.17,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 2368.8,
+    "wallets": 383,
+    "one_addr_share": 0.31,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "FOMOATER",
+    "per_min": 405.6,
+    "wallets": 140,
+    "one_addr_share": 0.39,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx3L",
+    "per_min": 387.6,
+    "wallets": 14,
+    "one_addr_share": 0.78,
+    "flags": []
+   },
+   {
+    "symbol": "SI",
+    "per_min": 361.2,
+    "wallets": 64,
+    "one_addr_share": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "META",
+    "per_min": 261.6,
+    "wallets": 40,
+    "one_addr_share": 0.82,
+    "flags": []
+   },
+   {
+    "symbol": "CATALYST",
+    "per_min": 139.2,
+    "wallets": 101,
+    "one_addr_share": 0.93,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "MOOSE",
+    "per_min": 136.8,
+    "wallets": 58,
+    "one_addr_share": 0.68,
+    "flags": []
+   }
+  ]
  }
 ]
