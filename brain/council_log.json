@@ -2241,5 +2241,83 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-25T23:49:13+00:00",
+  "block": 72632838,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.23,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "BLACKCAT",
+    "per_min": 1401.6,
+    "wallets": 349,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 1257.6,
+    "wallets": 216,
+    "one_addr_share": 0.16,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1089.6,
+    "wallets": 275,
+    "one_addr_share": 0.31,
+    "flags": []
+   },
+   {
+    "symbol": "META",
+    "per_min": 150.0,
+    "wallets": 26,
+    "one_addr_share": 0.65,
+    "flags": []
+   },
+   {
+    "symbol": "UPTOBER",
+    "per_min": 147.6,
+    "wallets": 65,
+    "one_addr_share": 0.97,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "PIGGY-USDG",
+    "per_min": 96.0,
+    "wallets": 81,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Jolly",
+    "per_min": 93.6,
+    "wallets": 32,
+    "one_addr_share": 0.49,
+    "flags": []
+   },
+   {
+    "symbol": "HO",
+    "per_min": 80.4,
+    "wallets": 51,
+    "one_addr_share": 0.75,
+    "flags": [
+     "dex live"
+    ]
+   }
+  ]
  }
 ]
