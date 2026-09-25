@@ -1929,5 +1929,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-25T06:23:19+00:00",
+  "block": 72009948,
+  "mode": "rules",
+  "call": "MONIT is the one to watch - heating",
+  "focus": "MONIT",
+  "confidence": 0.61,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 1680.0,
+    "wallets": 282,
+    "one_addr_share": 0.24,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1350.0,
+    "wallets": 315,
+    "one_addr_share": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "SI",
+    "per_min": 242.4,
+    "wallets": 104,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "0xceebf2",
+    "per_min": 232.8,
+    "wallets": 89,
+    "one_addr_share": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 174.0,
+    "wallets": 146,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "MONIT",
+    "per_min": 127.2,
+    "wallets": 85,
+    "one_addr_share": 0.48,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "OG",
+    "per_min": 74.4,
+    "wallets": 64,
+    "one_addr_share": 0.97,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "Agrippa",
+    "per_min": 67.2,
+    "wallets": 26,
+    "one_addr_share": 0.61,
+    "flags": []
+   }
+  ]
  }
 ]
