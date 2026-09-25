@@ -1849,5 +1849,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-25T01:08:38+00:00",
+  "block": 71823117,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.23,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ChatGpt",
+    "per_min": 2400.0,
+    "wallets": 2001,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 1771.2,
+    "wallets": 235,
+    "one_addr_share": 0.23,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1686.0,
+    "wallets": 414,
+    "one_addr_share": 0.2,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 145.2,
+    "wallets": 119,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HYPERCAT",
+    "per_min": 124.8,
+    "wallets": 106,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SHROOM",
+    "per_min": 117.6,
+    "wallets": 38,
+    "one_addr_share": 0.42,
+    "flags": []
+   },
+   {
+    "symbol": "JOLLY",
+    "per_min": 98.4,
+    "wallets": 51,
+    "one_addr_share": 0.68,
+    "flags": []
+   },
+   {
+    "symbol": "FOOMS",
+    "per_min": 92.4,
+    "wallets": 23,
+    "one_addr_share": 0.58,
+    "flags": []
+   }
+  ]
  }
 ]
