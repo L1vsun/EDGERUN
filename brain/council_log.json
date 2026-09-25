@@ -2008,5 +2008,88 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-25T12:04:31+00:00",
+  "block": 72212375,
+  "mode": "rules",
+  "call": "GOOGL is the one to watch - heating",
+  "focus": "GOOGL",
+  "confidence": 0.81,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 1801.2,
+    "wallets": 516,
+    "one_addr_share": 0.2,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 1587.6,
+    "wallets": 215,
+    "one_addr_share": 0.16,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "PIGGY-USDG",
+    "per_min": 552.0,
+    "wallets": 461,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "META",
+    "per_min": 248.4,
+    "wallets": 34,
+    "one_addr_share": 0.65,
+    "flags": []
+   },
+   {
+    "symbol": "GME",
+    "per_min": 229.2,
+    "wallets": 189,
+    "one_addr_share": 0.88,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 208.8,
+    "wallets": 176,
+    "one_addr_share": 0.91,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "TSLA",
+    "per_min": 158.4,
+    "wallets": 133,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "GOOGL",
+    "per_min": 126.0,
+    "wallets": 106,
+    "one_addr_share": 0.9,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
