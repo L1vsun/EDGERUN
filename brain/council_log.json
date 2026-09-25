@@ -2164,5 +2164,82 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-25T20:38:05+00:00",
+  "block": 72519021,
+  "mode": "rules",
+  "call": "ANTHROPICx1L is the one to watch - heating",
+  "focus": "ANTHROPICx1L",
+  "confidence": 0.86,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "HVLT",
+    "per_min": 3482.4,
+    "wallets": 2903,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 2758.8,
+    "wallets": 389,
+    "one_addr_share": 0.33,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 2530.8,
+    "wallets": 347,
+    "one_addr_share": 0.15,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "America",
+    "per_min": 303.6,
+    "wallets": 99,
+    "one_addr_share": 0.64,
+    "flags": []
+   },
+   {
+    "symbol": "SGOV",
+    "per_min": 290.4,
+    "wallets": 29,
+    "one_addr_share": 0.62,
+    "flags": []
+   },
+   {
+    "symbol": "musebook",
+    "per_min": 284.4,
+    "wallets": 193,
+    "one_addr_share": 0.68,
+    "flags": []
+   },
+   {
+    "symbol": "PIGGY-USDG",
+    "per_min": 264.0,
+    "wallets": 221,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "AI",
+    "per_min": 262.8,
+    "wallets": 62,
+    "one_addr_share": 0.53,
+    "flags": []
+   }
+  ]
  }
 ]
