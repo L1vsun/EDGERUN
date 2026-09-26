@@ -2319,5 +2319,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-26T03:35:04+00:00",
+  "block": 72766823,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.23,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 1884.0,
+    "wallets": 229,
+    "one_addr_share": 0.3,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1035.6,
+    "wallets": 261,
+    "one_addr_share": 0.3,
+    "flags": []
+   },
+   {
+    "symbol": "e/acc",
+    "per_min": 164.4,
+    "wallets": 124,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "PONS",
+    "per_min": 157.2,
+    "wallets": 52,
+    "one_addr_share": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "UPTOBER",
+    "per_min": 111.6,
+    "wallets": 88,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TripleT",
+    "per_min": 103.2,
+    "wallets": 77,
+    "one_addr_share": 0.83,
+    "flags": []
+   },
+   {
+    "symbol": "UPTOBER",
+    "per_min": 82.8,
+    "wallets": 70,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "musebook",
+    "per_min": 74.4,
+    "wallets": 33,
+    "one_addr_share": 0.45,
+    "flags": [
+     "dex live"
+    ]
+   }
+  ]
  }
 ]
