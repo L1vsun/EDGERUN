@@ -2474,5 +2474,89 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-26T13:48:23+00:00",
+  "block": 73130410,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2048.4,
+    "wallets": 227,
+    "one_addr_share": 0.23,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1554.0,
+    "wallets": 349,
+    "one_addr_share": 0.42,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "UNSTOX",
+    "per_min": 176.4,
+    "wallets": 30,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "CASHED",
+    "per_min": 171.6,
+    "wallets": 61,
+    "one_addr_share": 0.48,
+    "flags": []
+   },
+   {
+    "symbol": "Jonesy",
+    "per_min": 158.4,
+    "wallets": 123,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "COLLECT",
+    "per_min": 134.4,
+    "wallets": 110,
+    "one_addr_share": 0.89,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "JOLLY",
+    "per_min": 122.4,
+    "wallets": 104,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "0x0a58a2",
+    "per_min": 121.2,
+    "wallets": 103,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
