@@ -2638,5 +2638,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-26T20:39:33+00:00",
+  "block": 73375816,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.11,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2208.0,
+    "wallets": 316,
+    "one_addr_share": 0.2,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1910.4,
+    "wallets": 341,
+    "one_addr_share": 0.43,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "PEARCAT",
+    "per_min": 224.4,
+    "wallets": 46,
+    "one_addr_share": 0.52,
+    "flags": []
+   },
+   {
+    "symbol": "CASHCAT",
+    "per_min": 194.4,
+    "wallets": 51,
+    "one_addr_share": 0.3,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "anon",
+    "per_min": 169.2,
+    "wallets": 143,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "INFERNOAI",
+    "per_min": 154.8,
+    "wallets": 47,
+    "one_addr_share": 0.54,
+    "flags": []
+   },
+   {
+    "symbol": "PONS",
+    "per_min": 151.2,
+    "wallets": 60,
+    "one_addr_share": 0.38,
+    "flags": []
+   },
+   {
+    "symbol": "CPU",
+    "per_min": 147.6,
+    "wallets": 31,
+    "one_addr_share": 0.7,
+    "flags": []
+   }
+  ]
  }
 ]
