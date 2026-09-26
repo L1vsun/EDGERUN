@@ -2558,5 +2558,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-26T17:36:52+00:00",
+  "block": 73266893,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.16,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "HVLT",
+    "per_min": 3480.0,
+    "wallets": 2901,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 2305.2,
+    "wallets": 274,
+    "one_addr_share": 0.21,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 2148.0,
+    "wallets": 305,
+    "one_addr_share": 0.49,
+    "flags": []
+   },
+   {
+    "symbol": "INFERNOAI",
+    "per_min": 584.4,
+    "wallets": 154,
+    "one_addr_share": 0.49,
+    "flags": []
+   },
+   {
+    "symbol": "TA",
+    "per_min": 288.0,
+    "wallets": 71,
+    "one_addr_share": 0.51,
+    "flags": []
+   },
+   {
+    "symbol": "NAKED",
+    "per_min": 165.6,
+    "wallets": 31,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "COLLECT",
+    "per_min": 124.8,
+    "wallets": 106,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "JOLLY",
+    "per_min": 123.6,
+    "wallets": 105,
+    "one_addr_share": 0.97,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
