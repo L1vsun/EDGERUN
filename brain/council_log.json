@@ -2397,5 +2397,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-26T09:06:48+00:00",
+  "block": 72962933,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.18,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2474.4,
+    "wallets": 201,
+    "one_addr_share": 0.24,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1036.8,
+    "wallets": 238,
+    "one_addr_share": 0.35,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "Boar",
+    "per_min": 572.4,
+    "wallets": 87,
+    "one_addr_share": 0.84,
+    "flags": []
+   },
+   {
+    "symbol": "HVLT",
+    "per_min": 360.0,
+    "wallets": 301,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "e/acc",
+    "per_min": 165.6,
+    "wallets": 100,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "STABLE",
+    "per_min": 90.0,
+    "wallets": 44,
+    "one_addr_share": 0.51,
+    "flags": []
+   },
+   {
+    "symbol": "ORBIO",
+    "per_min": 81.6,
+    "wallets": 46,
+    "one_addr_share": 0.71,
+    "flags": []
+   },
+   {
+    "symbol": "VEZQ",
+    "per_min": 62.4,
+    "wallets": 36,
+    "one_addr_share": 0.67,
+    "flags": []
+   }
+  ]
  }
 ]
