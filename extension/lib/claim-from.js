@@ -109,7 +109,78 @@ function chainIdNamed(name) {
   return KNOWN_IDS.find((id) => chainName(id).toLowerCase() === wanted) || null;
 }
 
+/**
+ * Holders provably cannot move it.
+ *
+ * The strongest claim this project can make about a contract, and until now the one it could
+ * not express: `restricted-transfer` was declared in CLAIM_TYPES from the start with no
+ * builder behind it, so a token flagged for the most objective finding there is produced no
+ * claim at all - and the copy-claim button never appeared on exactly the tokens that most
+ * deserved one.
+ *
+ * It needs no target. Nothing is being impersonated; the contract simply will not let its
+ * holders out, and that is checkable on its own terms by re-running the same simulated
+ * transfers from the same real holders. The evidence expects each call to REVERT, which is
+ * why `equals.reverts` exists.
+ */
+export function restrictedTransferClaim(verdict, { chain = HOME } = {}) {
+  const found = (verdict?.checks || []).find((c) => c.id === "exit_test" && (c.status === "fail" || c.status === "warn"));
+  const sim = found?.data;
+  if (!sim?.blocked?.length) return null;
+
+  const selective = found.status === "warn";
+  // Three is enough to be convincing and short enough to stay readable in a pull request.
+  const holders = sim.blocked.slice(0, 3);
+
+  return makeClaim({
+    type: "restricted-transfer",
+    subject: { chain: chain.id, address: verdict.address, ...(verdict.symbol ? { label: verdict.symbol } : {}) },
+    says: selective
+      ? `${verdict.address} on ${chain.name} let some holders transfer and blocked others in the same block - selective restriction, the signature of a targeted blacklist.`
+      : `${verdict.address} on ${chain.name} reverted a simulated transfer from every real holder tested. Holders cannot move this token.`,
+    evidence: [
+      ...holders.map((h) =>
+        rpcEvidence({
+          endpoint: chain.rpc,
+          method: "eth_call",
+          params: [{ from: h.address, to: verdict.address, data: transferData(sim) }, "latest"],
+          expect: `the call reverts${h.why ? ` (${h.why})` : ""}`,
+          equals: { reverts: true },
+          means: `${h.address} holds this token and cannot send ${sim.amount} of it to ${sim.sink}`,
+        }),
+      ),
+      ...(sim.passed || []).slice(0, 1).map((address) =>
+        rpcEvidence({
+          endpoint: chain.rpc,
+          method: "eth_call",
+          params: [{ from: address, to: verdict.address, data: transferData(sim) }, "latest"],
+          expect: "the call succeeds",
+          equals: { reverts: false },
+          means: `${address} CAN move it, in the same block - which is what makes the restriction selective rather than a broken token`,
+        }),
+      ),
+      note(
+        "Balances were read immediately before simulating, so this is not a stale-balance artefact. A simulated transfer is not a DEX sell test: it proves the token cannot be moved at this block, not that it cannot be sold.",
+      ),
+    ],
+    observed: { at: new Date(verdict.scannedAt || Date.now()).toISOString() },
+    method: METHOD,
+  });
+}
+
+// transfer(address,uint256) with the sink and amount the sweep actually used, so the claim
+// re-runs the same call rather than a lookalike.
+function transferData(sim) {
+  const addr = String(sim.sink).toLowerCase().replace(/^0x/, "").padStart(64, "0");
+  const amount = BigInt(sim.amount || 1).toString(16).padStart(64, "0");
+  return SEL.transfer + addr + amount;
+}
+
 /** Whatever this verdict supports, strongest first. Never guesses. */
 export function claimsFor(verdict, opts) {
-  return [impersonationClaim(verdict, opts), crossChainNameClaim(verdict, opts)].filter(Boolean);
+  return [
+    impersonationClaim(verdict, opts),
+    restrictedTransferClaim(verdict, opts),
+    crossChainNameClaim(verdict, opts),
+  ].filter(Boolean);
 }

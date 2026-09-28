@@ -24,6 +24,7 @@ export const CHAINS = {
   robinhood: {
     key: "robinhood",
     dex: "robinhood",
+    gt: "robinhood",
     id: 4663,
     name: "Robinhood Chain",
     rpc: "https://rpc.mainnet.chain.robinhood.com",
@@ -33,6 +34,7 @@ export const CHAINS = {
   ethereum: {
     key: "ethereum",
     dex: "ethereum",
+    gt: "eth",
     id: 1,
     name: "Ethereum",
     rpc: "https://ethereum-rpc.publicnode.com",
@@ -42,6 +44,7 @@ export const CHAINS = {
   base: {
     key: "base",
     dex: "base",
+    gt: "base",
     id: 8453,
     name: "Base",
     rpc: "https://mainnet.base.org",
@@ -51,6 +54,7 @@ export const CHAINS = {
   arbitrum: {
     key: "arbitrum",
     dex: "arbitrum",
+    gt: "arbitrum",
     id: 42161,
     name: "Arbitrum One",
     rpc: "https://arb1.arbitrum.io/rpc",
@@ -60,6 +64,7 @@ export const CHAINS = {
   bsc: {
     key: "bsc",
     dex: "bsc",
+    gt: "bsc",
     id: 56,
     name: "BNB Chain",
     rpc: "https://bsc-rpc.publicnode.com",
@@ -110,6 +115,13 @@ export const CHAIN_NAMES = {
   81457: "Blast",
   501000101: "Solana",
 };
+
+// GeckoTerminal's own network slugs, which are its ids and not ours: `eth`, not `ethereum`.
+// They live here so the mapping cannot drift away from the chain it belongs to, the way a
+// second lookup table in the chart module certainly would. Verified against their /networks
+// listing on 2026-09-28. Solana is not in CHAINS (different provider, no eth_call), so its
+// slug is named separately for the one place that needs it.
+export const SOLANA_GT = "solana";
 
 export const SOLANA_LIST_ID = 501000101;
 

@@ -44,20 +44,56 @@
       </div>
     </div>
 
+    <!-- First run only, dismissed for good by the button. Three things, because the panel
+         opens EMPTY and an empty panel looks broken rather than new - and because the two
+         things this does that a scanner cannot (the account record, checking somebody else's
+         claim) are both invisible until you know they are there. -->
+    <div class="intro" id="intro" hidden>
+      <div class="intro-head">
+        <b>You are set up. Three things to try.</b>
+        <button id="intro-x" class="ghost icon" aria-label="Dismiss">×</button>
+      </div>
+      <ol class="intro-steps">
+        <li>
+          <b>Open X and scroll.</b> Any post naming a contract gets a strip under it. Nothing
+          to configure, and posts that only name a ticker are left alone on purpose.
+        </li>
+        <li>
+          <b>Open someone's profile.</b> A card there shows what they have put in front of you
+          and how it turned out. It starts empty - hit <b>read their recent posts</b> and it
+          fills. This is the half no scanner has, because it only exists in your browser.
+        </li>
+        <li>
+          <b>Check an accusation.</b> The <b>claims</b> tab runs somebody else's evidence
+          against the chain, so you never have to take their word for it.
+          <button id="intro-claims" class="linkish">try the example</button>
+        </li>
+      </ol>
+      <p class="intro-foot">Or paste any contract address in the box above. Nothing you do here leaves this machine.</p>
+    </div>
+
     <!-- Shown only on the claims tab. Somebody else's accusation goes in; what the chain
          actually says comes back. Nothing about who wrote it is consulted - that is the
          whole point of the claim format, and until this box existed it was theory. -->
     <div class="claimcheck" id="claimcheck" hidden>
       <p class="claimcheck-say">
-        Paste a claim someone sent you. The evidence in it runs here, against the endpoints it
-        names, so you never have to take the reporter's word for it.
+        Paste an accusation someone sent you. The evidence in it runs here, against the
+        endpoints it names, so you never have to take the reporter's word for it. You get
+        <b>reproduced</b>, <b>contradicted</b>, or an honest "could not check".
       </p>
       <textarea id="claim-in" rows="4" spellcheck="false"
         placeholder="paste a claim (JSON), or the whole message it arrived in"></textarea>
       <div class="claimcheck-acts">
         <button id="claim-run" class="go">check it</button>
+        <button id="claim-example" class="ghost">try an example</button>
         <button id="claim-clear" class="ghost">clear</button>
       </div>
+      <p class="claimcheck-note">
+        Claims come from the <b>copy claim</b> button, which appears on a token whose finding
+        can be written as runnable evidence - an impersonation, a blocked transfer, a name
+        borrowed from another chain. Not every flagged token has one: a verdict that rests on
+        prose cannot be made into a claim, which is the point of the format.
+      </p>
       <div id="claim-out" aria-live="polite"></div>
     </div>
 

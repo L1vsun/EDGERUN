@@ -22,6 +22,8 @@ import * as ledger from "../lib/ledger.js";
 import { pruneMemory, rememberAndRecall } from "../lib/memory.js";
 import { parseClaims, validateClaim } from "../lib/claim.js";
 import { runClaim } from "../lib/verify.js";
+import { readMarket } from "../lib/market.js";
+import { readCandles } from "../lib/candles.js";
 import { getRegistry } from "../lib/registry.js";
 import { isAddress, lookupTicker, rankCandidates, resolveTicker, scan, scanMany } from "../lib/verdict.js";
 
@@ -339,6 +341,24 @@ const HANDLERS = {
     await chrome.sidePanel.open({ tabId });
     return { opened: true };
   },
+
+  /**
+   * What the trades say about a token, as corroboration rather than as a price readout.
+   *
+   * Deliberately not folded into `scan`: a verdict must not become slower, or start failing,
+   * because a market API is having a bad day. It is asked for separately, when a reader wants
+   * it, and a null answer costs nothing.
+   */
+  "market:get": (m) => readMarket(m.address, { chain: m.chain }),
+
+  /**
+   * Price history, from a different source than the tape.
+   *
+   * GeckoTerminal's free tier is tight - enumerating their network list while building this
+   * earned a 429 - so this is only ever called when a reader asks for a chart, and the pool
+   * address found by the market read is passed through to save the lookup call.
+   */
+  "candles:get": (m) => readCandles(m.address, { chain: m.chain, pool: m.pool, key: m.key }),
 
   /**
    * Check somebody else's accusation.

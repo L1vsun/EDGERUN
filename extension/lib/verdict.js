@@ -37,7 +37,13 @@ import { decodeRevert, isBenignRevert, selectorsPresent } from "./selectors.js";
 
 const BURN_SINK = "0x000000000000000000000000000000000000dEaD";
 const short = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
-const check = (id, label, status, detail) => ({ id, label, status, detail });
+// `data` is the structured residue of a check, for the things that need to be rebuilt later
+// rather than read. The exit test is the case that forced it: it simulated transfers from
+// real holders, then threw the holder addresses away and kept a sentence with a SHORTENED
+// address in it. That sentence is unarguable to read and impossible to re-run, which is the
+// exact failure the claim format exists to fix - so the strongest finding this project makes
+// was the one finding that could not become a claim.
+const check = (id, label, status, detail, data) => ({ id, label, status, detail, ...(data ? { data } : {}) });
 
 export const isAddress = (s) => /^0x[0-9a-fA-F]{40}$/.test(String(s || "").trim());
 
@@ -208,11 +214,13 @@ async function exitCheck(address) {
   });
 
   if (!passed.length && !blocked.length) return check("exit_test", "exit test", "unresolved", `no holder with a live non-zero balance to test (${skipped} skipped) - inconclusive`);
+  // The holders and the sink travel with the result so the call can be rebuilt exactly.
+  const sim = { sink: BURN_SINK, amount: "1", blocked: blocked.map(([address, why]) => ({ address, why })), passed };
   if (blocked.length && !passed.length) {
-    return check("exit_test", "exit test", "fail", `simulated transfer FAILED for all ${blocked.length} holder(s) tested - ${blocked[0][1]}. Holders cannot move this token right now.`);
+    return check("exit_test", "exit test", "fail", `simulated transfer FAILED for all ${blocked.length} holder(s) tested - ${blocked[0][1]}. Holders cannot move this token right now.`, sim);
   }
   if (blocked.length) {
-    return check("exit_test", "exit test", "warn", `simulated transfer succeeded for ${passed.length} holder(s) but FAILED for ${blocked.length} (${short(blocked[0][0])} - ${blocked[0][1]}) - selective restriction, the signature of a targeted blacklist`);
+    return check("exit_test", "exit test", "warn", `simulated transfer succeeded for ${passed.length} holder(s) but FAILED for ${blocked.length} (${short(blocked[0][0])} - ${blocked[0][1]}) - selective restriction, the signature of a targeted blacklist`, sim);
   }
   return check("exit_test", "exit test", "ok", `simulated transfer succeeded from ${passed.length} real holder(s) - tokens are movable at this block (a transfer test, not a DEX sell test)`);
 }

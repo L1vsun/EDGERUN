@@ -15,8 +15,14 @@
 //
 // LOCAL ONLY. This never leaves the machine and there is nowhere for it to go - the extension
 // has no backend. It is wiped whole by one button in the panel, and `paused` stops recording
-// without destroying what is already there. A ticker mention is never a sighting: "$TSLA
-// earnings tomorrow" is not a call, and counting it would make every finance account a caller.
+// without destroying what is already there.
+//
+// A ticker mention is recorded but is NEVER A CALL. "$TSLA earnings tomorrow" is not somebody
+// putting a contract in front of you, and letting it feed the numbers that can mark an account
+// would turn every finance account on the timeline into a caller. So mentions sit in their own
+// field, `calls` and `flagged` never see them, and nothing that can accuse anybody reads them.
+// They are there because a page of real timeline is mostly tickers, and an account that talks
+// about them all day and never posts a contract is a known quantity rather than an empty file.
 
 const ACCT = "acct:";
 const CA = "ca:";
@@ -72,11 +78,11 @@ export async function setPaused(paused) {
  * handle and an address is dropped rather than half-recorded.
  */
 export async function recordSightings(sightings, now = Date.now()) {
-  const clean = (sightings || []).filter((s) => s?.handle && s?.address);
+  const clean = (sightings || []).filter((s) => s?.handle && (s?.address || s?.ticker));
   if (!clean.length) return { recorded: 0 };
   if ((await graphSettings()).paused) return { recorded: 0, paused: true };
 
-  const keys = [...new Set(clean.flatMap((s) => [acctKey(s.handle), caKey(s.address)]))];
+  const keys = [...new Set(clean.flatMap((s) => (s.address ? [acctKey(s.handle), caKey(s.address)] : [acctKey(s.handle)])))];
   let store = {};
   try {
     store = await chrome.storage.local.get(keys);
@@ -90,6 +96,38 @@ export async function recordSightings(sightings, now = Date.now()) {
 
   for (const s of clean) {
     const handle = String(s.handle).toLowerCase();
+
+    /*
+     * A ticker mention is recorded, and it is NOT a call.
+     *
+     * "A ticker mention is never a sighting" was right about the thing it was protecting and
+     * wrong about throwing the information away. Reported from the field 2026-09-28: a whole
+     * page of a real timeline, plenty of tickers, not one contract address - so the graph
+     * recorded nothing at all and the scan reported reading 87 posts and finding nothing.
+     *
+     * The rule that mattered was never "ignore tickers". It was that a ticker must not feed a
+     * number that can accuse somebody, because $TSLA in a post about earnings is not a call
+     * and counting it turns every finance account on the timeline into a caller. So mentions
+     * live in their own field, they never touch `calls` or `flagged`, and nothing that can
+     * put a mark on an account reads them. They describe; they do not charge.
+     */
+    if (!s.address && s.ticker) {
+      const ak = acctKey(handle);
+      const acct = read(ak) || { handle, display: null, first: now, last: now, seen: 0, calls: [] };
+      if (s.display) acct.display = s.display;
+      acct.mentions = (acct.mentions || 0) + 1;
+      acct.tickers = acct.tickers || {};
+      const t = String(s.ticker).toUpperCase().slice(0, 12);
+      acct.tickers[t] = (acct.tickers[t] || 0) + 1;
+      // a handful of the most-used, so one account cannot grow an unbounded map
+      const kept = Object.entries(acct.tickers).sort((a, b) => b[1] - a[1]).slice(0, 12);
+      acct.tickers = Object.fromEntries(kept);
+      acct.last = now;
+      next[ak] = acct;
+      continue;
+    }
+    if (!s.address) continue;
+
     const address = String(s.address).toLowerCase();
 
     const ak = acctKey(handle);
@@ -199,6 +237,11 @@ export function summarizeCaller(acct, now = Date.now()) {
     last: acct.last || null,
     days,
     ratio,
+    // Context, never a charge: `tone` and every rule that can mark an account read `tokens`
+    // and `flagged` only. These two exist so an account that talks about tickets all day and
+    // never posts a contract is a KNOWN quantity rather than an empty record.
+    mentions: acct.mentions || 0,
+    tickers: Object.entries(acct.tickers || {}).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t, n]) => ({ ticker: t, n })),
     tone: !tokens || !flagged.length ? "clean" : ratio >= 1 / 3 ? "bad" : "mixed",
     say: sayCaller(tokens, flagged.length, days),
   };

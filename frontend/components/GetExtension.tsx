@@ -26,12 +26,15 @@ type Props = {
 export default function GetExtension({ className = "cta", children = "Get the extension" }: Props) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  // whether the file has actually been asked for - the "what next" half waits for it
+  const [got, setGot] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
   const openerRef = useRef<HTMLButtonElement>(null);
 
   const close = useCallback(() => {
     setOpen(false);
     setCopied(false);
+    setGot(false);
     openerRef.current?.focus();
   }, []);
 
@@ -76,12 +79,12 @@ export default function GetExtension({ className = "cta", children = "Get the ex
             </div>
 
             <div className="modal-body">
-              <a className="dl" href={EXTENSION_ZIP} download>
+              <a className="dl" href={EXTENSION_ZIP} download onClick={() => setGot(true)}>
                 Download v{EXTENSION_VERSION}
                 <span>{EXTENSION_KB} KB</span>
               </a>
 
-              <ol className="steps-mini">
+              <ol className={`steps-mini${got ? " live" : ""}`}>
                 <li>Unzip the folder</li>
                 <li>
                   Open <ChromeLink /> and turn on <b>Developer mode</b>
@@ -94,6 +97,32 @@ export default function GetExtension({ className = "cta", children = "Get the ex
               <p className="modal-lead">
                 Not in the Chrome Web Store yet, so it loads as an unpacked folder. Takes about a minute.
               </p>
+
+              {/* Appears only once the file is actually on its way. Before that it is three
+                  more things to read in a dialog whose one job is handing over a download;
+                  after it, it is the only thing on screen worth reading - because installing
+                  is the easy half and nobody arrives knowing what the thing does. */}
+              {got && (
+                <div className="after" role="status">
+                  <b>Once it loads, three things to try</b>
+                  <ol>
+                    <li>
+                      <b>Open X and scroll.</b> Posts naming a contract get a strip under them.
+                      A post that only names a ticker is left alone, on purpose.
+                    </li>
+                    <li>
+                      <b>Open somebody&rsquo;s profile.</b> A card shows what they have put in
+                      front of you and how it turned out. It starts empty &mdash; one button
+                      fills it. No server has this; only your browser was there.
+                    </li>
+                    <li>
+                      <b>Open the claims tab and hit &ldquo;try an example&rdquo;.</b> It runs a
+                      real accusation against the chain in front of you, so believing it never
+                      means believing the reporter.
+                    </li>
+                  </ol>
+                </div>
+              )}
 
               <ul className="chips">
                 <li>no wallet</li>

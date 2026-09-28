@@ -60,7 +60,10 @@ const ctx = {
   setTimeout,
   clearTimeout,
   setInterval: () => 0,
-  window: {}, // no IntersectionObserver: E.whenNear then runs its callback immediately
+  // no IntersectionObserver: E.whenNear then runs its callback immediately.
+  // addEventListener is here because twitter.js now registers for SPA route changes,
+  // which is what stops a profile card outliving the profile it describes.
+  window: { addEventListener() {} },
   MutationObserver: class { observe() {} disconnect() {} },
   history: { pushState() {}, replaceState() {} },
   location: { href: "https://x.com/home" },
@@ -120,6 +123,9 @@ await new Promise((r) => setTimeout(r, 1200)); // watch debounces 300ms, then th
 const records = sent.filter((m) => m.type === "graph:record").flatMap((m) => m.sightings);
 const by = (h) => records.filter((s) => s.handle === h);
 
+// every sighting carrying an address: the numbers that can mark an account read only these
+const calls = records.filter((s) => s.address);
+
 assert.equal(by("caller1").length, 1, "an address the author wrote is a call");
 assert.equal(by("caller1")[0].address, CA.toLowerCase());
 assert.equal(by("caller1")[0].verdict, "FAIL", "the verdict reached for it is stored with it");
@@ -131,12 +137,20 @@ assert.equal(
 );
 assert.equal(by("scammer").length, 0, "and the quoted account is not credited either: they are not in this feed");
 
-assert.equal(by("newsaccount").length, 0, "a bare ticker is not a call");
+// A bare ticker is recorded, and it is NEVER a call. The distinction is the whole point: a
+// page of real timeline is mostly tickers, so dropping them made the graph stay empty and a
+// profile scan report reading eighty-seven posts and finding nothing - but letting one reach
+// `calls` would put a mark on every finance account on the timeline.
+const news = by("newsaccount");
+assert.equal(news.length, 1, "a bare ticker is now recorded...");
+assert.equal(news[0].ticker, "TSLA", "...as a mention of that ticker");
+assert.equal(news[0].address, undefined, "...with no address, so nothing downstream reads it as a call");
+assert.ok(calls.every((s) => !s.ticker), "and nothing with an address is ever filed as a mention");
 
-assert.equal(by("solcaller").length, 1, "a Solana mint the author wrote is a call");
-assert.equal(by("solcaller")[0].address, MINT, "and it keeps its base58 casing");
-assert.equal(by("solcaller")[0].symbol, "PUMP", "carrying the verdict the worker reached for it");
+assert.equal(by("solcaller").filter((s) => s.address).length, 1, "a Solana mint the author wrote is a call");
+assert.equal(by("solcaller").find((s) => s.address).address, MINT, "and it keeps its base58 casing");
+assert.equal(by("solcaller").find((s) => s.address).symbol, "PUMP", "carrying the verdict the worker reached for it");
 
-assert.equal(records.length, 2, "exactly two sightings from four posts");
+assert.equal(calls.length, 2, "exactly two CALLS from four posts, which is what can accuse anyone");
 
 console.log("attribution: ok");

@@ -551,3 +551,74 @@ button { font: inherit; cursor: pointer; }
 .claimcheck-acts .go:hover { filter: brightness(0.94); }
 #claim-out .row { margin-bottom: 8px; }
 #claim-out .detail { padding-top: 8px; border-top: 1px solid var(--line); }
+.claimcheck-note { margin: 0 0 12px; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
+
+/* ---- what the trades say ----
+   A second witness. The bar is buys as a share of the window's trades, so a healthy
+   two-sided market sits near the middle and a one-way tape runs to the edge - which is the
+   shape worth seeing at a glance, and the reason this is a table rather than a price chart
+   (the public API carries no candles). */
+
+.market { margin-top: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--soft); }
+.m-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+.m-label { font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.m-head em { margin-left: auto; font-style: normal; font-size: 11.5px; color: var(--muted); }
+.m-tbl { width: 100%; margin-top: 8px; border-collapse: collapse; font-size: 12px; }
+.m-tbl th { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); text-align: left; padding-bottom: 3px; }
+.m-tbl td { padding: 3px 0; }
+.m-tbl td.m-w { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--muted); width: 34px; }
+.m-tbl td.up { color: var(--ok); }
+.m-tbl td.down { color: var(--bad); }
+.m-flow { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11.5px; }
+.m-bar { width: 58px; }
+.m-bar i { display: block; height: 5px; border-radius: 99px; background: var(--signal); min-width: 1px; }
+.m-note { margin: 8px 0 0; font-size: 11px; line-height: 1.5; color: var(--muted); }
+.m-none { margin: 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+
+/* ---- the chart ----
+   Hand-drawn SVG: a charting library is 200KB to draw ninety rectangles, and this extension
+   ships as a readable zip with no build step. preserveAspectRatio is off so the drawing
+   stretches to the panel width, which is what you want for a price series and not for a logo. */
+
+.chart { margin-top: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--soft); }
+.ch-tabs { display: flex; gap: 4px; margin-bottom: 8px; }
+.ch-tabs button {
+  flex: 1; padding: 4px 0; font: inherit; font-size: 11.5px; font-weight: 700; cursor: pointer;
+  color: var(--muted); background: none; border: 1px solid transparent; border-radius: 7px;
+}
+.ch-tabs button:hover { background: var(--hover); }
+.ch-tabs button.on { color: var(--ink); background: var(--card); border-color: var(--line); }
+.ch-head { display: flex; align-items: baseline; gap: 8px; }
+.ch-head b { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; }
+.ch-chg { font-size: 12.5px; font-weight: 700; }
+.ch-chg.up { color: var(--ok); }
+.ch-chg.down { color: var(--bad); }
+.ch-head em { margin-left: auto; font-style: normal; font-size: 11px; color: var(--muted); }
+.cndl { display: block; width: 100%; height: 132px; margin-top: 6px; overflow: visible; }
+.cndl .wick { stroke-width: 1; }
+.cndl .up { stroke: var(--ok); fill: var(--ok); }
+.cndl .down { stroke: var(--bad); fill: var(--bad); }
+.cndl .vol { opacity: 0.32; stroke: none; }
+.ch-foot { display: flex; justify-content: space-between; margin-top: 4px; font-size: 11px; color: var(--muted); }
+.ch-none { margin: 6px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.chart.rug { border-color: var(--bad); border-left: 4px solid var(--bad); }
+.ch-log { color: var(--muted); opacity: .7; }
+.ch-flags { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line); }
+.ch-lede { margin: 0 0 8px; font-size: 12px; line-height: 1.5; color: var(--bad); font-weight: 600; }
+
+/* ---- first run ----
+   Shown once. It has to read as "here is what this does" rather than as an error, which is
+   what an empty panel otherwise looks like. */
+
+.intro { margin: 10px 14px 0; padding: 12px 14px; border: 1px solid var(--line);
+  border-left: 4px solid var(--signal); border-radius: var(--radius); background: var(--soft); }
+.intro-head { display: flex; align-items: flex-start; gap: 8px; }
+.intro-head b { font-size: 13.5px; line-height: 1.4; }
+.intro-head .ghost { margin-left: auto; flex: none; border-color: transparent; }
+.intro-steps { margin: 9px 0 0; padding-left: 18px; }
+.intro-steps li { margin-bottom: 8px; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
+.intro-steps li b { color: var(--ink); font-weight: 700; }
+.linkish { padding: 0; margin-left: 3px; font: inherit; font-size: 12.5px; font-weight: 700;
+  color: var(--ink); background: none; border: none; border-bottom: 1px dotted var(--signal); cursor: pointer; }
+.intro-foot { margin: 4px 0 0; font-size: 11.5px; line-height: 1.5; color: var(--muted); }

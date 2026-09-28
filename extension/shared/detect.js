@@ -72,12 +72,50 @@
   };
 
   /**
+   * At most once per `ms`, and - the part that matters - AT LEAST once per `ms` while calls
+   * keep arriving.
+   *
+   * `E.watch` used a debounce for this and claimed in its own comment to be doing what this
+   * function actually does. It is not the same thing, and the difference is not academic: a
+   * debounce clears its timer on every call, so a page that mutates without pause never stops
+   * resetting it and the callback NEVER RUNS.
+   *
+   * X mutates without pause - hydration, media, polling, hover. Reported from the field
+   * 2026-09-28 as the profile card appearing at random: on a hard reload the mutations never
+   * let up and the sweep was starved out entirely, while arriving through search left a quiet
+   * moment in which the debounce finally fired. Same code, opposite outcome, which is what
+   * made it look random rather than broken.
+   *
+   * Leading edge too, so the first mutation after a quiet period is acted on immediately
+   * rather than a full interval later.
+   */
+  E.throttle = function throttle(fn, ms) {
+    let last = 0;
+    let timer = 0;
+    return (...args) => {
+      const now = Date.now();
+      const wait = Math.max(0, ms - (now - last));
+      clearTimeout(timer);
+      if (wait === 0) {
+        last = now;
+        return fn(...args);
+      }
+      timer = setTimeout(() => {
+        last = Date.now();
+        fn(...args);
+      }, wait);
+    };
+  };
+
+  /**
    * Batched DOM watching. The callback fires at most once per `ms` no matter how much the
    * page mutates - both X and Dexscreener rewrite their DOM constantly, and re-walking on
    * every mutation is how an extension makes a host page feel broken.
    */
   E.watch = function watch(target, fn, ms = 250) {
-    const run = E.debounce(fn, ms);
+    // Throttled, not debounced. See E.throttle: a debounce here is starved to death by a page
+    // that never stops mutating, which is every page this runs on.
+    const run = E.throttle(fn, ms);
     const mo = new MutationObserver(run);
     mo.observe(target || document.documentElement, { childList: true, subtree: true });
     run();
@@ -398,6 +436,67 @@
       cluster: cluster || null,
       lead: lines.join(" "),
     };
+  };
+
+  /**
+   * Whose profile is this, if it is a profile at all.
+   *
+   * A profile page is the one place where showing an account's whole record is obviously
+   * right: the reader navigated here to size somebody up. In the feed the same panel would be
+   * the bare-ticker mistake again - mark everything and the marks stop meaning anything.
+   *
+   * Only the bare `/handle` and its tabs count. `/handle/status/123` is a post (the feed code
+   * owns that), and `/i/...`, `/home`, `/search` are not people at all - the same NOT_PEOPLE
+   * set the author walk uses, so the two can never disagree about what a person is.
+   */
+  E.profileHandleFrom = function profileHandleFrom(pathname) {
+    const parts = String(pathname || "").split("/").filter(Boolean);
+    if (!parts.length || parts.length > 2) return null;
+    // /handle, or a profile tab: /handle/with_replies, /handle/media, /handle/likes
+    const TABS = new Set(["with_replies", "media", "likes", "highlights", "articles", "superfollows"]);
+    if (parts.length === 2 && !TABS.has(parts[1].toLowerCase())) return null;
+    const handle = parts[0];
+    if (!HANDLE_RE.test(handle) || NOT_PEOPLE.has(handle.toLowerCase())) return null;
+    return handle.toLowerCase();
+  };
+
+  /**
+   * Where a profile card can be mounted without React taking it straight back.
+   *
+   * Reported from the field: the card appeared for a moment and vanished once the page
+   * finished loading. The first version anchored off the `UserName` element and fell back to
+   * that element's own parent - deep inside a component X re-renders as the profile hydrates,
+   * so the card was being mounted into a subtree that was about to be replaced.
+   *
+   * The second version then walked UP from the timeline to whichever node was a direct child
+   * of the column, on the theory that a foreign node between two of the column's own children
+   * survives a re-render of either. That theory cost the position: a real profile column has
+   * ONE wrapper holding the header, the tab bar and the feed, so the walk reached that wrapper
+   * and `afterend` put the card below the entire page - reported from the field as "it goes to
+   * the end of all posts". A correct position beats a theoretically stabler one, and removal
+   * is already handled by re-mounting.
+   *
+   * So: no walking. Anchor on the tab bar, which is one element, unambiguous, and exactly
+   * where a reader looks for a summary of the account they just opened.
+   *
+   * Pure apart from the DOM it is handed, so it can be tested without a browser.
+   */
+  E.profileAnchorIn = function profileAnchorIn(column) {
+    if (!column) return null;
+
+    // The Posts / Replies / Media tab bar. It is the actual boundary between the profile
+    // header and the feed, it is a single well-marked element, and it is where a reader looks
+    // for a summary of the account they just opened.
+    const nav = column.querySelector('nav[role="navigation"]') || column.querySelector("nav");
+    if (nav) return { el: nav, where: "afterend" };
+
+    // Still hydrating: the tab bar has not rendered, but the feed has. Directly above it.
+    const timeline = column.querySelector('section[role="region"]');
+    if (timeline) return { el: timeline, where: "beforebegin" };
+
+    // Nothing recognisable yet. Returning null is the ANSWER, not a failure - the next
+    // mutation runs this again, and by then the tab bar exists.
+    return null;
   };
 
   /** "11 minutes", "under a minute", "3 hours" - for spans, not for timestamps. */

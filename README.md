@@ -13,7 +13,7 @@ contract in front of you.**
 
 [![chains](https://img.shields.io/badge/chains-6-B2E604?style=flat-square&labelColor=080A0B)](#the-chains-it-reads-and-what-each-is-allowed-to-claim)
 [![tests](https://img.shields.io/badge/engine%20tests-37%20passing-4FD1A5?style=flat-square&labelColor=080A0B)](edgerun/tests)
-[![extension tests](https://img.shields.io/badge/extension%20tests-14%20suites-4FD1A5?style=flat-square&labelColor=080A0B)](extension/tests)
+[![extension tests](https://img.shields.io/badge/extension%20tests-16%20suites-4FD1A5?style=flat-square&labelColor=080A0B)](extension/tests)
 [![backend](https://img.shields.io/badge/servers%20required-none-4FD1A5?style=flat-square&labelColor=080A0B)](#no-backend-and-why-that-was-a-measurement-not-a-preference)
 [![keys](https://img.shields.io/badge/keys%20held-none-4FD1A5?style=flat-square&labelColor=080A0B)](SECURITY.md)
 [![license](https://img.shields.io/badge/license-MIT-E8B339?style=flat-square&labelColor=080A0B)](LICENSE)
@@ -31,7 +31,7 @@ contract in front of you.**
 | **213** | contracts using an official stock ticker that are **not** the official contract, across a ten-ticker sample |
 | **7** | different contracts using `$PEPE`. Six use `$HOOD`. Five use `$DOGE` |
 | **6** | contracts named exactly `NVIDIA • Robinhood Token` |
-| **194** | real tokenised securities Robinhood publishes addresses for |
+| **195** | real tokenised securities Robinhood publishes addresses for |
 
 A ticker is not an identifier here. Every one of those fakes is a structurally clean ERC-20 -
 verified source, no mint function, ownership renounced - so a scanner that only reads the
@@ -141,7 +141,7 @@ codebase from a failed request to a green badge.
 
 ### And what each *chain* is allowed to mean
 
-Robinhood publishes the authoritative contract for all 194 of its tokenised securities, which
+Robinhood publishes the authoritative contract for all of its tokenised securities, which
 is what lets this say *"that is not Tesla"* as a fact. **Nothing equivalent exists on Ethereum,
 Base, Arbitrum or BNB Chain.** The best available answer there is a curated token list, and a
 list is a weaker instrument in both directions:

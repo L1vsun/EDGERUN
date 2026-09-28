@@ -911,3 +911,13 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .pshot figcaption {
   margin-top: 11px; font-size: 13.5px; line-height: 1.55; color: var(--text-4);
 }
+
+/* The half of the install dialog that only matters after the download has started: how to
+   install is the easy part, and nobody arrives already knowing what the thing does. */
+.after { margin: 14px 0 0; padding: 12px 14px; border: 1px solid var(--accent-dim);
+  border-left: 3px solid var(--accent); border-radius: 10px; background: var(--accent-bg); }
+.after > b { display: block; margin-bottom: 8px; font-size: 14px; }
+.after ol { margin: 0; padding-left: 18px; }
+.after li { margin-bottom: 7px; font-size: 13.5px; line-height: 1.5; color: var(--text-2); }
+.after li b { color: var(--text); }
+.steps-mini.live li { opacity: 1; }

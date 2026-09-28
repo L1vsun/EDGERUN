@@ -13,6 +13,9 @@
 import { isSolanaAddress } from "../lib/base58.js";
 import { claimsFor } from "../lib/claim-from.js";
 import { validateClaim, verifyPlanText } from "../lib/claim.js";
+import { exampleClaim } from "../lib/example-claim.js";
+import { DEFAULT_TIMEFRAME, TIMEFRAMES as CHART_TFS, candleSvg } from "../lib/candles.js";
+import { ALL as ALL_CHAINS, HOME } from "../lib/chains.js";
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -68,6 +71,8 @@ const dossiers = new Map();      // address -> deployer trail, once asked for
 const sweeps = new Map();        // address -> exit-size sweep, once asked for
 const ranks = new Map();         // address -> ticker-collision ranking, once asked for
 const elsewhere = new Map();     // address -> where else it is deployed, once asked for
+const markets = new Map();       // address -> what the trades say, once asked for
+const charts = new Map();        // address -> { key, data, busy }: price history, per timeframe
 let watchChanges = [];           // verdicts that moved since the last time they were looked at
 const drafts = new Map();        // address -> the reply being composed for it
 let callers = [];                // the account graph, most flagged first
@@ -76,6 +81,18 @@ let graphPaused = false;
 const openCallers = new Set();   // handles expanded on the callers tab
 
 const REPO = "https://github.com/L1vsun/EDGERUN";
+
+// Which chain a ledger row is on, for the sources that need to be told.
+//
+// The chart must not depend on the trades having been loaded first, so this is derived from
+// the row itself: a base58 address is a Solana mint by construction, an EVM row names its
+// chain when it came from a cross-chain lookup, and everything else is the home chain - which
+// is where a row with no chain attached came from.
+const chainKeyOf = (e) => {
+  if (isSolanaAddress(e?.address)) return "solana";
+  const named = String(e?.chainName || "").toLowerCase();
+  return ALL_CHAINS.find((c) => c.name.toLowerCase() === named)?.key || HOME.key;
+};
 
 // the contracts a ticker-collision result is carrying, if any
 const candidatesOf = (e) =>
@@ -359,9 +376,139 @@ function renderComposer(e) {
       <textarea data-act="draft" rows="6" spellcheck="false">${esc(d.text)}</textarea>
       <div class="k-acts">
         <button class="go" data-act="copy-draft">copy reply</button>
-        ${claimsFor(e).some((c) => validateClaim(c).ok) ? '<button data-act="copy-claim">copy claim</button>' : ""}
         <a href="${esc(reportUrl(e))}" target="_blank" rel="noreferrer">report to the blocklist ↗</a>
       </div>
+    </div>`;
+}
+
+/* ---- the chart ----
+ *
+ * Hand-drawn SVG, because a charting library is 200KB to draw ninety rectangles and this
+ * extension has no build step and no dependencies - both of which are load-bearing, since
+ * what ships is a zip somebody unpacks and can read.
+ *
+ * Real candlesticks, from real OHLC: GeckoTerminal's on-chain API carries them where
+ * Dexscreener does not, it is keyless, and it covers Robinhood Chain - which was the part
+ * that had to be checked rather than assumed.
+ *
+ * Wicks are drawn from high to low and bodies from open to close, so a doji stays a doji. A
+ * body that would round to nothing still gets one pixel: a candle you cannot see reads as a
+ * gap in the data, and there is no gap.
+ */
+
+const price = (p) =>
+  p == null ? "-" : p >= 1 ? `$${p.toFixed(2)}` : p >= 0.01 ? `$${p.toFixed(4)}` : `$${p.toPrecision(3)}`;
+
+function renderChart(entry) {
+  const state = charts.get(entry.address);
+  if (!state) return "";
+  const tabs = CHART_TFS.map(
+    (t) => `<button data-act="tf" data-tf="${t.key}" class="${state.key === t.key ? "on" : ""}">${esc(t.label)}</button>`,
+  ).join("");
+
+  const head = `<div class="ch-tabs">${tabs}</div>`;
+  const d = state.data;
+
+  if (state.busy) return `<div class="chart">${head}<p class="ch-none">drawing…</p></div>`;
+  if (d?.limited) {
+    return `<div class="chart">${head}<p class="ch-none">The chart source is rate limiting us - it is free and shared. Try again in a moment; this says nothing about the token.</p></div>`;
+  }
+  if (!d) return `<div class="chart">${head}<p class="ch-none">The chart source did not answer. That is a fact about the source, not about this token - try again.</p></div>`;
+  if (d.unsupported) {
+    return `<div class="chart">${head}<p class="ch-none">No price history for ${esc(d.chain || "this chain")}: the chart source does not cover it. Every other check on this row still applies.</p></div>`;
+  }
+  if (d.none) {
+    return `<div class="chart">${head}<p class="ch-none">No pool with price history for this token, on any pool the chart source knows. For something that traded and then stopped, that is often the whole story - but it can also just mean the pool is not indexed, so it is not being treated as a finding.</p></div>`;
+  }
+
+  const s = d.stats;
+  const tf = CHART_TFS.find((t) => t.key === state.key);
+  const dir = s.changePct > 0 ? "up" : s.changePct < 0 ? "down" : "";
+
+  // The reason this block can be louder than the verdict above it. A contract that passes
+  // every check can still sit on a pool that is down 99% with nobody left in it - both true
+  // at once, and a bare PASS next to a chart like that is the thing that reads as broken.
+  const flags = d.flags || [];
+  const rug = flags.some((f) => f.id === "collapsed");
+  const findings = flags.length
+    ? `<div class="ch-flags">
+         ${rug ? '<p class="ch-lede">The contract checks above and this chart are both right. A rug does not need a malicious contract - usually somebody just sold all of it.</p>' : ""}
+         ${flags.map((f) => `<div class="check"><i class="warn"></i><span><b>${esc(f.id.replace(/_/g, " "))}</b><br />${esc(f.detail)}</span></div>`).join("")}
+       </div>`
+    : "";
+
+  return `
+    <div class="chart${rug ? " rug" : ""}">
+      ${head}
+      <div class="ch-head">
+        <b>${esc(price(s.close))}</b>
+        <span class="ch-chg ${dir}">${s.changePct == null ? "" : `${s.changePct > 0 ? "+" : ""}${s.changePct.toFixed(1)}%`}</span>
+        <em>${esc(tf?.span || "")} · ${s.bars} bars</em>
+      </div>
+      ${candleSvg(d.candles)}
+      <div class="ch-foot"><span>low ${esc(price(s.low))}</span><span>high ${esc(price(s.high))}</span><span class="ch-log">log</span></div>
+      ${findings}
+    </div>`;
+}
+
+/* ---- what the trades say ----
+ *
+ * A second witness, and a different kind of one. Every other block in this row asks the
+ * contract a question; this one asks the market, and the interesting case is when the two
+ * disagree: clean bytecode on a pool where four hundred people bought and three sold is
+ * telling you something the code did not.
+ *
+ * Not a price readout. The price is the least useful number here and Dexscreener is one tap
+ * away for it. What earns the space is the shape of the flow across the windows the API
+ * actually carries - and there are no candles in that API, so there is no chart here
+ * pretending otherwise.
+ */
+
+const fmtUsd = (n) =>
+  n == null ? "-" : n >= 1e6 ? `$${(n / 1e6).toFixed(1)}m` : n >= 1e3 ? `$${Math.round(n / 1e3)}k` : `$${Math.round(n)}`;
+
+function renderMarket(m) {
+  if (!m) return '<div class="market"><p class="m-none">Dexscreener did not answer. Nothing follows from that about the token.</p></div>';
+  if (m.none) {
+    return '<div class="market"><p class="m-none">No pool for this token on Dexscreener. That is not the same as no pool existing - it may simply not be indexed - but a token being pushed hard with nowhere to trade it is worth noticing.</p></div>';
+  }
+
+  const rows = m.windows
+    .map((w) => {
+      const flow = w.buys == null && w.sells == null ? "-" : `${w.buys ?? 0}/${w.sells ?? 0}`;
+      // the bar is buys as a share of all trades in the window: half and half sits centred
+      const total = (w.buys || 0) + (w.sells || 0);
+      const pct = total ? Math.round(((w.buys || 0) / total) * 100) : 50;
+      const chg = w.change == null ? "" : `${w.change > 0 ? "+" : ""}${w.change}%`;
+      return `<tr>
+        <td class="m-w">${esc(w.label)}</td>
+        <td>${w.volume == null ? "-" : fmtUsd(w.volume)}</td>
+        <td class="${w.change > 0 ? "up" : w.change < 0 ? "down" : ""}">${esc(chg)}</td>
+        <td class="m-flow">${esc(flow)}</td>
+        <td class="m-bar"><i style="width:${total ? pct : 0}%"></i></td>
+      </tr>`;
+    })
+    .join("");
+
+  const flags = m.flags
+    .map((f) => `<div class="check"><i class="warn"></i><span><b>${esc(f.id.replace(/_/g, " "))}</b><br />${esc(f.detail)}</span></div>`)
+    .join("");
+
+  const age = m.createdAt ? `${Math.max(1, Math.round((Date.now() - m.createdAt) / 86400000))}d old` : "";
+
+  return `
+    <div class="market">
+      <div class="m-head">
+        <span class="m-label">the trades</span>
+        <span>${esc(m.symbol || "")}/${esc(m.quote || "")} on ${esc(m.dex || "?")}${m.chain ? ` · ${esc(m.chain)}` : ""}</span>
+        <em>${fmtUsd(m.liquidityUsd)} liquidity${age ? ` · ${esc(age)}` : ""}</em>
+      </div>
+      <table class="m-tbl">
+        <thead><tr><th></th><th>volume</th><th>change</th><th>buys/sells</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      ${flags || ""}
+      <p class="m-note">Buy and sell counts, not price history - the public API carries no candles. A one-sided tape is the shape a token has when holders cannot get out, which is the exit test's question asked of the money instead of the code.</p>
     </div>`;
 }
 
@@ -466,6 +613,8 @@ function renderRow(e) {
   const sweep = sweeps.has(e.address) ? renderSweep(sweeps.get(e.address)) : "";
   const rank = ranks.has(e.address) ? renderRank(ranks.get(e.address)) : "";
   const xchain = elsewhere.has(e.address) ? renderElsewhere(elsewhere.get(e.address)) : "";
+  const market = markets.has(e.address) ? renderMarket(markets.get(e.address)) : "";
+  const chart = charts.has(e.address) ? renderChart(e) : "";
   const moved = watchChanges.find((c) => c.address === e.address);
   const cluster = graphTokens[e.address]?.cluster;
   const deep = dossier || sweep || xchain;
@@ -495,6 +644,8 @@ function renderRow(e) {
         ${dossier}
         ${sweep}
         ${xchain}
+        ${chart}
+        ${market}
         ${renderComposer(e)}
         <div class="addr">${esc(e.address)}</div>
         <div class="acts">
@@ -502,7 +653,10 @@ function renderRow(e) {
           ${evm && !deep ? '<button class="go-act" data-act="deep">dig deeper</button>' : ""}
           ${evm && !rank && candidatesOf(e).length ? '<button data-act="rank">which is real</button>' : ""}
           ${evm ? "" : '<button data-act="recheck">re-check</button>'}
+          ${market ? "" : '<button data-act="market">the trades</button>'}
+          ${chart ? "" : '<button data-act="chart">chart</button>'}
           <button data-act="reply">reply</button>
+          ${claimsFor(e).some((c) => validateClaim(c).ok) ? '<button data-act="copy-claim">copy claim</button>' : ""}
           <button data-act="watch">${watched ? "unwatch" : "watch"}</button>
           ${e.explorerUrl ? `<a href="${esc(e.explorerUrl)}" target="_blank" rel="noreferrer">explorer ↗</a>` : ""}
           ${e.dexUrl ? `<a href="${esc(e.dexUrl)}" target="_blank" rel="noreferrer">chart ↗</a>` : ""}
@@ -521,6 +675,7 @@ function render() {
   nf.dataset.hot = flagged.length ? "1" : "0";
 
   const list = $("#list");
+  maybeIntro();
   $("#privacy").hidden = filter !== "callers";
   $("#claimcheck").hidden = filter !== "claims";
 
@@ -809,6 +964,45 @@ $("#list").addEventListener("click", async (ev) => {
     return;
   }
 
+  // The chart, and switching its timeframe. Both go through one loader so a tab click and a
+  // first open behave identically - and the pool address from the market read is passed
+  // through when we have it, which saves a call against a tight free rate limit.
+  if (btn.dataset.act === "chart" || btn.dataset.act === "tf") {
+    const key = btn.dataset.act === "tf" ? btn.dataset.tf : charts.get(address)?.key || DEFAULT_TIMEFRAME;
+    const market = markets.get(address);
+    charts.set(address, { key, data: charts.get(address)?.data || null, busy: true });
+    open.add(address);
+    render();
+    let data = null;
+    try {
+      data = await ask({
+        type: "candles:get",
+        address,
+        chain: market && !market.none ? market.chain : chainKeyOf(entry),
+        pool: market && !market.none ? market.pairAddress : undefined,
+        key,
+      });
+    } catch {
+      data = null;
+    }
+    charts.set(address, { key, data, busy: false });
+    return render();
+  }
+
+  if (btn.dataset.act === "market") {
+    btn.disabled = true;
+    btn.textContent = "reading…";
+    try {
+      // null is a real answer here (the source was unreachable) and renderMarket says so,
+      // so it is stored rather than treated as a failure to retry.
+      markets.set(address, await ask({ type: "market:get", address }));
+    } catch {
+      markets.set(address, null);
+    }
+    open.add(address);
+    return render();
+  }
+
   if (btn.dataset.act === "deep") {
     // render() replaces the DOM, so the button has to be found again after every repaint
     const button = () => document.querySelector(`.row[data-address="${CSS.escape(address)}"] [data-act="deep"]`);
@@ -1067,9 +1261,66 @@ $("#claim-run").addEventListener("click", async () => {
   out.innerHTML = data.claims.map(renderClaimCheck).join("");
 });
 
+// The tab is useless until somebody sends you a claim, and on a fresh install nobody has.
+// This loads a real one - the project's own blocklist entry, rewritten in the format - so the
+// whole loop is one click away instead of waiting on a stranger.
+$("#claim-example").addEventListener("click", () => {
+  $("#claim-in").value = JSON.stringify(exampleClaim(), null, 2);
+  $("#claim-out").innerHTML = "";
+  $("#claim-in").scrollTop = 0;
+});
+
 $("#claim-clear").addEventListener("click", () => {
   $("#claim-in").value = "";
   $("#claim-out").innerHTML = "";
+});
+
+/* ---- first run ----
+ *
+ * The panel opens empty, and empty reads as broken rather than new. It also hides the two
+ * things here that a scanner cannot do - the account record and checking somebody else's
+ * claim - because both are invisible until you know they exist.
+ *
+ * Shown once, dismissed for good, and never again after any real activity: somebody who
+ * already has a ledger does not need to be told what this is.
+ */
+const INTRO_KEY = "edgerun.intro";
+
+function introDone() {
+  try {
+    localStorage.setItem(INTRO_KEY, "done");
+  } catch {
+    /* private window: it will show again, which is better than not showing */
+  }
+  $("#intro").hidden = true;
+}
+
+function maybeIntro() {
+  let seen = false;
+  try {
+    seen = localStorage.getItem(INTRO_KEY) === "done";
+  } catch {
+    seen = false;
+  }
+  // A ledger with anything in it means they are already using it, so the introduction is
+  // noise - and it quietly marks itself done so it never appears later either.
+  if (seen || rows.length || callers.length) {
+    if (!seen && (rows.length || callers.length)) introDone();
+    $("#intro").hidden = true;
+    return;
+  }
+  $("#intro").hidden = filter !== "all";
+}
+
+$("#intro-x").addEventListener("click", introDone);
+$("#intro-claims").addEventListener("click", () => {
+  introDone();
+  filter = "claims";
+  for (const t of document.querySelectorAll(".tab")) t.classList.toggle("on", t.dataset.filter === "claims");
+  render();
+  $("#claim-in").value = JSON.stringify(exampleClaim(), null, 2);
+  $("#claim-out").innerHTML = "";
+  $("#claim-run").click();
 });
 
 // The callers tab lists accounts, so its clicks never find a .row[data-address] and the

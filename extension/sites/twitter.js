@@ -126,7 +126,8 @@
       // Only mints the worker actually resolved count. `found.mints` are raw base58
       // candidates and most of them are not keys at all.
       const mints = (found.mints || []).filter((m) => byMint.has(m));
-      if ((!found.addresses.length && !mints.length) || !article.isConnected) continue;
+      const anything = found.addresses.length || mints.length || found.tickers.length;
+      if (!anything || !article.isConnected) continue;
 
       const author = authorOf(article);
       if (!author) continue;
@@ -135,6 +136,13 @@
 
       const theirs = E.findTokens(own.innerText || "");
       const written = new Set([...theirs.addresses, ...theirs.mints]);
+
+      // Tickers the author wrote themselves. Counted, never charged - see the note on
+      // `recordSightings`. A page of real timeline is mostly this, and dropping it was why a
+      // scan could read eighty-seven posts and report finding nothing at all.
+      for (const ticker of theirs.tickers.slice(0, 6)) {
+        sightings.push({ handle: author.handle, display: author.display, ticker });
+      }
 
       for (const token of [...found.addresses, ...mints]) {
         if (!written.has(token)) continue; // it came from a quoted post, not from them
@@ -226,7 +234,184 @@
     }
   }
 
+  /* ---- the profile card, and the cold start it fixes ----
+   *
+   * The account record is the thing here a server cannot produce, and until now it built up
+   * only as a side effect of ordinary scrolling. That made a fresh install look like a plain
+   * token checker for the first few days: every badge was about a contract, because there was
+   * no history behind any account yet.
+   *
+   * A profile page fixes both halves at once. It is the one page where showing a whole record
+   * is obviously wanted, and it is also a list of exactly the posts needed to build one. The
+   * scan below does what a reader would do by hand - scroll their timeline - and lets the
+   * existing observer do the recording. Nothing is fetched behind X's back: the same posts,
+   * the same detection, the same attribution rules, just without the wrist work.
+   */
+  let profileFor = null;   // whose card is currently on the page
+  let scanning = false;
+
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  /** Ten seconds. Long enough to read a real slice of a timeline, short enough to sit through. */
+  const SCAN_MS = 10000;
+
+  /*
+   * How hard to push.
+   *
+   * There is a real tension here and it is worth naming: X unmounts posts as they leave the
+   * viewport, so scrolling FASTER covers more timeline but reads less of it - a post that
+   * mounts and unmounts between two ticks is never seen. What makes this survivable is that
+   * detection fires on a 600px margin rather than on screen, so a post is picked up before it
+   * arrives and stays eligible for a step or two after.
+   *
+   * 0.8 of a viewport every 450ms is the compromise: about twenty-two screens in ten seconds,
+   * with every post spending at least one full tick inside the detection margin.
+   */
+  const STEP = 0.8;
+  const TICK = 450;
+
+  /** Permalinks of the posts currently mounted - the honest way to count what was read. */
+  function harvest(into) {
+    let added = 0;
+    for (const a of document.querySelectorAll('article[data-testid="tweet"] a[href*="/status/"]')) {
+      const href = a.getAttribute("href") || "";
+      const m = /\/status\/(\d+)/.exec(href);
+      if (m && !into.has(m[1])) {
+        into.add(m[1]);
+        added++;
+      }
+    }
+    return added;
+  }
+
+  async function scanProfile({ onProgress, stopped } = {}) {
+    if (scanning) return null;
+    scanning = true;
+    const handle = E.profileHandleFrom(location.pathname);
+    const seen = new Set();
+    try {
+      const until = Date.now() + SCAN_MS;
+      let quiet = 0;
+      harvest(seen);
+      while (Date.now() < until && !stopped?.()) {
+        window.scrollBy(0, Math.round(window.innerHeight * STEP));
+        await sleep(TICK);
+        const added = harvest(seen);
+        onProgress?.({ posts: seen.size, left: Math.max(0, until - Date.now()) });
+        // Three quiet ticks means the end of the timeline, or a rate limit. Either way there
+        // is nothing further down to read, so stop rather than spend the rest of the budget
+        // scrolling against a wall.
+        if (added === 0 && ++quiet >= 3) break;
+        if (added > 0) quiet = 0;
+      }
+
+      // The last batch is still in flight: the 220ms flush plus a worker round trip.
+      await sleep(700);
+      window.scrollTo({ top: 0, behavior: "auto" });
+      await sleep(250);
+      const record = await E.ask({ type: "graph:caller", handle });
+      return { record, posts: seen.size };
+    } catch (err) {
+      E.log("profile scan failed", err.message);
+      return null;
+    } finally {
+      scanning = false;
+    }
+  }
+
+  const profileAnchor = () => E.profileAnchorIn(document.querySelector('[data-testid="primaryColumn"]'));
+
+  /*
+   * React can pull the card out again while the profile hydrates. Rather than fight that, put
+   * it back.
+   *
+   * Bounded by TIME rather than by a number of attempts, which was the first instinct and the
+   * wrong one: a count has to guess how many times React will re-render before it settles,
+   * and guessing twelve means giving up on the thirteenth - on exactly the page that needed
+   * one more. A window covers the whole hydration burst however many renders that takes, and
+   * then stops for good.
+   *
+   * Past the window nothing is lost. `sweep()` already rebuilds the card from scratch on any
+   * later mutation; this observer only exists because it can do the same thing synchronously,
+   * without a round trip to the worker, during the one second where the flicker is visible.
+   */
+  const HEAL_MS = 20000;
+  let healer = null;
+
+  function mountCard(card, spot) {
+    spot.el.insertAdjacentElement(spot.where, card);
+    healer?.disconnect();
+    const until = Date.now() + HEAL_MS;
+    healer = new MutationObserver(() => {
+      if (card.isConnected) return;
+      if (Date.now() > until || E.profileHandleFrom(location.pathname) !== profileFor) {
+        return void healer?.disconnect();
+      }
+      const again = profileAnchor();
+      if (again) again.el.insertAdjacentElement(again.where, card);
+    });
+    healer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  // The card we built for the profile currently open, kept so putting it back costs nothing.
+  let currentCard = null;
+
+  async function profileCard() {
+    const handle = E.profileHandleFrom(location.pathname);
+    if (handle !== profileFor) {
+      healer?.disconnect();
+      healer = null;
+      document.querySelector('[data-edgerun="profile"]')?.remove();
+      currentCard = null;
+      profileFor = handle;
+    }
+    if (!handle) return;
+
+    // Already up and attached: nothing to do.
+    if (currentCard?.isConnected) return;
+
+    /*
+     * Built once, then pulled out of the tree by a re-render. Put the SAME element straight
+     * back, synchronously.
+     *
+     * The first version had no branch here: a removed card meant building a new one, which
+     * meant waiting on the worker for the record first. Every re-render therefore cost a
+     * message round trip before anything could reappear, and while that was in flight the
+     * page had usually re-rendered again - so the card lost the race repeatedly and read as
+     * simply gone. Reusing the element removes the wait entirely.
+     */
+    if (currentCard) {
+      const back = profileAnchor();
+      if (back) mountCard(currentCard, back);
+      return;
+    }
+
+    if (document.querySelector('[data-edgerun="profile"]')) return;
+
+    const spot = profileAnchor();
+    if (!spot) return; // the profile has not rendered yet; the next mutation brings us back
+
+    let record = null;
+    try {
+      record = await E.ask({ type: "graph:caller", handle });
+    } catch {
+      /* worker asleep or storage blocked: the card still draws, empty and honest */
+    }
+    if (E.profileHandleFrom(location.pathname) !== handle) return; // navigated away while waiting
+    if (document.querySelector('[data-edgerun="profile"]')) return;
+
+    const fresh = profileAnchor();
+    if (!fresh) return;
+
+    currentCard = E.makeProfileCard(handle, record, {
+      onScan: scanProfile,
+      onOpen: (h) => E.ask({ type: "panel:caller", handle: h }).catch(() => {}),
+    });
+    mountCard(currentCard, fresh);
+  }
+
   function sweep() {
+    profileCard();
     for (const article of tweets()) {
       article.setAttribute(SEEN, "1");
       E.whenNear(article, () => {
@@ -242,5 +427,22 @@
   }
 
   E.watch(document.body, sweep, 300);
+
+  /*
+   * SPA navigation, which mutations alone do not reliably announce.
+   *
+   * Dexscreener and Blockscout have both used this since they were written; X, the one
+   * surface here that is actually a single-page app, was relying entirely on the mutation
+   * sweep. Moving between two profiles therefore left whichever card happened to be mounted
+   * sitting under the wrong account until something else happened to trigger a sweep.
+   */
+  E.onRouteChange(() => {
+    healer?.disconnect();
+    healer = null;
+    document.querySelector('[data-edgerun="profile"]')?.remove();
+    currentCard = null;
+    profileFor = null;
+    sweep();
+  });
   E.log("x surface active");
 })();

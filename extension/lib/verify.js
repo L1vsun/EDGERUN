@@ -103,8 +103,9 @@ function decodeAs(kind, hex) {
  * Returns true, false, or null for "this spec is not one I know how to check", which the
  * caller turns into MANUAL rather than into a failure.
  */
-function matches(equals, got) {
+function matches(equals, got, extra = {}) {
   if (!equals || typeof equals !== "object") return null;
+  if (typeof equals.reverts === "boolean") return extra.reverted === equals.reverts;
   if (typeof equals.value === "string") {
     return equals.decode === "address" ? sameAddress(equals.value, got) : norm(equals.value) === norm(got);
   }
@@ -135,6 +136,18 @@ async function runRpc(e, fetchImpl) {
   }, EVIDENCE_TIMEOUT_MS);
   if (!res?.ok) throw new Error(`endpoint answered ${res?.status ?? "nothing"}`);
   const json = await res.json();
+
+  // A call that REVERTS is the expected outcome for a restricted-transfer claim: "holders
+  // provably cannot move this" is proved by the transfer failing. So a revert is a result
+  // here, not a failure - but only when the evidence said to expect one. Everywhere else an
+  // rpc error still means the endpoint could not answer, which is unreachable, never a
+  // contradiction.
+  if (e.equals?.reverts !== undefined) {
+    const reverted = Boolean(json?.error);
+    const why = json?.error?.message || "";
+    return { raw: json?.error || json?.result, got: reverted ? `reverted: ${why}` : "the call succeeded", reverted };
+  }
+
   if (json?.error) throw new Error(json.error.message || "rpc error");
   const raw = json?.result;
   const decoded = e.equals?.decode ? decodeAs(e.equals.decode, raw) : norm(raw);
@@ -184,8 +197,9 @@ export async function runClaim(claim, { fetchImpl = fetch, allow = isAllowedEndp
       continue;
     }
     try {
-      const { got } = e.kind === "rpc" ? await runRpc(e, fetchImpl) : await runHttp(e, fetchImpl);
-      const hit = matches(e.equals, got);
+      const ran = e.kind === "rpc" ? await runRpc(e, fetchImpl) : await runHttp(e, fetchImpl);
+      const { got } = ran;
+      const hit = matches(e.equals, got, ran);
       // An http check is containment, not selection: it says the expected value appears in
       // the document, not that it appears in the right FIELD of it. Weaker, and labelled so.
       const shown = e.kind === "http" ? (hit ? "present in the document" : "not found in the document") : got;

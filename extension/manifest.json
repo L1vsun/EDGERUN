@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "EDGERUN - token and caller checks",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "description": "Whether the token in that post is the contract it claims to be - six chains, checked in your browser, no server.",
   "permissions": [
     "storage",
@@ -14,6 +14,7 @@
     "https://rpc.mainnet.chain.robinhood.com/*",
     "https://api.robinhood.com/*",
     "https://api.dexscreener.com/*",
+    "https://api.geckoterminal.com/*",
     "https://edgerun.pro/*",
     "https://l1vsun.github.io/*",
     "https://ethereum-rpc.publicnode.com/*",

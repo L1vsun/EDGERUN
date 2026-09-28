@@ -80,4 +80,101 @@ assert.equal(spanText(60000), "1 minute");
 assert.equal(spanText(11 * 60000), "11 minutes");
 assert.equal(spanText(3 * 3600000), "3 hours");
 
+// ---- whose profile is this ----
+//
+// The profile page is the one surface where an account's whole record is obviously wanted:
+// the reader went there to size somebody up. Getting this wrong in the permissive direction
+// puts a person-shaped panel on /home and /explore.
+const { profileHandleFrom } = ctx.EDGERUN;
+
+assert.equal(profileHandleFrom("/elonmusk"), "elonmusk");
+assert.equal(profileHandleFrom("/ElonMusk"), "elonmusk", "handles fold to lowercase, as the graph stores them");
+assert.equal(profileHandleFrom("/someone/with_replies"), "someone");
+assert.equal(profileHandleFrom("/someone/media"), "someone");
+assert.equal(profileHandleFrom("/someone/likes"), "someone");
+
+// a post is not a profile - the feed code owns that page
+assert.equal(profileHandleFrom("/someone/status/1234567890"), null);
+assert.equal(profileHandleFrom("/someone/followers"), null, "an unknown second segment is not a profile tab");
+
+// reserved paths are not people
+for (const p of ["/home", "/explore", "/notifications", "/messages", "/search", "/settings", "/i/bookmarks", "/compose/tweet"]) {
+  assert.equal(profileHandleFrom(p), null, `${p} is not an account`);
+}
+
+// junk
+assert.equal(profileHandleFrom("/"), null);
+assert.equal(profileHandleFrom(""), null);
+assert.equal(profileHandleFrom(null), null);
+assert.equal(profileHandleFrom("/a".repeat(20)), null);
+assert.equal(profileHandleFrom("/toolongahandleforx99"), null, "handles are at most 15 characters");
+assert.equal(profileHandleFrom("/bad-handle"), null, "a hyphen is not a legal handle character");
+
+// ---- where the profile card can be mounted ----
+//
+// Two field reports, two different wrong answers, and the second one is the instructive one.
+//
+// First it was anchored off the UserName element's own parent - inside a component X
+// re-renders as the profile hydrates - so it appeared and vanished.
+//
+// Then it walked UP from the timeline to whichever node was a direct child of the column, on
+// the theory that a node between two of the column's own children survives a re-render of
+// either. A real profile column has ONE wrapper holding the header, the tab bar and the feed,
+// so the walk reached that wrapper and `afterend` put the card BELOW THE ENTIRE PAGE, after
+// every post. The theory was about stability and it cost correctness, which is the worse
+// trade: removal is already handled by re-mounting, position is not recoverable.
+//
+// So: no walking. The tab bar is one element, unambiguous, and where a reader looks.
+const { profileAnchorIn } = ctx.EDGERUN;
+
+const el = (tag, attrs = {}, kids = []) => {
+  const node = {
+    tag, attrs, children: kids, parentElement: null,
+    matches(sel) {
+      if (sel === 'nav[role="navigation"]') return this.tag === "nav" && this.attrs.role === "navigation";
+      if (sel === "nav") return this.tag === "nav";
+      if (sel === 'section[role="region"]') return this.tag === "section" && this.attrs.role === "region";
+      return false;
+    },
+    querySelector(sel) {
+      for (const k of this.children) {
+        if (k.matches(sel)) return k;
+        const deep = k.querySelector(sel);
+        if (deep) return deep;
+      }
+      return null;
+    },
+  };
+  for (const k of kids) k.parentElement = node;
+  return node;
+};
+
+// The shape that caused the bug: ONE wrapper holding everything.
+const nav = el("nav", { role: "navigation" });
+const section = el("section", { role: "region" });
+const wrapper = el("div", {}, [el("div", { "data-testid": "UserName" }), nav, section]);
+const column = el("div", { "data-testid": "primaryColumn" }, [wrapper]);
+
+let spot = profileAnchorIn(column);
+assert.equal(spot.el, nav, "anchored on the tab bar itself");
+assert.equal(spot.where, "afterend", "directly under it, where the reader is looking");
+assert.notEqual(spot.el, wrapper, "NEVER the wrapper - that is how it ended up below every post");
+assert.notEqual(spot.el, column);
+
+// hydrating: feed present, tab bar not yet
+spot = profileAnchorIn(el("div", { "data-testid": "primaryColumn" }, [el("div", {}, [section])]));
+assert.equal(spot.el, section);
+assert.equal(spot.where, "beforebegin", "above the feed, not below it");
+
+// a nav without the role attribute is still the tab bar
+spot = profileAnchorIn(el("div", {}, [el("div", {}, [el("nav")])]));
+assert.equal(spot.el.tag, "nav");
+
+// nothing recognisable yet is an ANSWER, not a failure: the next mutation tries again, and
+// guessing is what put the card at the bottom of the page in the first place
+assert.equal(profileAnchorIn(el("div", { "data-testid": "primaryColumn" }, [el("div", { "data-testid": "UserName" })])), null,
+  "a profile header alone is not enough to place it");
+assert.equal(profileAnchorIn(el("div", {})), null);
+assert.equal(profileAnchorIn(null), null);
+
 console.log("account: ok");

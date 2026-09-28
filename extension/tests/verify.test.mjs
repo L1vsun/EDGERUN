@@ -228,4 +228,94 @@ assert.match(r.checks[0].why, /run it yourself/);
 assert.equal(r.contradicted, 0, "refusing to fetch is not evidence against the claim");
 assert.equal(r.verdict, "unproven");
 
+// ---- restricted-transfer: evidence whose expected outcome is a REVERT ----
+//
+// "Holders provably cannot move it" is the strongest finding this project makes, and it was
+// the one that could not become a claim: the exit test threw the holder addresses away and
+// kept a sentence with a shortened address in it. Now the holders travel with the check.
+//
+// The semantics are inverted here and that is the whole subtlety: a call that fails is the
+// evidence. It must NOT be confused with an endpoint that could not be reached.
+const { restrictedTransferClaim } = await import("../lib/claim-from.js");
+
+const HOLDER_A = "0x1111111111111111111111111111111111111111";
+const HOLDER_B = "0x2222222222222222222222222222222222222222";
+const blockedVerdict = {
+  address: "0xd18f5e73ec5e2d0b18ebe97426dc5edc2c887715", symbol: "TSLA", scannedAt: Date.now(),
+  checks: [{
+    id: "exit_test", label: "exit test", status: "fail", detail: "all holders blocked",
+    data: { sink: "0x000000000000000000000000000000000000dEaD", amount: "1",
+            blocked: [{ address: HOLDER_A, why: "blacklisted" }], passed: [] },
+  }],
+};
+
+const rt = restrictedTransferClaim(blockedVerdict);
+assert.ok(rt, "a blocked exit test now produces a claim");
+assert.equal(rt.type, "restricted-transfer");
+assert.equal(rt.target, null, "nothing is being impersonated, so there is no target to show");
+assert.equal(validateClaim(rt).ok, true, validateClaim(rt).errors?.join("; "));
+assert.ok(rt.evidence[0].params[0].from === HOLDER_A, "it re-runs the call from the real holder");
+assert.deepEqual(rt.evidence[0].equals, { reverts: true });
+
+// the revert IS the reproduction
+r = await runClaim(rt, { allow: () => true, fetchImpl: async () => okJson({ error: { message: "execution reverted: blacklisted" } }) });
+assert.equal(r.verdict, "reproduced", "a call that reverts as predicted reproduces the claim");
+assert.match(r.checks[0].got, /^reverted: execution reverted/);
+
+// and a call that unexpectedly SUCCEEDS contradicts it - the token became movable
+r = await runClaim(rt, { allow: () => true, fetchImpl: async () => okJson({ result: "0x01" }) });
+assert.equal(r.verdict, "contradicted", "if holders can move it now, the claim no longer holds");
+assert.equal(r.checks[0].got, "the call succeeded");
+
+// a dead endpoint is STILL not a reproduction, even though this evidence expects a failure
+r = await runClaim(rt, { allow: () => true, fetchImpl: dead });
+assert.equal(r.checks[0].status, "unreachable");
+assert.equal(r.reproduced, 0, "an unreachable endpoint must never be mistaken for a revert");
+
+// ---- selective restriction: some move, some cannot, same block ----
+const selective = restrictedTransferClaim({
+  ...blockedVerdict,
+  checks: [{ ...blockedVerdict.checks[0], status: "warn",
+    data: { ...blockedVerdict.checks[0].data, passed: [HOLDER_B] } }],
+});
+assert.match(selective.says, /selective restriction/);
+assert.equal(selective.evidence.filter((e) => e.kind === "rpc").length, 2,
+  "both sides: one holder who cannot move it and one who can");
+assert.deepEqual(selective.evidence[1].equals, { reverts: false });
+
+// an exit test that PASSED makes no claim at all
+assert.equal(restrictedTransferClaim({ address: "0xa", checks: [{ id: "exit_test", status: "ok" }] }), null);
+assert.equal(restrictedTransferClaim({ address: "0xa", checks: [] }), null);
+// nor does a fail with no structured residue - an old verdict from before `data` existed
+assert.equal(restrictedTransferClaim({ address: "0xa", checks: [{ id: "exit_test", status: "fail" }] }), null,
+  "no holders recorded means nothing to re-run, and a claim that cannot be re-run is not made");
+
+// ---- the worked example shipped in the panel ----
+//
+// The claims tab is unusable until somebody sends you a claim, so it ships with a real one:
+// this project's own blocklist entry, rewritten in the format. It has to be VALID and it has
+// to be self-checkable, or the first thing a new user clicks returns "nothing can be checked
+// automatically" and teaches them the feature does not work.
+//
+// Offline here on purpose - a test suite that needs the network is a test suite that fails on
+// a plane. Both facts were confirmed against live endpoints on 2026-09-28 and the claim came
+// back reproduced, 2 of 2.
+const { exampleClaim } = await import("../lib/example-claim.js");
+const ex = exampleClaim();
+const exValid = validateClaim(ex);
+assert.equal(exValid.ok, true, exValid.errors?.join("; "));
+
+const exRunnable = ex.evidence.filter((e) => e.kind === "rpc" || e.kind === "http");
+assert.equal(exRunnable.length, 2, "two runnable legs: what it calls itself, and what the real one is");
+assert.ok(exRunnable.every((e) => e.equals), "every runnable leg carries a machine-checkable expectation");
+assert.ok(ex.evidence.some((e) => e.kind === "note"), "and the note explaining the both-sides rule");
+
+// it must point at endpoints the verifier will actually contact, or the example returns
+// "run it yourself" and demonstrates nothing
+assert.ok(exRunnable.every((e) => isAllowedEndpoint(e.endpoint || e.url)),
+  "the example only uses endpoints the extension already talks to");
+
+// and it must survive the round trip through a clipboard
+assert.equal(parseClaims(JSON.stringify(ex, null, 2))[0].id, ex.id);
+
 console.log("verify: ok");

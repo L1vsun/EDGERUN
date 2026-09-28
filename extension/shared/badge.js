@@ -592,4 +592,230 @@
     root.append(style, row);
     return host;
   };
+
+  /* ---- the profile card ----
+   *
+   * The whole record, on the one page where the reader has already decided they want it. A
+   * profile is a question - "who is this" - and this is the half of the answer that nothing
+   * else on the page can give: not the follower count, which is purchasable, but what this
+   * account has actually put in front of YOU, and how it turned out.
+   *
+   * It shows on every profile, including the ones with nothing recorded, and that is not the
+   * same inconsistency as badging every post. Here the empty state IS the answer to the
+   * question the reader asked by navigating here, and it is also the only honest place to
+   * say "this is empty because I have not read their posts yet" and offer to go and read them.
+   */
+  const PROFILE_CSS = `
+    :host { all: initial; ${TOKENS} display: block; width: 100%; margin: 10px 0; font-family: ${FONT}; }
+    * { box-sizing: border-box; }
+    .card { border: 1px solid var(--line); border-left: 4px solid var(--muted); border-radius: var(--radius);
+      background: var(--card); color: var(--ink); padding: 12px 14px; box-shadow: var(--shadow); }
+    .card.bad { border-left-color: var(--bad); }
+    .card.warn { border-left-color: var(--warn); }
+    .card.ok { border-left-color: var(--ok); }
+    .h { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .h b { font-size: 13.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+    .h .who { font-family: ${MONO}; font-size: 13px; font-weight: 700; }
+    .nums { display: flex; gap: 18px; margin: 10px 0 2px; }
+    .nums div { display: flex; flex-direction: column; }
+    .nums b { font-size: 19px; font-weight: 800; line-height: 1.1; }
+    .nums.bad b.hot { color: var(--bad); }
+    .nums span { font-size: 11px; color: var(--muted); }
+    .say { margin-top: 8px; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
+    .calls { margin: 10px 0 0; padding: 8px 0 0; border-top: 1px solid var(--line); }
+    .call { display: flex; align-items: baseline; gap: 8px; font-size: 12px; padding: 3px 0; }
+    .call code { font-family: ${MONO}; font-size: 11px; color: var(--muted); }
+    .call .v { margin-left: auto; font-size: 10px; font-weight: 800; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--muted); }
+    .call .v.fail { color: var(--bad); }
+    .call .v.warn { color: var(--warn); }
+    .acts { display: flex; gap: 7px; margin-top: 11px; }
+    .acts button { font: inherit; font-size: 12px; font-weight: 700; padding: 6px 11px; cursor: pointer;
+      color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
+    .acts button:hover { background: var(--soft); }
+    .acts button.go { color: #131a02; background: var(--signal); border-color: var(--signal); }
+    .acts button:disabled { opacity: .6; cursor: default; }
+    .acts.running { align-items: center; }
+    .prog { font-size: 12.5px; color: var(--muted); }
+    .prog b { color: var(--ink); font-variant-numeric: tabular-nums; }
+    .warn-box { margin-top: 11px; padding: 10px 12px; border-radius: 10px;
+      background: var(--warn-soft); border: 1px solid #f0dcb4; }
+    .warn-box b { display: block; font-size: 12.5px; margin-bottom: 4px; }
+    .warn-box span { display: block; font-size: 12px; line-height: 1.5; color: var(--muted); }
+    .summary { margin: 9px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--ink); }
+    .talk { margin: 8px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+    .talk b { color: var(--ink); }
+  `;
+
+  const VTONE = { FAIL: "fail", CAUTION: "warn" };
+
+  /**
+   * @param handle  whose profile this is
+   * @param record  what `graph:caller` returned, or null for an account never seen posting one
+   * @param onScan  called to read this profile's recent posts into the record
+   * @param onOpen  called to open the side panel on this account
+   */
+  E.makeProfileCard = function makeProfileCard(handle, record, { onScan, onOpen } = {}) {
+    const host = document.createElement("div");
+    host.className = "edgerun-profile";
+    host.setAttribute("data-edgerun", "profile");
+
+    /*
+     * Inline, and `!important`, which is not decoration.
+     *
+     * A `:host` rule inside the shadow root is the WEAKEST thing that can style this element:
+     * the host page's own rules outrank it, as the note at the top of this file already says
+     * about fonts. On a profile page the card lands among X's own layout children, where a
+     * single inherited `height: 0`, `overflow: hidden` or `display: flex` on the parent is
+     * enough to collapse it to nothing while it sits there in the DOM, present and invisible.
+     *
+     * An inline declaration with `!important` is the one thing an author stylesheet cannot
+     * outrank, so the card survives whatever it is dropped into.
+     */
+    host.style.cssText = [
+      "display:block!important",
+      "width:100%!important",
+      "max-width:100%!important",
+      "height:auto!important",
+      "min-height:0!important",
+      "max-height:none!important",
+      "flex:none!important",
+      "position:relative!important",
+      "visibility:visible!important",
+      "opacity:1!important",
+      "overflow:visible!important",
+      "z-index:2147483000",
+      "margin:10px 0!important",
+      "box-sizing:border-box",
+    ].join(";");
+
+    const root = host.attachShadow({ mode: "open" });
+    const style = document.createElement("style");
+    style.textContent = PROFILE_CSS;
+    const card = document.createElement("div");
+
+    // idle -> confirm -> running -> idle, with a summary once something has been read
+    let stage = "idle";
+    let progress = 0;
+    let summary = null;
+    let stopFlag = false;
+
+    const draw = (rec, busy) => {
+      const tokens = rec?.tokens || 0;
+      const flagged = rec?.flagged || 0;
+      const ratio = tokens ? flagged / tokens : 0;
+      card.className = `card ${!tokens ? "" : flagged && ratio >= 1 / 3 ? "bad" : flagged ? "warn" : "ok"}`;
+
+      const calls = (rec?.calls || []).slice(0, 5).map((c) => `
+        <div class="call"><span>${esc(c.symbol || "unnamed")}</span>
+        <code>${esc(String(c.address).slice(0, 10))}…</code>
+        <span class="v ${VTONE[c.verdict] || ""}">${esc(c.verdict || "unresolved")}</span></div>`).join("");
+
+      // Mentions are context and sit apart from the numbers that can mark an account.
+      const mentions = rec?.mentions || 0;
+      const topTickers = (rec?.tickers || []).slice(0, 5);
+      const talk = mentions
+        ? `<p class="talk"><b>${mentions}</b> ticker mention${mentions === 1 ? "" : "s"}${
+            topTickers.length ? ` \u00b7 mostly ${topTickers.map((t) => `$${esc(t.ticker)}`).join(", ")}` : ""
+          }. Naming a ticker is not posting a contract, so this is not counted against anyone.</p>`
+        : "";
+
+      const body = tokens
+        ? `<div class="nums ${flagged ? "bad" : ""}">
+             <div><b class="${flagged ? "hot" : ""}">${flagged}</b><span>flagged</span></div>
+             <div><b>${tokens}</b><span>contracts</span></div>
+             <div><b>${rec.days || 1}</b><span>day${(rec.days || 1) === 1 ? "" : "s"}</span></div>
+           </div>
+           <p class="say">${esc(rec.say || "")}. Counted only from posts you have actually scrolled past - this is your record of them, not a public score.</p>
+           ${talk}
+           ${calls ? `<div class="calls">${calls}</div>` : ""}`
+        : mentions
+          ? `<p class="say">No contracts from this account yet - but it does talk about tokens.</p>${talk}`
+          : `<p class="say">Nothing recorded from this account yet. The record only fills with posts you have scrolled past, so a profile you have never opened is empty rather than clean.</p>`;
+
+      /*
+       * The scan takes the page over for ten seconds, so it asks first.
+       *
+       * Not a formality. It scrolls the timeline out from under the reader, and somebody who
+       * did not expect that reasonably concludes the page has broken or that something is
+       * running away with their browser. A sentence saying what will happen, what it costs
+       * and where it goes turns the same ten seconds into a thing they chose.
+       */
+      const acts =
+        stage === "confirm"
+          ? `<div class="warn-box">
+               <b>This will scroll their timeline for about 10 seconds.</b>
+               <span>It reads their recent posts the same way you would by scrolling, and records which
+               contracts they put in front of you. It returns to the top when it is done. Leave the page
+               alone while it runs, and nothing leaves this machine.</span>
+             </div>
+             <div class="acts">
+               <button class="go" data-act="start">start</button>
+               <button data-act="cancel">cancel</button>
+             </div>`
+          : stage === "running"
+            ? `<div class="acts running">
+                 <span class="prog">reading… <b>${progress}</b> post${progress === 1 ? "" : "s"}</span>
+                 <button data-act="stop">stop</button>
+               </div>`
+            : `<div class="acts">
+                 <button class="go" data-act="scan"${busy ? " disabled" : ""}>${tokens ? "read more posts" : "read their recent posts"}</button>
+                 ${tokens ? '<button data-act="open">open the record</button>' : ""}
+               </div>`;
+
+      card.innerHTML = `
+        <div class="h"><b>Edgerun</b><span class="who">@${esc(handle)}</span></div>
+        ${body}
+        ${summary ? `<p class="summary">${esc(summary)}</p>` : ""}
+        ${acts}`;
+
+      card.querySelector('[data-act="open"]')?.addEventListener("click", () => onOpen?.(handle));
+      card.querySelector('[data-act="cancel"]')?.addEventListener("click", () => {
+        stage = "idle";
+        draw(rec, false);
+      });
+      card.querySelector('[data-act="scan"]')?.addEventListener("click", () => {
+        stage = "confirm";
+        draw(rec, false);
+      });
+      card.querySelector('[data-act="stop"]')?.addEventListener("click", () => {
+        stopFlag = true;
+      });
+      card.querySelector('[data-act="start"]')?.addEventListener("click", async () => {
+        stage = "running";
+        progress = 0;
+        stopFlag = false;
+        summary = null;
+        draw(rec, false);
+        try {
+          const out = await onScan?.({
+            onProgress: ({ posts }) => {
+              progress = posts;
+              // only the counter is repainted: a full redraw every 450ms would steal focus
+              // from the stop button, which is the one control that has to stay clickable
+              const el = card.querySelector(".prog b");
+              if (el) el.textContent = String(posts);
+            },
+            stopped: () => stopFlag,
+          });
+          stage = "idle";
+          const read = out?.posts || 0;
+          const after = out?.record || rec;
+          const found = (after?.tokens || 0) - (rec?.tokens || 0);
+          summary = read
+            ? `Read ${read} post${read === 1 ? "" : "s"}. ${found > 0 ? `${found} new contract${found === 1 ? "" : "s"} recorded.` : "No contracts in them - which is itself worth knowing."}`
+            : "Nothing could be read from this timeline.";
+          draw(after, false);
+        } catch {
+          stage = "idle";
+          draw(rec, false);
+        }
+      });
+    };
+
+    draw(record, false);
+    root.append(style, card);
+    host.update = (rec) => draw(rec, false);
+    return host;
+  };
 })();
