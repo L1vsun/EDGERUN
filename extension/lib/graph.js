@@ -239,6 +239,31 @@ export async function tokenCallers(address) {
   }
 }
 
+/**
+ * Several accounts' records in one storage read.
+ *
+ * The feed needs this, not `callerRecord`: a sweep renders a batch of posts at once, and one
+ * message per author would be a dozen round trips to the worker for a single screen. The
+ * per-account `calls` list is deliberately left out - the feed shows the count, and shipping
+ * eighty call objects per author across the message boundary to render one line is waste.
+ */
+export async function callerRecords(handles) {
+  const wanted = [...new Set((handles || []).map((h) => String(h).toLowerCase()).filter(Boolean))];
+  if (!wanted.length) return {};
+  try {
+    const store = await chrome.storage.local.get(wanted.map(acctKey));
+    const out = {};
+    for (const handle of wanted) {
+      const acct = store[acctKey(handle)];
+      if (!acct) continue;
+      out[handle] = summarizeCaller(acct);
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
 /** The same, for a whole ledger's worth of addresses, in one storage read. */
 export async function tokenCallersMany(addresses) {
   const wanted = [...new Set((addresses || []).map((a) => String(a).toLowerCase()))];

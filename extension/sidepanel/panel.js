@@ -522,6 +522,15 @@ function render() {
 
   const list = $("#list");
   $("#privacy").hidden = filter !== "callers";
+  $("#claimcheck").hidden = filter !== "claims";
+
+  // The claims tab is not a list of anything this session found - it is a box you put
+  // somebody else's accusation into - so it owns the whole panel body and the ledger
+  // renderer sits this one out.
+  if (filter === "claims") {
+    list.replaceChildren();
+    return;
+  }
 
   // The callers tab lists accounts, not tokens, so it does not share the row renderer.
   if (filter === "callers") {
@@ -559,6 +568,9 @@ async function load() {
     rows = [];
   }
   await loadGraphTokens();
+  // Opening straight onto the callers tab (a click on an account strip in the feed) needs the
+  // account list fetched before the first paint, or the tab renders empty and then fills.
+  if (filter === "callers") await loadCallers();
   renderWhere();
   render();
 }
@@ -664,6 +676,14 @@ async function readFocus() {
     // only honour a focus that was set for this opening, not one left over from an hour ago
     const hit = got[key];
     if (hit && Date.now() - hit.at < 15000) {
+      // An account strip was clicked rather than a badge: the answer is on the callers tab,
+      // so open there with that record already expanded instead of on the ledger.
+      if (hit.handle) {
+        filter = "callers";
+        openCallers.add(hit.handle);
+        for (const t of document.querySelectorAll(".tab")) t.classList.toggle("on", t.dataset.filter === "callers");
+        return;
+      }
       focusAddress = hit.address;
       open.add(hit.address);
     }
@@ -967,6 +987,90 @@ for (const tab of document.querySelectorAll(".tab")) {
     render();
   });
 }
+
+/* ---- checking somebody else's claim ----
+ *
+ * The one place in this panel where the subject is not something this browser found. A claim
+ * arrives from outside, and the answer comes from the endpoints the claim itself names -
+ * never from the reporter, and never from us. A reader ends up believing the chain or not
+ * believing it, which is the only kind of belief this format was built to produce.
+ */
+
+const CLAIM_TONE = { reproduced: "ok", contradicted: "fail", partial: "warn", unproven: "" };
+
+function renderClaimCheck(entry) {
+  const { claim, valid, errors, result } = entry;
+  const head = `${esc(claim.type || "claim")}${claim.subject?.address ? ` · ${esc(String(claim.subject.address).slice(0, 12))}…` : ""}`;
+
+  if (!valid) {
+    // Not "we could not read it" - a specific, quotable reason it is not checkable. Somebody
+    // is spreading this accusation, and "it carries no evidence anyone can run" is the most
+    // useful thing that can be said about it.
+    return `<article class="row fail">
+      <div class="head"><div class="who-what"><span class="sym">${head}</span></div>
+      <span class="verdict fail">not checkable</span>
+      <span class="say">${esc(claim.says || "")}</span></div>
+      <div class="detail">${errors.map((e) => `<div class="check"><i class="fail"></i><span>${esc(e)}</span></div>`).join("")}</div>
+    </article>`;
+  }
+
+  const tone = CLAIM_TONE[result.verdict] || "";
+  const rows = result.checks
+    .map((c) => {
+      const dot = c.status === "reproduced" ? "ok" : c.status === "contradicted" ? "fail" : "unresolved";
+      const got = c.got ? ` <b>got:</b> ${esc(String(c.got).slice(0, 120))}` : "";
+      const weak = c.weak ? " (found in the document, not selected from a field - weaker)" : "";
+      const why = c.why ? ` - ${esc(c.why)}` : "";
+      return `<div class="check"><i class="${dot}"></i><span>
+        <b>${esc(c.status)}</b>${esc(weak)}${why}<br />${esc(c.means || c.expect || "")}${got}
+      </span></div>`;
+    })
+    .join("");
+
+  return `<article class="row ${tone}">
+    <div class="head"><div class="who-what"><span class="sym">${head}</span></div>
+    <span class="verdict ${tone}">${esc(result.verdict)}</span>
+    <span class="say">${esc(sayClaimResult(result))}</span></div>
+    <div class="detail">${rows}</div>
+  </article>`;
+}
+
+// Kept here rather than imported so the panel says it in the panel's voice, and so a change
+// of wording never has to travel through the worker.
+function sayClaimResult(r) {
+  if (r.verdict === "contradicted") return `Does not hold: ${r.contradicted} check(s) came back different from what it says.`;
+  if (r.verdict === "reproduced") return `Reproduced here, ${r.reproduced} of ${r.reproduced} checks, without trusting the reporter.`;
+  if (r.verdict === "partial") {
+    const rest = [r.unreachable ? `${r.unreachable} unreachable` : null, r.manual ? `${r.manual} to read by hand` : null].filter(Boolean).join(", ");
+    return `${r.reproduced} reproduced; ${rest}.`;
+  }
+  if (r.unreachable) return "Could not be reached. That is not evidence against it.";
+  return "Nothing here can be checked automatically; the evidence is written for a human.";
+}
+
+$("#claim-run").addEventListener("click", async () => {
+  const text = $("#claim-in").value.trim();
+  const out = $("#claim-out");
+  if (!text) return void (out.innerHTML = "");
+  out.innerHTML = '<div class="empty"><b>running it…</b><span>against the endpoints the claim names</span></div>';
+  let data;
+  try {
+    data = await ask({ type: "claim:check", text });
+  } catch (err) {
+    out.innerHTML = `<div class="empty"><b>could not run it</b><span>${esc(String(err?.message || err))}</span></div>`;
+    return;
+  }
+  if (!data?.claims?.length) {
+    out.innerHTML = '<div class="empty"><b>no claim found in that</b><span>A claim is a JSON object with a type and a list of evidence. Paste the whole message if you are not sure which part it is.</span></div>';
+    return;
+  }
+  out.innerHTML = data.claims.map(renderClaimCheck).join("");
+});
+
+$("#claim-clear").addEventListener("click", () => {
+  $("#claim-in").value = "";
+  $("#claim-out").innerHTML = "";
+});
 
 // The callers tab lists accounts, so its clicks never find a .row[data-address] and the
 // main list handler ignores them.

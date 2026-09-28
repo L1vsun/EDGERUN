@@ -519,3 +519,35 @@ button { font: inherit; cursor: pointer; }
 }
 .k-acts a { font-size: 12px; font-weight: 700; color: var(--ok); text-decoration: none; }
 .k-acts a:hover { text-decoration: underline; }
+
+/* ---- checking somebody else's claim ----
+   The only panel surface whose subject came from outside this browser. It is deliberately
+   plain: a box, a button, and the chain's answer. Anything that made it look authoritative
+   would be working against the point, which is that nothing here is being taken on trust. */
+
+.claimcheck { padding: 12px 14px 0; }
+.claimcheck-say { margin: 0 0 9px; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
+.claimcheck textarea {
+  width: 100%;
+  padding: 9px 11px;
+  font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  resize: vertical;
+}
+.claimcheck textarea:focus { outline: none; border-color: var(--signal); box-shadow: 0 0 0 3px rgba(178, 230, 4, 0.2); }
+.claimcheck-acts { display: flex; gap: 6px; margin: 8px 0 12px; }
+.claimcheck-acts .go {
+  padding: 6px 13px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--on-signal);
+  background: var(--signal);
+  border: 1px solid var(--signal);
+  border-radius: 8px;
+}
+.claimcheck-acts .go:hover { filter: brightness(0.94); }
+#claim-out .row { margin-bottom: 8px; }
+#claim-out .detail { padding-top: 8px; border-top: 1px solid var(--line); }

@@ -28,6 +28,7 @@
       <button class="tab" data-filter="flagged" role="tab">flagged <span class="n bad" id="n-flagged">0</span></button>
       <button class="tab" data-filter="watch" role="tab">watching <span class="n" id="n-watch">0</span></button>
       <button class="tab" data-filter="callers" role="tab">callers <span class="n" id="n-callers">0</span></button>
+      <button class="tab" data-filter="claims" role="tab">claims</button>
     </nav>
 
     <p class="where" id="where"></p>
@@ -41,6 +42,23 @@
         <button id="graph-pause" class="ghost">pause</button>
         <button id="graph-wipe" class="ghost danger">forget everyone</button>
       </div>
+    </div>
+
+    <!-- Shown only on the claims tab. Somebody else's accusation goes in; what the chain
+         actually says comes back. Nothing about who wrote it is consulted - that is the
+         whole point of the claim format, and until this box existed it was theory. -->
+    <div class="claimcheck" id="claimcheck" hidden>
+      <p class="claimcheck-say">
+        Paste a claim someone sent you. The evidence in it runs here, against the endpoints it
+        names, so you never have to take the reporter's word for it.
+      </p>
+      <textarea id="claim-in" rows="4" spellcheck="false"
+        placeholder="paste a claim (JSON), or the whole message it arrived in"></textarea>
+      <div class="claimcheck-acts">
+        <button id="claim-run" class="go">check it</button>
+        <button id="claim-clear" class="ghost">clear</button>
+      </div>
+      <div id="claim-out" aria-live="polite"></div>
     </div>
 
     <main id="list" class="list" aria-live="polite"></main>

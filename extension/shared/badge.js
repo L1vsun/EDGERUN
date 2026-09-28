@@ -524,4 +524,72 @@
 
     return host;
   };
+
+  /* ---- the account strip ----
+   *
+   * Deliberately NOT a makeBadge with a different colour. A badge is about a contract and its
+   * whole panel is built for one - "who launched it", "copy proof", "watch" all take an
+   * address. An account is a different object and answering it through the token panel would
+   * have meant a synthetic address threaded through code that assumes addresses are real.
+   *
+   * It is also quieter than a badge on purpose. The contract verdict is the thing to act on
+   * right now; the record is context for it, and context that shouts competes with the
+   * warning it is supposed to support.
+   */
+  const ACCOUNT_CSS = `
+    :host { all: initial; ${TOKENS} display: block; width: 100%; margin: 8px 0 0; font-family: ${FONT}; }
+    * { box-sizing: border-box; }
+    .acct { display: flex; align-items: flex-start; gap: 9px; width: 100%; text-align: left;
+      padding: 8px 12px; border-radius: 10px; cursor: pointer; border: 1px solid var(--line);
+      border-left: 4px solid var(--muted); background: var(--card); color: var(--ink);
+      font-size: 12.5px; line-height: 1.45; font-family: ${FONT}; }
+    .acct:hover { background: var(--soft); }
+    .acct.bad { border-left-color: var(--bad); }
+    .acct.warn { border-left-color: var(--warn); }
+    .acct.ok { border-left-color: var(--ok); }
+    .who { font-family: ${MONO}; font-weight: 700; white-space: nowrap; }
+    .acct.bad .who { color: var(--bad); }
+    .say { color: var(--muted); }
+    .with { display: block; margin-top: 2px; font-family: ${MONO}; font-size: 11.5px; color: var(--muted); }
+  `;
+
+  /**
+   * @param account the shape `E.decideAccount` returns, or null for nothing at all
+   * @param onOpen  called with the handle - opens the record in the side panel
+   */
+  E.makeAccountStrip = function makeAccountStrip(account, { onOpen } = {}) {
+    if (!account || !account.lead) return null;
+    const host = document.createElement("div");
+    host.className = "edgerun-account";
+    host.setAttribute("data-edgerun", "account");
+    host.style.cssText = "display:block;width:100%;";
+    const root = host.attachShadow({ mode: "open" });
+    const style = document.createElement("style");
+    style.textContent = ACCOUNT_CSS;
+
+    const row = document.createElement("div");
+    row.className = `acct ${account.tone || "flat"}`;
+    row.setAttribute("role", "button");
+    row.setAttribute("tabindex", "0");
+
+    // Handles come from the page, so they are escaped like any other host-page string.
+    const who = account.handle ? `<span class="who">@${esc(account.handle)}</span>` : "";
+    const together = account.cluster?.handles?.length
+      ? `<span class="with">${account.cluster.handles.slice(0, 6).map((h) => `@${esc(h)}`).join("  ")}</span>`
+      : "";
+    row.innerHTML = `${who}<span class="body"><span class="say">${esc(account.lead)}</span>${together}</span>`;
+
+    const open = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (account.handle) onOpen?.(account.handle);
+    };
+    row.addEventListener("click", open);
+    row.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") open(e);
+    });
+
+    root.append(style, row);
+    return host;
+  };
 })();

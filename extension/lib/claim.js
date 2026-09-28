@@ -61,24 +61,41 @@ export function claimId({ type, subject, target }) {
   return `${type}/${part(subject)}/of/${part(target)}`;
 }
 
-/** An `eth_call` anyone can paste into curl, with what it should return. */
-export const rpcEvidence = ({ endpoint, method, params, expect, means, at }) => ({
+/**
+ * An `eth_call` anyone can paste into curl, with what it should return.
+ *
+ * `expect` is the sentence a human reads. `equals` is the same expectation in a form a
+ * machine can compare - `{ decode: "string"|"address"|"uint"|"raw", value }` - and is what
+ * `verify.js` actually checks against. Both, because matching a regex against the human
+ * sentence would be a guess wearing the costume of a check. Optional: evidence without it is
+ * reported as needing a human, never as passing.
+ */
+export const rpcEvidence = ({ endpoint, method, params, expect, means, at, equals }) => ({
   kind: "rpc",
   endpoint,
   method,
   params,
   expect,
   means,
+  ...(equals ? { equals } : {}),
   ...(at ? { at } : {}),
 });
 
-/** A fact read out of a public document, addressed precisely enough to find again. */
-export const httpEvidence = ({ url, pointer, expect, means }) => ({
+/**
+ * A fact read out of a public document, addressed precisely enough to find again.
+ *
+ * `pointer` is a jq expression for a person at a terminal. `equals` here is `{ contains }`,
+ * because an automatic check of a document fetched in a browser is containment, not
+ * selection - it establishes that the expected value is in the document, not that it sits in
+ * the right field. Genuinely weaker, reported as weaker, and not pretended otherwise.
+ */
+export const httpEvidence = ({ url, pointer, expect, means, equals }) => ({
   kind: "http",
   url,
   pointer,
   expect,
   means,
+  ...(equals ? { equals } : {}),
 });
 
 /** Context a human needs and a machine cannot check. Never counts toward verifiability. */
@@ -194,6 +211,56 @@ export function verifyPlan(claim) {
     }
   }
   return lines;
+}
+
+/**
+ * Pull claims out of whatever somebody actually pasted.
+ *
+ * The receiving end of sharing, and it has to be tolerant, because what a person pastes is
+ * rarely a bare document. This project's own "copy claim" emits JSON followed by a prose
+ * "How to check it:" block; a claim arriving from a chat app carries quote markers and a
+ * name; one from a pull request arrives inside a fenced code block. Rejecting all of those
+ * for not being clean JSON would make the format shareable in theory only.
+ *
+ * So: find every balanced brace run, try to parse each, and keep the ones shaped like a
+ * claim. Shape, not validity - `validateClaim` is the judge of whether a claim is checkable,
+ * and it must get the chance to say so with its own reasons rather than have this quietly
+ * drop the thing and leave the reader staring at "nothing found".
+ */
+export function parseClaims(text) {
+  const s = String(text || "");
+  const out = [];
+  const seen = new Set();
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] !== "{") continue;
+    let depth = 0;
+    let inStr = false;
+    let esc = false;
+    for (let j = i; j < s.length; j++) {
+      const ch = s[j];
+      if (esc) { esc = false; continue; }
+      if (ch === "\\") { esc = true; continue; }
+      if (ch === '"') { inStr = !inStr; continue; }
+      if (inStr) continue;
+      if (ch === "{") depth++;
+      else if (ch === "}") {
+        depth--;
+        if (depth !== 0) continue;
+        try {
+          const parsed = JSON.parse(s.slice(i, j + 1));
+          if (parsed && typeof parsed === "object" && parsed.type && Array.isArray(parsed.evidence)) {
+            const key = parsed.id || JSON.stringify(parsed);
+            if (!seen.has(key)) { seen.add(key); out.push(parsed); }
+          }
+        } catch {
+          /* not JSON, or not whole: the next brace gets its own try */
+        }
+        i = j; // skip past what was just consumed, balanced or not
+        break;
+      }
+    }
+  }
+  return out;
 }
 
 /** The plan as text, for a pull request body or a clipboard. */

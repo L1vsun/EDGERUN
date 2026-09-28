@@ -143,6 +143,18 @@ export async function setFocus(tabId, address) {
 }
 
 /**
+ * The same hint, for an account instead of a contract - set when the thing clicked in the
+ * feed was the account strip. It shares one key with the contract focus because they are the
+ * same question ("what did the reader just click"), and only one of them can be the answer.
+ */
+export async function setCallerFocus(tabId, handle) {
+  if (!tabId) return;
+  try {
+    await chrome.storage.session.set({ [focusKey(tabId)]: { handle: String(handle || "").toLowerCase(), at: Date.now() } });
+  } catch {}
+}
+
+/**
  * A closed tab takes its focus hint with it and nothing else. The ledger is shared now, so
  * closing the tab you happened to check something in must not delete the record of it.
  */

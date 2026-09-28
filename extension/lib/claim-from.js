@@ -27,6 +27,7 @@ const symbolCall = (chain, address, expect) =>
     method: "eth_call",
     params: [{ to: address, data: SEL.symbol }, "latest"],
     expect: `an ABI-encoded string equal to ${JSON.stringify(expect)}`,
+    equals: { decode: "string", value: expect },
     means: `${address} calls itself ${expect} on ${chain.name}`,
   });
 
@@ -49,6 +50,7 @@ export function impersonationClaim(verdict, { chain = HOME } = {}) {
         url: REGISTRY_URL,
         pointer: `.assets[] | select(.tokenSymbol=="${i.ticker}") | .deployments[] | select(.chainId==${chain.id}) | .contractAddress`,
         expect: i.officialAddress,
+        equals: { contains: i.officialAddress },
         means: `the issuer's own registry gives $${i.ticker} on ${chain.name} as ${i.officialAddress}`,
       }),
     ],
@@ -87,6 +89,7 @@ export function crossChainNameClaim(verdict, { chain = HOME } = {}) {
         url: LIST_URL,
         pointer: `.tokens[] | select(.address=="${address}")`,
         expect: `an entry on ${LIST_NAME} for chainId ${chainId}`,
+        equals: { contains: address },
         means: `${address} on ${where} is the listed token for this symbol`,
       }),
       note(`Tier-2 evidence: a curated list is not an issuer. It establishes that a token of this name exists elsewhere, not that ${verdict.address} is fraudulent.`),

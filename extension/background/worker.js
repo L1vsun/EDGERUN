@@ -20,6 +20,8 @@ import { exitSweep } from "../lib/exit.js";
 import * as graph from "../lib/graph.js";
 import * as ledger from "../lib/ledger.js";
 import { pruneMemory, rememberAndRecall } from "../lib/memory.js";
+import { parseClaims, validateClaim } from "../lib/claim.js";
+import { runClaim } from "../lib/verify.js";
 import { getRegistry } from "../lib/registry.js";
 import { isAddress, lookupTicker, rankCandidates, resolveTicker, scan, scanMany } from "../lib/verdict.js";
 
@@ -309,6 +311,7 @@ const HANDLERS = {
   // every account you have ever scrolled past.
   "graph:record": (m) => graph.recordSightings(m.sightings),
   "graph:caller": (m) => graph.callerRecord(m.handle),
+  "graph:callers": (m) => graph.callerRecords(m.handles),
   "graph:token": (m) => graph.tokenCallers(m.address),
   "graph:tokens": (m) => graph.tokenCallersMany(m.addresses),
   "graph:top": (m) => graph.topCallers(m.limit),
@@ -332,6 +335,43 @@ const HANDLERS = {
     const tabId = sender?.tab?.id ?? m.tabId;
     if (!tabId) throw new Error("no tab to open beside");
     if (m.address) await ledger.setFocus(tabId, m.address);
+    if (!chrome.sidePanel?.open) throw new Error("this browser has no side panel");
+    await chrome.sidePanel.open({ tabId });
+    return { opened: true };
+  },
+
+  /**
+   * Check somebody else's accusation.
+   *
+   * Takes whatever was pasted - the format's own copy output, a chat quote, a fenced block -
+   * finds the claims in it, and runs the evidence here against the public endpoints the claim
+   * names. Nothing about the reporter is consulted, which is the entire point: the reader
+   * ends up believing the chain, or not, rather than believing a stranger.
+   *
+   * Invalid claims come back with their reasons rather than being dropped. "This is not
+   * checkable and here is why" is a useful answer about an accusation someone is spreading.
+   */
+  "claim:check": async (m) => {
+    const claims = parseClaims(m.text);
+    if (!claims.length) return { claims: [] };
+    const out = [];
+    for (const claim of claims.slice(0, 5)) {
+      const valid = validateClaim(claim);
+      out.push({
+        claim,
+        valid: valid.ok,
+        errors: valid.errors || [],
+        result: valid.ok ? await runClaim(claim) : null,
+      });
+    }
+    return { claims: out };
+  },
+
+  /** The account strip under a post was clicked: open the panel on that account's record. */
+  "panel:caller": async (m, sender) => {
+    const tabId = sender?.tab?.id ?? m.tabId;
+    if (!tabId) throw new Error("no tab to open beside");
+    await ledger.setCallerFocus(tabId, m.handle);
     if (!chrome.sidePanel?.open) throw new Error("this browser has no side panel");
     await chrome.sidePanel.open({ tabId });
     return { opened: true };

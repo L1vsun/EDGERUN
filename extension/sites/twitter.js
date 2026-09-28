@@ -52,14 +52,27 @@
     const tickers = [...new Set([...batch.values()].flatMap((v) => v.tickers))];
     const candidates = [...new Set([...batch.values()].flatMap((v) => v.mints || []))];
 
+    // Who wrote each post in this batch. Gathered here rather than in render() so the whole
+    // screen's worth of records comes back in one message instead of one per post.
+    const authors = new Map();
+    for (const [article] of batch) {
+      const author = authorOf(article);
+      if (author) authors.set(article, author);
+    }
+    const handles = [...new Set([...authors.values()].map((a) => a.handle))];
+
     let verdicts = {};
     let resolved = {};
     let mints = [];
+    let callers = {};
+    let clusters = {};
     try {
-      [verdicts, resolved, mints] = await Promise.all([
+      [verdicts, resolved, mints, callers, clusters] = await Promise.all([
         addresses.length ? E.ask({ type: "verdicts", addresses }) : Promise.resolve({}),
         tickers.length ? E.ask({ type: "tickers", tickers }) : Promise.resolve({}),
         candidates.length ? E.ask({ type: "mints", candidates }) : Promise.resolve([]),
+        handles.length ? E.ask({ type: "graph:callers", handles }) : Promise.resolve({}),
+        addresses.length ? E.ask({ type: "graph:tokens", addresses }) : Promise.resolve({}),
       ]);
     } catch (err) {
       E.log("batch failed", err.message);
@@ -70,9 +83,13 @@
 
     for (const [article, found] of batch) {
       if (!article.isConnected) continue; // scrolled away and unmounted while we waited
-      render(article, found, verdicts, resolved, byMint);
+      render(article, found, verdicts, resolved, byMint, authors.get(article), callers, clusters);
     }
 
+    // After render, and that ordering is the point: the record shown under a post is the
+    // account's record BEFORE this post was counted. "47 contracts, 9 flagged" describes what
+    // they had already done when they handed you this one, which is the only version of the
+    // sentence that is useful while deciding what to do about it.
     record(batch, verdicts, byMint);
   }, 220);
 
@@ -134,7 +151,7 @@
     if (sightings.length) E.ask({ type: "graph:record", sightings }).catch(() => {});
   }
 
-  function render(article, found, verdicts, resolved, byMint) {
+  function render(article, found, verdicts, resolved, byMint, author, callers = {}, clusters = {}) {
     if (article.querySelector('[data-edgerun="badge"]')) return;
 
     const results = found.addresses.map((a) => verdicts[a]).filter(Boolean);
@@ -154,7 +171,17 @@
       namedTickers: found.tickers,
       solana,
     });
-    if (!found_.length) return;
+
+    // Computed before the early return, because it can be the ONLY thing worth saying. Six
+    // accounts pushing one contract into a feed inside eleven minutes is a finding even when
+    // that contract passes every check there is - and it is the finding a scanner cannot
+    // reach, so returning early on "no token badges" would have hidden the whole point.
+    const account = E.decideAccount({
+      caller: author ? callers[author.handle.toLowerCase()] || null : null,
+      clusters,
+      addresses: [...found.addresses, ...(found.mints || []).filter((m) => byMint.has(m))],
+    });
+    if (!found_.length && !account) return;
 
     // A strip directly under the post text, not a chip tucked into the action bar. The
     // action bar is cramped, low-contrast and below the fold of the eye's path - a warning
@@ -176,6 +203,15 @@
       });
       badge.update(result);
       strips.append(badge);
+    }
+
+    // The account sits under the verdicts: the contract is what you act on now, the record is
+    // the context for it.
+    if (account) {
+      const strip = E.makeAccountStrip(account, {
+        onOpen: (handle) => E.ask({ type: "panel:caller", handle }).catch(() => {}),
+      });
+      if (strip) strips.append(strip);
     }
 
     const text = article.querySelector('[data-testid="tweetText"]');

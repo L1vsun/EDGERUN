@@ -329,6 +329,86 @@
     return null;
   };
 
+  /* ---- the account, which is the part no server can answer ----
+   *
+   * Every badge below this line is about a contract, and a contract can be checked by anyone
+   * from anywhere. Who handed it to you cannot: it is a fact about your feed at the moment
+   * you scrolled it, and the only witness is the browser that was there.
+   *
+   * The record was being kept from the start and shown only on a tab in the side panel, which
+   * is the wrong place - the decision happens in the feed, under the post, and a record
+   * nobody sees at the moment of the decision is a record that changed nothing.
+   */
+
+  // How much history an account needs before its record is worth a line under a post.
+  // Below this, a clean account has no record yet - it has a couple of posts - and printing
+  // "1 contract, none flagged" under every post is exactly the noise that teaches people to
+  // stop reading badges. Silence is the default here too; the record earns its line by being
+  // long enough to mean something, or by having something against it.
+  const CALLER_MIN_TOKENS = 5;
+
+  /**
+   * What to say about the account that posted this, if anything.
+   *
+   * Returns null far more often than not. Three things can earn a line, in descending order
+   * of urgency:
+   *
+   *   1. A cluster. Several accounts put the same contract in this feed inside one window -
+   *      the one finding here that is time-sensitive, and the one a scanner cannot produce
+   *      at all. It speaks whatever the account's own record looks like.
+   *   2. A record with something against it.
+   *   3. A long clean record, which is worth stating precisely because most are not.
+   */
+  E.decideAccount = function decideAccount({ caller = null, clusters = {}, addresses = [] } = {}) {
+    const cluster = addresses
+      .map((a) => clusters[String(a).toLowerCase()]?.cluster)
+      .filter(Boolean)
+      .sort((a, b) => b.count - a.count)[0] || null;
+
+    const tokens = caller?.tokens || 0;
+    const flagged = caller?.flagged || 0;
+    const hasRecord = Boolean(caller?.handle) && tokens > 0;
+    const worthSaying = flagged >= 1 || tokens >= CALLER_MIN_TOKENS;
+    if (!cluster && !(hasRecord && worthSaying)) return null;
+
+    // A cluster is never "ok" - the point of saying it is that arriving together is not the
+    // same as several people noticing the same thing.
+    const ratio = tokens ? flagged / tokens : 0;
+    const tone = flagged && ratio >= 1 / 3 ? "bad" : flagged || cluster ? "warn" : "ok";
+
+    const lines = [];
+    if (cluster) {
+      lines.push(
+        `${cluster.count} accounts put this contract in your feed inside ${E.spanText(cluster.spanMs)}.`,
+      );
+    }
+    if (hasRecord && worthSaying) {
+      const span = caller.days === 1 ? "today" : `over ${caller.days} days`;
+      const count = `${tokens} contract${tokens === 1 ? "" : "s"} ${span}`;
+      lines.push(flagged ? `${count}, ${flagged} flagged.` : `${count}, none flagged.`);
+    }
+
+    return {
+      handle: caller?.handle || null,
+      display: caller?.display || null,
+      tokens,
+      flagged,
+      days: caller?.days || 0,
+      tone,
+      cluster: cluster || null,
+      lead: lines.join(" "),
+    };
+  };
+
+  /** "11 minutes", "under a minute", "3 hours" - for spans, not for timestamps. */
+  E.spanText = function spanText(ms) {
+    const mins = Math.round(Number(ms || 0) / 60000);
+    if (mins < 1) return "under a minute";
+    if (mins < 60) return `${mins} minute${mins === 1 ? "" : "s"}`;
+    const hours = Math.round(mins / 60);
+    return `${hours} hour${hours === 1 ? "" : "s"}`;
+  };
+
   // A post naming four tokens used to get one badge and a line saying so. That is the wrong
   // trade: the reason somebody pastes four contracts is that they are talking about four
   // things, and answering about one of them is answering a question nobody asked.
