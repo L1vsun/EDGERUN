@@ -9,10 +9,10 @@ import { useEffect, useState } from "react";
 type Theme = "dark" | "light";
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
-    const current = (document.documentElement.getAttribute("data-theme") as Theme) || "light";
+    const current = (document.documentElement.getAttribute("data-theme") as Theme) || "dark";
     setTheme(current);
   }, []);
 

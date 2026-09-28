@@ -11,12 +11,12 @@ be - on X, on Dexscreener, on the block explorer - in your own browser, against 
 with no server on the path. It also keeps the half every scanner throws away: **who put that
 contract in front of you.**
 
-[![chains](https://img.shields.io/badge/chains-6-cfff04?style=flat-square&labelColor=0B0B09)](#the-chains-it-reads-and-what-each-is-allowed-to-claim)
-[![tests](https://img.shields.io/badge/engine%20tests-37%20passing-4FD1A5?style=flat-square&labelColor=0B0B09)](edgerun/tests)
-[![extension tests](https://img.shields.io/badge/extension%20tests-12%20suites-4FD1A5?style=flat-square&labelColor=0B0B09)](extension/tests)
-[![backend](https://img.shields.io/badge/servers%20required-none-4FD1A5?style=flat-square&labelColor=0B0B09)](#no-backend-and-why-that-was-a-measurement-not-a-preference)
-[![keys](https://img.shields.io/badge/keys%20held-none-4FD1A5?style=flat-square&labelColor=0B0B09)](SECURITY.md)
-[![license](https://img.shields.io/badge/license-MIT-E8B339?style=flat-square&labelColor=0B0B09)](LICENSE)
+[![chains](https://img.shields.io/badge/chains-6-B2E604?style=flat-square&labelColor=080A0B)](#the-chains-it-reads-and-what-each-is-allowed-to-claim)
+[![tests](https://img.shields.io/badge/engine%20tests-37%20passing-4FD1A5?style=flat-square&labelColor=080A0B)](edgerun/tests)
+[![extension tests](https://img.shields.io/badge/extension%20tests-12%20suites-4FD1A5?style=flat-square&labelColor=080A0B)](extension/tests)
+[![backend](https://img.shields.io/badge/servers%20required-none-4FD1A5?style=flat-square&labelColor=080A0B)](#no-backend-and-why-that-was-a-measurement-not-a-preference)
+[![keys](https://img.shields.io/badge/keys%20held-none-4FD1A5?style=flat-square&labelColor=080A0B)](SECURITY.md)
+[![license](https://img.shields.io/badge/license-MIT-E8B339?style=flat-square&labelColor=080A0B)](LICENSE)
 
 `$EDGERUN` · not launched yet
 

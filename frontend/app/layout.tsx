@@ -52,21 +52,24 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport = { themeColor: "#cfff04" };
+// The ground, not the accent. This paints the browser chrome on mobile, and the green is an
+// edge colour in this identity - a whole phone status bar of it is the one place it would
+// read as a field.
+export const viewport = { themeColor: "#080a0b" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // the inline script below rewrites data-theme before hydration, which React would
     // otherwise report as a server/client mismatch
-    <html lang="en" className={`${display.variable} ${mono.variable}`} data-theme="light" suppressHydrationWarning>
+    <html lang="en" className={`${display.variable} ${mono.variable}`} data-theme="dark" suppressHydrationWarning>
       <head>
-        {/* Applied before first paint, so a dark-theme visitor never sees a light flash.
-            Light is the default and the OS preference is deliberately not consulted: only a
-            stored choice moves it, so the site looks the same to everyone until they say
-            otherwise. */}
+        {/* Applied before first paint, so a light-theme visitor never sees a dark flash.
+            Dark is the default because the brand is, and the OS preference is deliberately
+            not consulted: only a stored choice moves it, so the site looks the same to
+            everyone until they say otherwise. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('edgerun.theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('edgerun.theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}catch(e){}})();`,
           }}
         />
       </head>

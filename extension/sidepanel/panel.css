@@ -2,55 +2,55 @@
    Unlike the badge this is not sitting on someone else's page, so there is no shadow DOM
    and no `all: initial` - nothing here has to defend itself against host CSS.
 
-   Light is the default and it is a real choice, not a fallback: this is a tool you read
-   dense evidence in, and dark mode is opt-in from the header. The OS theme is deliberately
-   not consulted - a security tool that changes appearance on its own is one more thing the
-   reader has to second-guess.
+   Dark is the default, so the panel opens looking like the mark on the toolbar button that
+   opened it. Light is opt-in from the header and is a real design, not a courtesy - this is
+   a tool you read dense evidence in. The OS theme is deliberately not consulted: a security
+   tool that changes appearance on its own is one more thing the reader has to second-guess.
 
-   The dark theme is built as its own design rather than an inversion of the light one.
-   Surfaces step up in warmth as they come forward (--card -> --soft -> --raise), text sits
-   on a warm bone rather than pure white, and every status colour was re-picked for a dark
-   ground instead of being reused from the light set, where they turn to mud. */
+   The neutrals are COOL, mixed toward the steel sampled off the mark (#d2d7d9 -> #dfe6e7)
+   rather than the warm olive they used to be. The green is an edge colour - an outline, a
+   focus ring, a lit border - and never a field behind text, which is how it reads on the
+   mark itself, where it is 2.3% of the pixels. */
 
 :root {
-  --ink: #151a11;
-  --muted: #5d6752;
-  --line: #e3e7d9;
+  --ink: #12171a;
+  --muted: #59646a;
+  --line: #e0e5e7;
   --card: #ffffff;
-  --soft: #f6f8f0;
-  --raise: #eef2e4;
+  --soft: #f4f7f8;
+  --raise: #e9eef0;
   --bad: #c62828;
   --bad-soft: #fdecec;
   --warn: #a15c07;
   --warn-soft: #fdf3e0;
   --ok: #4a7c0f;
   --ok-soft: #f0f8e2;
-  --signal: #cfff04;
+  --signal: #b2e604;
   --on-signal: #131a02;
   --on-status: #ffffff;
-  --hover: rgba(21, 26, 17, 0.055);
-  --shadow: 0 1px 2px rgba(12, 18, 6, 0.06);
+  --hover: rgba(18, 23, 26, 0.055);
+  --shadow: 0 1px 2px rgba(10, 16, 20, 0.06);
   --radius: 12px;
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --ink: #e9efdd;
-  --muted: #949f84;
-  --line: #2b3323;
-  --card: #12160e;
-  --soft: #191e13;
-  --raise: #222818;
+  --ink: #e7ebeb;
+  --muted: #8f999c;
+  --line: #262d30;
+  --card: #0e1113;
+  --soft: #141a1c;
+  --raise: #1d2427;
   --bad: #ff6f5e;
   --bad-soft: #2b1512;
   --warn: #f2b33d;
   --warn-soft: #2b2212;
   --ok: #a8e04a;
   --ok-soft: #1b2613;
-  --signal: #cfff04;
+  --signal: #b2e604;
   --on-signal: #131a02;
-  --on-status: #12160e;
-  --hover: rgba(233, 239, 221, 0.06);
+  --on-status: #0e1113;
+  --hover: rgba(231, 235, 235, 0.06);
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   color-scheme: dark;
 }
@@ -200,7 +200,7 @@ button { font: inherit; cursor: pointer; }
 .check i.ok { background: var(--ok); }
 .check i.fail { background: var(--bad); }
 .check i.warn { background: var(--warn); }
-.check i.unresolved { background: #b9c0aa; }
+.check i.unresolved { background: #aab3b6; }
 .check b {
   display: block;
   font-size: 10.5px;
@@ -266,7 +266,7 @@ button { font: inherit; cursor: pointer; }
   background: var(--card); border: 1px solid var(--line); border-radius: 9px;
   padding: 9px 11px; outline: none;
 }
-.check input:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(207, 255, 4, 0.22); }
+.check input:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(178, 230, 4, 0.22); }
 .check input::placeholder { color: var(--muted); }
 .check .go {
   padding: 9px 14px; font-size: 13px; font-weight: 800; color: var(--on-signal);
@@ -511,7 +511,7 @@ button { font: inherit; cursor: pointer; }
   background: var(--card); border: 1px solid var(--line); border-radius: 8px;
   padding: 9px 10px; resize: vertical; outline: none;
 }
-.composer textarea:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(207, 255, 4, 0.2); }
+.composer textarea:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(178, 230, 4, 0.2); }
 .k-acts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 .k-acts .go {
   padding: 7px 12px; font-size: 12px; font-weight: 800; color: var(--on-signal);

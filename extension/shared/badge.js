@@ -34,21 +34,25 @@
   };
 
   // One palette, light, shared by the chip and the panel.
+  //
+  // The neutrals are the same cool steel the panel and the site use, sampled off the mark,
+  // so the chip reads as part of the product even though it is the one surface that stays
+  // light in every theme (see the note at the top of this file).
   const TOKENS = `
-    --ink: #151a11;
-    --muted: #5d6752;
-    --line: #e3e7d9;
+    --ink: #12171a;
+    --muted: #59646a;
+    --line: #e0e5e7;
     --card: #ffffff;
-    --soft: #f6f8f0;
+    --soft: #f4f7f8;
     --bad: #c62828;
     --bad-soft: #fdecec;
     --warn: #a15c07;
     --warn-soft: #fdf3e0;
     --ok: #4a7c0f;
     --ok-soft: #f0f8e2;
-    --signal: #cfff04;
+    --signal: #b2e604;
     --radius: 12px;
-    --shadow: 0 6px 24px rgba(12, 18, 6, 0.18), 0 1px 3px rgba(12, 18, 6, 0.12);
+    --shadow: 0 6px 24px rgba(10, 16, 20, 0.18), 0 1px 3px rgba(10, 16, 20, 0.12);
   `;
 
   const FONT = `-apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif`;
@@ -67,7 +71,7 @@
       border-radius: 999px; cursor: pointer; border: 1px solid var(--line); background: var(--card);
       color: var(--ink); font-size: 13px; font-weight: 600; line-height: 18px; white-space: nowrap;
       box-shadow: var(--shadow); transition: transform .12s ease, box-shadow .12s ease; }
-    .chip:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(12,18,6,.22); }
+    .chip:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(10,16,20,.22); }
     .chip:active { transform: none; }
     .g { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px;
       border-radius: 50%; font-size: 12px; font-weight: 800; color: #fff; background: var(--muted); flex: none; }
@@ -88,7 +92,7 @@
       padding: 12px 14px; border-radius: var(--radius); cursor: pointer; border: 1px solid var(--line);
       background: var(--card); color: var(--ink); font-size: 14px; line-height: 1.45;
       box-shadow: var(--shadow); transition: box-shadow .12s ease; }
-    .strip:hover { box-shadow: 0 12px 30px rgba(12,18,6,.24); }
+    .strip:hover { box-shadow: 0 12px 30px rgba(10,16,20,.24); }
     .strip .g { width: 24px; height: 24px; font-size: 14px; margin-top: 1px; }
     .strip .body { flex: 1; min-width: 0; }
     .strip .title { display: block; font-weight: 800; font-size: 14.5px; letter-spacing: -0.01em; margin-bottom: 2px; }
@@ -102,13 +106,13 @@
       width: 23px; height: 23px; margin-left: 2px; padding: 0; font: inherit; font-size: 12px;
       line-height: 1; cursor: pointer; color: var(--muted); background: transparent;
       border: none; border-radius: 7px; align-self: center; }
-    .win:hover { background: rgba(21, 26, 17, .09); color: var(--ink); }
+    .win:hover { background: rgba(18, 23, 26, .09); color: var(--ink); }
     .chip.bad .win, .strip.bad .win { color: rgba(255,255,255,.82); }
     .strip.bad .win { color: var(--bad); }
     .chip.bad .win:hover { background: rgba(255,255,255,.2); color: #fff; }
     .strip.bad .win:hover { background: rgba(198,40,40,.12); }
     /* only a fake gets the full-volume treatment - if every post shouted, none of them would */
-    .strip:not(.bad) { padding: 10px 13px; font-size: 13px; box-shadow: 0 2px 10px rgba(12,18,6,.10); }
+    .strip:not(.bad) { padding: 10px 13px; font-size: 13px; box-shadow: 0 2px 10px rgba(10,16,20,.10); }
     .strip:not(.bad) .title { font-size: 13.5px; }
     .strip:not(.bad) .say { font-size: 12.5px; }
     .strip:not(.bad) .g { width: 21px; height: 21px; font-size: 12px; }
@@ -153,11 +157,11 @@
     .more-rows { display: block; width: 100%; text-align: left; padding: 7px 13px; border: none;
       border-radius: 0; background: none; color: var(--muted); font-size: 12px; font-weight: 700; }
     .more-rows:hover { background: var(--soft); color: var(--ink); }
-    .rows::-webkit-scrollbar-thumb { background: #d7ddc8; border-radius: 99px; border: 3px solid var(--card); }
+    .rows::-webkit-scrollbar-thumb { background: #d7dcde; border-radius: 99px; border: 3px solid var(--card); }
     .row { display: grid; grid-template-columns: 9px 1fr; gap: 9px; padding: 7px 13px; }
     .row i { width: 9px; height: 9px; border-radius: 50%; margin-top: 6px; background: var(--muted); }
     .row i.ok { background: var(--ok); } .row i.fail { background: var(--bad); }
-    .row i.warn { background: var(--warn); } .row i.unresolved { background: #b9c0aa; }
+    .row i.warn { background: var(--warn); } .row i.unresolved { background: #aab3b6; }
     .row b { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase;
       color: var(--muted); margin-bottom: 2px; }
     .row span { display: block; font-size: 12.5px; }
@@ -168,8 +172,8 @@
     .when { margin-left: auto; font-size: 11px; color: var(--muted); }
     button { font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; padding: 7px 11px;
       border-radius: 8px; color: var(--ink); background: var(--card); border: 1px solid var(--line); }
-    button:hover { background: #eef2e4; }
-    button.go { background: var(--signal); border-color: #b9e604; color: #131a02; }
+    button:hover { background: #e9eef0; }
+    button.go { background: var(--signal); border-color: #a5d604; color: #131a02; }
     button.go:hover { filter: brightness(1.04); }
     .x { margin-left: auto; padding: 4px 9px; font-size: 18px; line-height: 1; color: var(--muted);
       background: none; border: none; border-radius: 8px; }

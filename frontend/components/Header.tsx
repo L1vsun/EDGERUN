@@ -6,7 +6,8 @@ export default function Header() {
   return (
     <header className="top">
       <a href={asset("/")} className="brand" aria-label="EDGERUN home">
-        <img src={asset("/lockup-ink.png")} alt="EDGERUN" />
+        <img className="lk-dark" src={asset("/lockup-bone.png")} alt="EDGERUN" />
+        <img className="lk-light" src={asset("/lockup-ink.png")} alt="" aria-hidden="true" />
       </a>
 
       <nav className="top-nav">
