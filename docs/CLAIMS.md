@@ -84,6 +84,24 @@ nothing when you run it.
 
 A third kind, `note`, carries context a machine cannot check. It never counts toward rule 1.
 
+Runnable evidence may also carry **`equals`**, which is the same expectation in a form a
+machine can compare. `expect` is a sentence written for a person - *"an ABI-encoded string
+equal to \"TSLA\""* - and matching a regex against it would be a guess wearing the costume of
+a check, so the verifier only ever compares against `equals`:
+
+```json
+{ "equals": { "decode": "string", "value": "TSLA" } }     // decode the eth_call result, compare
+{ "equals": { "contains": "0x322f…" } }                   // the value appears in the document
+{ "equals": { "reverts": true } }                         // the call is EXPECTED to fail
+```
+
+`equals` is optional and additive: claims written before it stay valid, they simply do not
+self-check. Evidence without it is reported as needing a human, never scored as a pass.
+
+`reverts` exists for the restricted-transfer case, where a failing call *is* the proof. It is
+the one place where the semantics invert, and it must never be confused with an endpoint that
+could not be reached.
+
 ### Comparison rules
 
 - **Hex is compared case-insensitively.** Found the hard way: Robinhood's registry returns the
@@ -93,6 +111,33 @@ A third kind, `note`, carries context a machine cannot check. It never counts to
   a string that is not that address.
 - Evidence is expected to be *stable*, not *instantaneous*. A claim about a contract's symbol
   holds at any block; a claim about a balance does not, and needs `observed.block`.
+
+---
+
+## Running one
+
+A plan nobody runs is prose in a monospace font, so the extension executes claims rather than
+only printing the commands for them. Paste one into the panel's **claims** tab - raw JSON, a
+quoted chat message, a fenced block out of a pull request - and the runnable evidence is
+executed against the endpoints the claim names. Four outcomes:
+
+| | |
+| --- | --- |
+| **reproduced** | every machine-checkable piece came back as the claim said |
+| **contradicted** | at least one came back **different**. The claim is wrong, or stale |
+| **partial** | some reproduced; the rest could not be reached or need a human |
+| **unproven** | nothing could be reached, or nothing was machine-checkable |
+
+Two rules govern it, and both are the false-accusation discipline one level up:
+
+- **A network failure is never a contradiction.** You do not get to call a reporter a liar
+  because a public RPC rate-limited you. Unreachable is its own outcome and never produces
+  `contradicted`.
+- **The verifier will not fetch wherever a claim points.** A claim is a document written by a
+  stranger that names its own endpoints; following that blindly turns the verifier into a
+  request proxy aimed wherever the author chose, carrying the reader's IP and the extension's
+  host permissions. Verification runs only against hosts the extension already talks to, and
+  anything else comes back with its command attached, to run by hand.
 
 ---
 
@@ -108,11 +153,14 @@ thing.
 on the blocklist file, which is weak but real and costs nothing. Keys matter when submissions
 outgrow pull requests.
 
-**Not every check produces a claim.** The exit sweep is the clearest example: *"three top
-holders could not transfer"* needs those holders' addresses to be re-runnable, and that check
-currently keeps them inside a sentence. Emitting it would produce something that passes
-validation while being unverifiable in practice, which is worse than emitting nothing. The
-check has to hand up structured holders first.
+**Not every check produces a claim**, and that is still true - a verdict resting on prose
+cannot become a claim, which is the point of the format rather than a shortcoming of it.
+
+The exit sweep used to be the example here, and it no longer is. *"Three top holders could not
+transfer"* was unverifiable in practice because the check kept the holders inside a sentence,
+with a shortened address in it. The check now hands up structured holders and the sweep emits
+a `restricted-transfer` claim that re-runs the same calls from the same wallets - which means
+the strongest statement this project can make is no longer the one it could not make.
 
 ---
 

@@ -73,6 +73,45 @@ Open it and you get every check, each naming the number behind it:
 
 Every line above is real output on a real contract, not an illustration.
 
+Under the verdicts sits the part no scanner can produce - who handed it to you:
+
+```
+  @somehandle   6 accounts put this contract in your feed inside 11 minutes.
+                47 contracts over 21 days, 9 flagged.
+                @acct_a  @acct_b  @acct_c
+```
+
+That line speaks **even when every contract in the post is clean**. Nothing is wrong with the
+token; the shape of the arrival is the finding, and six accounts landing on one contract
+inside eleven minutes is not six people independently noticing the same thing.
+
+It stays quiet otherwise. An account with no record says nothing, and a post naming a ticker
+with no contract says nothing at all.
+
+---
+
+## On a profile: the whole record, and how it gets there
+
+Open somebody's profile and a card sits under the tab bar with what that account has actually
+put in front of you.
+
+```
+  EDGERUN  @somehandle
+   9          47          21
+   flagged    contracts   days
+
+  340 ticker mentions - mostly $PONS, $PUMP, $TSLA. Naming a ticker is not
+  posting a contract, so this is not counted against anyone.
+
+  [ read more posts ]  [ open the record ]
+```
+
+The record only fills with posts you have actually scrolled past, which on a fresh install
+means it is empty for days - so `read their recent posts` spends ten seconds scrolling their
+timeline for you, with the same detection and the same attribution rules, and tells you what
+it read. It asks before it starts: taking somebody's page over for ten seconds unannounced is
+how a tool gets uninstalled.
+
 ---
 
 ## The side panel
@@ -86,7 +125,7 @@ there while you read.
   ┌────────────────────────────────────────────────────────┐
   │ paste a contract address                      [check]  │
   └────────────────────────────────────────────────────────┘
-   session 23    flagged 4    watching 6    callers 18
+   session 23    flagged 4    watching 6    callers 18    claims
 
    ✕  $TSLA  Robinhood Chain                           FAIL
       simulated transfer reverted "blacklisted", 3 of 3 holders
@@ -122,6 +161,17 @@ verdict with no chain on it is an answer to an unstated question.
   answers. Somebody who pastes three contracts is talking about three things.
 - **A reply you can paste**, and a report that carries a [claim](docs/CLAIMS.md) plus the
   commands that check it.
+- **A claims tab that runs somebody else's accusation.** Paste what they sent you - raw JSON,
+  a quoted chat message, a fenced block from a pull request - and the evidence in it executes
+  here, against the endpoints the claim names. It comes back **reproduced**, **contradicted**,
+  **partial** or **unproven**, and nothing about the reporter is consulted at any point. A
+  real claim ships with it, so the tab is usable before anybody has sent you one.
+- **The trades**, as a second witness rather than a price readout: volume, price change and
+  buys against sells at 5m / 1h / 6h / 24h, plus liquidity and pool age. Four hundred buys and
+  three sells is the exit test's question asked of the money instead of the code.
+- **A chart**, on a **log** axis and with real OHLC candles. Log is not a preference: on a
+  linear axis a pool that went 0.0002 -> 0.9 -> 0.0002 is one spike and a flat line on the
+  floor, with the collapse - the part worth seeing - drawn as nothing.
 
 ---
 
@@ -207,6 +257,15 @@ Not in the Chrome Web Store yet, which means you can read every line before you 
 
 ## What it checks that a contract scan cannot
 
+- **When the checks are clean and the pool is a graveyard.** A token came back **PASS** - mint
+  and freeze revoked, source verified, three real holders able to transfer - while being down
+  **100%** with three dollars of liquidity left. Both answers were correct. A rug does not
+  require a malicious contract; usually the contract is fine and a person sold all of it. So
+  the price history is read as its own witness: down 90%+ from the window's high and still
+  there, up 5x and all the way back, one bar doing nearly all of the damage, volume gone. Each
+  is written as a **price fact and never as fraud** - plenty of honest things are down 99% -
+  and none of it touches the verdict, which has to stay reproducible from chain state alone.
+  What it does is refuse to let a bare PASS sit next to a chart like that unexplained.
 - **What the deployer *does*.** Not just what a wallet launched - what it has been calling on
   this token since. The fake TSLA at `0xD18F5e73…` reads perfectly clean as a contract. Its
   deployer spent **40 `setBlacklistBatch` and 7 `setBlacklist` calls on it, 47 of its last 50
@@ -226,9 +285,10 @@ Not in the Chrome Web Store yet, which means you can read every line before you 
   that posted it, so the panel can answer *"this account has put 47 contracts in front of
   you in three weeks and nine of them failed"*, and *"this one arrived from six accounts
   inside eleven minutes"* - which is not six people independently noticing the same thing.
-  Two rules keep it honest: a ticker mention is never a call (naming `$TSLA` is not handing
-  you a contract), and an address only counts against the author when *they* wrote it, so
-  quoting someone else's scam does not put it on your record. Same storage as everything
+  Two rules keep it honest. A ticker mention is recorded but is **never a call** - naming
+  `$TSLA` is not handing anybody a contract, so mentions live in a separate field that none of
+  the counts which can mark an account ever read. And an address only counts against the
+  author when *they* wrote it, so quoting someone else's scam does not put it on your record. Same storage as everything
   else here: local, never uploaded, and one button in the panel forgets all of it.
 - **Solana, read from the chain.** Not a chain-table row - a second provider. A Solana mint
   has no bytecode to scan, and what replaces bytecode scanning is better than it: the two
@@ -291,11 +351,13 @@ requests.
 extension/      the browser extension - MV3, no build step, no dependencies
   lib/          chains table, EVM + Solana providers, explorer, registry, verdict engine,
                 curated token lists, blocklist, memory, deployer trail, exit-size sweep,
-                cross-chain resolver, the caller graph, the session ledger, the claim format
-  shared/       address, ticker and base58 detection, badge decisions, the shadow-DOM badge
+                cross-chain resolver, the caller graph, the session ledger, the claim format,
+                the claim verifier, the trades reader, OHLC candles + rug detection
+  shared/       address, ticker, base58 and profile detection, badge and account decisions,
+                the shadow-DOM badge, the account strip, the profile card
   sites/        one thin adapter per surface (twitter, dexscreener, blockscout)
   sidepanel/    the side panel - the extension's main surface
-  tests/        12 plain `node` suites, no dependencies: `node tests/ledger.test.mjs`
+  tests/        16 plain `node` suites, no dependencies: `node tests/ledger.test.mjs`
 edgerun/        the original Python scan engine + CLI (37 tests)
 backend/        FastAPI service - optional, not on the extension's path
 docs/           what each check means, the impersonation rules, the claim format
@@ -312,7 +374,11 @@ The extension has no build step and no dependencies. What is in the folder is wh
 
 - **Never a false pass.** `unresolved` is a real state and is used often.
 - **No invented numbers.** No "X people watching", no fabricated stats, anywhere.
-- **Every claim names its evidence** and links to the explorer so it can be checked.
+- **Every claim names its evidence** and links to the explorer so it can be checked - and
+  now carries that evidence in a form the reader can re-run, rather than prose about it.
+- **A source being down is never evidence.** A rate-limited endpoint does not make a claim
+  false, an unreachable chart says nothing about the token, and neither is allowed to turn
+  into a finding.
 - **State what is not covered.** LP lock cannot be established on this chain today, and the
   check says exactly that instead of guessing.
 
