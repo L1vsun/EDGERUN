@@ -1700,5 +1700,79 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-29T18:47:29+00:00",
+  "block": 75882728,
+  "mode": "rules",
+  "call": "DOT is the one to watch - heating",
+  "focus": "DOT",
+  "confidence": 0.79,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2636.4,
+    "wallets": 308,
+    "one_addr_share": 0.14,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 2295.6,
+    "wallets": 372,
+    "one_addr_share": 0.38,
+    "flags": []
+   },
+   {
+    "symbol": "OFY",
+    "per_min": 741.6,
+    "wallets": 194,
+    "one_addr_share": 0.65,
+    "flags": []
+   },
+   {
+    "symbol": "ACRES",
+    "per_min": 270.0,
+    "wallets": 76,
+    "one_addr_share": 0.77,
+    "flags": []
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 122.4,
+    "wallets": 41,
+    "one_addr_share": 0.23,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "MARTIANS",
+    "per_min": 104.4,
+    "wallets": 89,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "DOTS",
+    "per_min": 98.4,
+    "wallets": 34,
+    "one_addr_share": 0.57,
+    "flags": []
+   },
+   {
+    "symbol": "META",
+    "per_min": 97.2,
+    "wallets": 29,
+    "one_addr_share": 0.7,
+    "flags": []
+   }
+  ]
  }
 ]
