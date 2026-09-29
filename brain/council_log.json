@@ -1774,5 +1774,85 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-29T22:50:13+00:00",
+  "block": 76027904,
+  "mode": "rules",
+  "call": "RIZZLER is the one to watch - heating",
+  "focus": "RIZZLER",
+  "confidence": 0.66,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 7917.6,
+    "wallets": 531,
+    "one_addr_share": 0.37,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 6052.8,
+    "wallets": 331,
+    "one_addr_share": 0.37,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "NUGS",
+    "per_min": 1342.8,
+    "wallets": 250,
+    "one_addr_share": 0.82,
+    "flags": []
+   },
+   {
+    "symbol": "RIZZLER",
+    "per_min": 571.2,
+    "wallets": 108,
+    "one_addr_share": 0.89,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "RIZZLER",
+    "per_min": 498.0,
+    "wallets": 49,
+    "one_addr_share": 0.97,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "AI",
+    "per_min": 452.4,
+    "wallets": 64,
+    "one_addr_share": 0.49,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "COST",
+    "per_min": 314.4,
+    "wallets": 19,
+    "one_addr_share": 0.5,
+    "flags": []
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 290.4,
+    "wallets": 28,
+    "one_addr_share": 0.68,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
