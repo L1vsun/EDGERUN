@@ -1621,5 +1621,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-29T13:12:33+00:00",
+  "block": 75682461,
+  "mode": "rules",
+  "call": "ROBIN is the one to watch - heating",
+  "focus": "ROBIN",
+  "confidence": 0.66,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 2654.4,
+    "wallets": 452,
+    "one_addr_share": 0.38,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 2377.2,
+    "wallets": 310,
+    "one_addr_share": 0.23,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "MCD",
+    "per_min": 763.2,
+    "wallets": 181,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "AICAT",
+    "per_min": 715.2,
+    "wallets": 569,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 429.6,
+    "wallets": 98,
+    "one_addr_share": 0.43,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "ROBIN",
+    "per_min": 313.2,
+    "wallets": 74,
+    "one_addr_share": 0.77,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "DUCAT",
+    "per_min": 224.4,
+    "wallets": 130,
+    "one_addr_share": 0.87,
+    "flags": []
+   },
+   {
+    "symbol": "LLMA",
+    "per_min": 213.6,
+    "wallets": 34,
+    "one_addr_share": 0.84,
+    "flags": []
+   }
+  ]
  }
 ]
