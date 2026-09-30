@@ -1925,5 +1925,87 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-30T07:59:03+00:00",
+  "block": 76354882,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 1818.0,
+    "wallets": 349,
+    "one_addr_share": 0.28,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 1318.8,
+    "wallets": 172,
+    "one_addr_share": 0.15,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "HOOD",
+    "per_min": 386.4,
+    "wallets": 277,
+    "one_addr_share": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "VRAX",
+    "per_min": 346.8,
+    "wallets": 113,
+    "one_addr_share": 0.58,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "ELEMENTA",
+    "per_min": 298.8,
+    "wallets": 224,
+    "one_addr_share": 0.95,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 213.6,
+    "wallets": 47,
+    "one_addr_share": 0.57,
+    "flags": []
+   },
+   {
+    "symbol": "MID",
+    "per_min": 160.8,
+    "wallets": 124,
+    "one_addr_share": 0.95,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "WATERMELINU",
+    "per_min": 157.2,
+    "wallets": 18,
+    "one_addr_share": 0.97,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
