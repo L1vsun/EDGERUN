@@ -2088,5 +2088,79 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-30T19:50:04+00:00",
+  "block": 76779377,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.16,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 2666.4,
+    "wallets": 428,
+    "one_addr_share": 0.29,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 2644.8,
+    "wallets": 343,
+    "one_addr_share": 0.2,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "TANK",
+    "per_min": 597.6,
+    "wallets": 174,
+    "one_addr_share": 0.6,
+    "flags": []
+   },
+   {
+    "symbol": "ORBIO",
+    "per_min": 517.2,
+    "wallets": 40,
+    "one_addr_share": 0.86,
+    "flags": []
+   },
+   {
+    "symbol": "QNT",
+    "per_min": 303.6,
+    "wallets": 235,
+    "one_addr_share": 0.95,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 193.2,
+    "wallets": 62,
+    "one_addr_share": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "ZUPITER",
+    "per_min": 192.0,
+    "wallets": 59,
+    "one_addr_share": 0.54,
+    "flags": []
+   },
+   {
+    "symbol": "RAIL",
+    "per_min": 187.2,
+    "wallets": 81,
+    "one_addr_share": 0.65,
+    "flags": []
+   }
+  ]
  }
 ]
