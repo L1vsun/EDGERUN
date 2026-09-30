@@ -2162,5 +2162,89 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-09-30T23:28:43+00:00",
+  "block": 76909974,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.16,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "DOG",
+    "per_min": 2382.0,
+    "wallets": 1986,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 1570.8,
+    "wallets": 207,
+    "one_addr_share": 0.13,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1356.0,
+    "wallets": 326,
+    "one_addr_share": 0.27,
+    "flags": []
+   },
+   {
+    "symbol": "UNH",
+    "per_min": 1202.4,
+    "wallets": 1003,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "HALL",
+    "per_min": 264.0,
+    "wallets": 213,
+    "one_addr_share": 0.97,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "HALL",
+    "per_min": 260.4,
+    "wallets": 212,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CLONES",
+    "per_min": 218.4,
+    "wallets": 73,
+    "one_addr_share": 0.84,
+    "flags": []
+   },
+   {
+    "symbol": "DelveTown",
+    "per_min": 198.0,
+    "wallets": 60,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
