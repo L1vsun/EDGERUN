@@ -2007,5 +2007,86 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-09-30T14:51:33+00:00",
+  "block": 76600805,
+  "mode": "rules",
+  "call": "HOOD is the one to watch - heating",
+  "focus": "HOOD",
+  "confidence": 0.66,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 2618.4,
+    "wallets": 449,
+    "one_addr_share": 0.23,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 1857.6,
+    "wallets": 279,
+    "one_addr_share": 0.15,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "HOOD",
+    "per_min": 259.2,
+    "wallets": 121,
+    "one_addr_share": 0.46,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 243.6,
+    "wallets": 74,
+    "one_addr_share": 0.2,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "STOV",
+    "per_min": 160.8,
+    "wallets": 60,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 158.4,
+    "wallets": 49,
+    "one_addr_share": 0.38,
+    "flags": []
+   },
+   {
+    "symbol": "META",
+    "per_min": 152.4,
+    "wallets": 31,
+    "one_addr_share": 0.67,
+    "flags": []
+   },
+   {
+    "symbol": "SC",
+    "per_min": 124.8,
+    "wallets": 106,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
