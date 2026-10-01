@@ -2331,5 +2331,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-01T09:15:35+00:00",
+  "block": 77259620,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.03,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 2245.2,
+    "wallets": 1327,
+    "one_addr_share": 0.54,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 1818.0,
+    "wallets": 205,
+    "one_addr_share": 0.42,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "VRAX",
+    "per_min": 319.2,
+    "wallets": 161,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "COIN",
+    "per_min": 180.0,
+    "wallets": 129,
+    "one_addr_share": 0.91,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "COIN",
+    "per_min": 151.2,
+    "wallets": 122,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 86.4,
+    "wallets": 33,
+    "one_addr_share": 0.36,
+    "flags": []
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 68.4,
+    "wallets": 40,
+    "one_addr_share": 0.51,
+    "flags": []
+   },
+   {
+    "symbol": "Kardashev",
+    "per_min": 67.2,
+    "wallets": 40,
+    "one_addr_share": 0.73,
+    "flags": []
+   }
+  ]
  }
 ]
