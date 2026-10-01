@@ -2483,5 +2483,83 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-01T21:33:43+00:00",
+  "block": 77700079,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "FOODO",
+    "per_min": 10442.4,
+    "wallets": 8703,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 1776.0,
+    "wallets": 226,
+    "one_addr_share": 0.35,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1351.2,
+    "wallets": 258,
+    "one_addr_share": 0.37,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "SXR",
+    "per_min": 598.8,
+    "wallets": 500,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "CLIPPY",
+    "per_min": 218.4,
+    "wallets": 52,
+    "one_addr_share": 0.4,
+    "flags": []
+   },
+   {
+    "symbol": "SGT",
+    "per_min": 202.8,
+    "wallets": 61,
+    "one_addr_share": 0.63,
+    "flags": []
+   },
+   {
+    "symbol": "VRAX",
+    "per_min": 199.2,
+    "wallets": 119,
+    "one_addr_share": 0.97,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "VRAX",
+    "per_min": 142.8,
+    "wallets": 41,
+    "one_addr_share": 0.54,
+    "flags": []
+   }
+  ]
  }
 ]
