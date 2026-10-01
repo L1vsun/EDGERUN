@@ -2410,5 +2410,78 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-01T16:37:33+00:00",
+  "block": 77523318,
+  "mode": "rules",
+  "call": "CASHCAT is the one to watch - heating",
+  "focus": "CASHCAT",
+  "confidence": 0.63,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 3292.8,
+    "wallets": 481,
+    "one_addr_share": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 3099.6,
+    "wallets": 379,
+    "one_addr_share": 0.12,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 463.2,
+    "wallets": 64,
+    "one_addr_share": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "SGT",
+    "per_min": 360.0,
+    "wallets": 124,
+    "one_addr_share": 0.85,
+    "flags": []
+   },
+   {
+    "symbol": "musebook",
+    "per_min": 228.0,
+    "wallets": 49,
+    "one_addr_share": 0.76,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 202.8,
+    "wallets": 47,
+    "one_addr_share": 0.34,
+    "flags": []
+   },
+   {
+    "symbol": "CASHCAT",
+    "per_min": 184.8,
+    "wallets": 54,
+    "one_addr_share": 0.23,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PONS",
+    "per_min": 153.6,
+    "wallets": 50,
+    "one_addr_share": 0.3,
+    "flags": []
+   }
+  ]
  }
 ]
