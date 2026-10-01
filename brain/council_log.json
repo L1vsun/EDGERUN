@@ -2246,5 +2246,90 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-01T02:19:26+00:00",
+  "block": 77011782,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.24,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2132.4,
+    "wallets": 248,
+    "one_addr_share": 0.31,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "TASTE",
+    "per_min": 1441.2,
+    "wallets": 1203,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1396.8,
+    "wallets": 303,
+    "one_addr_share": 0.25,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "PUMPCHAN",
+    "per_min": 277.2,
+    "wallets": 216,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "VRAX",
+    "per_min": 186.0,
+    "wallets": 136,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "DEGEN",
+    "per_min": 158.4,
+    "wallets": 123,
+    "one_addr_share": 0.96,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "REVENUE",
+    "per_min": 97.2,
+    "wallets": 61,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "BROKER",
+    "per_min": 96.0,
+    "wallets": 31,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   }
+  ]
  }
 ]
