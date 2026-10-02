@@ -2805,5 +2805,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-02T19:26:34+00:00",
+  "block": 78480230,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.16,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 2014.8,
+    "wallets": 322,
+    "one_addr_share": 0.21,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1738.8,
+    "wallets": 388,
+    "one_addr_share": 0.27,
+    "flags": []
+   },
+   {
+    "symbol": "GUY",
+    "per_min": 600.0,
+    "wallets": 502,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 189.6,
+    "wallets": 48,
+    "one_addr_share": 0.52,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 138.0,
+    "wallets": 39,
+    "one_addr_share": 0.43,
+    "flags": []
+   },
+   {
+    "symbol": "BEHALF",
+    "per_min": 121.2,
+    "wallets": 52,
+    "one_addr_share": 0.74,
+    "flags": []
+   },
+   {
+    "symbol": "HODL",
+    "per_min": 103.2,
+    "wallets": 39,
+    "one_addr_share": 0.62,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "UP",
+    "per_min": 79.2,
+    "wallets": 68,
+    "one_addr_share": 0.91,
+    "flags": [
+     "one wallet"
+    ]
+   }
+  ]
  }
 ]
