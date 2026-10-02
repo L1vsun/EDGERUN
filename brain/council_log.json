@@ -2642,5 +2642,86 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-02T07:17:41+00:00",
+  "block": 78046628,
+  "mode": "rules",
+  "call": "ZPROOF is the one to watch - heating",
+  "focus": "ZPROOF",
+  "confidence": 0.65,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 4245.6,
+    "wallets": 208,
+    "one_addr_share": 0.73,
+    "flags": [
+     "dex live",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HOOKR",
+    "per_min": 1461.6,
+    "wallets": 1212,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1282.8,
+    "wallets": 296,
+    "one_addr_share": 0.27,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "ZPROOF",
+    "per_min": 236.4,
+    "wallets": 182,
+    "one_addr_share": 0.81,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 64.8,
+    "wallets": 35,
+    "one_addr_share": 0.15,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "EQMODE",
+    "per_min": 62.4,
+    "wallets": 34,
+    "one_addr_share": 0.62,
+    "flags": []
+   },
+   {
+    "symbol": "AI",
+    "per_min": 62.4,
+    "wallets": 20,
+    "one_addr_share": 0.58,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "www",
+    "per_min": 58.8,
+    "wallets": 19,
+    "one_addr_share": 0.67,
+    "flags": []
+   }
+  ]
  }
 ]
