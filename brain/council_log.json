@@ -2561,5 +2561,86 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-02T01:17:08+00:00",
+  "block": 77832987,
+  "mode": "rules",
+  "call": "RCAT is the one to watch - heating",
+  "focus": "RCAT",
+  "confidence": 0.79,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 3883.2,
+    "wallets": 265,
+    "one_addr_share": 0.59,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1430.4,
+    "wallets": 407,
+    "one_addr_share": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "SI",
+    "per_min": 814.8,
+    "wallets": 674,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "MANCER",
+    "per_min": 361.2,
+    "wallets": 4,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "REVENUE",
+    "per_min": 276.0,
+    "wallets": 154,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "VEIL",
+    "per_min": 176.4,
+    "wallets": 54,
+    "one_addr_share": 0.54,
+    "flags": []
+   },
+   {
+    "symbol": "CROSSRATE",
+    "per_min": 136.8,
+    "wallets": 115,
+    "one_addr_share": 0.97,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "VRAX",
+    "per_min": 127.2,
+    "wallets": 99,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet"
+    ]
+   }
+  ]
  }
 ]
