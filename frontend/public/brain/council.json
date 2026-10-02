@@ -1,59 +1,89 @@
 {
  "mode": "rules",
- "generated_at": "2026-10-02T19:26:34+00:00",
+ "generated_at": "2026-10-02T23:10:09+00:00",
  "model": "rule-based",
- "block": 78480230,
+ "block": 78613478,
  "window_seconds": 50,
  "chain": {
-  "transfers_total": 6768,
-  "wallets_total": 2264,
-  "tokens_moving": 374
+  "transfers_total": 7982,
+  "wallets_total": 1800,
+  "tokens_moving": 244
  },
  "tokens": [
   {
+   "address": "0x5fc5360d0400a0fd4f2af552add042d716f1d168",
+   "symbol": "USDG",
+   "transfers": 1969,
+   "per_min": 2362.8,
+   "wallets": 216,
+   "new_wallets": 0,
+   "mints": 0,
+   "burns": 0,
+   "swaps": 1,
+   "one_addr_share": 0.59,
+   "accel": 1.02,
+   "quote_asset": false,
+   "flags": []
+  },
+  {
    "address": "0x0bd7d308f8e1639fab988df18a8011f41eacad73",
    "symbol": "WETH",
-   "transfers": 1679,
-   "per_min": 2014.8,
-   "wallets": 322,
+   "transfers": 1775,
+   "per_min": 2130.0,
+   "wallets": 212,
    "new_wallets": 0,
-   "mints": 338,
-   "burns": 354,
+   "mints": 359,
+   "burns": 475,
    "swaps": 7,
    "one_addr_share": 0.21,
-   "accel": 1.04,
+   "accel": 1.0,
    "quote_asset": true,
    "flags": [
     "dex live"
    ]
   },
   {
-   "address": "0x5fc5360d0400a0fd4f2af552add042d716f1d168",
-   "symbol": "USDG",
-   "transfers": 1449,
-   "per_min": 1738.8,
-   "wallets": 388,
+   "address": "0x316fa3ab9a8fd8d7567a823dedecf28d9fee2894",
+   "symbol": "ZERO",
+   "transfers": 1133,
+   "per_min": 1359.6,
+   "wallets": 298,
    "new_wallets": 0,
    "mints": 0,
    "burns": 0,
-   "swaps": 2,
-   "one_addr_share": 0.27,
-   "accel": 1.07,
+   "swaps": 0,
+   "one_addr_share": 0.47,
+   "accel": 1.03,
    "quote_asset": false,
    "flags": []
   },
   {
-   "address": "0x061ee80b757235729cb1d21bd19cc82db027dc89",
-   "symbol": "GUY",
-   "transfers": 500,
-   "per_min": 600.0,
-   "wallets": 502,
+   "address": "0x285a9ddf53bef60ebcc55f5752724a30ef7b2d17",
+   "symbol": "CRADLE",
+   "transfers": 422,
+   "per_min": 506.4,
+   "wallets": 115,
    "new_wallets": 0,
-   "mints": 1,
+   "mints": 0,
    "burns": 0,
    "swaps": 0,
-   "one_addr_share": 0.99,
-   "accel": 0.02,
+   "one_addr_share": 0.49,
+   "accel": 1.05,
+   "quote_asset": false,
+   "flags": []
+  },
+  {
+   "address": "0x875a111c719aedcbb2dbba2adb8d2fa164253bc3",
+   "symbol": "0x875a11",
+   "transfers": 145,
+   "per_min": 174.0,
+   "wallets": 147,
+   "new_wallets": 0,
+   "mints": 0,
+   "burns": 0,
+   "swaps": 0,
+   "one_addr_share": 0.97,
+   "accel": 0.0,
    "quote_asset": false,
    "flags": [
     "one wallet",
@@ -61,146 +91,123 @@
    ]
   },
   {
-   "address": "0x117cc2133c37b721f49de2a7a74833232b3b4c0c",
-   "symbol": "SPY",
-   "transfers": 158,
-   "per_min": 189.6,
+   "address": "0xadd31c4bfe03b0f1116e5bf074c5835142440a11",
+   "symbol": "FILLED",
+   "transfers": 130,
+   "per_min": 156.0,
+   "wallets": 132,
+   "new_wallets": 0,
+   "mints": 0,
+   "burns": 0,
+   "swaps": 0,
+   "one_addr_share": 0.99,
+   "accel": 1.13,
+   "quote_asset": false,
+   "flags": [
+    "one wallet"
+   ]
+  },
+  {
+   "address": "0x14a64d6f3db9900be9c554d0961f539a16f43f9c",
+   "symbol": "FABLE",
+   "transfers": 126,
+   "per_min": 151.2,
    "wallets": 48,
    "new_wallets": 0,
    "mints": 0,
    "burns": 0,
    "swaps": 0,
    "one_addr_share": 0.52,
-   "accel": 0.78,
+   "accel": 0.63,
    "quote_asset": false,
    "flags": []
   },
   {
-   "address": "0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea",
-   "symbol": "SPCX",
-   "transfers": 115,
-   "per_min": 138.0,
-   "wallets": 39,
-   "new_wallets": 0,
-   "mints": 0,
-   "burns": 0,
-   "swaps": 0,
-   "one_addr_share": 0.43,
-   "accel": 0.84,
-   "quote_asset": false,
-   "flags": []
-  },
-  {
-   "address": "0x007defdb60b9aa23058d268b7f77516a4ad7d3f0",
-   "symbol": "BEHALF",
-   "transfers": 101,
-   "per_min": 121.2,
-   "wallets": 52,
-   "new_wallets": 0,
-   "mints": 0,
-   "burns": 0,
-   "swaps": 0,
-   "one_addr_share": 0.74,
-   "accel": 1.45,
-   "quote_asset": false,
-   "flags": []
-  },
-  {
-   "address": "0x4c3b55314cdbee2349f21f5f997983cfa27142ec",
-   "symbol": "HODL",
-   "transfers": 86,
-   "per_min": 103.2,
-   "wallets": 39,
-   "new_wallets": 0,
-   "mints": 0,
-   "burns": 0,
-   "swaps": 0,
-   "one_addr_share": 0.62,
-   "accel": 0.31,
-   "quote_asset": false,
-   "flags": [
-    "cooling"
-   ]
-  },
-  {
-   "address": "0x7d9092ec0fcb6347d1c402e9c028f9a3228aa0c8",
-   "symbol": "UP",
-   "transfers": 66,
-   "per_min": 79.2,
-   "wallets": 68,
-   "new_wallets": 0,
-   "mints": 0,
-   "burns": 0,
-   "swaps": 0,
-   "one_addr_share": 0.91,
-   "accel": 1.16,
-   "quote_asset": false,
-   "flags": [
-    "one wallet"
-   ]
-  },
-  {
-   "address": "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec",
-   "symbol": "NVDA",
-   "transfers": 62,
-   "per_min": 74.4,
-   "wallets": 35,
-   "new_wallets": 0,
-   "mints": 0,
-   "burns": 0,
-   "swaps": 0,
-   "one_addr_share": 0.29,
-   "accel": 0.91,
-   "quote_asset": false,
-   "flags": []
-  },
-  {
-   "address": "0x02533eb712f3f2925136653b4727e05fa0a7cc49",
-   "symbol": "COBWEB",
-   "transfers": 56,
-   "per_min": 67.2,
-   "wallets": 35,
-   "new_wallets": 0,
-   "mints": 0,
-   "burns": 0,
-   "swaps": 0,
-   "one_addr_share": 0.82,
-   "accel": 0.71,
-   "quote_asset": false,
-   "flags": []
-  },
-  {
-   "address": "0xedbf91223639800bcd5756815caf908df3b890be",
-   "symbol": "PRIORS",
-   "transfers": 53,
-   "per_min": 63.6,
-   "wallets": 26,
-   "new_wallets": 0,
-   "mints": 0,
-   "burns": 0,
-   "swaps": 0,
-   "one_addr_share": 0.53,
-   "accel": 0.0,
-   "quote_asset": false,
-   "flags": [
-    "cooling"
-   ]
-  },
-  {
-   "address": "0xba1a2d9783ebe2b76493c5c12eb9813a0e062843",
-   "symbol": "SI",
-   "transfers": 51,
-   "per_min": 61.2,
-   "wallets": 38,
+   "address": "0xd9f94dfaab7f92662e3c7d542589098fce153676",
+   "symbol": "CHANCE",
+   "transfers": 121,
+   "per_min": 145.2,
+   "wallets": 53,
    "new_wallets": 0,
    "mints": 0,
    "burns": 0,
    "swaps": 0,
    "one_addr_share": 1.0,
-   "accel": 1.18,
+   "accel": 1.21,
    "quote_asset": false,
    "flags": [
     "one wallet"
+   ]
+  },
+  {
+   "address": "0x2e8c31162b855a2ffa90f6f8634643ad6f111e18",
+   "symbol": "AI",
+   "transfers": 120,
+   "per_min": 144.0,
+   "wallets": 19,
+   "new_wallets": 0,
+   "mints": 0,
+   "burns": 0,
+   "swaps": 0,
+   "one_addr_share": 0.64,
+   "accel": 2.64,
+   "quote_asset": false,
+   "flags": [
+    "heating"
+   ]
+  },
+  {
+   "address": "0x762ec017d75ae8f902cb8037f6c19a35daff1e18",
+   "symbol": "BELIEVERS",
+   "transfers": 120,
+   "per_min": 144.0,
+   "wallets": 17,
+   "new_wallets": 0,
+   "mints": 1,
+   "burns": 0,
+   "swaps": 0,
+   "one_addr_share": 0.97,
+   "accel": 3.19,
+   "quote_asset": false,
+   "flags": [
+    "one wallet",
+    "heating"
+   ]
+  },
+  {
+   "address": "0x32ac8c1d7672667d5ebdea22935f7b06fc8d496f",
+   "symbol": "HOOD",
+   "transfers": 85,
+   "per_min": 102.0,
+   "wallets": 84,
+   "new_wallets": 0,
+   "mints": 0,
+   "burns": 0,
+   "swaps": 0,
+   "one_addr_share": 0.92,
+   "accel": 2.31,
+   "quote_asset": false,
+   "flags": [
+    "one wallet",
+    "heating"
+   ]
+  },
+  {
+   "address": "0x7218ab9c1d714dd38de7b8f0b07446044825fafd",
+   "symbol": "www",
+   "transfers": 77,
+   "per_min": 92.4,
+   "wallets": 79,
+   "new_wallets": 0,
+   "mints": 0,
+   "burns": 0,
+   "swaps": 0,
+   "one_addr_share": 0.99,
+   "accel": 0.0,
+   "quote_asset": false,
+   "flags": [
+    "one wallet",
+    "cooling"
    ]
   }
  ],
@@ -210,19 +217,19 @@
    "name": "Scout",
    "region": "sensory cortex",
    "says": {
-    "headline": "374 tokens moving \u00b7 6 showing something worth a look",
+    "headline": "244 tokens moving \u00b7 8 showing something worth a look",
     "tokens": [
      {
       "symbol": "WETH",
-      "what": "7 swaps and 2015 transfers/min across 322 wallets"
+      "what": "7 swaps and 2130 transfers/min across 212 wallets"
      },
      {
-      "symbol": "GUY",
-      "what": "600 transfers/min but one address touches 99% of them"
+      "symbol": "0x875a11",
+      "what": "174 transfers/min but one address touches 97% of them"
      },
      {
-      "symbol": "HODL",
-      "what": "103 transfers/min across 39 wallets"
+      "symbol": "FILLED",
+      "what": "156 transfers/min but one address touches 99% of them"
      }
     ],
     "quiet": false
@@ -236,20 +243,20 @@
     "verdict": "10 of the 12 busiest look like one actor or fresh supply",
     "traps": [
      {
-      "symbol": "GUY",
-      "why": "one address is on 99% of 500 transfers - that is one actor, not demand"
+      "symbol": "ZERO",
+      "why": "1360 transfers/min and no DEX swap in the window - movement with no visible way out"
      },
      {
-      "symbol": "SPY",
-      "why": "190 transfers/min and no DEX swap in the window - movement with no visible way out"
+      "symbol": "CRADLE",
+      "why": "506 transfers/min and no DEX swap in the window - movement with no visible way out"
      },
      {
-      "symbol": "SPCX",
-      "why": "138 transfers/min and no DEX swap in the window - movement with no visible way out"
+      "symbol": "0x875a11",
+      "why": "one address is on 97% of 145 transfers - that is one actor, not demand"
      },
      {
-      "symbol": "BEHALF",
-      "why": "121 transfers/min and no DEX swap in the window - movement with no visible way out"
+      "symbol": "FILLED",
+      "why": "one address is on 99% of 130 transfers - that is one actor, not demand"
      }
     ],
     "clean": [
@@ -267,17 +274,17 @@
      {
       "now": "WETH",
       "before": "USDG",
-      "what_followed": "USDG carried the same flags at 1470/min and its flow rose to 2934/min over 36 rounds"
+      "what_followed": "USDG carried the same flags at 1470/min and its flow rose to 1739/min over 37 rounds"
      },
      {
-      "now": "GUY",
+      "now": "0x875a11",
       "before": "AI",
       "what_followed": "AI carried the same flags at 252/min and its flow fell to 214/min over 5 rounds"
      },
      {
-      "now": "HODL",
-      "before": "SPY",
-      "what_followed": "SPY carried the same flags at 320/min and its flow fell to 203/min over 10 rounds"
+      "now": "FILLED",
+      "before": "Glorp",
+      "what_followed": "Glorp carried the same flags at 541/min and its flow rose to 1030/min over 2 rounds"
      }
     ],
     "confidence": "fair"
@@ -288,17 +295,17 @@
    "name": "Synthesis",
    "region": "association cortex",
    "says": {
-    "call": "nothing in this window is worth acting on",
-    "focus": null,
-    "reason": "4 of the busiest tokens look like a single actor; the rest are moving normally or are too small to read.",
-    "confidence": 0.16,
+    "call": "AI is the one to watch - heating",
+    "focus": "AI",
+    "reason": "144 transfers/min across 19 wallets, 2.6x its own average, one address on 64% of transfers, 0 swaps.",
+    "confidence": 0.82,
     "overruled": ""
    }
   }
  ],
  "gate": {
-  "action": "SILENCE",
-  "why": "confidence 0.16 is under the 0.55 bar"
+  "action": "SPEAK",
+  "why": "confidence 0.82 on AI, 120 transfers behind it"
  },
  "usage": {
   "in": 0,

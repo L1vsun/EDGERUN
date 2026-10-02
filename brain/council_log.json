@@ -2881,5 +2881,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-02T23:10:09+00:00",
+  "block": 78613478,
+  "mode": "rules",
+  "call": "AI is the one to watch - heating",
+  "focus": "AI",
+  "confidence": 0.82,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 2362.8,
+    "wallets": 216,
+    "one_addr_share": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 2130.0,
+    "wallets": 212,
+    "one_addr_share": 0.21,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "ZERO",
+    "per_min": 1359.6,
+    "wallets": 298,
+    "one_addr_share": 0.47,
+    "flags": []
+   },
+   {
+    "symbol": "CRADLE",
+    "per_min": 506.4,
+    "wallets": 115,
+    "one_addr_share": 0.49,
+    "flags": []
+   },
+   {
+    "symbol": "0x875a11",
+    "per_min": 174.0,
+    "wallets": 147,
+    "one_addr_share": 0.97,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "FILLED",
+    "per_min": 156.0,
+    "wallets": 132,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "FABLE",
+    "per_min": 151.2,
+    "wallets": 48,
+    "one_addr_share": 0.52,
+    "flags": []
+   },
+   {
+    "symbol": "CHANCE",
+    "per_min": 145.2,
+    "wallets": 53,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   }
+  ]
  }
 ]
