@@ -3040,5 +3040,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-03T08:26:15+00:00",
+  "block": 78941550,
+  "mode": "rules",
+  "call": "0x48fd48 is the one to watch - heating",
+  "focus": "0x48fd48",
+  "confidence": 0.79,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 1287.6,
+    "wallets": 210,
+    "one_addr_share": 0.23,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1000.8,
+    "wallets": 268,
+    "one_addr_share": 0.25,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 98.4,
+    "wallets": 46,
+    "one_addr_share": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "COUPONS",
+    "per_min": 76.8,
+    "wallets": 23,
+    "one_addr_share": 0.5,
+    "flags": []
+   },
+   {
+    "symbol": "AI",
+    "per_min": 68.4,
+    "wallets": 28,
+    "one_addr_share": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "PONS",
+    "per_min": 66.0,
+    "wallets": 54,
+    "one_addr_share": 0.71,
+    "flags": []
+   },
+   {
+    "symbol": "0x833626",
+    "per_min": 66.0,
+    "wallets": 57,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "swordcat",
+    "per_min": 64.8,
+    "wallets": 47,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   }
+  ]
  }
 ]
