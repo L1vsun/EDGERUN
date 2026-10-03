@@ -3350,5 +3350,86 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-03T23:30:48+00:00",
+  "block": 79476513,
+  "mode": "rules",
+  "call": "ORBIO is the one to watch - dex live",
+  "focus": "ORBIO",
+  "confidence": 0.78,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "USDG",
+    "per_min": 1647.6,
+    "wallets": 257,
+    "one_addr_share": 0.41,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "WETH",
+    "per_min": 1548.0,
+    "wallets": 224,
+    "one_addr_share": 0.18,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "SIGH",
+    "per_min": 601.2,
+    "wallets": 150,
+    "one_addr_share": 0.5,
+    "flags": []
+   },
+   {
+    "symbol": "ORBIO",
+    "per_min": 475.2,
+    "wallets": 45,
+    "one_addr_share": 0.57,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "AI",
+    "per_min": 201.6,
+    "wallets": 33,
+    "one_addr_share": 0.31,
+    "flags": []
+   },
+   {
+    "symbol": "INDEX",
+    "per_min": 171.6,
+    "wallets": 145,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "CASHDOG",
+    "per_min": 123.6,
+    "wallets": 39,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "Underdog",
+    "per_min": 116.4,
+    "wallets": 99,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
