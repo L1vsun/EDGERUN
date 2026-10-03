@@ -2957,5 +2957,88 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-03T02:12:44+00:00",
+  "block": 78722042,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 1461.6,
+    "wallets": 206,
+    "one_addr_share": 0.29,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "LAUNCH",
+    "per_min": 939.6,
+    "wallets": 282,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 832.8,
+    "wallets": 222,
+    "one_addr_share": 0.35,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "SXR",
+    "per_min": 598.8,
+    "wallets": 500,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "enu",
+    "per_min": 278.4,
+    "wallets": 227,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PWPLT",
+    "per_min": 162.0,
+    "wallets": 103,
+    "one_addr_share": 0.44,
+    "flags": []
+   },
+   {
+    "symbol": "ORE",
+    "per_min": 151.2,
+    "wallets": 37,
+    "one_addr_share": 0.93,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "ZERO",
+    "per_min": 99.6,
+    "wallets": 67,
+    "one_addr_share": 0.98,
+    "flags": [
+     "one wallet"
+    ]
+   }
+  ]
  }
 ]
