@@ -3116,5 +3116,87 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-03T13:36:25+00:00",
+  "block": 79123675,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 1502.4,
+    "wallets": 212,
+    "one_addr_share": 0.11,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1449.6,
+    "wallets": 333,
+    "one_addr_share": 0.24,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "NKE",
+    "per_min": 307.2,
+    "wallets": 233,
+    "one_addr_share": 0.95,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "PIGGY-USDG",
+    "per_min": 216.0,
+    "wallets": 181,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "ZERO",
+    "per_min": 200.4,
+    "wallets": 56,
+    "one_addr_share": 0.5,
+    "flags": []
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 157.2,
+    "wallets": 51,
+    "one_addr_share": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "FILLED",
+    "per_min": 112.8,
+    "wallets": 96,
+    "one_addr_share": 0.99,
+    "flags": [
+     "one wallet",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "FLY",
+    "per_min": 104.4,
+    "wallets": 28,
+    "one_addr_share": 0.97,
+    "flags": [
+     "one wallet"
+    ]
+   }
+  ]
  }
 ]
