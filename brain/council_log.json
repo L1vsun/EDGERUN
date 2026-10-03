@@ -3275,5 +3275,80 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-03T20:36:03+00:00",
+  "block": 79372761,
+  "mode": "rules",
+  "call": "NVDAx3L is the one to watch - heating",
+  "focus": "NVDAx3L",
+  "confidence": 0.61,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 1227.6,
+    "wallets": 247,
+    "one_addr_share": 0.25,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 991.2,
+    "wallets": 262,
+    "one_addr_share": 0.34,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx3L",
+    "per_min": 129.6,
+    "wallets": 5,
+    "one_addr_share": 0.83,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PIGGY-USDG",
+    "per_min": 120.0,
+    "wallets": 101,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "ORBIO",
+    "per_min": 92.4,
+    "wallets": 42,
+    "one_addr_share": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "SHRINU",
+    "per_min": 87.6,
+    "wallets": 46,
+    "one_addr_share": 0.68,
+    "flags": []
+   },
+   {
+    "symbol": "BONK",
+    "per_min": 87.6,
+    "wallets": 26,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "SI",
+    "per_min": 74.4,
+    "wallets": 17,
+    "one_addr_share": 0.63,
+    "flags": []
+   }
+  ]
  }
 ]
