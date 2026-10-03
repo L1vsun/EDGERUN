@@ -3198,5 +3198,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-03T17:45:31+00:00",
+  "block": 79271439,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.06,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 1836.0,
+    "wallets": 294,
+    "one_addr_share": 0.31,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 1502.4,
+    "wallets": 335,
+    "one_addr_share": 0.26,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "SETTLE",
+    "per_min": 157.2,
+    "wallets": 53,
+    "one_addr_share": 0.53,
+    "flags": []
+   },
+   {
+    "symbol": "Agency",
+    "per_min": 123.6,
+    "wallets": 93,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "AI",
+    "per_min": 103.2,
+    "wallets": 39,
+    "one_addr_share": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "MEME",
+    "per_min": 97.2,
+    "wallets": 20,
+    "one_addr_share": 0.91,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "PIGGY-USDG",
+    "per_min": 96.0,
+    "wallets": 81,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "JACK",
+    "per_min": 76.8,
+    "wallets": 30,
+    "one_addr_share": 0.5,
+    "flags": []
+   }
+  ]
  }
 ]
