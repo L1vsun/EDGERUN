@@ -3431,5 +3431,90 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-04T04:22:07+00:00",
+  "block": 79649065,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.07,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WETH",
+    "per_min": 1483.2,
+    "wallets": 154,
+    "one_addr_share": 0.42,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "USDG",
+    "per_min": 710.4,
+    "wallets": 241,
+    "one_addr_share": 0.28,
+    "flags": [
+     "dex live"
+    ]
+   },
+   {
+    "symbol": "Aiden",
+    "per_min": 312.0,
+    "wallets": 236,
+    "one_addr_share": 0.94,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Underdog",
+    "per_min": 241.2,
+    "wallets": 105,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "CONV",
+    "per_min": 235.2,
+    "wallets": 69,
+    "one_addr_share": 0.92,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "ORE",
+    "per_min": 152.4,
+    "wallets": 50,
+    "one_addr_share": 0.92,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "DERP",
+    "per_min": 115.2,
+    "wallets": 97,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   },
+   {
+    "symbol": "knightcat",
+    "per_min": 80.4,
+    "wallets": 51,
+    "one_addr_share": 1.0,
+    "flags": [
+     "one wallet"
+    ]
+   }
+  ]
  }
 ]
