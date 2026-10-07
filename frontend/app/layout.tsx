@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "EDGERUN - is that the real contract?",
   description:
-    "A browser extension that checks whether the token in the post you are reading is the contract it claims to be - six chains, in your browser, with no server on the path.",
+    "A browser extension that checks whether the token in the post you are reading is the contract it claims to be, and keeps who posted it - Solana and five EVM chains, in your browser, with no server on the path.",
   icons: {
     icon: [
       { url: `${BASE}/favicon.ico`, sizes: "any" },
@@ -40,19 +40,19 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "EDGERUN - is that the real contract?",
-    description: "Seven contracts use $PEPE on one chain alone. EDGERUN tells you which one you are actually looking at - across six chains, in your browser.",
+    description: "Anyone can mint a second $PUMP in a minute. EDGERUN tells you which one is in that post, who posted it, and what happened after - Solana and five EVM chains, in your browser.",
     images: [{ url: `${BASE}/og.png`, width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "EDGERUN - is that the real contract?",
-    description: "Seven contracts use $PEPE on one chain alone. EDGERUN tells you which one you are actually looking at - across six chains, in your browser.",
+    description: "Anyone can mint a second $PUMP in a minute. EDGERUN tells you which one is in that post, who posted it, and what happened after - Solana and five EVM chains, in your browser.",
     images: [`${BASE}/og.png`],
   },
 };
 
-// The ground, not the accent. This paints the browser chrome on mobile, and the green is an
+// The ground, not the accent. This paints the browser chrome on mobile, and the accent is an
 // edge colour in this identity - a whole phone status bar of it is the one place it would
 // read as a field.
 export const viewport = { themeColor: "#080a0b" };

@@ -1,9 +1,13 @@
 // Dexscreener.
 //
-// The URL carries the *pair*, not the token - dexscreener.com/robinhood/<pairId> - and on
-// this chain some of those ids are Uniswap v4 pools, which are 32-byte ids rather than
-// addresses. So the pair is resolved to its base token through the worker first. (The chain
-// slug is `robinhood`; `robinhoodchain` and `rhchain` both return nothing.)
+// The URL carries the chain and the *pair*, not the token - dexscreener.com/<chain>/<pairId>
+// - and on some chains those ids are Uniswap v4 pools, which are 32-byte ids rather than
+// addresses. On Solana the id may be the mint itself, and may be lowercased. So whatever is
+// in the path is resolved to its base token through the worker first, and the address that
+// comes back is the one used - never the one in the URL.
+//
+// Only chains the extension can actually read get a badge. On any other pair page it does
+// nothing at all, which is the honest thing to do with a token it cannot check.
 //
 // The anchor is found by looking for the token's own symbol in the page rather than by a
 // class-name chain. Dexscreener's markup changes across deploys and its classes are hashed,
@@ -19,7 +23,7 @@
   if (!E || window.__edgerunDex) return;
   window.__edgerunDex = true;
 
-  const PATH = /^\/robinhood\/([0-9a-zA-Z]+)/;
+  const PATH = /^\/(solana|robinhood)\/([0-9a-zA-Z]+)/;
   let shown = null;
   let running = false; // the header mounts late, so run() awaits it while the watcher fires
 
@@ -60,24 +64,31 @@
   async function run() {
     const m = location.pathname.match(PATH);
     if (!m) return;
-    const pairId = m[1];
-    if (running || shown === pairId) return;
+    const [, chain, pairId] = m;
+    const page = `${chain}/${pairId}`;
+    if (running || shown === page) return;
     running = true;
-    shown = pairId;
+    shown = page;
     document.querySelectorAll('[data-edgerun="slot"]').forEach((n) => n.remove());
+
+    // A mint has one tier - its whole scan is a single read - and an EVM contract has two.
+    const check = (address, fresh) =>
+      chain === "solana"
+        ? E.ask({ type: "mint", address, fresh })
+        : E.ask({ type: "verdict", address, level: "full", fresh });
 
     const badge = E.makeBadge({
       onFull: async (address) => {
-        try { badge.update(await E.ask({ type: "verdict", address, level: "full", fresh: true })); }
+        try { badge.update(await check(address, true)); }
         catch (err) { badge.fail(err.message); }
       },
       onWatch: (address) => E.ask({ type: "watch:toggle", address }).catch(() => {}),
     });
 
     try {
-      const pair = await E.ask({ type: "pair", pairId });
+      const pair = await E.ask({ type: "pair", pairId, chain });
       if (!pair?.baseToken) throw new Error("could not resolve this pair to a token");
-      if (!location.pathname.startsWith(`/robinhood/${pairId}`)) return; // routed away while waiting
+      if (!location.pathname.startsWith(`/${page}`)) return; // routed away while waiting
 
       // now that the ticker is known, wait for the page to put it on screen
       const anchor = await E.waitFor(() => symbolAnchor(pair.baseSymbol), 6000);
@@ -87,7 +98,7 @@
         floatingSlot(badge);
       }
 
-      badge.update(await E.ask({ type: "verdict", address: pair.baseToken, level: "full" }));
+      badge.update(await check(pair.baseToken, false));
     } catch (err) {
       if (!document.querySelector('[data-edgerun="slot"]')) floatingSlot(badge);
       badge.fail(err.message);

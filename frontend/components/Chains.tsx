@@ -2,8 +2,8 @@
 // claim.
 //
 // This section exists because the honest answer is uncomfortable and saying it is the whole
-// pitch. On Robinhood Chain the issuer publishes the true address, so "that is not Tesla" is
-// a fact. Nowhere else has that. Every other chain is a curated list, and a list is weaker in
+// pitch. Where an issuer publishes the true address, "that is not Tesla" is a fact. Almost
+// nowhere has that. Everywhere else the evidence is a curated list, and a list is weaker in
 // both directions: being on it is a vouch, being off it proves nothing at all.
 //
 // A tool that renders those two claims identically is lying, and being right about the fakes
@@ -11,11 +11,10 @@
 
 const CHAINS = [
   {
-    name: "Robinhood Chain",
-    id: "4663",
-    reads: "Full contract lane plus the issuer's own registry: source, mint selectors, ownership, deployer history, and a simulated transfer out of a real holder's wallet.",
-    tier: "registry",
-    home: true,
+    name: "Solana",
+    id: "SPL",
+    reads: "The mint account itself, in one request: mint and freeze authority, permanent delegate, transfer hooks, fees and pauses, accounts that start frozen - plus the token's name from its metadata, and whether that name can still be changed.",
+    tier: "list",
   },
   { name: "Ethereum", id: "1", reads: "Identity, curated lists, and whether it wears the name of a token that lives elsewhere.", tier: "list" },
   { name: "Base", id: "8453", reads: "Identity, curated lists, cross-chain name.", tier: "list" },
@@ -27,10 +26,10 @@ const CHAINS = [
     tier: "list",
   },
   {
-    name: "Solana",
-    id: "SPL",
-    reads: "Mint authority, freeze authority, transfer hooks, transfer fees and Token-2022 metadata - read from the mint account itself.",
-    tier: "list",
+    name: "Robinhood Chain",
+    id: "4663",
+    reads: "The full contract lane plus an issuer's own registry: source, mint selectors, ownership, deployer history, and a simulated transfer out of a real holder's wallet.",
+    tier: "registry",
   },
 ];
 
@@ -44,7 +43,7 @@ export default function Chains() {
 
       <div className="chain-grid">
         {CHAINS.map((c) => (
-          <div className={`chain${c.home ? " chain-home" : ""}`} key={c.name}>
+          <div className="chain" key={c.name}>
             <div className="chain-head">
               <b>{c.name}</b>
               <code>{c.id}</code>
@@ -59,14 +58,14 @@ export default function Chains() {
         <div className="tier-card">
           <b>registry</b>
           <p>
-            The issuer publishes which address is real. Impersonation is <b>provable</b>, and the
-            extension is allowed to say so. Only Robinhood Chain qualifies.
+            An issuer publishes which address is real. Impersonation is <b>provable</b>, and the
+            extension is allowed to say so. One chain of the six has one.
           </p>
         </div>
         <div className="tier-card">
           <b>list</b>
           <p>
-            Curated token lists only. A collision is reportable - <i>this calls itself USDC and
+            Curated token lists only - on Solana, two of them. A collision is reportable - <i>this calls itself USDC and
             the list says USDC here is a different address</i> - but nothing can be called a fake,
             because no list is authoritative about what the real one is.
           </p>

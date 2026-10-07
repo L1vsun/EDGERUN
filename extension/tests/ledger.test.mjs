@@ -50,7 +50,7 @@ rows = await L.read();
 assert.equal(rows.length, 3, "overlapping batch stays deduped");
 assert.equal(new Set(rows.map((r) => r.address)).size, 3);
 assert.equal(rows.find((r) => r.address === B.toLowerCase()).seen, 2);
-assert.equal(rows.find((r) => r.address === C.toLowerCase()).say, "in Robinhood's published registry");
+assert.equal(rows.find((r) => r.address === C.toLowerCase()).say, "in the issuer's published registry");
 
 // --- one list across tabs. Checking something on the explorer must not hide what X found:
 // the source page is kept per row instead, so nothing about where it came from is lost.
@@ -88,6 +88,29 @@ await L.record("u", mk(A.toUpperCase(), "PASS"));
 await L.record("u", mk(A.toLowerCase(), "PASS"));
 assert.equal((await L.read()).filter((r) => r.address === A.toLowerCase()).length, 1,
   "the same contract in two casings is one row");
+
+// ---- a Solana pass says what a mint scan can say, and no more ----
+await L.clear();
+await L.record("https://x.com/home", { address: "8xu4aFUUJ1Uq7Vye2Pr5eNyetPm9egNMaEeT4WbApump", chainName: "Solana", verdict: "PASS", level: "full", checks: [], context: { launchpad: "pump.fun" } });
+rows = await L.read();
+assert.match(rows[0].say, /the mint is clean/, "not 'full check ran' - a mint scan is not a full check of a token");
+assert.equal(rows[0].address, "8xu4aFUUJ1Uq7Vye2Pr5eNyetPm9egNMaEeT4WbApump", "base58 keeps its casing");
+assert.equal(rows[0].context.launchpad, "pump.fun", "the launch context rides along on the row");
+
+// ---- two batches landing at once must both be kept ----
+// A scroll sends its contracts and its mints as separate messages, and a fast scroll sends a
+// second pair before the first lands. Each used to read the list, add its own rows and write
+// it back: four mints checked in the feed, one row in the panel.
+await L.clear();
+const slow = globalThis.chrome.storage.session.get;
+globalThis.chrome.storage.session.get = async (k) => { await new Promise((r) => setTimeout(r, 15)); return slow(k); };
+await Promise.all([
+  L.recordMany("https://x.com/home", [mk("0x1110000000000000000000000000000000000001", "PASS"), mk("0x1110000000000000000000000000000000000002", "PASS")]),
+  L.recordMany("https://x.com/home", [mk("0x2220000000000000000000000000000000000001", "FAIL")]),
+  L.record("https://x.com/home", mk("0x3330000000000000000000000000000000000001", "CAUTION")),
+]);
+globalThis.chrome.storage.session.get = slow;
+assert.equal((await L.read()).length, 4, "every row from every concurrent write survives");
 
 // --- storage failure must not throw into the caller
 globalThis.chrome.storage.session.get = async () => { throw new Error("session storage off"); };

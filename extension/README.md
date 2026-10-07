@@ -1,15 +1,20 @@
 # EDGERUN - browser extension
 
 Puts a verdict next to the token wherever you already look at it: a post on X, a Dexscreener
-pair, a Blockscout page. The question it answers first is the one that actually costs people
-money on this chain - **is this the contract it says it is?**
+pair, a token page on Solscan, pump.fun or Blockscout. The question it answers first is the one
+that actually costs people money - **is this the contract it says it is?** - and the one it
+answers next is the one no scanner can: **who put it in front of you, and what happened after.**
+
+Solana and five EVM chains. A Solana mint is read in one request; an `0x` address gets the full
+contract lane on the one EVM chain where an explorer and an issuer's registry are both wired,
+and identity plus curated lists on the others.
 
 ## Install (unpacked)
 
 1. Download the repo from https://github.com/L1vsun/EDGERUN (Code → Download ZIP) and unzip it.
 2. `chrome://extensions` → enable Developer mode → **Load unpacked** → pick this `extension/` folder.
-3. Open any post on X mentioning a Robinhood Chain token, a Dexscreener pair, or a Blockscout
-   token page. No account, no key, nothing to configure.
+3. Open any post on X that pastes a Solana mint or a contract address, a Dexscreener pair, or a
+   token page on Solscan, pump.fun or Blockscout. No account, no key, nothing to configure.
 
 Chrome 137+ ignores `--load-extension` from the command line unless
 `--disable-features=DisableLoadExtensionCommandLineSwitch` is also passed; loading from the
@@ -17,8 +22,9 @@ Extensions page is unaffected.
 
 ## Architecture: there is no backend
 
-Every check runs in the extension's service worker, against the chain and Robinhood's own
-published registry. The hosted edgerun backend is deliberately **not** in the path. Measured
+Every check runs in the extension's service worker, against the chains, an issuer's published
+registry where one exists, curated token lists and - for launch context on Solana - a keyless
+index. The hosted edgerun backend is deliberately **not** in the path. Measured
 against it on 2026-09-21:
 
 | | measured |
@@ -50,10 +56,12 @@ CORS, and no page CSP on its requests.
 
 ## Verdicts, and what each is allowed to mean
 
-- **OFFICIAL** - this address is in Robinhood's published registry. A fact, not a score.
+- **OFFICIAL** - this address is in its issuer's published registry. A fact, not a score.
 - **FAIL** - it claims an official asset and is not it, or holders provably cannot move it.
 - **CAUTION** - the contract lane found something, or resolved nothing at all.
-- **PASS** - the full check ran and found nothing. Only reachable at the `full` tier.
+- **PASS** - the full check ran and found nothing. On an EVM chain, only reachable at the
+  `full` tier. On a Solana mint the badge says **mint is clean** instead of "checks pass",
+  because a mint scan reads the mint and nothing else, and most rugs never needed the mint.
 - **UNRESOLVED** - nothing established yet. An identity-clean token lands here *on purpose*:
   "not impersonating anything" is not "safe", and the badge must never let the first read as
   the second.
@@ -61,17 +69,163 @@ CORS, and no page CSP on its requests.
 There is no path from a failed request to a green badge. A broken upstream is always
 UNRESOLVED.
 
-## Why a `$TICKER` alone is only ever answered from the registry
+## What a `$TICKER` is allowed to say
 
-On this chain a ticker maps to many contracts - a ten-ticker sweep found 213 using an
-official ticker that were not the official contract. So a bare `$TICKER` is resolved against
-Robinhood's registry and nothing else: if it is an official stock ticker the badge names the
-one true address, and if it is not, no badge is drawn. Picking one of 213 candidates would be
-inventing an answer.
+A ticker maps to many contracts on every chain. On one EVM chain a ten-ticker sweep found 213
+contracts using a registered ticker that were not the registered contract; on Solana a second
+`$ANYTHING` costs less than lunch to mint. So a ticker is never resolved to "the" token. It
+is compared against a contract the same post hands over, or - when the post hands over none -
+answered with the fact that it is shared:
 
-The strongest thing here is the cross-check: a post that says **$TSLA** and pastes a contract
-that is not Robinhood's TSLA address is showing you a different token than the one it names.
-That is provable from the registry alone.
+- where an issuer publishes a registry, a post that says **$TSLA** and pastes a contract that
+  is not the registered TSLA address is showing you a different token than the one it names.
+  Provable from the registry alone, and the one case allowed to say *not the real one*;
+- on Solana, a post naming one ticker beside a mint that calls itself something else gets a
+  sentence saying exactly that. It never changes the verdict - "`$WIF` is dead, this is next"
+  names `$WIF` without claiming to be it;
+- **a post with a ticker and no contract** gets one line when at least two Solana mints use
+  that exact symbol (`lookupSymbol`, one cached index search per ticker). Quiet, and naming
+  the mint, when a list vouches for one; a caution when none does. Never for a currency, never
+  for a ticker one mint uses, at most two lines a post, and never beside a contract - with a
+  contract in the post, the contract is the answer to "which one";
+- a per-chain count on an EVM chain is shown only **beside a contract on that same chain**.
+  It used to appear under any post naming the ticker, which under a post about a Solana
+  token was a warning about somewhere else entirely.
+
+### Why the feed is built the way it is
+
+Reported from the field on 2026-10-07 as "I scroll and nothing ever appears", and three
+things were wrong at once:
+
+1. **The batch was debounced.** A debounce restarts its timer on every call, so while posts
+   keep arriving it never fires - and a timeline unmounts a post as it leaves. Throttled now.
+2. **Every source was awaited as one group.** A slow explorer held back every badge on the
+   screen. Each source is bounded by `E.settle` now, and there are two lanes: a ticker line
+   is drawn the moment its lookup lands, without waiting for any chain read.
+3. **Mints were read one after another**, each waiting on the index first. They are read
+   together, and the chain read starts before the index has answered.
+
+Measured on an X-shaped page served at `x.com` to the real extension, cold, live network:
+first line at 2.4 s, contract badges by 5 s, where it had been 6.4 s for anything at all.
+
+A page that outlives an extension reload can no longer reach its worker and used to fail
+silently for ever. It now says so in a corner, once, and reloads on a click.
+
+An `0x` address with no contract behind it on the chain that was read gets no badge at all:
+it is a wallet, or a token on a chain that pass did not ask. The panel keeps the row, and
+*dig deeper* asks the other chains.
+
+## Solana
+
+`lib/solana.js` is a second provider, not a chain-table row. One batched request reads the
+mint account (`jsonParsed`) and, for a legacy SPL mint, its Metaplex metadata account - whose
+address is derived locally in `lib/metaplex.js` (ed25519 curve test, SHA-256, bump search).
+Verified against the live chain 2026-10-07: the derived account for BONK, WIF, USDC and
+wrapped SOL each carries its own mint inside it, which is also what is checked before a name
+is taken from one.
+
+| read | what it means |
+|---|---|
+| `mintAuthority`, `freezeAuthority` | who can create supply, who can freeze any account |
+| `permanentDelegate` | who can move or burn tokens out of **any** holder's account |
+| `defaultAccountState: frozen` | new holders start frozen: receivable, not movable |
+| `transferHook` program / authority | code that can reject a transfer, armed or armable |
+| `transferFeeConfig` rate / authority | a sell tax, live or switchable |
+| `pausableConfig` | all transfers can be paused; `paused: true` is a **fail** |
+| `nonTransferable` | cannot be sold at all |
+| metadata update authority / `isMutable` | whether the name it compares against is fixed |
+
+A power is always reported and is a warning only on a token no list vouches for - real USDC
+holds both authorities and PYUSD carries a permanent delegate by design. Two lists can vouch:
+the curated one this extension loads, and Jupiter's verified set.
+
+**Holders, read from the chain on request (`lib/holders.js`).** `solana-rpc.publicnode.com`
+blocks `getTokenLargestAccounts` and wants a paid key for `getTokenSupply`; `api.mainnet-beta`
+403s an extension origin. Of fifteen public endpoints tried on 2026-10-07 exactly one answers
+keyless with CORS: `public.rpc.solanavibestation.com`. It refuses batches and answers a burst
+with a 403, so it gets one request and a budget of its own; the two follow-up reads go to
+publicnode, batched.
+
+Three requests: the twenty largest token accounts; each one parsed (its owner, its state);
+each owner's controlling program. An owner the system program controls is a wallet; any other
+is a program's account - a pool, a curve, a locker - and is counted apart. If the third
+request fails nothing is called a wallet and no concentration is claimed: guessing "wallet"
+is how a bonding curve becomes "one holder owns 80%".
+
+| finding | status |
+|---|---|
+| one wallet holds half of supply or more, or ten hold four fifths | warn (unvouched) |
+| every one of the largest wallet accounts is frozen (3 or more) | **fail** (unvouched) |
+| some of the largest accounts are frozen | warn (unvouched) |
+| any of the above on a token a list vouches for | reported, never charged |
+
+The total holder *count* still comes from `lib/jupiter.js`, as context, attributed.
+
+### Context from an index (`lib/jupiter.js`)
+
+One keyless request covers a whole batch of mints: launchpad, first-trade time, graduation,
+holder count, top-ten share, the wallet the index attributes the mint to and how many others
+it counts for that wallet, and the token's own X link. **None of it enters the verdict** except
+identity (verified or not, and which verified mints already hold the symbol). It is drawn as
+its own block, every row saying whose count it is.
+
+Two hosts, in order - `lite-api.jup.ag` then `api.jup.ag` - because the keyless one has been
+announced for retirement and postponed with no date. If both stop answering, every mint is
+scanned exactly as it was before the index existed.
+
+The creator wallet is worded as *"Jupiter attributes this mint to"*, never *"the dev is"*: for
+one fresh mint, two indexes named two different creators on the same day, and a wallet with
+3,648 launches turned out to be a launch tool signing for its users.
+
+### The X link, against the feed
+
+A token names an X account by writing a URL into its metadata. `parseXLink` tells an account
+from a single post from a community; `bindingCheck` then asks the only question that tests the
+link - has that account ever posted this contract - of the account graph. When the poster is
+the account the token names, the feed strip says so, and the call is stored as `own`.
+
+### The deeper read (`readDeep`, undocumented endpoint)
+
+The data behind Jupiter's own token pages (`datapi.jup.ag`) carries what the documented search
+does not: bundled buys at launch and the share of supply they held at their peak, holders it
+classes as bots, when the creator wallet was first funded, when a Dexscreener profile was
+paid for. Keyless, answers an extension - and **undocumented**, so it is asked only on *dig
+deeper*, never on the way to a verdict, and expected to stop answering one day. "Bundled" and
+"bot" are Jupiter's classifications; each row says so.
+
+### Contracts behind links
+
+`E.textWithLinks` reads a post's `innerText` plus the `textContent` of every link in it, for
+the part of a URL the page displays cut short. A link to `dexscreener.com/solana/<id>` is
+taken out of the text before mints are looked for - a pair id is not a mint, and their links
+are lowercased - and resolved through the worker to the token it trades. **Whether X keeps a
+truncated URL's tail in the link's markup could not be checked**: a logged-out visitor is
+served a static page with none of the app's markup. If it does not, this adds nothing.
+
+## What happened after (`lib/outcome.js`)
+
+Each recorded call carries the time its post was **written** (the first `<time>` in the
+article), not the time it scrolled past. On request, a call is priced:
+
+- **entry** - the close of the bar the post landed in;
+- **now** - today's price in the pool the token trades in now;
+- **peak** - the highest high after the entry bar.
+
+One request to Dexscreener for the token's pools, one to GeckoTerminal for candles. The frame
+is the finest one whose 1000 bars still reach the post. A post made on a bonding curve is
+priced on the curve and read against the open pool; a post older than every pool is measured
+from the token's first trade and says so (`basis: "first_trade"`); history that merely ran out
+gets no number.
+
+Four calls a run, stored on the record, so a second press continues. A rate limit stops the
+run and is **not** stored. Nothing here sets an account's tone - somebody warning about a
+contract has posted it too.
+
+The same work exposed a bug in the existing chart and tape: both ranked pools by 24h volume,
+and a launchpad token that graduated today still shows more volume on its finished curve than
+on the pool it trades in (measured: $187k against $35k, the curve holding nothing). Both
+pickers now set aside a pool with no liquidity when a pool created after it holds real
+liquidity. A rugged pool keeps a few dollars and has no successor, so it still leads.
 
 ## What it knows that a contract scan cannot
 
@@ -132,14 +286,20 @@ rules/referer.json       puts a Referer on explorer calls (see below)
 background/worker.js     the only code that touches the network
 lib/chain.js             batched JSON-RPC, ABI decoding
 lib/blockscout.js        explorer v2
-lib/registry.js          Robinhood's stock-token registry, cached an hour
+lib/registry.js          an issuer's stock-token registry, cached an hour
+lib/solana.js            the mint scan: authorities, Token-2022 powers, metadata
+lib/metaplex.js          metadata-account derivation and parsing for legacy mints
+lib/jupiter.js           launch context for Solana mints, the X link, list vouching
+lib/outcome.js           what the price did after a post
+lib/holders.js           the largest holders, read from the chain: wallets, pools, frozen
+lib/graph.js             who posted what, when, and whether they arrived together
 lib/verdict.js           the checks and the verdict assembly
 lib/selectors.js         4-byte selectors, revert tables
 lib/known.js             the maintained reference list
 lib/budget.js            per-upstream spend caps
 shared/detect.js         address/ticker detection, DOM watching, messaging
 shared/badge.js          the shadow-DOM badge
-sites/{twitter,dexscreener,blockscout}.js
+sites/{twitter,dexscreener,solana-pages,blockscout}.js
 providers/injected.js    inert - see "transaction interception"
 sidepanel/               the side panel: session ledger, paste-an-address,
                          the watchlist and the deployer dossier
@@ -162,8 +322,13 @@ Host pages change their markup. Two defences, both deliberate:
 
 - **Blockscout** - the address comes from the URL; the badge waits for the real `h1` rather
   than grabbing whatever exists at `document_idle`.
-- **Dexscreener** - the URL carries the *pair*, not the token (and on this chain some are
-  Uniswap v4 pool ids, 32 bytes, not addresses), so the pair is resolved first. The anchor is
+- **Solscan and pump.fun** - the mint is in the path, and the badge goes in a fixed corner. It
+  is never threaded into those pages' own markup: nothing here has been anchored against
+  their live DOM, and a badge in an obviously separate corner cannot land in the wrong row.
+- **Dexscreener** - the URL carries the chain and the *pair*, not the token (on some chains a
+  Uniswap v4 pool id, 32 bytes, not an address; on Solana possibly the mint itself, possibly
+  lowercased), so whatever is in the path is resolved first and the address the API answers
+  with is the one used. The anchor is
   then found by looking for the token's **own ticker** in the top of the page, not by a
   class-name chain - Dexscreener's classes are hashed and change across deploys.
 
@@ -183,6 +348,33 @@ being there. Two things must be settled before it does anything:
    never modify `params`, never delay or block a call, never touch a signature payload.
 
 ## Verified, and not
+
+**0.5.0, 2026-10-07.** What was checked:
+
+- 21 plain `node` suites pass, including the derivation against four real mints.
+- **The unpacked extension loaded in a real Chromium (Chrome for Testing 153), driven over
+  the DevTools protocol.** On live `pump.fun/coin/<mint>` and `solscan.io/token/<mint>` the
+  badge appeared with the right verdict. On a live `dexscreener.com/solana/<lowercased pair>`
+  the pair resolved to its mint and the badge appeared - in the floating slot, because the
+  page a headless browser is served there is Cloudflare's challenge, so the header anchor on
+  the real pair page is still unverified. The real `panel.html`, with the real `chrome.*`
+  APIs and the real ledger: a pasted mint scanned, the launch block drew, and *dig deeper*
+  read holders from the chain ("one wallet holds 58.3% of supply", the curve drawn as a
+  program's account).
+- The Solana path (index context -> symbol rivals -> mint scan), run in node against the live
+  chain and the live index for nine real mints: USDC, PYUSD and jitoSOL keep their powers
+  without a warning; an unverified mint calling itself `PUMP` (4 holders) is flagged as using
+  a taken symbol; two launchpad mints under an hour old return launch context, one attributed
+  to a wallet with 3,648 launches.
+- Call pricing against real pools, including a token that changed pools at graduation.
+- **Not verified: X's own page.** A logged-out browser is served a static page with no
+  `data-testid` at all. What was run instead is the next best thing: the real extension - its
+  manifest-injected content scripts, its real worker, the live chain and index - against a
+  timeline carrying X's DOM contract, served at `https://x.com/home` by mapping that host to
+  a local server. Ticker lines, pasted mints, a mint inside a shortened link, a lowercased
+  Dexscreener link, an absent `0x` address, the account graph and the ledger all behaved.
+  Whether X's real markup matches that contract in every detail is the part still unseen. Also not seen: the panel
+  inside Chrome's actual side panel (it was opened as a tab), and anything in branded Chrome.
 
 Verified live on 2026-09-21 against Robinhood Chain:
 

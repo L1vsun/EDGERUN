@@ -3,7 +3,7 @@
 Same four regions, same data, same gate, same output schema - but each region reaches its
 answer by rule instead of by judgement. This is not a mock of the LLM version: it is the
 deterministic version of the same pipeline, and every sentence it emits is computed from a
-number measured on-chain seconds earlier. When `ANTHROPIC_API_KEY` is set, `council.py`
+number the feed reported seconds earlier. When `ANTHROPIC_API_KEY` is set, `council.py`
 runs the same regions with real reasoning and writes the identical shape.
 
 The honest limits of rules, which is exactly what the models are for later:
@@ -32,15 +32,15 @@ def scout(snap: dict) -> dict:
     out = []
     for t in top:
         if "heating" in t["flags"]:
-            what = f"{t['per_min']:.0f} transfers/min and running {t['accel']:.1f}x its own average"
-        elif "one wallet" in t["flags"]:
-            what = f"{t['per_min']:.0f} transfers/min but one address touches {t['one_addr_share'] * 100:.0f}% of them"
-        elif "printing" in t["flags"]:
-            what = f"{t['mints']} mints against {t['burns']} burns while {t['wallets']} wallets hold it"
-        elif "dex live" in t["flags"]:
-            what = f"{t['swaps']} swaps and {t['per_min']:.0f} transfers/min across {t['wallets']} wallets"
+            what = f"{t['per_min']:.0f} trades/min and running {t['accel']:.1f}x its own hourly average"
+        elif "top-heavy" in t["flags"]:
+            what = f"{t['per_min']:.0f} trades/min but the ten largest wallets hold {t['top10'] * 100:.0f}% of it"
+        elif "mint open" in t["flags"]:
+            what = f"the mint authority is still live while {t['traders']} wallets trade it"
+        elif "buyers lead" in t["flags"]:
+            what = f"{t['buys']} buys against {t['sells']} sells, {t['per_min']:.0f}/min across {t['traders']} wallets"
         else:
-            what = f"{t['per_min']:.0f} transfers/min across {t['wallets']} wallets"
+            what = f"{t['per_min']:.0f} trades/min across {t['traders']} wallets"
         out.append({"symbol": t["symbol"], "what": what})
     return {"headline": head, "tokens": out, "quiet": not flagged}
 
@@ -49,20 +49,20 @@ def skeptic(snap: dict) -> dict:
     toks = snap["tokens"]
     traps, clean = [], []
     for t in toks:
-        if "one wallet" in t["flags"]:
+        if "top-heavy" in t["flags"]:
             traps.append({"symbol": t["symbol"],
-                          "why": f"one address is on {t['one_addr_share'] * 100:.0f}% of {t['transfers']} transfers - that is one actor, not demand"})
-        elif "printing" in t["flags"]:
+                          "why": f"the ten largest wallets hold {t['top10'] * 100:.0f}% of supply - that is a handful of holders, not demand"})
+        elif "mint open" in t["flags"]:
             traps.append({"symbol": t["symbol"],
-                          "why": f"{t['mints']} mints against only {t['burns']} burns - supply is growing under whoever is buying"})
-        elif t["transfers"] < 20:
+                          "why": "the mint authority is still live - supply can grow under whoever is buying"})
+        elif t["trades"] < TOO_SMALL:
             continue  # too small to judge either way; saying nothing is the correct answer
-        elif t["swaps"] == 0 and t["per_min"] > 60:
+        elif "sellers lead" in t["flags"]:
             traps.append({"symbol": t["symbol"],
-                          "why": f"{t['per_min']:.0f} transfers/min and no DEX swap in the window - movement with no visible way out"})
-        elif t["swaps"] >= 3 and t["one_addr_share"] < 0.4:
+                          "why": f"{t['sells']} sells against {t['buys']} buys in five minutes - more leaving than arriving"})
+        elif t["buys"] >= t["sells"] * 0.8 and t["top10"] < 0.3:
             clean.append(t["symbol"])
-    verdict = (f"{len(traps)} of the {len(toks)} busiest look like one actor or fresh supply"
+    verdict = (f"{len(traps)} of the {len(toks)} busiest are top-heavy, printable or being sold"
                if traps else "nothing in this window matches a known trap pattern")
     return {"verdict": verdict, "traps": traps[:4], "clean": clean[:5]}
 
@@ -112,40 +112,48 @@ def historian(snap: dict, log: list[dict]) -> dict:
 
 
 # what each flag is worth when deciding whether anything deserves saying out loud
-WEIGHT = {"heating": 0.34, "dex live": 0.2, "fresh wallets": 0.16,
-          "one wallet": -0.3, "printing": -0.34, "cooling": -0.12}
+# Calibrated so the gate is quiet by default, which on this feed takes deliberate effort: a
+# trending list is, by construction, a list of tokens that are heating. One good sign names
+# nothing; two name a token to watch and leave the gate shut; only all three together clear
+# the bar. SAME NUMBERS AS frontend/lib/council.ts - change one, change the other.
+WEIGHT = {"heating": 0.09, "buyers lead": 0.07, "new holders": 0.07,
+          "top-heavy": -0.3, "mint open": -0.34, "sellers lead": -0.2, "cooling": -0.12}
+BASE_CONFIDENCE = 0.34
+MIN_TRADES = 100   # what a token needs behind it before it can be named: a market, not a rumour
+MIN_TRADERS = 40
+TOO_SMALL = 60     # below this Skeptic says nothing either way
 
 
 def synthesis(snap: dict, sc: dict, sk: dict, hi: dict) -> dict:
     trapped = {t["symbol"] for t in sk["traps"]}
     best, score = None, 0.0
     for t in snap["tokens"]:
-        if t["transfers"] < 20:
+        if t["trades"] < MIN_TRADES or t["traders"] < MIN_TRADERS:
             continue
         if t.get("quote_asset"):
-            continue   # WETH, stables: everything is priced against them, so they are always busy
+            continue   # SOL, stables: everything is priced against them, so they are always busy
         s = sum(WEIGHT.get(f, 0) for f in t["flags"])
-        s += min(0.16, t["per_min"] / 2500)          # a little credit for actually moving
+        s += min(0.03, t["per_min"] / 5000)          # a little credit for actually moving - never a flag's worth
         if s > score:
             best, score = t, s
-    if best is None or score < 0.3:
+    if best is None or score < 0.15:
         return {"call": "nothing in this window is worth acting on",
                 "focus": None,
-                "reason": (f"{len(trapped)} of the busiest tokens look like a single actor; "
-                           "the rest are moving normally or are too small to read."),
+                "reason": (f"{len(trapped)} of the busiest tokens tripped a trap pattern; "
+                           "the rest are trading normally or are too small to read."),
                 "confidence": round(min(0.4, score), 2), "overruled": ""}
-    conf = round(min(0.86, 0.42 + score), 2)
+    conf = round(min(0.86, BASE_CONFIDENCE + score), 2)
     flags = ", ".join(best["flags"])
     overruled = ""
     if best["symbol"] in trapped:
-        overruled = f"Skeptic flagged {best['symbol']} as a single actor; kept it because the flow is broad enough to be worth watching anyway"
+        overruled = f"Skeptic flagged {best['symbol']}; kept it because the flow is broad enough to be worth watching anyway"
         conf = round(conf - 0.2, 2)
     return {
         "call": f"{best['symbol']} is the one to watch - {flags}",
         "focus": best["symbol"],
-        "reason": (f"{best['per_min']:.0f} transfers/min across {best['wallets']} wallets, "
-                   f"{best['accel']:.1f}x its own average, one address on "
-                   f"{best['one_addr_share'] * 100:.0f}% of transfers, {best['swaps']} swaps."),
+        "reason": (f"{best['per_min']:.0f} trades/min across {best['traders']} wallets, "
+                   f"{best['accel']:.1f}x its own hourly average, top ten hold "
+                   f"{best['top10'] * 100:.0f}%, {best['buys']} buys against {best['sells']} sells."),
         "confidence": conf, "overruled": overruled,
     }
 

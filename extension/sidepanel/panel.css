@@ -8,7 +8,7 @@
    tool that changes appearance on its own is one more thing the reader has to second-guess.
 
    The neutrals are COOL, mixed toward the steel sampled off the mark (#d2d7d9 -> #dfe6e7)
-   rather than the warm olive they used to be. The green is an edge colour - an outline, a
+   rather than the warm olive they used to be. The accent is an edge colour - an outline, a
    focus ring, a lit border - and never a field behind text, which is how it reads on the
    mark itself, where it is 2.3% of the pixels. */
 
@@ -25,8 +25,8 @@
   --warn-soft: #fdf3e0;
   --ok: #4a7c0f;
   --ok-soft: #f0f8e2;
-  --signal: #b2e604;
-  --on-signal: #131a02;
+  --signal: #ff3d9a;
+  --on-signal: #1d0812;
   --on-status: #ffffff;
   --hover: rgba(18, 23, 26, 0.055);
   --shadow: 0 1px 2px rgba(10, 16, 20, 0.06);
@@ -47,8 +47,8 @@
   --warn-soft: #2b2212;
   --ok: #a8e04a;
   --ok-soft: #1b2613;
-  --signal: #b2e604;
-  --on-signal: #131a02;
+  --signal: #ff3d9a;
+  --on-signal: #1d0812;
   --on-status: #0e1113;
   --hover: rgba(231, 235, 235, 0.06);
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -196,7 +196,8 @@ button { font: inherit; cursor: pointer; }
 .detail { padding: 0 12px 12px; border-top: 1px solid var(--line); }
 .detail[hidden] { display: none; }
 .check { display: grid; grid-template-columns: 9px 1fr; gap: 9px; padding: 8px 0 0; }
-.check i { width: 9px; height: 9px; margin-top: 6px; border-radius: 50%; background: var(--muted); }
+/* min-width: a row whose text carries a 44-character address squeezes the dot to a sliver otherwise */
+.check i { width: 9px; min-width: 9px; height: 9px; margin-top: 6px; border-radius: 50%; background: var(--muted); }
 .check i.ok { background: var(--ok); }
 .check i.fail { background: var(--bad); }
 .check i.warn { background: var(--warn); }
@@ -209,7 +210,9 @@ button { font: inherit; cursor: pointer; }
   text-transform: uppercase;
   color: var(--muted);
 }
-.check span { display: block; font-size: 12.5px; }
+/* overflow-wrap: a detail that carries a 44-character address has no space to break at, and
+   ran straight out of the launch block's right edge in a 420px panel */
+.check span { display: block; font-size: 12.5px; overflow-wrap: anywhere; }
 
 .addr {
   margin-top: 10px;
@@ -266,7 +269,7 @@ button { font: inherit; cursor: pointer; }
   background: var(--card); border: 1px solid var(--line); border-radius: 9px;
   padding: 9px 11px; outline: none;
 }
-.check input:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(178, 230, 4, 0.22); }
+.check input:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(255, 61, 154, 0.22); }
 .check input::placeholder { color: var(--muted); }
 .check .go {
   padding: 9px 14px; font-size: 13px; font-weight: 800; color: var(--on-signal);
@@ -511,7 +514,7 @@ button { font: inherit; cursor: pointer; }
   background: var(--card); border: 1px solid var(--line); border-radius: 8px;
   padding: 9px 10px; resize: vertical; outline: none;
 }
-.composer textarea:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(178, 230, 4, 0.2); }
+.composer textarea:focus { border-color: var(--signal); box-shadow: 0 0 0 3px rgba(255, 61, 154, 0.2); }
 .k-acts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 .k-acts .go {
   padding: 7px 12px; font-size: 12px; font-weight: 800; color: var(--on-signal);
@@ -537,7 +540,7 @@ button { font: inherit; cursor: pointer; }
   border-radius: var(--radius);
   resize: vertical;
 }
-.claimcheck textarea:focus { outline: none; border-color: var(--signal); box-shadow: 0 0 0 3px rgba(178, 230, 4, 0.2); }
+.claimcheck textarea:focus { outline: none; border-color: var(--signal); box-shadow: 0 0 0 3px rgba(255, 61, 154, 0.2); }
 .claimcheck-acts { display: flex; gap: 6px; margin: 8px 0 12px; }
 .claimcheck-acts .go {
   padding: 6px 13px;
@@ -622,3 +625,17 @@ button { font: inherit; cursor: pointer; }
 .linkish { padding: 0; margin-left: 3px; font: inherit; font-size: 12.5px; font-weight: 700;
   color: var(--ink); background: none; border: none; border-bottom: 1px dotted var(--signal); cursor: pointer; }
 .intro-foot { margin: 4px 0 0; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
+
+/* ---- what somebody paid for on the token's chart page: a fact, set apart from the tape ---- */
+.m-paid { margin: 8px 0 0; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
+.m-paid b { color: var(--ink); font-weight: 700; }
+
+/* ---- what happened after a call ----
+   Coloured only when a call is down by more than half, and never used to tint the row: the
+   account's tone still comes from verdicts alone. */
+.check .after { display: block; margin-top: 2px; font-family: var(--mono, ui-monospace, Menlo, monospace); font-size: 11px; color: var(--muted); }
+.check .after.down { color: var(--bad); font-weight: 700; }
+.check .own { margin-left: 6px; padding: 1px 6px; font-size: 10px; font-style: normal; font-weight: 700;
+  letter-spacing: 0.02em; text-transform: none; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; }
+.c-after { margin: 2px 0 8px; font-size: 12.5px; line-height: 1.5; font-weight: 600; color: var(--ink); }
+.c-run { margin: 6px 0 0; font-size: 11.5px; line-height: 1.5; color: var(--muted); }

@@ -47,14 +47,30 @@ assert.equal(r4.verdict, "CAUTION");
 assert.match(r4.lead, /worth checking/);
 assert.notEqual(r4.symbol, "$TSLA", "an unproven claim must not relabel the contract as TSLA");
 
-// ---- a shared ticker with no address is still a real finding ----
+// ---- a shared ticker with no address says nothing ----
+// It used to draw a badge, on the reasoning that the count holds with no address at all. The
+// count does hold - about ONE chain. A post that names a ticker and no contract has not said
+// which chain it means, so under a post about a Solana token this was a warning about
+// somewhere else entirely. decideBadges shows the count beside a contract instead.
 const pepe = {
   kind: "onchain", ticker: "PEPE", count: 7, capped: false,
   candidates: [{ address: "0xpepe00000000000000000000000000000000001", name: "Pepe", verified: true }],
 };
-const r5 = decide("$PEPE looking strong", { onchain: [pepe] });
-assert.equal(r5.verdict, "CAUTION");
-assert.match(r5.lead, /at least 7 different contracts/);
+assert.equal(decide("$PEPE looking strong", { onchain: [pepe] }), null);
+
+// ---- two tickers named, the contract is one of them: explained, not a mismatch ----
+const r6 = decide("$PEPE vs $FOO 0xfoo000000000000000000000000000000000001", {
+  results: [tok("0xfoo000000000000000000000000000000000001", "FOO", "PASS")], onchain: [pepe],
+});
+assert.equal(r6.verdict, "PASS", "FOO is a ticker the post names, so its contract is accounted for");
+assert.ok(!/not the same token/.test(r6.lead || ""));
+
+// ---- one ticker named, a contract that is something else: still said ----
+const r7 = decide("$PEPE 0xfoo000000000000000000000000000000000001", {
+  results: [tok("0xfoo000000000000000000000000000000000001", "FOO", "PASS")], onchain: [pepe],
+});
+assert.equal(r7.verdict, "CAUTION");
+assert.match(r7.lead, /The post says \$PEPE, but the contract it gives is FOO/);
 
 // ---- a ticker used by exactly one contract, no address: nothing to say ----
 assert.equal(decide("$WHATEVER", { onchain: [{ ...pepe, ticker: "WHATEVER", count: 1 }] }), null);

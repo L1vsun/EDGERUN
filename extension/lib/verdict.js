@@ -12,7 +12,7 @@
 //
 // Verdicts, and what each one is allowed to mean:
 //
-//   OFFICIAL    this address IS in Robinhood's published registry. A fact, not a score.
+//   OFFICIAL    this address IS in an issuer's published registry. A fact, not a score.
 //   FAIL        it claims an official asset and is not it, or holders provably cannot move it.
 //   CAUTION     something was found - a failing contract check, a warning in any lane, or a
 //               lane that resolved nothing at all.
@@ -34,6 +34,11 @@ import { EDIT_DISTANCE_THRESHOLD, REFERENCE_TOKENS, allowedDistance, levenshtein
 import { crossChainNameCheck, getList } from "./lists.js";
 import { OFFICIAL_NAME_MARKER, getRegistry, normalizeName, officialForAddress, officialForTicker } from "./registry.js";
 import { decodeRevert, isBenignRevert, selectorsPresent } from "./selectors.js";
+
+// Whose registry it is, for the sentences that cite it. Read from the chain table so the
+// wording follows the data rather than the other way round.
+const ISSUER = HOME.issuer || "the issuer";
+const NO_CODE = `there is no contract at this address on ${HOME.name} - it is a wallet, or a token on another chain`;
 
 const BURN_SINK = "0x000000000000000000000000000000000000dEaD";
 const short = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
@@ -72,7 +77,7 @@ function stockCheck(reg, address, symbol, name, uiMultiplier) {
   if (!reg.loaded) {
     if (symbol || name) {
       return check("stock_token", "stock token", "unresolved",
-        `cannot reach the official Robinhood stock-token registry (${reg.error}) - cannot confirm or deny an official claim`);
+        `cannot reach ${ISSUER}'s stock-token registry (${reg.error}) - cannot confirm or deny an official claim`);
     }
     return null;
   }
@@ -80,21 +85,21 @@ function stockCheck(reg, address, symbol, name, uiMultiplier) {
   const official = officialForAddress(reg, address);
   if (official) {
     return check("stock_token", "stock token", "ok",
-      `VERIFIED official Robinhood stock token - ${official.ticker} (${official.name}), matches the registry Robinhood publishes`);
+      `VERIFIED official ${ISSUER} stock token - ${official.ticker} (${official.name}), matches the registry ${ISSUER} publishes`);
   }
 
   const claimed = symbol ? officialForTicker(reg, symbol) : null;
   const wearsBranding = normalizeName(name || "").includes(OFFICIAL_NAME_MARKER);
 
   if (claimed) {
-    let detail = `ticker "${symbol.toUpperCase()}" is an OFFICIAL Robinhood tokenised stock (${claimed.name}) deployed at ${short(claimed.address)} - this contract is ${short(address)}, which is NOT it`;
-    if (wearsBranding) detail += '. It also copies the official "• Robinhood Token" name format';
+    let detail = `ticker "${symbol.toUpperCase()}" is an OFFICIAL ${ISSUER} tokenised stock (${claimed.name}) deployed at ${short(claimed.address)} - this contract is ${short(address)}, which is NOT it`;
+    if (wearsBranding) detail += `. It also copies the official "• ${ISSUER} Token" name format`;
     return check("stock_token", "stock token", "fail", detail);
   }
 
   if (wearsBranding) {
     return check("stock_token", "stock token", "fail",
-      `name copies the official "• Robinhood Token" branding used by Robinhood's tokenised securities, but ${short(address)} is not in the official registry`);
+      `name copies the official "• ${ISSUER} Token" branding used by ${ISSUER}'s tokenised securities, but ${short(address)} is not in the official registry`);
   }
 
   // Suggestive on its own, never proof: anyone can implement a function that returns a number.
@@ -268,8 +273,10 @@ export async function scan(address, { level = "identity" } = {}) {
   }
 
   if (!id.code || id.code === "0x") {
-    return { ...base, verdict: "UNRESOLVED", symbol: null, name: null, official: null, impersonates: null, facts: 0, unresolved: 1,
-      checks: [check("identity", "identity", "unresolved", "there is no contract code at this address - it is a wallet, or nothing at all")] };
+    // `absent` is what lets a feed stay quiet about it: the address is not a token on the
+    // chain this read, which is not the same as a token that could not be resolved.
+    return { ...base, verdict: "UNRESOLVED", symbol: null, name: null, official: null, impersonates: null, facts: 0, unresolved: 1, absent: true,
+      checks: [check("identity", "identity", "unresolved", NO_CODE)] };
   }
 
   const reg = await getRegistry();
@@ -324,7 +331,7 @@ export async function scanMany(addresses) {
       out[addr] = {
         address: addr, chainId: HOME.id, chainName: HOME.name, level: "identity", scannedAt: Date.now(), explorerUrl: bs.explorerUrl(addr), dexUrl: dexUrl(HOME, addr),
         symbol: official.ticker, name: official.name, official, impersonates: null, verdict: "OFFICIAL", facts: 1, unresolved: 0,
-        checks: [check("stock_token", "stock token", "ok", `VERIFIED official Robinhood stock token - ${official.ticker} (${official.name}), matches the registry Robinhood publishes`)],
+        checks: [check("stock_token", "stock token", "ok", `VERIFIED official ${ISSUER} stock token - ${official.ticker} (${official.name}), matches the registry ${ISSUER} publishes`)],
       };
     } else {
       need.push(addr);
@@ -367,7 +374,7 @@ export async function scanMany(addresses) {
       const mult = res[i * 4 + 3]?.error ? null : decodeUint(res[i * 4 + 3]?.result);
 
       if (!code || code === "0x") {
-        out[addr] = unresolvedFor(addr, "there is no contract code at this address - it is a wallet, or nothing at all");
+        out[addr] = { ...unresolvedFor(addr, NO_CODE), absent: true };
         return;
       }
       const stock = stockCheck(reg, addr, symbol, name, mult);
@@ -390,7 +397,7 @@ export async function scanMany(addresses) {
  *
  * Two different answers, and the difference is the whole point:
  *
- *   official - Robinhood publishes exactly one address for this ticker. We can name it.
+ *   official - an issuer publishes exactly one address for this ticker. We can name it.
  *   onchain  - the ticker exists on this chain but belongs to no one. Measured live:
  *              $PEPE is 7 different contracts, $HOOD 6, $DOGE 5. The honest answer is the
  *              count, not a pick. Choosing one of seven would be inventing an answer, and
@@ -425,6 +432,9 @@ export async function lookupTicker(ticker) {
   return {
     ticker: t,
     kind: "onchain",
+    // the count is about one chain, and says which
+    chainName: HOME.name,
+    explorer: HOME.explorer,
     count: exact.length,
     capped: found.capped,
     candidates: exact.slice(0, 6).map((i) => ({

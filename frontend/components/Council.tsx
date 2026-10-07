@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { asset } from "@/lib/config";
 
-// Four Claude calls with different prompts, wired like brain regions, arguing about what
-// the chain is doing - then a code gate that decides whether it is worth saying.
+// Four model calls with different prompts, wired like brain regions, arguing about what
+// the tape is doing - then a code gate that decides whether it is worth saying.
 // They cannot run in the browser (a static page cannot hold an API key), so a scheduled
 // job publishes this file and the page reads it. See brain/README-council.md.
 
@@ -106,11 +106,11 @@ export default function Council() {
         {round.mode === "live" ? (
           <>
             <b>v2 · reasoning</b> Each region is a separate {round.model} call with its own prompt, arguing
-            over the same live chain data.
+            over the same live tape.
           </>
         ) : (
           <>
-            <b>v1 · rules</b> The pipeline is live and the data is real, measured on-chain seconds ago -
+            <b>v1 · rules</b> The pipeline is live and the data is real, read from the feed seconds ago -
             but each region decides by rule, not by reasoning. The language models take over these four
             seats in v2; the wiring, the data and the gate do not change.
           </>
@@ -139,10 +139,10 @@ export default function Council() {
 
       <p className="c-foot">
         This is the scheduled run, minutes old - the board above is the same pipeline recomputed in
-        your tab on the numbers you can see. Four regions, each with its own slice of the data, reporting in order - Scout sees the chain,
+        your tab on the numbers you can see. Four regions, each with its own slice of the data, reporting in order - Scout sees the tape,
         Skeptic sees Scout, Historian sees the log of every past round, Synthesis sees all three. The
         gate is code in both versions: it stays silent unless confidence and evidence clear a fixed bar,
-        which is why it often says nothing. Rounds are minutes old; the chain data above this is live.
+        which is why it often says nothing. Rounds are minutes old; the data above this is live.
       </p>
     </section>
   );

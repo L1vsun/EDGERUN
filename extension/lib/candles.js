@@ -96,31 +96,68 @@ export function summarizeCandles(candles) {
   };
 }
 
-/** The deepest pool GeckoTerminal knows for this token on this network. */
-export async function topPool(network, address, { fetchImpl = fetch } = {}) {
+/**
+ * Every pool GeckoTerminal knows for this token on this network.
+ *
+ * `null` means "answered, and knows of no pool". An outage THROWS, and the two must stay
+ * distinguishable or a source being down reads as a token not existing.
+ */
+export async function listPools(network, address, { fetchImpl = fetch } = {}) {
   const res = await fetchImpl(`${API}/networks/${network}/tokens/${encodeURIComponent(address)}/pools?page=1`, {
     headers: { Accept: "application/json" },
   });
   if (res?.status === 429) throw new Error("rate limited");
-  // null from here means "answered, and knows of no pool". Anything else is an outage and has
-  // to stay distinguishable from it, or a source being down reads as a token not existing.
   if (res?.status === 404) return null;
   if (!res?.ok) throw new Error("unreachable");
   const body = await res.json();
-  const pools = (body?.data || [])
+  return (body?.data || [])
     .map((p) => ({
       // ids arrive network-prefixed ("solana_2uF4…"); the OHLCV route wants the bare address
       address: String(p.attributes?.address || p.id || "").replace(new RegExp(`^${network}_`), ""),
       liquidity: num(p.attributes?.reserve_in_usd) || 0,
       volume: num(p.attributes?.volume_usd?.h24) || 0,
       name: p.attributes?.name || null,
+      createdAt: Date.parse(p.attributes?.pool_created_at || "") || null,
     }))
     .filter((p) => p.address);
+}
+
+// What a younger pool needs to hold before it counts as "where this token trades now".
+// A dust pool somebody opened next to a rug holds a few dollars and supersedes nothing.
+const SUCCESSOR_MIN_USD = 1000;
+
+/**
+ * Drop pools the token has LEFT.
+ *
+ * Ranking by 24h volume was the fix for a rug - the drained pool holds the whole story - and
+ * it is wrong for the commonest thing on Solana, measured live 2026-10-07: a launchpad token
+ * that graduated in the last day. Its bonding-curve pool still shows the larger 24h volume
+ * (KKK: $187k on the finished curve against $35k on the pool it trades in now) while holding
+ * NOTHING, because every token in it was migrated out. Ranked by volume alone, the chart and
+ * the tape both described a pool that no longer exists.
+ *
+ * So a pool with no liquidity at all is set aside when a pool created AFTER it holds real
+ * liquidity. Both halves matter: a rugged pool keeps a few dollars and has no successor, so
+ * it still leads.
+ */
+export function livePools(pools) {
+  const list = pools || [];
+  const left = (p) =>
+    !(p.liquidity > 0) &&
+    list.some((q) => q !== p && q.liquidity >= SUCCESSOR_MIN_USD && p.createdAt && q.createdAt && q.createdAt > p.createdAt);
+  const live = list.filter((p) => !left(p));
+  return live.length ? live : list;
+}
+
+/** The deepest pool GeckoTerminal knows for this token on this network. */
+export async function topPool(network, address, { fetchImpl = fetch } = {}) {
+  const pools = await listPools(network, address, { fetchImpl });
+  if (pools === null) return null;
   // Ranked by VOLUME, not by what is left in the pool. After a rug the pool that holds the
   // whole story has been drained to a few dollars, so ranking by liquidity hands back some
   // other near-empty pool with two bars in it - which is exactly what shipped: a chart of the
   // wrong pool for a token with fourteen of them.
-  return pools.sort((a, b) => b.volume - a.volume || b.liquidity - a.liquidity)[0] || null;
+  return livePools(pools).sort((a, b) => b.volume - a.volume || b.liquidity - a.liquidity)[0] || null;
 }
 
 /**
@@ -133,7 +170,8 @@ export async function topPool(network, address, { fetchImpl = fetch } = {}) {
  * agreement that holds until the token somebody actually cares about.
  */
 export async function ohlcv(network, pool, key, { fetchImpl = fetch } = {}) {
-  const tf = TIMEFRAMES.find((t) => t.key === key) || TIMEFRAMES.find((t) => t.key === DEFAULT_TIMEFRAME);
+  // a key names one of the chart's tabs; an object is a frame somebody worked out themselves
+  const tf = (key && typeof key === "object" ? key : null) || TIMEFRAMES.find((t) => t.key === key) || TIMEFRAMES.find((t) => t.key === DEFAULT_TIMEFRAME);
   const url = `${API}/networks/${network}/pools/${encodeURIComponent(pool)}/ohlcv/${tf.timeframe}?aggregate=${tf.aggregate}&limit=${tf.limit}`;
   const res = await fetchImpl(url, { headers: { Accept: "application/json" } });
   if (res?.status === 429) throw new Error("rate limited");

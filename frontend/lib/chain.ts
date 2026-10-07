@@ -1,271 +1,163 @@
-// Live Robinhood Chain activity, read straight from the public RPC in the visitor's
-// browser (it sends access-control-allow-origin: *). No backend, no API key.
+// Live Solana flow, read in the visitor's browser from a public, keyless feed.
 //
-// Keeps a rolling window of ERC-20 Transfer logs and DEX swaps and turns them into
-// per-token numbers that mean something to a trader: how fast a token is moving, how
-// many distinct wallets are involved, how much of the flow is one address, whether
-// supply is being minted, and whether any of that is accelerating.
+// There is no block to poll here the way there is on an EVM chain - no `eth_getLogs`, and a
+// Solana node will not hand a browser every swap in a slot. What a browser CAN read is an
+// index of the tape: Jupiter publishes, for the tokens trading hardest right now and the
+// ones that launched most recently, how many buys and sells landed in the last five minutes,
+// from how many wallets, how the holder count moved, and how the volume compares with the
+// hour before. That is this file's whole input.
+//
+// So this is NOT "every transaction on the chain". It is the five-minute tape of what is
+// trending and what just launched, refreshed every poll - and every label on the page says
+// trades, not transfers, because that is what is being counted. Two hosts, in order: the
+// keyless one has been announced for retirement and postponed with no date.
 
-const RPC = "https://rpc.mainnet.chain.robinhood.com";
-const TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
-const SWAP_V3 = "0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67";
-const SWAP_V2 = "0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822";
-const ZERO = "0x" + "0".repeat(64);
+const HOSTS = ["https://lite-api.jup.ag", "https://api.jup.ag"];
+const FEEDS = ["/tokens/v2/toptrending/5m?limit=50", "/tokens/v2/recent?limit=30"];
+const SEARCH = "/tokens/v2/search?query=";
 
-export const WINDOW_MS = 180_000; // 3 minutes of history
-const RECENT_MS = 45_000; // "now" slice used for the acceleration reading
-const MAX_BLOCKS = 200;   // cap per poll so a slow tab samples instead of backfilling
-const POLL_MS = 9000;     // the window is 3 minutes; polling faster only costs bandwidth
-const HIDDEN_MS = 60_000; // a backgrounded tab still refreshes, but slowly
-const SWAP_EVERY = 4;     // swap logs move slowly and are only used for a count
-const BACKOFF_MAX = 90_000;
+export const WINDOW_MS = 300_000; // the feed's own window: five minutes
+const POLL_MS = 20_000;   // the window is five minutes; polling faster only costs bandwidth
+const HIDDEN_MS = 90_000; // a backgrounded tab still refreshes, but slowly
+const BACKOFF_MAX = 120_000;
+const NEW_MS = 30 * 60_000; // "new launch": first traded inside the last half hour
+
+// What everything else is priced against. Always busy, and never the interesting call.
+const QUOTE = new Set([
+  "So11111111111111111111111111111111111111112", // wrapped SOL
+  "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
+  "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", // USDT
+  "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo", // PYUSD
+  "J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn", // jitoSOL
+  "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So", // mSOL
+]);
 
 export interface TokenStat {
-  address: string;
+  address: string;       // the mint, in its real casing
   symbol: string;
-  isNew: boolean;       // first appeared after this page was opened
-  transfers: number;
-  perMin: number;
-  wallets: number;
-  newWallets: number;
-  mints: number;
-  burns: number;
-  swaps: number;
-  pools: number;         // distinct DEX pools this token appears in: 2+ means it is a quote asset
-  concentration: number; // share of transfers that touch the single busiest wallet
-  accel: number; // recent rate vs the whole window, 1 = steady
-  firstSeen: number;
-  age: number; // ms since we first saw it
+  isNew: boolean;        // first traded inside the last half hour
+  trades: number;        // buys + sells in the last five minutes
+  perMin: number;        // trades per minute
+  traders: number;       // distinct wallets trading it in the window
+  newHolders: number;    // holders gained in the window
+  buys: number;
+  sells: number;
+  quote: boolean;        // a quote asset - SOL, a stable, a liquid-staking token
+  top10: number;         // share of supply the ten largest wallets hold, 0..1
+  mintOpen: boolean;     // the mint authority is still live
+  verified: boolean;     // on the index's verified list
+  accel: number;         // this window's volume rate against the last hour's, 1 = steady
+  holders: number | null;
+  launchpad: string | null;
+  firstSeen: number;     // when it first traded, ms
+  age: number;           // ms since then
 }
 
 export interface ChainState {
   ok: boolean;
-  block: number;
-  txPerSec: number;
-  transfersPerMin: number;
-  wallets: number;
+  block: number;         // the newest slot any price in the feed was read at
+  tradesPerMin: number;
+  traders: number;
   tokens: TokenStat[];
-  lag: number; // blocks we skipped because we could not keep up
 }
 
-interface Ev {
-  t: number;
-  token: string;
-  from: string;
-  to: string;
-}
-
-async function rpc(body: unknown): Promise<any> {
-  const r = await fetch(RPC, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  if (!r.ok) throw new Error("rpc " + r.status);
-  return r.json();
-}
-
-function decodeString(hex?: string | null): string | null {
-  if (!hex || hex.length < 130) return null;
-  try {
-    const len = parseInt(hex.slice(66, 130), 16);
-    let s = "";
-    for (let i = 0; i < len; i++) s += String.fromCharCode(parseInt(hex.slice(130 + i * 2, 132 + i * 2), 16));
-    return s.replace(/[^\x20-\x7e]/g, "").trim() || null;
-  } catch {
-    return null;
+async function get(path: string): Promise<any[]> {
+  let last: unknown = null;
+  for (const host of HOSTS) {
+    try {
+      const r = await fetch(`${host}${path}`, { headers: { Accept: "application/json" } });
+      if (!r.ok) { last = new Error(`feed ${r.status}`); continue; }
+      const body = await r.json();
+      if (Array.isArray(body)) return body;
+    } catch (err) {
+      last = err;
+    }
   }
+  throw last instanceof Error ? last : new Error("the feed did not answer");
+}
+
+const n = (v: unknown): number => (typeof v === "number" && Number.isFinite(v) ? v : 0);
+
+/** One row of the feed as the numbers everything downstream reads. Null when it has no tape. */
+export function toStat(t: any, now: number): TokenStat | null {
+  if (!t?.id) return null;
+  const s5 = t.stats5m || {};
+  const s1h = t.stats1h || {};
+  const buys = n(s5.numBuys);
+  const sells = n(s5.numSells);
+  const trades = buys + sells;
+  const holders = typeof t.holderCount === "number" ? t.holderCount : null;
+  // holderChange is a percentage over the window; turn it back into a count of new holders
+  const change = n(s5.holderChange);
+  const newHolders = holders !== null && change > 0 ? Math.round(holders - holders / (1 + change / 100)) : 0;
+  const vol5 = n(s5.buyVolume) + n(s5.sellVolume);
+  const vol1h = n(s1h.buyVolume) + n(s1h.sellVolume);
+  const created = Date.parse(t.firstPool?.createdAt || t.createdAt || "");
+  const firstSeen = Number.isFinite(created) ? created : 0;
+  const age = firstSeen ? Math.max(0, now - firstSeen) : 0;
+  return {
+    address: String(t.id),
+    symbol: String(t.symbol || t.id).slice(0, 14),
+    isNew: firstSeen > 0 && age < NEW_MS,
+    trades,
+    perMin: trades / 5,
+    traders: n(s5.numTraders),
+    newHolders,
+    buys,
+    sells,
+    quote: QUOTE.has(String(t.id)),
+    top10: Math.max(0, Math.min(1, n(t.audit?.topHoldersPercentage) / 100)),
+    mintOpen: t.audit?.mintAuthorityDisabled === false,
+    verified: t.isVerified === true,
+    // Five minutes of volume against the hour's average five minutes. A token younger than
+    // the hour has no hour to be measured against - its whole life IS the window, which
+    // would read as twelve times its own average - so it reads as steady.
+    accel: vol1h > 0 && vol5 > 0 && age >= 3_600_000 ? Math.min(12, (vol5 / 5) / (vol1h / 60)) : 1,
+    holders,
+    launchpad: t.launchpad || null,
+    firstSeen,
+    age,
+  };
 }
 
 export function startChain(onState: (s: ChainState) => void): () => void {
   let stopped = false;
   let timer: ReturnType<typeof setTimeout>;
-  const sessionStart = Date.now();
-  const SETTLE_MS = 20_000;  // anything seen in the first moments was already there, not new
-  let events: Ev[] = [];
-  let lastBlock = 0;
-  let lastAt = 0;
-  let txSeen = 0;
-  let lag = 0;
-  const symbols = new Map<string, string>();
-  const pending = new Set<string>();
-  const poolTokens = new Map<string, string[]>();
-  const poolPending = new Set<string>();
-  const firstSeen = new Map<string, number>();
-  const walletFirst = new Map<string, number>();
-  let swapEvents: { t: number; pool: string }[] = [];
   let lastGood: ChainState | null = null;   // a dropped poll should not blank the screen
-  let cycle = 0;
   let backoff = 0;                          // grows on failure, resets on success
-
-  async function resolveSymbols(addrs: string[]) {
-    const want = addrs.filter((a) => !symbols.has(a) && !pending.has(a)).slice(0, 12);
-    if (!want.length) return;
-    want.forEach((a) => pending.add(a));
-    try {
-      const res = await rpc(
-        want.map((a, i) => ({ jsonrpc: "2.0", id: i, method: "eth_call", params: [{ to: a, data: "0x95d89b41" }, "latest"] })),
-      );
-      for (const r of res) symbols.set(want[r.id], decodeString(r.result) || want[r.id].slice(0, 8));
-    } catch {
-      /* try again next poll */
-    } finally {
-      want.forEach((a) => pending.delete(a));
-    }
-  }
-
-  async function resolvePools(pools: string[]) {
-    const want = pools.filter((p) => !poolTokens.has(p) && !poolPending.has(p)).slice(0, 6);
-    if (!want.length) return;
-    want.forEach((p) => poolPending.add(p));
-    try {
-      const calls: any[] = [];
-      want.forEach((p, i) => {
-        calls.push({ jsonrpc: "2.0", id: `${i}a`, method: "eth_call", params: [{ to: p, data: "0x0dfe1681" }, "latest"] });
-        calls.push({ jsonrpc: "2.0", id: `${i}b`, method: "eth_call", params: [{ to: p, data: "0xd21220a7" }, "latest"] });
-      });
-      const res = await rpc(calls);
-      const by: Record<string, string> = {};
-      for (const r of res) if (r.result) by[r.id] = "0x" + r.result.slice(-40);
-      want.forEach((p, i) => {
-        const t = [by[`${i}a`], by[`${i}b`]].filter(Boolean) as string[];
-        if (t.length) poolTokens.set(p, t);
-      });
-    } catch {
-      /* try again next poll */
-    } finally {
-      want.forEach((p) => poolPending.delete(p));
-    }
-  }
-
-  function summarise(now: number): ChainState {
-    const cut = now - WINDOW_MS;
-    events = events.filter((e) => e.t >= cut);
-    swapEvents = swapEvents.filter((e) => e.t >= cut);
-    const span = Math.max(15_000, now - (events.length ? events[0].t : now));
-    const recentCut = now - RECENT_MS;
-
-    const per = new Map<string, { n: number; recent: number; w: Map<string, number>; fresh: Set<string>; mint: number; burn: number }>();
-    const allWallets = new Set<string>();
-    for (const e of events) {
-      let s = per.get(e.token);
-      if (!s) per.set(e.token, (s = { n: 0, recent: 0, w: new Map(), fresh: new Set(), mint: 0, burn: 0 }));
-      s.n++;
-      if (e.t >= recentCut) s.recent++;
-      if (e.from === ZERO) s.mint++;
-      else if (e.to === ZERO) s.burn++;
-      for (const a of [e.from, e.to]) {
-        if (a === ZERO) continue;
-        s.w.set(a, (s.w.get(a) || 0) + 1);
-        allWallets.add(a);
-        if ((walletFirst.get(a) ?? now) > sessionStart + SETTLE_MS) s.fresh.add(a);
-      }
-    }
-
-    const swapsPerToken = new Map<string, number>();
-    // a token quoted in two or more different pools is what everything else is priced
-    // against (WETH, a stable) - always busy, and never the interesting call
-    const poolsPerToken = new Map<string, Set<string>>();
-    for (const s of swapEvents) {
-      for (const t of poolTokens.get(s.pool) || []) {
-        swapsPerToken.set(t, (swapsPerToken.get(t) || 0) + 1);
-        let set = poolsPerToken.get(t);
-        if (!set) poolsPerToken.set(t, (set = new Set()));
-        set.add(s.pool);
-      }
-    }
-
-    const tokens: TokenStat[] = [];
-    for (const [address, s] of per) {
-      let top = 0;
-      for (const v of s.w.values()) if (v > top) top = v;
-      const windowRate = s.n / (span / 60000);
-      const recentRate = s.recent / (Math.min(RECENT_MS, span) / 60000);
-      const seen = firstSeen.get(address) ?? now;
-      tokens.push({
-        address,
-        symbol: symbols.get(address) || address.slice(0, 8),
-        isNew: seen > sessionStart + SETTLE_MS,
-        transfers: s.n,
-        perMin: windowRate,
-        wallets: s.w.size,
-        newWallets: s.fresh.size,
-        mints: s.mint,
-        burns: s.burn,
-        swaps: swapsPerToken.get(address) || 0,
-        pools: poolsPerToken.get(address)?.size || 0,
-        concentration: s.n ? top / (s.n * 2) : 0,
-        accel: windowRate > 0 ? recentRate / windowRate : 1,
-        firstSeen: seen,
-        age: now - seen,
-      });
-    }
-    tokens.sort((a, b) => b.perMin - a.perMin);
-
-    const secs = Math.max(1, (now - lastAt) / 1000);
-    return {
-      ok: true,
-      block: lastBlock,
-      txPerSec: txSeen / secs,
-      transfersPerMin: events.length / (span / 60000),
-      wallets: allWallets.size,
-      tokens,
-      lag,
-    };
-  }
 
   async function poll() {
     const now = Date.now();
     try {
-      const head = parseInt((await rpc({ jsonrpc: "2.0", id: 1, method: "eth_blockNumber", params: [] })).result, 16);
-      if (!lastBlock) lastBlock = head - 60;
-      let from = lastBlock + 1;
-      if (head - from > MAX_BLOCKS) {
-        lag += head - from - MAX_BLOCKS;
-        from = head - MAX_BLOCKS;
+      const lists = await Promise.all(FEEDS.map((f) => get(f)));
+      const by = new Map<string, TokenStat>();
+      let slot = 0;
+      for (const row of lists.flat()) {
+        const stat = toStat(row, now);
+        if (!stat || by.has(stat.address)) continue;
+        // something with no trade in the window is not "moving", however recently it launched
+        if (stat.trades > 0) by.set(stat.address, stat);
+        slot = Math.max(slot, n(row.priceBlockId));
       }
-      if (head >= from) {
-        // Transfers are the bulk of the payload and are needed every cycle. Swap logs are
-        // only used for a count, so they ride along every SWAP_EVERY cycles instead.
-        const range = { fromBlock: "0x" + from.toString(16), toBlock: "0x" + head.toString(16) };
-        const wantSwaps = cycle % SWAP_EVERY === 0;
-        const [tr, s3, s2] = await Promise.all([
-          rpc({ jsonrpc: "2.0", id: 1, method: "eth_getLogs", params: [{ ...range, topics: [TRANSFER] }] }),
-          wantSwaps ? rpc({ jsonrpc: "2.0", id: 2, method: "eth_getLogs", params: [{ ...range, topics: [SWAP_V3] }] }) : { result: [] },
-          wantSwaps ? rpc({ jsonrpc: "2.0", id: 3, method: "eth_getLogs", params: [{ ...range, topics: [SWAP_V2] }] }) : { result: [] },
-        ]);
-        const logs = (tr.result || []) as any[];
-        txSeen = logs.length;
-        for (const l of logs) {
-          if (l.topics.length !== 3) continue; // 4 topics = NFT
-          const token = l.address.toLowerCase();
-          const from_ = l.topics[1];
-          const to = l.topics[2];
-          events.push({ t: now, token, from: from_, to });
-          if (!firstSeen.has(token)) firstSeen.set(token, now);
-          for (const a of [from_, to]) if (a !== ZERO && !walletFirst.has(a)) walletFirst.set(a, now);
-        }
-        for (const l of [...(s3.result || []), ...(s2.result || [])] as any[]) {
-          swapEvents.push({ t: now, pool: l.address.toLowerCase() });
-        }
-        lastBlock = head;
-        lastAt = now;
-      }
-      const state = summarise(now);
+      const tokens = [...by.values()].sort((a, b) => b.perMin - a.perMin);
+      const state: ChainState = {
+        ok: true,
+        block: slot,
+        tradesPerMin: tokens.reduce((s, t) => s + t.perMin, 0),
+        traders: tokens.reduce((s, t) => s + t.traders, 0),
+        tokens,
+      };
       lastGood = state;
       backoff = 0;
-      cycle++;
       if (!stopped) onState(state);
-      resolveSymbols(state.tokens.slice(0, 30).map((t) => t.address));
-      resolvePools([...new Set(swapEvents.map((s) => s.pool))]);
     } catch {
-      // Back off hard on failure. If the node is rate-limiting a crowd, every tab
-      // retrying at full speed is exactly what keeps it down.
+      // Back off hard on failure. If the feed is rate-limiting a crowd, every tab retrying
+      // at full speed is exactly what keeps it down.
       backoff = Math.min(BACKOFF_MAX, backoff ? backoff * 2 : POLL_MS * 2);
-      if (!stopped) onState(lastGood ? { ...lastGood, ok: false } : { ok: false, block: lastBlock, txPerSec: 0, transfersPerMin: 0, wallets: 0, tokens: [], lag });
+      if (!stopped) onState(lastGood ? { ...lastGood, ok: false } : { ok: false, block: 0, tradesPerMin: 0, traders: 0, tokens: [] });
     }
     if (stopped) return;
-    // A hidden tab barely polls. Jitter keeps a crowd from landing on the node together.
+    // A hidden tab barely polls. Jitter keeps a crowd from landing on the feed together.
     const base = backoff || (typeof document !== "undefined" && document.hidden ? HIDDEN_MS : POLL_MS);
     timer = setTimeout(poll, base + Math.random() * base * 0.35);
   }
@@ -287,102 +179,65 @@ export function startChain(onState: (s: ChainState) => void): () => void {
   };
 }
 
-
-
 // ---- scan any token on demand ----
 //
-// Paste a contract address and we pull its own Transfer history straight from the RPC
-// (address-filtered, so it is one fast call) and run the same measurements over a longer
-// window than the live table uses. DEX swaps are not counted here, so a scan never shows
-// the "dex live" flag even for a token that has a pool.
+// Paste a mint and the same index is asked about that one token: the same five-minute tape,
+// run through the same measurements as the live table.
 
-export const SCAN_BLOCKS = 9000; // ~17 minutes of chain
+const MINT_RE = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
 export async function scanToken(address: string): Promise<TokenStat> {
-  const addr = address.trim().toLowerCase();
-  if (!/^0x[0-9a-f]{40}$/.test(addr)) throw new Error("that is not a contract address");
-
-  const head = parseInt((await rpc({ jsonrpc: "2.0", id: 1, method: "eth_blockNumber", params: [] })).result, 16);
-  const [logsRes, symRes] = await Promise.all([
-    rpc({
-      jsonrpc: "2.0", id: 1, method: "eth_getLogs",
-      params: [{ fromBlock: "0x" + (head - SCAN_BLOCKS).toString(16), toBlock: "0x" + head.toString(16), address: addr, topics: [TRANSFER] }],
-    }),
-    rpc({ jsonrpc: "2.0", id: 2, method: "eth_call", params: [{ to: addr, data: "0x95d89b41" }, "latest"] }),
-  ]);
-  if (logsRes.error) throw new Error(logsRes.error.message || "the node refused that query");
-  const logs = (logsRes.result || []).filter((l: any) => l.topics.length === 3);
-  const symbol = decodeString(symRes.result) || addr.slice(0, 8);
-  if (!logs.length) throw new Error(`${symbol}: no transfers at all in the last ${Math.round(SCAN_BLOCKS / 9 / 60)} minutes`);
-
-  // blocks are ~9/s on this chain, which is how a block range becomes a duration
-  const first = parseInt(logs[0].blockNumber, 16);
-  const minutes = Math.max(0.5, (head - first) / 9 / 60);
-  const recentFrom = head - Math.round(9 * 45);
-
-  const w = new Map<string, number>();
-  let mints = 0, burns = 0, recent = 0;
-  for (const l of logs) {
-    const from = l.topics[1], to = l.topics[2];
-    if (from === ZERO) mints++;
-    else if (to === ZERO) burns++;
-    if (parseInt(l.blockNumber, 16) >= recentFrom) recent++;
-    for (const a of [from, to]) if (a !== ZERO) w.set(a, (w.get(a) || 0) + 1);
-  }
-  let top = 0;
-  for (const v of w.values()) if (v > top) top = v;
-  const perMin = logs.length / minutes;
-  const recentRate = recent / 0.75;
-
-  return {
-    address: addr, symbol, isNew: false,
-    transfers: logs.length, perMin, wallets: w.size,
-    newWallets: 0, // a one-off scan has no history to call a wallet new against
-    mints, burns, swaps: 0, pools: 0,
-    concentration: logs.length ? top / (logs.length * 2) : 0,
-    accel: perMin > 0 ? recentRate / perMin : 1,
-    firstSeen: 0, age: 0,
-  };
+  const mint = address.trim();
+  if (!MINT_RE.test(mint)) throw new Error("that is not a Solana mint");
+  const rows = await get(`${SEARCH}${encodeURIComponent(mint)}`);
+  const row = rows.find((r) => r?.id === mint);
+  if (!row) throw new Error("the index does not know this mint - it may have no pool yet");
+  const stat = toStat(row, Date.now());
+  if (!stat) throw new Error("the index returned nothing readable for this mint");
+  if (!stat.trades) throw new Error(`${stat.symbol}: no trades at all in the last five minutes`);
+  return stat;
 }
 
 // ---- signals: the same facts, said in a way you can act on in one second ----
 //
-// Each is a plain threshold on measured chain activity, and each names the number that
-// triggered it so it can be checked. None of them is advice or a price forecast.
+// Each is a plain threshold on measured activity, and each names the number that triggered
+// it so it can be checked. None of them is advice or a price forecast. THE THRESHOLDS ARE
+// DUPLICATED in brain/chain_snapshot.py - change one, change the other.
 
 export type Tone = "bad" | "good" | "flat";
 export interface Signal { id: string; label: string; tone: Tone; why: string }
 
+const mins = (ms: number) => Math.max(1, Math.round(ms / 60_000));
+
 export function signals(t: TokenStat): Signal[] {
   const out: Signal[] = [];
-  const freshShare = t.wallets ? t.newWallets / t.wallets : 0;
+  const freshShare = t.traders ? t.newHolders / t.traders : 0;
 
-  // net issuance only: a wrapper like WETH mints on every deposit and burns on every
-  // withdrawal, which is not dilution. Real printing is mints with no matching burns.
-  if (t.mints >= 4 && t.mints > t.burns * 3 && t.transfers >= 8 && t.mints / t.transfers > 0.03) {
-    out.push({ id: "printing", label: "printing", tone: "bad", why: `${t.mints} mints from 0x0 against ${t.burns} burns - net new supply while you watch` });
+  // A live mint authority on a token no list vouches for: supply can grow under the buyers.
+  // A stablecoin or a liquid-staking token has one by design, which is what `verified` is for.
+  if (t.mintOpen && !t.verified) {
+    out.push({ id: "mintopen", label: "mint open", tone: "bad", why: "the mint authority is still live - new supply can be created at any time" });
   }
-  // concentration counts wallet slots (two per transfer), so double it to read as
-  // "share of transfers this address touches"
-  if (t.concentration > 0.45 && t.transfers >= 10) {
-    out.push({ id: "onewallet", label: "one wallet", tone: "bad", why: `one address touches ${pctOf(Math.min(1, t.concentration * 2))} of all transfers - that is a single actor, not a crowd` });
+  if (t.top10 > 0.5 && t.trades >= 10 && !t.verified) {
+    out.push({ id: "topheavy", label: "top-heavy", tone: "bad", why: `the ten largest wallets hold ${pctOf(t.top10)} of supply - a handful of holders, not a crowd` });
   }
-  // Most tokens on this chain have no pool at all, so "no swaps" says nothing. The rare,
-  // useful state is the opposite: something you can actually trade.
-  if (t.swaps >= 3) {
-    out.push({ id: "dex", label: "dex live", tone: "good", why: `${t.swaps} DEX swaps in the window - there is a pool and it is being traded` });
+  if (t.sells >= t.buys * 1.5 && t.trades >= 30) {
+    out.push({ id: "sellers", label: "sellers lead", tone: "bad", why: `${t.sells} sells against ${t.buys} buys in five minutes - more leaving than arriving` });
   }
-  if (t.accel >= 2 && t.transfers >= 20) {
-    out.push({ id: "heating", label: "heating", tone: "good", why: `flow is ${t.accel.toFixed(1)}x its own 3-minute average in the last 45 seconds` });
+  if (t.buys >= t.sells * 1.5 && t.trades >= 30) {
+    out.push({ id: "buyers", label: "buyers lead", tone: "good", why: `${t.buys} buys against ${t.sells} sells in five minutes` });
   }
-  if (freshShare > 0.65 && t.wallets >= 20) {
-    out.push({ id: "fresh", label: "fresh wallets", tone: "good", why: `${t.newWallets} of ${t.wallets} wallets are ones we had never seen before` });
+  if (t.accel >= 2 && t.trades >= 20) {
+    out.push({ id: "heating", label: "heating", tone: "good", why: `volume is running ${t.accel.toFixed(1)}x its own hourly average in the last five minutes` });
   }
-  if (t.accel <= 0.45 && t.transfers >= 25) {
-    out.push({ id: "cooling", label: "cooling", tone: "flat", why: `flow has fallen to ${t.accel.toFixed(1)}x its own average - interest is draining` });
+  if (freshShare > 0.5 && t.traders >= 20) {
+    out.push({ id: "fresh", label: "new holders", tone: "good", why: `${t.newHolders} new holders in five minutes, against ${t.traders} wallets trading it` });
+  }
+  if (t.accel <= 0.45 && t.trades >= 25) {
+    out.push({ id: "cooling", label: "cooling", tone: "flat", why: `volume has fallen to ${t.accel.toFixed(1)}x its own hourly average - interest is draining` });
   }
   if (t.isNew) {
-    out.push({ id: "new", label: "just appeared", tone: "flat", why: "first seen on the chain since you opened this page" });
+    out.push({ id: "new", label: "new launch", tone: "flat", why: `first traded ${mins(t.age)} minute${mins(t.age) === 1 ? "" : "s"} ago${t.launchpad ? ` on ${t.launchpad}` : ""}` });
   }
   return out;
 }
@@ -405,14 +260,14 @@ export function interest(t: TokenStat): number {
 // and so on. The assignment is ours; the wiring underneath is the fly's.
 
 export const FEATURES = [
-  { key: "flow", label: "flow rate", of: (t: TokenStat) => Math.log10(1 + t.perMin) / 2.5 },
-  { key: "wallets", label: "wallet spread", of: (t: TokenStat) => Math.log10(1 + t.wallets) / 2.2 },
-  { key: "new", label: "new wallets", of: (t: TokenStat) => (t.wallets ? t.newWallets / t.wallets : 0) },
+  { key: "flow", label: "trade rate", of: (t: TokenStat) => Math.log10(1 + t.perMin) / 2.5 },
+  { key: "traders", label: "trader spread", of: (t: TokenStat) => Math.log10(1 + t.traders) / 2.2 },
+  { key: "new", label: "new holders", of: (t: TokenStat) => (t.traders ? Math.min(1, t.newHolders / t.traders) : 0) },
   { key: "accel", label: "acceleration", of: (t: TokenStat) => Math.min(1, Math.log2(1 + t.accel) / 2) },
-  { key: "conc", label: "concentration", of: (t: TokenStat) => t.concentration },
-  { key: "mint", label: "minting", of: (t: TokenStat) => (t.transfers ? t.mints / t.transfers : 0) },
-  { key: "burn", label: "burning", of: (t: TokenStat) => (t.transfers ? t.burns / t.transfers : 0) },
-  { key: "swap", label: "dex swaps", of: (t: TokenStat) => (t.transfers ? Math.min(1, t.swaps / t.transfers) : 0) },
+  { key: "conc", label: "top-10 share", of: (t: TokenStat) => t.top10 },
+  { key: "mint", label: "mint open", of: (t: TokenStat) => (t.mintOpen ? 1 : 0) },
+  { key: "sell", label: "sell pressure", of: (t: TokenStat) => (t.trades ? t.sells / t.trades : 0) },
+  { key: "buy", label: "buy pressure", of: (t: TokenStat) => (t.trades ? t.buys / t.trades : 0) },
 ] as const;
 
 export function odour(t: TokenStat, nGlom: number): number[] {

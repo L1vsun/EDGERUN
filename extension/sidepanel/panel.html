@@ -18,7 +18,7 @@
     </header>
 
     <form class="check" id="check">
-      <input id="q" placeholder="paste a contract address or Solana mint" spellcheck="false" autocomplete="off" />
+      <input id="q" placeholder="paste a Solana mint or a contract address" spellcheck="false" autocomplete="off" />
       <button class="go" type="submit">check</button>
     </form>
     <p class="err" id="err" hidden></p>
@@ -55,13 +55,15 @@
       </div>
       <ol class="intro-steps">
         <li>
-          <b>Open X and scroll.</b> Any post naming a contract gets a strip under it. Nothing
-          to configure, and posts that only name a ticker are left alone on purpose.
+          <b>Open X and scroll.</b> Any post naming a contract gets a strip under it, and a
+          post that only names a ticker gets one line saying how many mints share it. Nothing
+          to configure.
         </li>
         <li>
-          <b>Open someone's profile.</b> A card there shows what they have put in front of you
-          and how it turned out. It starts empty - hit <b>read their recent posts</b> and it
-          fills. This is the half no scanner has, because it only exists in your browser.
+          <b>Open someone's profile.</b> A card there shows what they have put in front of you.
+          It starts empty - hit <b>read their recent posts</b> and it fills, then
+          <b>what happened after</b> prices each call from the moment it was posted. This is
+          the half no scanner has, because it only exists in your browser.
         </li>
         <li>
           <b>Check an accusation.</b> The <b>claims</b> tab runs somebody else's evidence
@@ -69,7 +71,7 @@
           <button id="intro-claims" class="linkish">try the example</button>
         </li>
       </ol>
-      <p class="intro-foot">Or paste any contract address in the box above. Nothing you do here leaves this machine.</p>
+      <p class="intro-foot">Or paste any Solana mint or contract address in the box above. Nothing you do here leaves this machine.</p>
     </div>
 
     <!-- Shown only on the claims tab. Somebody else's accusation goes in; what the chain
@@ -123,7 +125,7 @@
     <template id="empty-callers">
       <div class="empty">
         <b>nobody recorded yet</b>
-        <span>Scroll a timeline on X. Every account that posts a contract address lands here, with what those contracts came back as. Nothing is recorded for a post that only names a ticker.</span>
+        <span>Scroll a timeline on X. Every account that posts a contract lands here, with what those contracts came back as and - when you ask - what the price did after each post. Nothing is recorded for a post that only names a ticker.</span>
       </div>
     </template>
 

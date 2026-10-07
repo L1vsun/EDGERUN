@@ -5,13 +5,16 @@ import GetExtension from "./GetExtension";
 import ProductShot from "./ProductShot";
 
 // What the product actually is, shown rather than described: a post, the badge landing on
-// it, the verdict. The demo is the extension's real output on a real contract - the fake
-// TSLA at 0xD18F… is a live honeypot, and $PEPE really is seven different contracts.
+// it, the verdict. The demo is the extension's real output on a real mint, read live on
+// 2026-10-07: GTiqdugp… calls itself PUMP, was hours old, and had four holders, while the
+// PUMP on every curated list is a different mint held by three hundred thousand wallets.
+// Nothing in that mint is malicious - which is the point. The check that catches it is not
+// about the code.
 //
 // One loop, four steps, no libraries. Anything more elaborate here would be a worse use of
 // the first five seconds than simply showing the thing working.
 
-const POST = "$TSLA is live on Robinhood Chain 🚀 CA: 0xD18F5e73eC5E2D0b18eBe97426Dc5edC2C887715 - send it";
+const POST = "$PUMP still early 🚀 CA: GTiqdugptGkYwoF2xsY9vGNLUrXg3x9JGJGTk77ypump - send it";
 
 const STEPS = [
   { at: 0, type: 0 },          // empty
@@ -54,19 +57,20 @@ export default function Hero() {
     <section className="lead">
       <div className="lead-grid">
       <div className="lead-in">
-        <span className="kicker">Six chains · browser extension · no server</span>
+        <span className="kicker">Solana + five EVM chains · browser extension · no server</span>
         <h1>
           The ticker in that post<br />
           is not one token.
         </h1>
         <p>
-          Seven contracts use <b>$PEPE</b> here. Six use <b>$HOOD</b>. Anyone can deploy a token
-          called <b>Tesla • Robinhood Token</b>, and 213 already have.
+          Anyone can mint a second <b>$PUMP</b> in a minute. The one in this post had{" "}
+          <b>four holders</b>; the real one has three hundred thousand. The wallet behind
+          another launch we read that day had <b>3,648</b> more to its name.
         </p>
         <p className="lead-sub">
           EDGERUN checks the contract while you are still reading the post - in your browser,
-          across Robinhood Chain, Ethereum, Base, Arbitrum, BNB Chain and Solana. Then it keeps
-          the half every scanner throws away: <b>who put it in front of you.</b>
+          on Solana and five EVM chains. Then it keeps the half every scanner throws away:{" "}
+          <b>who put it in front of you, and what the price did after they posted it.</b>
         </p>
         <div className="lead-cta">
           <GetExtension />
@@ -75,12 +79,12 @@ export default function Hero() {
 
         {/* named here in one line; the install section below says what each one does */}
         <p className="works-on">
-          Works on <b>X</b>, <b>Dexscreener</b> and <b>Blockscout</b> - or paste any contract
-          address or Solana mint into the extension itself.
+          Works on <b>X</b>, <b>Dexscreener</b>, <b>Solscan</b> and <b>pump.fun</b> - or paste
+          any Solana mint or contract address into the extension itself.
         </p>
         <div className="lead-facts">
           <div><b>6</b><span>chains read live, no API key anywhere</span></div>
-          <div><b>213</b><span>counterfeits found across ten tickers</span></div>
+          <div><b>1</b><span>request to read a mint, its name and every power over it</span></div>
           <div><b>0</b><span>servers on the path, and nothing of yours leaves</span></div>
         </div>
       </div>
@@ -95,16 +99,17 @@ export default function Hero() {
           </p>
 
           {phase >= 2 && (
-            <div className={`badge${phase >= 3 ? " done" : " busy"}`}>
+            <div className={`badge${phase >= 3 ? " done warn" : " busy"}`}>
               {phase >= 3 ? (
                 <>
-                  <span className="g">✕</span>
+                  <span className="g">!</span>
                   <span className="b-body">
-                    <b>$TSLA · Robinhood Chain · not the real one</b>
+                    <b>PUMP · Solana · caution</b>
                     <span>
-                      This post names $TSLA, which Robinhood publishes at 0x322f0929… - but the
-                      contract in the post is 0xd18f5e73…, a different token.
+                      The curated Solana list gives PUMP to pumpCmXq… (Pump.fun). This is a
+                      different mint using that symbol.
                     </span>
+                    <span className="b-facts">pump.fun · 4 holders · top 10 hold 58%</span>
                   </span>
                   <span className="b-more">details</span>
                 </>

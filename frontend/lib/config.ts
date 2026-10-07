@@ -7,27 +7,38 @@ import extensionMeta from "./extension-meta.json";
 // rather than silently rendering blank.
 
 // ═══════════════════════════════════════════════════════════════════════════
-//  PASTE THE CONTRACT ADDRESS HERE WHEN THE TOKEN IS LIVE. That is the only
-//  edit required: every buy button, header link and footer on the site reads
-//  from it, and each one turns from "soon" into a link to
-//  https://www.ponsfamily.com/launchpad/<address> the moment it is filled in.
-//  Commit, push, done. An env var of the same name overrides it if you would
-//  rather not commit the address.
+//  PASTE THE TOKEN'S ADDRESS HERE WHEN IT IS LIVE. That is the only edit
+//  required: every buy button, header link and footer on the site reads from
+//  it, and each one turns from "soon" into a link the moment it is filled in.
+//
+//  A Solana mint (base58) or an EVM contract (0x…) both work. A mint links to
+//  the token's page on Jupiter, which trades whatever pool the token is in -
+//  including a launchpad's own curve - so the link does not depend on where
+//  it launched or whether it has graduated. Set NEXT_PUBLIC_EDGERUN_DEX_URL
+//  to send buyers somewhere else instead.
+//
+//  Commit, push, done. An env var of the same name overrides the address if
+//  you would rather not commit it.
 // ═══════════════════════════════════════════════════════════════════════════
 const TOKEN_CONTRACT = "";
 
 export const TOKEN_TICKER = process.env.NEXT_PUBLIC_EDGERUN_TICKER || "$EDGERUN";
 
 export const CONTRACT_ADDRESS =
-  process.env.NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS || TOKEN_CONTRACT;
+  (process.env.NEXT_PUBLIC_EDGERUN_CONTRACT_ADDRESS || TOKEN_CONTRACT).trim();
+
+const IS_EVM = /^0x[0-9a-fA-F]{40}$/.test(CONTRACT_ADDRESS);
+// Base58: no 0, O, I or l. Case-carrying - never lowercase a mint.
+const IS_SOLANA = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(CONTRACT_ADDRESS);
 
 /** True once the address above is set: what every "buy" surface switches on. */
-export const TOKEN_LIVE = /^0x[0-9a-fA-F]{40}$/.test(CONTRACT_ADDRESS.trim());
+export const TOKEN_LIVE = IS_EVM || IS_SOLANA;
 
-// Every "buy" button on the site resolves through here. Once the contract
-// address is set, buying goes to the token's Pons launchpad page; before
-// that there is no link at all and the buttons render a pre-launch state
+// Every "buy" button on the site resolves through here. Before the address is
+// set there is no link at all and the buttons render a pre-launch state
 // instead of pointing somewhere useless.
+export const SOLANA_BUY_BASE =
+  process.env.NEXT_PUBLIC_SOLANA_BUY_BASE || "https://jup.ag/tokens";
 export const PONS_LAUNCHPAD_BASE =
   process.env.NEXT_PUBLIC_PONS_LAUNCHPAD_BASE || "https://www.ponsfamily.com/launchpad";
 
@@ -35,7 +46,8 @@ const DEX_URL_OVERRIDE = process.env.NEXT_PUBLIC_EDGERUN_DEX_URL || "";
 
 export function buyUrl(): string {
   if (DEX_URL_OVERRIDE) return DEX_URL_OVERRIDE;
-  if (TOKEN_LIVE) return `${PONS_LAUNCHPAD_BASE.replace(/\/$/, "")}/${CONTRACT_ADDRESS.trim()}`;
+  if (IS_SOLANA) return `${SOLANA_BUY_BASE.replace(/\/$/, "")}/${CONTRACT_ADDRESS}`;
+  if (IS_EVM) return `${PONS_LAUNCHPAD_BASE.replace(/\/$/, "")}/${CONTRACT_ADDRESS}`;
   return "";
 }
 

@@ -21,6 +21,19 @@
 
 const CAP = 200; // a long reading session, bounded - the tail is never what you want anyway
 
+// Every write here is read-modify-write on ONE key, and the worker answers several messages
+// at once: a scroll sends its contracts and its mints as two batches, and a fast scroll sends
+// a second pair before the first has landed. Unserialised, each read the same list and wrote
+// it back, and whichever finished last silently erased the others - four mints checked in
+// the feed, one row in the panel. So writes queue. In memory is enough: one worker, and a
+// queue that dies with it has nothing left in it to lose.
+let tail = Promise.resolve();
+const serial = (fn) => {
+  const run = tail.then(fn, fn);
+  tail = run.catch(() => {});
+  return run;
+};
+
 export const LEDGER_KEY = "ledger";
 export const focusKey = (tabId) => `focus:${tabId}`;
 
@@ -34,7 +47,10 @@ function summarize(r) {
   const checks = r.checks || [];
   const decisive = checks.find((c) => c.status === "fail") || checks.find((c) => c.status === "warn");
   if (decisive) return decisive.detail;
-  if (r.verdict === "OFFICIAL") return "in Robinhood's published registry";
+  if (r.verdict === "OFFICIAL") return "in the issuer's published registry";
+  // A mint scan reads the mint and nothing else, so its pass says exactly that much. "Full
+  // check ran" over a token that launched an hour ago would be read as "safe".
+  if (r.verdict === "PASS" && r.chainName === "Solana") return "the mint is clean - supply fixed, nothing can freeze or block a transfer";
   if (r.verdict === "PASS") return "full check ran, found nothing against it";
   if (r.verdict === "UNRESOLVED") return "identity only - the contract itself is unchecked";
   return "checked";
@@ -64,6 +80,8 @@ function entryFor(result, url, prev, at) {
     // what it claimed to be, when that claim is why it failed: the claim/reality view needs
     // both sides and the checks only carry the prose version
     impersonates: result.impersonates || null,
+    // what an index knows about the launch - context beside the checks, never one of them
+    context: result.context || prev?.context || null,
     explorerUrl: result.explorerUrl || null,
     dexUrl: result.dexUrl || null,
     url: url || prev?.url || null,
@@ -78,7 +96,11 @@ function entryFor(result, url, prev, at) {
  * than adding a second row - a timeline that re-renders the same post four times is still
  * one token you looked at.
  */
-export async function record(url, result) {
+export function record(url, result) {
+  return serial(() => recordNow(url, result));
+}
+
+async function recordNow(url, result) {
   if (!result?.address) return;
   const k = LEDGER_KEY;
   try {
@@ -101,7 +123,11 @@ export async function record(url, result) {
  * and writes it back, so concurrent ones silently drop each other's rows. A timeline resolves
  * twelve addresses at a time, so this is the common path, not the exotic one.
  */
-export async function recordMany(url, results) {
+export function recordMany(url, results) {
+  return serial(() => recordManyNow(url, results));
+}
+
+async function recordManyNow(url, results) {
   const list = (results || []).filter((r) => r?.address);
   if (!list.length) return;
   const k = LEDGER_KEY;

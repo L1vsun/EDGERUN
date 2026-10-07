@@ -21,11 +21,11 @@
   --text-2: #333c3f;   /* body copy */
   --text-3: #556064;   /* secondary */
   --text-4: #727d81;   /* labels, captions */
-  --accent: #b2e604;        /* as a fill - sampled from the bevel highlight on the mark */
-  --accent-ink: #4a6606;    /* the green is unreadable as text on white */
-  --accent-dim: #b9d46a;
-  --accent-bg: #eef7d2;
-  --on-accent: #0a0e04;
+  --accent: #ff3d9a;        /* as a fill - sampled from the bevel highlight on the mark */
+  --accent-ink: #711f46;    /* the accent itself is too light to read as text on white */
+  --accent-dim: #eb90bc;
+  --accent-bg: #ffe1f0;
+  --on-accent: #10070b;
   --panel: rgba(255, 255, 255, 0.92);
   --amber: #a15c07;
   --warn: #a15c07;
@@ -50,7 +50,7 @@
    brightness as they come forward (--bg -> --bg-2 -> --bg-3). Status colours are picked
    for a dark ground rather than reused from the light set, where they go muddy.
 
-   The green is an EDGE, not a field. On the mark it is 2.3% of the pixels and on the
+   The accent is an EDGE, not a field. On the mark it is 2.3% of the pixels and on the
    banner 0.5% - a lit bevel on a silver face, never a fill behind text. Rules here follow
    that: it outlines, underlines and glows, and the large calm areas stay silver on black.
    Turning it back into a background is the one way to make the page stop matching. */
@@ -68,11 +68,11 @@
      was tolerable while dark was opt-in and is not now that it is what everyone sees first -
      this token carries the small uppercase mono labels, the least forgiving text on the page. */
   --text-4: #7d888b;
-  --accent: #b2e604;
-  --accent-ink: #c9f24a;
-  --accent-dim: #4d660a;
-  --accent-bg: #16200a;
-  --on-accent: #0a0e04;
+  --accent: #ff3d9a;
+  --accent-ink: #ff76b8;
+  --accent-dim: #712248;
+  --accent-bg: #23111a;
+  --on-accent: #10070b;
   --panel: rgba(14, 17, 19, 0.9);
   --amber: #ffc069;
   --warn: #ffd98a;
@@ -114,10 +114,10 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 /* ---- header ---- */
 .top { position: relative; z-index: 3; height: var(--top); padding: 0 18px; display: flex; align-items: center;
   justify-content: space-between; background: var(--bg-2); color: var(--bone);
-  border-bottom: 1px solid var(--rule); box-shadow: inset 0 -1px 0 rgba(178,230,4,0.18); }
+  border-bottom: 1px solid var(--rule); box-shadow: inset 0 -1px 0 rgba(255,61,154,0.18); }
 .top::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--chart); }
 /* Two real files rather than one inverted one. The dark lockup is a rendered object with a
-   lit green bevel on a silver face, and `filter: invert()` on the flat black lockup cannot
+   lit accent bevel on a silver face, and `filter: invert()` on the flat black lockup cannot
    produce that - it only ever yields flat white. The light theme keeps the flat lockup,
    because the rendered one is white-on-black and would disappear on a white page. Both are
    in the markup and CSS picks; swapping the `src` in JS would flash the wrong one first. */
@@ -207,7 +207,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .demo-chrome span { margin-left: 8px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; color: var(--text-4); }
 .post { padding: 20px 22px 16px; }
 .post-who { display: flex; align-items: center; gap: 9px; font-size: 15px; color: #71767b; }
-.av { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #2b3336, #4d660a); }
+.av { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #2b3336, #712248); }
 .post-text { margin: 12px 0 0; min-height: 3.2em; font-size: 17px; line-height: 1.45; color: #e7e9ea; word-break: break-word; }
 .caret { display: inline-block; width: 8px; height: 17px; margin-left: 2px; background: var(--chart);
   vertical-align: -3px; animation: blink-caret 0.9s steps(1) infinite; }
@@ -232,6 +232,11 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .b-body { flex: 1; min-width: 0; }
 .b-body b { display: block; font-size: 16.5px; font-weight: 800; letter-spacing: -0.01em; }
 .badge.done .b-body b { color: #c62828; }
+/* a caution is a finding, not an alarm: the card stays white and only the edge speaks */
+.badge.done.warn { border-color: #dde2e4; background: #fff; border-left: 5px solid #a15c07; }
+.badge.done.warn .g { background: #a15c07; }
+.badge.done.warn .b-body b { color: #12171a; }
+.b-body .b-facts { margin-top: 5px; font-family: var(--mono); font-size: 12.5px; color: #59646a; }
 .b-body span { display: block; margin-top: 2px; font-size: 15px; line-height: 1.45; color: #59646a; }
 .b-more { align-self: center; font-size: 14px; font-weight: 700; color: #59646a; white-space: nowrap; }
 @keyframes badge-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
@@ -309,7 +314,6 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .chain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .chain { padding: 20px 20px 22px; border: 1px solid var(--line); border-top: 2px solid var(--rule);
   background: var(--card); }
-.chain-home { border-top-color: var(--accent); }
 .chain-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 9px; margin-bottom: 9px; }
 .chain-head b { font-family: var(--mono); font-size: 17px; font-weight: 800; letter-spacing: -0.01em;
   color: var(--bone); }
@@ -356,8 +360,8 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
   letter-spacing: -0.01em; color: var(--bone); }
 .step p b { display: inline; font-family: inherit; font-size: inherit; font-weight: 700; color: var(--bone); }
 .step p { margin: 0; font-size: 18px; line-height: 1.65; color: var(--text-2); }
-.step code { font-family: var(--mono); font-size: 14.5px; padding: 1px 5px; color: var(--accent-ink); background: var(--accent-bg); border: 1px solid #2c3a13; }
-.step a { color: var(--accent-ink); text-decoration: none; border-bottom: 1px solid rgba(178,230,4,0.4); }
+.step code { font-family: var(--mono); font-size: 14.5px; padding: 1px 5px; color: var(--accent-ink); background: var(--accent-bg); border: 1px solid #401f2f; }
+.step a { color: var(--accent-ink); text-decoration: none; border-bottom: 1px solid rgba(255,61,154,0.4); }
 
 
 .uses { margin-top: 34px; }
@@ -398,8 +402,8 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
   font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; color: var(--text-4); white-space: nowrap; }
 .stage::before { content: ""; position: absolute; inset: 14px 14px 70px; pointer-events: none; z-index: 2;
   background:
-    repeating-linear-gradient(90deg, rgba(178,230,4,0.16) 0 1px, transparent 1px 100%) top left / 40px 7px repeat-x,
-    repeating-linear-gradient(90deg, rgba(178,230,4,0.16) 0 1px, transparent 1px 100%) bottom left / 40px 7px repeat-x;
+    repeating-linear-gradient(90deg, rgba(255,61,154,0.16) 0 1px, transparent 1px 100%) top left / 40px 7px repeat-x,
+    repeating-linear-gradient(90deg, rgba(255,61,154,0.16) 0 1px, transparent 1px 100%) bottom left / 40px 7px repeat-x;
   opacity: 0.5; }
 .vignette::after { content: ""; position: absolute; inset: 0;
   background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.016) 0 1px, transparent 1px 3px); }
@@ -487,7 +491,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .dossier { border-top: 1px solid var(--rule); padding: 10px 14px 12px; }
 .dos-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 7px;
   font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-4); }
-.dos-head a { color: var(--accent-ink); text-decoration: none; border-bottom: 1px solid rgba(178,230,4,0.35); }
+.dos-head a { color: var(--accent-ink); text-decoration: none; border-bottom: 1px solid rgba(255,61,154,0.35); }
 .dos-head i { font-style: normal; color: var(--dim); }
 .dos { margin: 0 0 5px; padding-left: 12px; position: relative; font-size: 14px; line-height: 1.45; color: var(--text-3); }
 .dos::before { content: ""; position: absolute; left: 0; top: 7px; width: 5px; height: 1px; background: currentColor; opacity: 0.6; }
@@ -512,7 +516,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .call { display: flex; flex-direction: column; gap: 2px; text-align: left; cursor: pointer;
   font: inherit; padding: 8px 13px; background: var(--card); backdrop-filter: blur(6px);
   border: 1px solid var(--line); border-left-width: 3px; color: var(--bone); }
-.call:hover { background: rgba(20,28,12,0.92); }
+.call:hover { background: rgba(31,17,24,0.92); }
 .call b { font-family: var(--mono); font-size: 15px; font-weight: 800; }
 .call i { font-style: normal; font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--dim); }
 .call-bad { border-left-color: var(--bad); }
@@ -523,7 +527,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
   border-top: 1px solid var(--chart); background: rgba(6, 9, 8, 0.86); backdrop-filter: blur(9px); }
 .ticker > div { padding: 12px 20px; border-right: 1px solid var(--line); position: relative; }
 .ticker > div::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px;
-  background: repeating-linear-gradient(90deg, rgba(178,230,4,0.3) 0 1px, transparent 1px 9px); }
+  background: repeating-linear-gradient(90deg, rgba(255,61,154,0.3) 0 1px, transparent 1px 9px); }
 .ticker > div:last-child { border-right: none; }
 .ticker b { display: block; font-family: var(--mono); font-size: 22px; font-weight: 800; letter-spacing: -0.04em; }
 .ticker span { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.13em; color: var(--dim); }
@@ -560,7 +564,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .tbl .like { color: var(--dim); }
 .tbl .pend { color: #343d40; }
 .tbl .empty { text-align: center; color: var(--dim); padding: 40px; }
-.nov { display: inline-block; min-width: 40px; padding: 2px 6px; color: var(--on-accent); background: color-mix(in srgb, var(--chart) calc(var(--n) * 100%), #16200a); }
+.nov { display: inline-block; min-width: 40px; padding: 2px 6px; color: var(--on-accent); background: color-mix(in srgb, var(--chart) calc(var(--n) * 100%), #23111a); }
 
 .how { max-width: 1500px; margin: 0 auto; padding: 56px 20px 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
 .how h3 { font-size: 17px; color: var(--accent-ink); margin-bottom: 7px; letter-spacing: 0.05em; }
@@ -617,12 +621,12 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .cx-historian { border-top-color: #22414f; }
 .cx-synthesis { border-top-color: var(--accent-dim); }
 .cx-mod.done { border-color: #262d30; }
-.cx-mod.firing { border-color: var(--accent-ink); background: linear-gradient(180deg, rgba(26,34,14,0.95), rgba(10,14,9,0.8)); }
+.cx-mod.firing { border-color: var(--accent-ink); background: linear-gradient(180deg, rgba(38,21,29,0.95), rgba(10,14,9,0.8)); }
 /* the read-head passing over the module that currently holds the floor. It lives in its own
    clipped layer so the card itself can let the wire hang outside its right edge. */
 .cx-scan { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .cx-mod.firing .cx-scan i { position: absolute; left: 0; right: 0; height: 34%;
-  background: linear-gradient(180deg, transparent, rgba(178,230,4,0.1), transparent);
+  background: linear-gradient(180deg, transparent, rgba(255,61,154,0.1), transparent);
   animation: cx-sweep 0.62s linear; }
 @keyframes cx-sweep { from { top: -34%; } to { top: 100%; } }
 
@@ -634,7 +638,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .cx-wire::after { right: -1px; }
 .cx-wire.hot::before, .cx-wire.hot::after { background: var(--chart); }
 .cx-wire i { position: absolute; top: -2px; left: 0; width: 5px; height: 5px; background: var(--chart); opacity: 0; }
-.cx-wire.hot { background: repeating-linear-gradient(90deg, rgba(178,230,4,0.5) 0 3px, transparent 3px 6px); }
+.cx-wire.hot { background: repeating-linear-gradient(90deg, rgba(255,61,154,0.5) 0 3px, transparent 3px 6px); }
 .cx-wire.hot i { animation: cx-packet 0.62s linear; }
 @keyframes cx-packet { from { left: -2px; opacity: 1; } to { left: 24px; opacity: 0.2; } }
 
@@ -645,7 +649,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .cx-mod.firing .cx-head b { color: var(--accent-ink); }
 .cx-n { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text-4); }
 .cx-led { margin-left: auto; width: 6px; height: 6px; background: var(--rule); }
-.cx-mod.done .cx-led { background: #4d660a; }
+.cx-mod.done .cx-led { background: #712248; }
 .cx-mod.firing .cx-led { background: var(--chart); box-shadow: 0 0 9px var(--chart); animation: blip 0.6s infinite; }
 .cx-seat { display: block; font-style: normal; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--text-4); margin-bottom: 9px; }
@@ -658,7 +662,7 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .cx-good { color: var(--accent-ink); }
 @keyframes cx-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .cx-sym { font: inherit; font-family: var(--mono); font-weight: 800; color: var(--accent-ink); background: none;
-  border: none; border-bottom: 1px dotted rgba(178,230,4,0.5); padding: 0; margin-right: 6px; cursor: pointer; }
+  border: none; border-bottom: 1px dotted rgba(255,61,154,0.5); padding: 0; margin-right: 6px; cursor: pointer; }
 .cx-sym:hover { background: var(--chart); color: var(--on-accent); }
 .cx-wait { margin: 0; font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-4); }
 .cx-detail { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #262d30; }
@@ -670,10 +674,10 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .cx-more:hover { color: var(--accent-ink); }
 
 .cx-gate { border-top-color: var(--accent-dim); }
-.cx-gate.speak.done { border-color: var(--accent-ink); background: linear-gradient(180deg, rgba(28,38,12,0.95), rgba(10,14,9,0.85)); }
+.cx-gate.speak.done { border-color: var(--accent-ink); background: linear-gradient(180deg, rgba(42,20,31,0.95), rgba(10,14,9,0.85)); }
 .cx-action { font-family: var(--mono); font-size: 27px; font-weight: 800; letter-spacing: 0.06em; color: var(--text-4);
   margin: 6px 0 8px; animation: cx-in 0.3s ease both; }
-.cx-gate.speak .cx-action { color: var(--accent-ink); text-shadow: 0 0 22px rgba(178,230,4,0.45); }
+.cx-gate.speak .cx-action { color: var(--accent-ink); text-shadow: 0 0 22px rgba(255,61,154,0.45); }
 .cx-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .cx-acts button { font: inherit; font-family: var(--mono); font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em;
   text-transform: uppercase; padding: 6px 9px; cursor: pointer; color: var(--dim); background: transparent; border: 1px solid var(--rule); }
@@ -693,14 +697,14 @@ h1, h2, h3 { font-family: var(--mono); font-weight: 800; letter-spacing: -0.03em
 .cx-split .cx-good { background: var(--chart); }
 .cx-split .cx-flat { background: var(--rule); }
 .cx-meter { position: relative; height: 10px; background: var(--card-soft); border: 1px solid var(--line); }
-.cx-meter i { display: block; height: 100%; background: #4d660a; transition: width 0.5s ease; }
+.cx-meter i { display: block; height: 100%; background: #712248; transition: width 0.5s ease; }
 .cx-meter.over i { background: var(--chart); }
 .cx-meter b { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--bone); opacity: 0.7; }
 .cx-ticks { display: flex; gap: 2px; flex-wrap: wrap; }
 .cx-ticks i { width: 4px; height: 10px; background: var(--line); }
-.cx-ticks i.on { background: #4d660a; }
+.cx-ticks i.on { background: #712248; }
 .cx-spark { display: flex; align-items: flex-end; gap: 2px; height: 26px; }
-.cx-spark i { flex: 0 1 7px; max-width: 12px; min-width: 3px; background: #3f5610; }
+.cx-spark i { flex: 0 1 7px; max-width: 12px; min-width: 3px; background: #5f2340; }
 .cx-spark i:last-child { background: var(--chart); }
 .cx-hist { display: flex; align-items: flex-end; gap: 3px; height: 22px; }
 .cx-hist i { width: 5px; height: 6px; background: var(--rule); }

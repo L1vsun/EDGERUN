@@ -24,6 +24,34 @@ watch` re-scans on new *deployments*, not on ownership-transfer events for
 already-scanned contracts. A follow-up watcher on `OwnershipTransferred` logs for
 every cached PASS/CAUTION contract would close this gap; not built yet.
 
+## Solana and X: researched, not built
+
+Each of these was looked at on 2026-10-07 while the Solana work was done. None is shipped,
+and the reason is next to it.
+
+- **Holders past the twenty largest accounts.** The largest twenty are read from the chain
+  now, through the one keyless endpoint that will list them. Anything deeper - a real holder
+  count, a distribution - is still an index's figure.
+- **Bundled and sniped launches, measured here.** The panel repeats Jupiter's bundle count
+  on request. Establishing it independently needs transaction history no keyless RPC serves
+  cheaply.
+- **How often an account has been renamed.** X now shows a username-change count and the date
+  of the last one on an account's *About* page. It could be read when a reader opens that
+  page and kept on the record; it is not, because nothing here has been checked against that
+  page's markup and it must not be fetched behind X's back.
+- **Contracts behind links, confirmed on X.** The code reads the full text of every link and
+  resolves a linked Dexscreener pair. Whether X actually keeps a shortened URL's tail in the
+  page could not be checked without a logged-in session; if it does not, the alternative is
+  a request to X's tracker per post, which is not being built.
+- **More token pages.** Solscan and pump.fun are wired because the mint is in the path. The
+  trading terminals mostly put a pool or an internal id there instead.
+- **The site's council reads an index's tape, not the chain.** It was re-pointed at Solana on
+  2026-10-07: what is trending and what just launched, five minutes at a time. That is not
+  every transaction, and the page says so. Reading swaps directly needs a stream no keyless
+  endpoint offers a browser.
+- **Deep checks on the other four EVM chains.** Identity and lists work everywhere; source,
+  deployer and the exit test run on the one chain where an explorer is wired.
+
 ## What's explicitly not being built
 - A numeric score. The verdict is PASS/CAUTION/FAIL plus facts, on purpose - see
   EDGERUN_README.md's "no score out of 100, no vibes."

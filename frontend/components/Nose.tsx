@@ -2,26 +2,26 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/config";
-import { ChainState, SCAN_BLOCKS, Signal, TokenStat, interest, odour, scanToken, signals, startChain } from "@/lib/chain";
+import { ChainState, Signal, TokenStat, interest, odour, scanToken, signals, startChain } from "@/lib/chain";
 import { Dossier, investigate, readDossier } from "@/lib/osint";
 import { Round } from "@/lib/council";
 import BrainCanvas, { ModuleMark, Pulse } from "./BrainCanvas";
 import ModuleHUD from "./ModuleHUD";
 import Cortex from "./Cortex";
 
-// Live Robinhood Chain flow, read through a real olfactory circuit and argued over by five
-// modules. Everything runs in this tab: the chain from the public RPC, the circuit from a
+// Solana's five-minute tape, read through a real olfactory circuit and argued over by five
+// modules. Everything runs in this tab: the tape from a public index, the circuit from a
 // 1.6 MB file of real connectome wiring, the council from the numbers on screen.
 
-type SortKey = "score" | "perMin" | "wallets" | "newWallets" | "concentration" | "accel" | "swaps" | "novelty";
+type SortKey = "score" | "perMin" | "traders" | "newHolders" | "top10" | "accel" | "buys" | "novelty";
 const COLS: { key: SortKey; label: string }[] = [
   { key: "score", label: "worth a look" },
-  { key: "perMin", label: "flow/min" },
-  { key: "wallets", label: "wallets" },
-  { key: "newWallets", label: "new" },
-  { key: "concentration", label: "1-addr" },
+  { key: "perMin", label: "trades/min" },
+  { key: "traders", label: "wallets" },
+  { key: "newHolders", label: "new holders" },
+  { key: "top10", label: "top 10" },
   { key: "accel", label: "accel" },
-  { key: "swaps", label: "swaps" },
+  { key: "buys", label: "buys" },
   { key: "novelty", label: "novelty" },
 ];
 
@@ -221,7 +221,7 @@ export default function Nose() {
           nearest: null, sig: signals(stat), score: interest(stat) };
       }
       setScan({ busy: false, result, error: "" });
-      // the public paper trail: who deployed it, what else they have launched, who paid
+      // the public record: where it launched, who the index attributes it to, how it is held
       setDossier({ busy: true, d: null });
       investigate(result.address, (partial) => setDossier({ busy: true, d: partial }))
         .then((d) => setDossier({ busy: false, d }))
@@ -293,18 +293,19 @@ export default function Nose() {
             <span className="stamp">RESTRICTED</span>
             <span><i>CIRCUIT</i> 9,515 neurons</span>
             <span><i>COUNCIL</i> 5 modules</span>
-            <span><i>FEED</i> RH Chain 4663</span>
+            <span><i>FEED</i> Solana · 5-min tape</span>
             <span className={`rail-live${state?.ok ? " on" : ""}`}>
               <span className={`dot${state?.ok ? " on" : ""}`} />
               {state?.ok ? "SIGNAL" : state ? "RE-ACQUIRING" : "ACQUIRING"}
             </span>
           </div>
           <div className="title">
-            <h2 className="stage-title">Underneath: five modules<br />reading every block.</h2>
+            <h2 className="stage-title">Underneath: five modules<br />reading the tape.</h2>
           </div>
           <p>
             The extension answers one question about one contract. This is the other half: the
-            whole chain, watched continuously, by five modules that mostly decide to say nothing.
+            five-minute tape of what is trending and what just launched on Solana, watched
+            continuously, by five modules that mostly decide to say nothing.
           </p>
           <form
             className="scan"
@@ -313,9 +314,9 @@ export default function Nose() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="paste any token address - 0x…"
+              placeholder="paste any Solana mint"
               spellCheck={false}
-              aria-label="token contract address"
+              aria-label="token mint"
             />
             <button type="submit" disabled={scan.busy || !query.trim()}>{scan.busy ? "reading…" : "run it"}</button>
           </form>
@@ -328,7 +329,7 @@ export default function Nose() {
                 <>
                   <div className="scanhead">
                     <b>{scan.result.symbol}</b>
-                    <span>{num(scan.result.transfers)} transfers · {num(scan.result.wallets)} wallets · last {Math.round(SCAN_BLOCKS / 9 / 60)} min</span>
+                    <span>{num(scan.result.trades)} trades · {num(scan.result.traders)} wallets · last 5 min</span>
                     <button className="x" onClick={() => { setScan({ busy: false, result: null, error: "" }); setDossier({ busy: false, d: null }); setQuery(""); }} aria-label="close">×</button>
                   </div>
                   <div className="scanflags">
@@ -344,8 +345,8 @@ export default function Nose() {
                     <div className="dos-head">
                       <span>paper trail</span>
                       {dossier.busy && !dossier.d ? <i>pulling records…</i> : dossier.d?.deployer ? (
-                        <a href={`https://robinhoodchain.blockscout.com/address/${dossier.d.deployer}`} target="_blank" rel="noreferrer">
-                          deployer {dossier.d.deployer.slice(0, 8)}…
+                        <a href={`https://solscan.io/account/${dossier.d.deployer}`} target="_blank" rel="noreferrer">
+                          creator {dossier.d.deployer.slice(0, 8)}…
                         </a>
                       ) : null}
                     </div>
@@ -354,7 +355,7 @@ export default function Nose() {
                         <p key={i} className={`dos dos-${r.tone}`}>{r.text}</p>
                       ))
                     ) : dossier.busy ? null : (
-                      <p className="dos dos-flat">no public record reachable for this address</p>
+                      <p className="dos dos-flat">no public record reachable for this mint</p>
                     )}
                   </div>
                 </>
@@ -400,17 +401,17 @@ export default function Nose() {
             </div>
 
             <div className="mini">
-              <div><b>{num(sel.wallets)}</b><span>wallets · {pct(sel.wallets ? sel.newWallets / sel.wallets : 0)} new</span></div>
-              <div><b>{sel.accel.toFixed(1)}×</b><span>vs its own average</span></div>
+              <div><b>{num(sel.traders)}</b><span>wallets trading · {num(sel.newHolders)} new holders</span></div>
+              <div><b>{sel.accel.toFixed(1)}×</b><span>vs its own hourly average</span></div>
               {sel.nearest && <div><b>{sel.nearest.symbol}</b><span>moves most like this · {pct(sel.nearest.overlap)}</span></div>}
             </div>
           </div>
         )}
 
         <div className="ticker">
-          <div><b>{state?.block ? num(state.block) : "-"}</b><span>block</span></div>
-          <div><b>{state ? num(state.transfersPerMin) : "-"}</b><span>transfers/min</span></div>
-          <div><b>{state ? num(state.wallets) : "-"}</b><span>wallets</span></div>
+          <div><b>{state?.block ? num(state.block) : "-"}</b><span>slot</span></div>
+          <div><b>{state ? num(state.tradesPerMin) : "-"}</b><span>trades/min</span></div>
+          <div><b>{state ? num(state.traders) : "-"}</b><span>wallets</span></div>
           <div><b>{state ? num(state.tokens.length) : "-"}</b><span>tokens moving</span></div>
           <div><b>{phase === "run" ? "9,515" : "…"}</b><span>neurons live</span></div>
         </div>
@@ -431,7 +432,7 @@ export default function Nose() {
       <section className="feed">
         <div className="fhead">
           <h2>Everything moving right now</h2>
-          <small>3-minute window · ★ to watch · click a column to sort, a row to send it through the circuit</small>
+          <small>trending and just-launched on Solana · 5-minute window · ★ to watch · click a column to sort, a row to send it through the circuit</small>
         </div>
         <div className="tscroll">
           <table className="tbl">
@@ -461,16 +462,16 @@ export default function Nose() {
                   </td>
                   <td>{Math.round(t.score)}</td>
                   <td>{num(t.perMin)}</td>
-                  <td>{num(t.wallets)}</td>
-                  <td className={t.wallets && t.newWallets / t.wallets > 0.6 ? "hi" : ""}>{num(t.newWallets)}</td>
-                  <td className={t.concentration > 0.4 ? "hi" : ""}>{pct(t.concentration)}</td>
+                  <td>{num(t.traders)}</td>
+                  <td className={t.traders && t.newHolders / t.traders > 0.5 ? "hi" : ""}>{num(t.newHolders)}</td>
+                  <td className={t.top10 > 0.5 ? "hi" : ""}>{pct(t.top10)}</td>
                   <td className={t.accel > 1.6 ? "up" : t.accel < 0.5 ? "dn" : ""}>{t.accel.toFixed(1)}×</td>
-                  <td>{t.swaps || "-"}</td>
+                  <td>{t.buys || "-"}</td>
                   <td>{t.novelty < 0 ? <span className="pend">·</span> : <span className="nov" style={{ ["--n" as any]: t.novelty }}>{pct(t.novelty)}</span>}</td>
                   <td className="like">{t.nearest ? `${t.nearest.symbol} · ${pct(t.nearest.overlap)}` : t.novelty < 0 ? "·" : "-"}</td>
                 </tr>
               ))}
-              {!shown.length && <tr><td colSpan={11} className="empty">reading the chain…</td></tr>}
+              {!shown.length && <tr><td colSpan={11} className="empty">reading the tape…</td></tr>}
             </tbody>
           </table>
         </div>
@@ -489,18 +490,19 @@ export default function Nose() {
         <div>
           <h3>What the flags mean</h3>
           <ul className="flagkey">
-            <li><b>one wallet</b> one address sits on most of the transfers</li>
-            <li><b>printing</b> new supply is being minted right now</li>
-            <li><b>heating</b> flow is well above the token&apos;s own average</li>
-            <li><b>fresh wallets</b> the buyers are addresses not seen before</li>
+            <li><b>top-heavy</b> the ten largest wallets hold more than half of supply</li>
+            <li><b>mint open</b> the mint authority is live, so supply can still grow</li>
+            <li><b>heating</b> volume is well above the token&apos;s own hourly average</li>
+            <li><b>new holders</b> most of the wallets trading it did not hold it five minutes ago</li>
+            <li><b>buyers lead</b> / <b>sellers lead</b> one side of the tape outnumbers the other 3 to 2</li>
           </ul>
         </div>
         <div>
           <h3>What it is not</h3>
           <p>
             Not advice and not a price call. Every flag is a plain threshold on measured activity and
-            names the number behind it, so you can check it yourself on the explorer. A token with no
-            flags is not safe - it is only unremarkable in the last three minutes.
+            names the number behind it, so you can check it yourself. A token with no flags is not
+            safe - it is only unremarkable in the last five minutes.
           </p>
         </div>
       </section>

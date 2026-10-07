@@ -1,5 +1,10 @@
 # Impersonation
 
+> Scope: the registry check on the one chain where an issuer publishes authoritative
+> addresses. On every other chain, Solana included, the evidence is a curated list and the
+> strongest claim is "a different address already holds this symbol" - see
+> [`extension/README.md`](../extension/README.md#solana).
+
 ## The strongest check: official stock tokens
 
 Robinhood Chain is not a generic EVM chain. It carries **194 real tokenised

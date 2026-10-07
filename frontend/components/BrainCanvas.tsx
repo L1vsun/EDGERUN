@@ -42,7 +42,7 @@ const LIFE = 1500;
 // depth shading for the silhouette, precomputed
 const SHELL_BANDS = 6;
 const SHELL_FILL = Array.from({ length: SHELL_BANDS }, (_, b) =>
-  `rgba(128,156,100,${(0.2 + 0.38 * (1 - b / (SHELL_BANDS - 1))).toFixed(3)})`);
+  `rgba(173,125,148,${(0.2 + 0.38 * (1 - b / (SHELL_BANDS - 1))).toFixed(3)})`);
 const shellBand = (d: number) => Math.min(SHELL_BANDS - 1, Math.max(0, Math.floor((d + 0.5) * SHELL_BANDS)));
 
 const COL: Record<string, [number, number, number]> = {
@@ -210,7 +210,7 @@ export default function BrainCanvas({
 
       // 2. the circuit's own wiring, always visible, brighter where it is carrying signal
       ctx.lineWidth = Math.max(0.4, dpr * 0.32);
-      ctx.strokeStyle = "rgba(150,200,60,0.05)";
+      ctx.strokeStyle = "rgba(222,102,159,0.05)";
       ctx.beginPath();
       for (let e = 0; e < web.length; e += 2) {
         const a = web[e], b = web[e + 1];
@@ -220,7 +220,7 @@ export default function BrainCanvas({
       }
       ctx.stroke();
       ctx.lineWidth = Math.max(0.5, dpr * 0.5);
-      ctx.strokeStyle = "rgba(207,255,4,0.22)";
+      ctx.strokeStyle = "rgba(255,61,154,0.22)";
       ctx.beginPath();
       for (let e = 0; e < web.length; e += 2) {
         const a = web[e], b = web[e + 1];
@@ -235,7 +235,7 @@ export default function BrainCanvas({
         const k = Math.min(1, (leadAge - D.PN) / 160) * (1 - Math.max(0, leadAge - D.KC) / HOLD);
         if (k > 0.03) {
           ctx.lineWidth = Math.max(0.5, dpr * 0.42);
-          ctx.strokeStyle = `rgba(230,255,140,${0.16 * k})`;
+          ctx.strokeStyle = `rgba(255,166,209,${0.16 * k})`;
           ctx.beginPath();
           for (let c = 0; c < lead.code.length; c += 2) {
             const target = IDX.KC[lead.code[c]];
@@ -283,7 +283,7 @@ export default function BrainCanvas({
           for (const i of list) bump(i, Math.max(heat[i], fire * 0.5));
         }
         // anchor mark
-        ctx.strokeStyle = `rgba(207,255,4,${0.22 + 0.6 * fire})`;
+        ctx.strokeStyle = `rgba(255,61,154,${0.22 + 0.6 * fire})`;
         ctx.lineWidth = Math.max(0.7, dpr * 0.7);
         const r = (7 + fire * 9) * dpr;
         ctx.beginPath();

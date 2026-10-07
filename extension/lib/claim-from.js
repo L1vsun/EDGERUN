@@ -1,7 +1,7 @@
 // Turning a verdict this extension reached into a claim a stranger can re-run.
 //
 // Kept apart from claim.js on purpose. claim.js knows what a claim is and nothing about this
-// product; this file knows where Robinhood publishes its registry and which selector returns
+// product; this file knows where an issuer publishes its registry and which selector returns
 // a symbol. The schema has to outlive the checker that first filled it in, or the registry is
 // just this extension's output with extra steps.
 //
@@ -43,7 +43,7 @@ export function impersonationClaim(verdict, { chain = HOME } = {}) {
     type: "impersonation",
     subject: { chain: chain.id, address: verdict.address, ...(verdict.symbol ? { label: verdict.symbol } : {}) },
     target: { chain: chain.id, address: i.officialAddress, label: i.ticker },
-    says: `${verdict.address} presents itself as $${i.ticker} on ${chain.name}. Robinhood publishes $${i.ticker} at ${i.officialAddress}, which is a different contract.`,
+    says: `${verdict.address} presents itself as $${i.ticker} on ${chain.name}. ${chain.issuer || "Its issuer"} publishes $${i.ticker} at ${i.officialAddress}, which is a different contract.`,
     evidence: [
       symbolCall(chain, verdict.address, verdict.symbol || i.ticker),
       httpEvidence({

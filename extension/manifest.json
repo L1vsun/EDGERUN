@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "EDGERUN - token and caller checks",
-  "version": "0.4.0",
-  "description": "Whether the token in that post is the contract it claims to be - six chains, checked in your browser, no server.",
+  "version": "0.5.0",
+  "description": "Is the token in that post the contract it claims to be, and who posted it - Solana and five EVM chains, checked in your browser.",
   "permissions": [
     "storage",
     "alarms",
@@ -10,25 +10,41 @@
     "declarativeNetRequestWithHostAccess"
   ],
   "host_permissions": [
-    "https://robinhoodchain.blockscout.com/*",
-    "https://rpc.mainnet.chain.robinhood.com/*",
-    "https://api.robinhood.com/*",
+    "https://solana-rpc.publicnode.com/*",
+    "https://lite-api.jup.ag/*",
+    "https://api.jup.ag/*",
+    "https://datapi.jup.ag/*",
+    "https://public.rpc.solanavibestation.com/*",
     "https://api.dexscreener.com/*",
     "https://api.geckoterminal.com/*",
+    "https://tokens.uniswap.org/*",
     "https://edgerun.pro/*",
     "https://l1vsun.github.io/*",
     "https://ethereum-rpc.publicnode.com/*",
     "https://mainnet.base.org/*",
     "https://arb1.arbitrum.io/*",
     "https://bsc-rpc.publicnode.com/*",
-    "https://tokens.uniswap.org/*",
-    "https://solana-rpc.publicnode.com/*"
+    "https://rpc.mainnet.chain.robinhood.com/*",
+    "https://robinhoodchain.blockscout.com/*",
+    "https://api.robinhood.com/*"
   ],
   "background": {
     "service_worker": "background/worker.js",
     "type": "module"
   },
   "content_scripts": [
+    {
+      "matches": [
+        "https://twitter.com/*",
+        "https://x.com/*"
+      ],
+      "js": [
+        "shared/detect.js",
+        "shared/badge.js",
+        "sites/twitter.js"
+      ],
+      "run_at": "document_idle"
+    },
     {
       "matches": [
         "https://dexscreener.com/*"
@@ -42,24 +58,24 @@
     },
     {
       "matches": [
+        "https://solscan.io/*",
+        "https://pump.fun/*"
+      ],
+      "js": [
+        "shared/detect.js",
+        "shared/badge.js",
+        "sites/solana-pages.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
         "https://robinhoodchain.blockscout.com/*"
       ],
       "js": [
         "shared/detect.js",
         "shared/badge.js",
         "sites/blockscout.js"
-      ],
-      "run_at": "document_idle"
-    },
-    {
-      "matches": [
-        "https://twitter.com/*",
-        "https://x.com/*"
-      ],
-      "js": [
-        "shared/detect.js",
-        "shared/badge.js",
-        "sites/twitter.js"
       ],
       "run_at": "document_idle"
     }

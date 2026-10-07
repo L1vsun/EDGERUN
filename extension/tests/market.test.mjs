@@ -130,4 +130,30 @@ const got = await readMarket("0xa", {
 });
 assert.equal(got.pairAddress, "0xb");
 
+// ---- what somebody has paid Dexscreener for ----
+// The shape is the live answer for a real mint on 2026-10-07.
+const { shapeOrders, readOrders } = await import("../lib/market.js");
+const PAID = { orders: [{ chainId: "solana", tokenAddress: "8xu4…", type: "tokenProfile", status: "approved", paymentTimestamp: 1791331288177 }], boosts: [] };
+assert.deepEqual(shapeOrders(PAID), { profileAt: 1791331288177, takeoverAt: null, ads: 0, boosts: 0 });
+// only an APPROVED order is a thing that happened
+assert.equal(shapeOrders({ orders: [{ type: "tokenProfile", status: "processing", paymentTimestamp: 5 }] }).profileAt, null);
+assert.equal(shapeOrders({ orders: [{ type: "tokenProfile", status: "rejected", paymentTimestamp: 5 }] }).profileAt, null);
+const busy = shapeOrders({
+  orders: [
+    { type: "communityTakeover", status: "approved", paymentTimestamp: 9 },
+    { type: "tokenAd", status: "approved", paymentTimestamp: 10 },
+    { type: "trendingBarAd", status: "approved", paymentTimestamp: 11 },
+    { type: "tokenProfile", status: "approved", paymentTimestamp: 20 },
+    { type: "tokenProfile", status: "approved", paymentTimestamp: 7 },
+  ],
+  boosts: [{}, {}],
+});
+assert.deepEqual(busy, { profileAt: 7, takeoverAt: 9, ads: 2, boosts: 2 }, "the first payment is when it was bought");
+// An empty list carries nothing positive - and is NOT read as "nothing was bought": the same
+// real mint returned the order above and, hours later, this.
+assert.deepEqual(shapeOrders({ orders: [], boosts: [] }), { profileAt: null, takeoverAt: null, ads: 0, boosts: 0 });
+assert.equal(await readOrders("solana", "x", { fetchImpl: async () => ({ ok: false, status: 500 }) }), null, "no answer is null");
+assert.equal(await readOrders("solana", "x", { fetchImpl: async () => { throw new Error("network"); } }), null);
+assert.equal(await readOrders(null, "x", { fetchImpl: async () => { throw new Error("must not be called"); } }), null);
+
 console.log("market: ok");

@@ -1,11 +1,14 @@
 // The chains this extension can read, and - more importantly - what it is allowed to say
 // about each of them.
 //
-// Robinhood Chain is not just the first entry, it is a different KIND of entry. Robinhood
-// publishes the authoritative contract address for all 194 of its tokenised securities at a
-// keyless endpoint, which is what lets the extension say "this is not Tesla" as a fact
-// rather than as a heuristic. Nothing equivalent exists anywhere else: on Ethereum the best
-// available answer is "not on any curated list, and six other contracts share this ticker".
+// Solana is read too, and is not in this table: it is a different provider (lib/solana.js),
+// not a row with a different RPC url. Everything below is EVM.
+//
+// What separates these rows is not the RPC, it is `authority`. On one of them an issuer
+// publishes the authoritative contract address for every tokenised security it deploys, at a
+// keyless endpoint, which is what lets the extension say "this is not Tesla" as a fact rather
+// than as a heuristic. Nothing equivalent exists on the others: there the best available
+// answer is "not on any curated list, and six other contracts share this ticker".
 //
 // Those are not the same claim and must never render as though they were. A tool that says
 // "FAKE" on tier-2 evidence is wrong often enough to be uninstalled, and being right about
@@ -30,6 +33,8 @@ export const CHAINS = {
     rpc: "https://rpc.mainnet.chain.robinhood.com",
     explorer: "https://robinhoodchain.blockscout.com",
     authority: "registry",
+    // who publishes the registry - named in a verdict so a reader can go and check it
+    issuer: "Robinhood",
   },
   ethereum: {
     key: "ethereum",
@@ -73,6 +78,10 @@ export const CHAINS = {
   },
 };
 
+// The EVM chain the full contract lane runs on: verified source, ownership, the deployer
+// trail and a simulated transfer out of a real holder's wallet all need an explorer and a
+// registry wired up, and this is the one chain where both are. It is NOT "the product's
+// chain" - a Solana mint never touches it - it is only where an 0x address is read first.
 export const HOME = CHAINS.robinhood;
 
 // Every entry in CHAINS is EVM. Solana is not here on purpose: it is a different provider
@@ -80,7 +89,7 @@ export const HOME = CHAINS.robinhood;
 // no 0x address, so anything that fans out over this table would break on it.
 export const ALL = Object.values(CHAINS);
 
-/** Everywhere an 0x address could be, home chain first. */
+/** Everywhere else an 0x address could be. */
 export const ELSEWHERE = ALL.filter((c) => c !== HOME);
 
 export const chainByKey = (key) => CHAINS[String(key || "").toLowerCase()] || null;

@@ -3,27 +3,28 @@
 `components/Shots.tsx` picks these up by filename and shows a labelled placeholder for any
 that are missing, so a absent file never renders as a broken image.
 
-| file | what to capture |
+| file | what it is |
 |---|---|
-| `product.jpg` | **the hero shot** - see below. The one image on the first screen |
-| `x-fake.jpg` | a post on x.com naming a ticker and a contract, with the red badge under the text |
-| `solana.jpg` | a Solana mint in the panel: mint authority, freeze authority, and the token program row |
-| `explorer.jpg` | robinhoodchain.blockscout.com token page with the EDGERUN panel at the top |
-| `dexscreener.jpg` | dexscreener.com/robinhood/<pair> with the badge next to the ticker |
+| `product.jpg` | **the hero shot.** Two real captures side by side: the badge in a Dexscreener pair header, and the panel open on the same mint |
+| `solana.jpg` | a Solana mint in the panel: the checks, **the launch**, and **who holds it** after *dig deeper* |
+| `dexscreener.jpg` | a Dexscreener Solana pair page with the badge next to the ticker |
+| `pumpfun.jpg` | a pump.fun coin page with the badge in its fixed corner |
 
-## `product.jpg` - the one on the first screen
+All four were captured on 2026-10-07 from the unpacked 0.5.0 extension running in a real
+Chromium, on live pages, for one real mint (`GTiqdugp…`, an unverified token calling itself
+PUMP). Nothing in them is staged.
 
-The only screenshot a visitor is guaranteed to see, so it has to carry the whole product in
-one frame: a real post on the left, the badge under it, and the **side panel open on the
-right**. Not a crop of either half - the two together are the story, and no competing tool
-can produce that picture.
+**There is no X shot, on purpose.** A logged-out browser is served a static copy of a post
+with none of the app's markup, so the extension has nothing to attach to and no capture was
+possible. The two X shots this folder used to carry showed the pre-0.5.0 badge - one of them
+a case the code no longer handles that way - and were removed rather than left to describe a
+product that has changed. To add one:
 
-1. Post on X yourself: a line naming `$TSLA`, then `0xD18F5e73eC5E2D0b18eBe97426Dc5edC2C887715`.
-   A bare `$TICKER` with no address will not produce a badge - that is deliberate, so the post
-   has to carry a contract.
-2. Let the red badge land, click it so the side panel opens.
-3. Expand that row in the panel so the checks are visible.
-4. Capture the browser viewport at **1440x900, 100% zoom**, light theme.
+1. Signed in to X, with the extension loaded, find or write a post that pastes a mint.
+2. Let the badge land under the text. For the hero, click it so the side panel opens and
+   expand that row.
+3. Capture at **1440x900, 100% zoom, browser language English**. Save as JPEG, ~1500px wide,
+   quality 82, and add it to `SHOTS` in `components/Shots.tsx`.
 
 Use your own post. Crop out any other account's avatar, name or handle.
 

@@ -43,19 +43,23 @@ const STEPS = [
 const USES = [
   {
     where: "On X",
-    what: "Scroll normally. A post naming a contract address or a Solana mint gets a badge under the text - one per token, because a post naming three contracts is talking about three things. A bare $TICKER with no address stays quiet on purpose.",
+    what: "Scroll normally. A post handing over a Solana mint or a contract address gets a badge under the text - one per token, because a post naming three contracts is talking about three things. For a new Solana token it also says where it launched, how old it is and how widely it is held. A $TICKER with no address gets one line when several mints share that symbol: which one the lists vouch for, and how many others there are.",
   },
   {
     where: "Who posted it",
-    what: "Every contract arrived attached to an account, and the panel keeps that half: how many contracts an account has put in front of you, how many came back flagged, and whether several accounts arrived on the same contract inside the same few minutes. Local only, with one button that forgets all of it.",
+    what: "Every contract arrived attached to an account, and the panel keeps that half: how many contracts an account has put in front of you, how many came back flagged, whether several accounts posted the same one inside the same few minutes, and whether a token's own metadata names the account that is pushing it. Local only, with one button that forgets all of it.",
   },
   {
-    where: "On Dexscreener and the explorer",
-    what: "Open any pair or token page. The badge sits in the header and runs the full check: source verification, mint selectors, ownership, deployer history, and a simulated transfer out of a real holder's wallet.",
+    where: "What happened after",
+    what: "Open a profile, or an account in the panel, and ask. Each call is priced from the bar its post landed in to now, from public pool candles: down 86% since the post, peaked at +140%. No server keeps a leaderboard - it is your feed, priced in your browser, and anyone can redo the arithmetic.",
+  },
+  {
+    where: "On a token's own page",
+    what: "Open a pair on Dexscreener, a token on Solscan or a coin on pump.fun. A Solana mint is read in one request: who can mint more, who can freeze or seize your tokens, whether a transfer can be blocked, taxed or paused, and whether its name can still be changed. An EVM contract gets source, ownership, deployer history and a simulated transfer out of a real holder's wallet.",
   },
   {
     where: "Anywhere else",
-    what: "Click the toolbar icon and paste a contract address or a Solana mint - one box, both alphabets. Same checks, plus a watchlist that tells you what moved since you last looked.",
+    what: "Click the toolbar icon and paste a Solana mint or a contract address - one box, both alphabets. Same checks, plus a watchlist that tells you what moved since you last looked.",
   },
 ];
 

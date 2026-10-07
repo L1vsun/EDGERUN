@@ -16,6 +16,8 @@ import { validateClaim, verifyPlanText } from "../lib/claim.js";
 import { exampleClaim } from "../lib/example-claim.js";
 import { DEFAULT_TIMEFRAME, TIMEFRAMES as CHART_TFS, candleSvg } from "../lib/candles.js";
 import { ALL as ALL_CHAINS, HOME } from "../lib/chains.js";
+import { bindingCheck, launchChecks } from "../lib/jupiter.js";
+import { outcomeText } from "../lib/outcome.js";
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -50,6 +52,11 @@ const isEvmRow = (e) => isAddress(e.address);
 
 const TONE = { FAIL: "fail", CAUTION: "warn", OFFICIAL: "ok", PASS: "ok" };
 const tone = (v) => TONE[v] || "flat";
+// Green is for a full check that found nothing. A mint scan that found nothing is grey, and
+// reads "mint clean": a clean mint is a fact about the mint, not a verdict on the token.
+const isMintPass = (e) => e.verdict === "PASS" && e.chainName === "Solana";
+const rowTone = (e) => (isMintPass(e) ? "flat" : tone(e.verdict));
+const rowVerdict = (e) => (isMintPass(e) ? "MINT CLEAN" : e.verdict);
 const isFlagged = (e) => e.verdict === "FAIL" || e.verdict === "CAUTION";
 
 const host = (url) => {
@@ -79,6 +86,10 @@ let callers = [];                // the account graph, most flagged first
 let graphTokens = {};            // address -> who posted it, and whether they arrived together
 let graphPaused = false;
 const openCallers = new Set();   // handles expanded on the callers tab
+const callerCalls = new Map();   // handle -> that account's calls, fetched when its row opens
+const pricing = new Map();       // handle -> what the last "what happened after" run reported
+const holdersBy = new Map();     // mint -> who holds it, read from the chain when asked
+const deepBy = new Map();        // mint -> the index's deeper record of the launch
 
 const REPO = "https://github.com/L1vsun/EDGERUN";
 
@@ -86,8 +97,8 @@ const REPO = "https://github.com/L1vsun/EDGERUN";
 //
 // The chart must not depend on the trades having been loaded first, so this is derived from
 // the row itself: a base58 address is a Solana mint by construction, an EVM row names its
-// chain when it came from a cross-chain lookup, and everything else is the home chain - which
-// is where a row with no chain attached came from.
+// chain when it came from a cross-chain lookup, and everything else is the chain the EVM
+// contract lane reads - which is where a row with no chain attached came from.
 const chainKeyOf = (e) => {
   if (isSolanaAddress(e?.address)) return "solana";
   const named = String(e?.chainName || "").toLowerCase();
@@ -133,7 +144,7 @@ function renderDossier(t) {
              <p class="d-note">What this wallet has been calling on this token since launch.</p>`
           : `<p class="d-none">No owner-only calls on this token in the transactions read.</p>`
       }
-      ${t.deployer ? `<a class="d-link" href="https://robinhoodchain.blockscout.com/address/${esc(t.deployer)}" target="_blank" rel="noreferrer">open the wallet ↗</a>` : ""}
+      ${t.deployer && HOME.explorer ? `<a class="d-link" href="${esc(HOME.explorer)}/address/${esc(t.deployer)}" target="_blank" rel="noreferrer">open the wallet ↗</a>` : ""}
     </div>`;
 }
 
@@ -152,7 +163,7 @@ function renderClaim(e) {
         <span class="c-label">the post says</span>
         <b>$${esc(i.ticker)}</b>
         <code>${esc(short(i.officialAddress))}</code>
-        <em>Robinhood's registry</em>
+        <em>the issuer's registry</em>
       </div>
       <div class="c-row bad">
         <span class="c-label">you are looking at</span>
@@ -165,7 +176,7 @@ function renderClaim(e) {
 
 // ---- the ticker collision ----
 //
-// A ticker is not an identity on this chain: seven contracts use $PEPE. Ranking them by
+// A ticker is not an identity: on one chain alone seven contracts use $PEPE. Ranking them by
 // holders is the only honest way to answer "which one do people actually own", and when the
 // top two are close the answer is that there is no answer - which the table says out loud
 // rather than quietly picking the biggest.
@@ -273,9 +284,9 @@ function renderElsewhere(x) {
       </div>
       <p class="s-note">${esc(x.say)}</p>
       <table class="xc-grid"><tbody>${rows}</tbody></table>
-      <p class="s-fine">One batched call per chain. Only Robinhood Chain publishes an authoritative
-        registry, so elsewhere a curated list is the strongest evidence available and absence from
-        one is not a finding.</p>
+      <p class="s-fine">One batched call per chain. Only a chain whose issuer publishes an
+        authoritative registry can prove a fake; everywhere else a curated list is the strongest
+        evidence available and absence from one is not a finding.</p>
     </div>`;
 }
 
@@ -388,7 +399,7 @@ function renderComposer(e) {
  * what ships is a zip somebody unpacks and can read.
  *
  * Real candlesticks, from real OHLC: GeckoTerminal's on-chain API carries them where
- * Dexscreener does not, it is keyless, and it covers Robinhood Chain - which was the part
+ * Dexscreener does not, it is keyless, and it covers every chain read here - which was the part
  * that had to be checked rather than assumed.
  *
  * Wicks are drawn from high to low and bodies from open to close, so a doji stays a doji. A
@@ -496,6 +507,21 @@ function renderMarket(m) {
 
   const age = m.createdAt ? `${Math.max(1, Math.round((Date.now() - m.createdAt) / 86400000))}d old` : "";
 
+  // What somebody has bought on the token's Dexscreener page. Stated, never scored: a paid
+  // profile says a person spent money, not who, and a rug costs the same to dress as a project.
+  // Positives only - the source has been seen to list an order and later return nothing for
+  // the same token, so an empty answer is not allowed to become "no paid profile".
+  const day = (ts) => new Date(ts).toISOString().slice(0, 10);
+  const p = m.paid;
+  const bought = !p
+    ? ""
+    : [
+        p.profileAt ? `profile paid for on ${day(p.profileAt)}` : "",
+        p.takeoverAt ? `community takeover filed ${day(p.takeoverAt)}` : "",
+        p.ads ? `${p.ads} advert${p.ads === 1 ? "" : "s"} bought` : "",
+        p.boosts ? `${p.boosts} boost${p.boosts === 1 ? "" : "s"} active` : "",
+      ].filter(Boolean).join(" · ");
+
   return `
     <div class="market">
       <div class="m-head">
@@ -508,6 +534,7 @@ function renderMarket(m) {
         <tbody>${rows}</tbody>
       </table>
       ${flags || ""}
+      ${bought ? `<p class="m-paid"><b>Dexscreener</b> ${esc(bought)}</p>` : ""}
       <p class="m-note">Buy and sell counts, not price history - the public API carries no candles. A one-sided tape is the shape a token has when holders cannot get out, which is the exit test's question asked of the money instead of the code.</p>
     </div>`;
 }
@@ -553,15 +580,45 @@ function renderCluster(g) {
 
 function renderCallerRow(c) {
   const expanded = openCallers.has(c.handle);
-  const calls = (c.calls || [])
+  const list = callerCalls.get(c.handle);
+  const calls = (list || [])
     .slice(0, 40)
-    .map(
-      (x) => `<div class="check"><i class="${esc(tone(x.verdict))}"></i><span>
-        <b>${esc(x.symbol || short(x.address))}</b>
-        <span>${esc(x.verdict)} · ${esc(ago(x.last || x.at))}${x.n > 1 ? ` · ${x.n}×` : ""}</span>
-      </span></div>`,
-    )
+    .map((x) => {
+      const after = outcomeText(x.out);
+      const down = Number.isFinite(x.out?.pct) && x.out.pct <= -50;
+      const link = x.post ? ` · <a href="https://x.com/${esc(c.handle)}/status/${esc(x.post)}" target="_blank" rel="noreferrer">the post ↗</a>` : "";
+      return `<div class="check"><i class="${esc(tone(x.verdict))}"></i><span>
+        <b>${esc(x.symbol || short(x.address))}${x.own ? ' <em class="own" title="this token\'s own metadata names this account as its X account">its own account</em>' : ""}</b>
+        <span>${esc(x.verdict)} · ${esc(ago(x.posted || x.last || x.at))}${x.n > 1 ? ` · ${x.n}×` : ""}${link}</span>
+        ${after ? `<span class="after ${down ? "down" : ""}">${esc(after)}</span>` : ""}
+      </span></div>`;
+    })
     .join("");
+
+  // The price half of the record. It is asked for, never automatic - each call priced is a
+  // request against the tightest limit in the product - and it describes rather than judges:
+  // an account warning about a contract has posted it too, and its price falling afterwards
+  // is them being right.
+  const o = c.outcomes;
+  const run = pricing.get(c.handle);
+  const summary = o
+    ? `<p class="c-after">${esc(c.outcomeSay || `${o.priced} call${o.priced === 1 ? "" : "s"} priced so far - too few for a pattern.`)}</p>`
+    : "";
+  const note = run
+    ? `<p class="c-run">${esc(
+        run.error
+          ? "The price source could not be reached. Nothing follows from that about these tokens."
+          : run.limited
+            ? `Priced ${run.priced}. The price source limits how often it can be asked - try the rest in a minute.`
+            : run.asked === 0
+              ? "Every recent call is already priced."
+              : `Priced ${run.priced} of ${run.asked}.${run.left ? ` ${run.left} more to go.` : ""}`,
+      )}</p>`
+    : "";
+  const owned = c.owned
+    ? `<p class="c-run">${c.owned} of these tokens name${c.owned === 1 ? "s" : ""} this account as ${c.owned === 1 ? "its" : "their"} own X account.</p>`
+    : "";
+
   return `
     <article class="row ${c.tone === "bad" ? "fail" : c.tone === "mixed" ? "warn" : "flat"}" data-handle="${esc(c.handle)}">
       <button class="head" data-act="caller" aria-expanded="${expanded}">
@@ -571,12 +628,91 @@ function renderCallerRow(c) {
         <span class="meta">${esc(c.display || "")}${c.display ? " · " : ""}last ${esc(ago(c.last))}</span>
       </button>
       <div class="detail" ${expanded ? "" : "hidden"}>
-        ${calls || '<div class="check"><i></i><span><span>no contracts recorded</span></span></div>'}
+        ${summary}
+        ${owned}
+        ${calls || `<div class="check"><i></i><span><span>${list ? "no contracts recorded" : "reading the record…"}</span></span></div>`}
+        ${note}
         <div class="acts">
+          ${c.tokens ? `<button class="go-act" data-act="after">${o ? "price more calls" : "what happened after"}</button>` : ""}
           <a href="https://x.com/${esc(c.handle)}" target="_blank" rel="noreferrer">open profile ↗</a>
         </div>
       </div>
     </article>`;
+}
+
+// ---- who holds it ----
+//
+// The twenty largest accounts, read from the chain: who owns each, whether a program rather
+// than a person controls that owner, and whether the account is frozen. Pools and curves are
+// drawn as what they are, because counting them as holders is how every launch becomes "one
+// wallet owns 80%".
+
+function renderHolders(h) {
+  if (!h) return "";
+  const head = '<div class="d-head"><span class="d-label">who holds it</span></div>';
+  if (h.status !== "read") {
+    const why = {
+      limited: "The endpoint that lists holders limits how often it can be asked. Try again in a moment - nothing follows from that about the token.",
+      none: "The chain lists no holder accounts for this mint.",
+      unreachable: "The holder list could not be read. Nothing follows from that about the token.",
+    }[h.status] || "The holder list could not be read.";
+    return `<div class="dossier">${head}<p class="d-none">${esc(why)}</p></div>`;
+  }
+  const rows = h.rows.slice(0, 10).map((r) => {
+    const who = r.kind === "program" ? "a program's account" : r.kind === "unknown" ? "owner not read" : esc(short(r.owner));
+    return `<tr class="${r.frozen ? "hot" : ""}"><td>${who}${r.frozen ? " · frozen" : ""}</td><td>${r.pct >= 10 ? r.pct.toFixed(1) : r.pct.toFixed(2)}%</td></tr>`;
+  }).join("");
+  const checks = (h.checks || []).map((c) => `<div class="check"><i class="${esc(c.status === "unresolved" ? "" : c.status)}"></i>
+    <span><b>${esc(c.label)}</b><span>${esc(c.detail)}</span></span></div>`).join("");
+  return `
+    <div class="dossier">
+      ${head}
+      ${checks}
+      <table class="d-methods"><tbody>${rows}</tbody></table>
+      <p class="d-note">Read from the chain: the ${h.listed} largest token accounts, who owns each, and which program controls the owner.</p>
+    </div>`;
+}
+
+function renderDeep(d) {
+  if (!d) return "";
+  const head = '<div class="d-head"><span class="d-label">the launch, closer</span></div>';
+  if (!d.checks?.length) {
+    return `<div class="dossier">${head}<p class="d-none">Nothing more is recorded for this mint, or the record did not answer. Nothing follows from that about the token.</p></div>`;
+  }
+  return `
+    <div class="dossier">
+      ${head}
+      ${d.checks.map((c) => `<div class="check"><i class="${esc(c.status === "unresolved" ? "" : c.status)}"></i>
+        <span><b>${esc(c.label)}</b><span>${esc(c.detail)}</span></span></div>`).join("")}
+      <p class="d-note">From the data behind Jupiter's own token pages - its counts and its classifications, none of it read from the chain here.</p>
+    </div>`;
+}
+
+// ---- the launch ----
+//
+// A Solana mint's verdict comes from the mint account. Everything else a reader asks first -
+// where it launched, how long ago, how widely it is held, whose wallet made it - comes from
+// an index, and is drawn here as its own block so it can never be mistaken for a check. It
+// costs nothing to show: the context arrived with the scan.
+//
+// The last line is the only one that is not the index's. A token names an X account by
+// writing a link into its own metadata, and the test of that link is whether the account has
+// ever posted the contract - which this panel knows, because it kept the feed.
+
+function renderLaunch(e) {
+  const ctx = e.context;
+  if (!ctx) return "";
+  const callers = graphTokens[String(e.address).toLowerCase()]?.callers || [];
+  const posted = Boolean(ctx.x?.handle) && callers.some((c) => c.handle === ctx.x.handle);
+  const rows = [...launchChecks(ctx), bindingCheck(ctx.x, posted)].filter(Boolean);
+  if (!rows.length) return "";
+  return `
+    <div class="dossier">
+      <div class="d-head"><span class="d-label">the launch</span></div>
+      ${rows.map((c) => `<div class="check"><i class="${esc(c.status === "unresolved" ? "" : c.status)}"></i>
+        <span><b>${esc(c.label)}</b><span>${esc(c.detail)}</span></span></div>`).join("")}
+      <p class="d-note">From Jupiter's index, not read from the chain - except the X account line, which is checked against your own feed.</p>
+    </div>`;
 }
 
 // ---- rows ----
@@ -591,7 +727,7 @@ function renderCallerRow(c) {
  * shown, and the rest fold into one line you can open.
  */
 function renderRow(e) {
-  const t = tone(e.verdict);
+  const t = rowTone(e);
   const expanded = open.has(e.address);
 
   const all = e.checks || [];
@@ -616,7 +752,10 @@ function renderRow(e) {
   const market = markets.has(e.address) ? renderMarket(markets.get(e.address)) : "";
   const chart = charts.has(e.address) ? renderChart(e) : "";
   const moved = watchChanges.find((c) => c.address === e.address);
-  const cluster = graphTokens[e.address]?.cluster;
+  // The graph keys by the FOLDED address, and a Solana row carries its real casing - looked
+  // up as written, a mint never found its callers and no cluster ever showed on a Solana row.
+  const graphFor = graphTokens[String(e.address).toLowerCase()];
+  const cluster = graphFor?.cluster;
   const deep = dossier || sweep || xchain;
   const evm = isEvmRow(e);
 
@@ -625,9 +764,9 @@ function renderRow(e) {
       <button class="head" data-act="toggle" aria-expanded="${expanded}">
         <span class="who-what">
           <span class="sym">${esc(e.symbol || short(e.address))}</span>
-          <span class="chain">${esc(e.chainName || "Robinhood Chain")}</span>
+          <span class="chain">${esc(e.chainName || HOME.name)}</span>
         </span>
-        <span class="verdict ${t}">${esc(e.verdict)}</span>
+        <span class="verdict ${t}">${esc(rowVerdict(e))}</span>
         <span class="say">${esc(e.say)}</span>
         ${moved ? `<span class="moved">was ${esc(moved.from)} &rarr; now ${esc(moved.to)}</span>` : ""}
         ${cluster ? `<span class="moved">${cluster.count} accounts, ${esc(mins(cluster.spanMs))}</span>` : ""}
@@ -637,11 +776,14 @@ function renderRow(e) {
       </button>
       <div class="detail" ${expanded ? "" : "hidden"}>
         ${renderClaim(e)}
-        ${renderCluster(graphTokens[e.address])}
+        ${renderCluster(graphFor)}
         ${shown || '<div class="check"><i></i><span><span>nothing established yet</span></span></div>'}
         ${folded}
         ${rank}
         ${dossier}
+        ${evm ? "" : renderLaunch(e)}
+        ${evm ? "" : renderHolders(holdersBy.get(e.address))}
+        ${evm ? "" : renderDeep(deepBy.get(e.address))}
         ${sweep}
         ${xchain}
         ${chart}
@@ -652,6 +794,7 @@ function renderRow(e) {
           ${evm && e.level !== "full" && e.verdict !== "FAIL" ? '<button class="go-act" data-act="full">run full check</button>' : ""}
           ${evm && !deep ? '<button class="go-act" data-act="deep">dig deeper</button>' : ""}
           ${evm && !rank && candidatesOf(e).length ? '<button data-act="rank">which is real</button>' : ""}
+          ${!evm && !(holdersBy.has(e.address) && deepBy.has(e.address)) ? '<button class="go-act" data-act="sol-deep">dig deeper</button>' : ""}
           ${evm ? "" : '<button data-act="recheck">re-check</button>'}
           ${market ? "" : '<button data-act="market">the trades</button>'}
           ${chart ? "" : '<button data-act="chart">chart</button>'}
@@ -725,7 +868,10 @@ async function load() {
   await loadGraphTokens();
   // Opening straight onto the callers tab (a click on an account strip in the feed) needs the
   // account list fetched before the first paint, or the tab renders empty and then fills.
-  if (filter === "callers") await loadCallers();
+  if (filter === "callers") {
+    await loadCallers();
+    for (const handle of openCallers) if (!callerCalls.has(handle)) loadCalls(handle);
+  }
   renderWhere();
   render();
 }
@@ -774,21 +920,32 @@ async function loadWatch({ resolve = false } = {}) {
   // Opening the watch tab is the recheck: these are tokens somebody already decided to keep
   // an eye on, so a stale verdict is the one thing this list must not show.
   try {
-    const out = await ask({ type: "verdicts", addresses: watching });
+    // Two providers, so two questions. A watched Solana mint used to be sent to the EVM
+    // batch, which drops anything that is not 0x - so it was never re-checked and never shown.
+    const evm = watching.filter(isAddress);
+    const sol = watching.filter((a) => !isAddress(a) && isSolanaAddress(a));
+    const [out, mints] = await Promise.all([
+      evm.length ? ask({ type: "verdicts", addresses: evm }) : {},
+      sol.length ? ask({ type: "mints", candidates: sol, limit: "watch" }) : [],
+    ]);
+    const byMint = new Map((mints || []).map((r) => [r.address, r]));
     watchRows = watching
-      .map((a) => out[a])
+      .map((a) => out[a] || byMint.get(a))
       .filter(Boolean)
       .map((r) => ({
-        address: r.address.toLowerCase(),
+        address: isAddress(r.address) ? r.address.toLowerCase() : r.address,
         symbol: r.symbol || null,
+        chainName: r.chainName || null,
         verdict: r.verdict,
         level: r.level,
         say:
           (r.checks || []).find((c) => c.status === "fail")?.detail ||
           (r.checks || []).find((c) => c.status === "warn")?.detail ||
-          (r.verdict === "OFFICIAL" ? "in Robinhood's published registry" : "no failing check"),
+          (r.verdict === "OFFICIAL" ? "in the issuer's published registry" : "no failing check"),
         checks: r.checks || [],
+        context: r.context || null,
         explorerUrl: r.explorerUrl || null,
+        dexUrl: r.dexUrl || null,
         url: null,
         at: r.scannedAt || Date.now(),
         seen: 1,
@@ -950,6 +1107,28 @@ $("#list").addEventListener("click", async (ev) => {
    * than in parallel so that a rate limit stops the rest instead of spending on all three at
    * once, and each one paints as it lands.
    */
+  // The Solana "dig deeper": who holds it (read from the chain) and the index's closer look
+  // at the launch. In sequence, each painting as it lands, for the same reason the EVM one
+  // does: a limit on the first should not be spent on by the second.
+  if (btn.dataset.act === "sol-deep") {
+    btn.disabled = true;
+    btn.textContent = "reading holders…";
+    const vouched = (entry.checks || []).some((c) => c.id === "listed" && c.status === "ok");
+    try {
+      holdersBy.set(address, await ask({ type: "holders", address, vouched }));
+    } catch {
+      holdersBy.set(address, { status: "unreachable" });
+    }
+    open.add(address);
+    render();
+    try {
+      deepBy.set(address, await ask({ type: "deep", address }));
+    } catch {
+      deepBy.set(address, { checks: [] });
+    }
+    return render();
+  }
+
   if (btn.dataset.act === "recheck") {
     btn.disabled = true;
     btn.textContent = "re-checking…";
@@ -1325,15 +1504,49 @@ $("#intro-claims").addEventListener("click", () => {
 
 // The callers tab lists accounts, so its clicks never find a .row[data-address] and the
 // main list handler ignores them.
-$("#list").addEventListener("click", (ev) => {
-  const btn = ev.target.closest('[data-act="caller"]');
-  if (!btn) return;
-  const handle = btn.closest(".row")?.dataset.handle;
+$("#list").addEventListener("click", async (ev) => {
+  const row = ev.target.closest(".row[data-handle]");
+  const handle = row?.dataset.handle;
   if (!handle) return;
+
+  // What the price did after each of this account's calls.
+  const after = ev.target.closest('[data-act="after"]');
+  if (after) {
+    after.disabled = true;
+    after.textContent = "pricing…";
+    try {
+      const rec = await ask({ type: "graph:outcomes", handle });
+      if (rec) {
+        callerCalls.set(handle, rec.calls || []);
+        pricing.set(handle, rec.run || null);
+        callers = callers.map((c) => (c.handle === handle ? { ...c, ...rec, calls: undefined, run: undefined } : c));
+      }
+    } catch {
+      pricing.set(handle, { error: true });
+    }
+    return render();
+  }
+
+  if (!ev.target.closest('[data-act="caller"]')) return;
   if (openCallers.has(handle)) openCallers.delete(handle);
   else openCallers.add(handle);
   render();
+  // The list of accounts carries counts, not calls - eighty call objects per account across
+  // the message boundary to draw one line each would be waste. So the calls are fetched when
+  // a row is opened. (They were never fetched at all before, and every opened account read
+  // "no contracts recorded" beside a count that said otherwise.)
+  if (openCallers.has(handle) && !callerCalls.has(handle)) await loadCalls(handle);
 });
+
+async function loadCalls(handle) {
+  try {
+    const rec = await ask({ type: "graph:caller", handle });
+    callerCalls.set(handle, rec?.calls || []);
+  } catch {
+    callerCalls.set(handle, []);
+  }
+  render();
+}
 
 $("#graph-pause").addEventListener("click", async () => {
   graphPaused = !graphPaused;
@@ -1358,6 +1571,8 @@ $("#graph-wipe").addEventListener("click", async (ev) => {
   btn.textContent = "forget everyone";
   await ask({ type: "graph:wipe" }).catch(() => {});
   openCallers.clear();
+  callerCalls.clear();
+  pricing.clear();
   graphTokens = {};
   await loadCallers();
   render();

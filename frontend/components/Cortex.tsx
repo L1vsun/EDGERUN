@@ -6,7 +6,7 @@ import { AgentOut, GATE_SEAT, RELAY_SEATS, RELAY_STEP, Round, Viz, appendLog, re
 
 // The council, running in front of you.
 //
-// Five seats relay in order - Scout reads the chain, Skeptic attacks what Scout said,
+// Five seats relay in order - Scout reads the tape, Skeptic attacks what Scout said,
 // Historian checks the log, Synthesis weighs all three, and a code gate decides whether
 // any of it is worth saying. Every round here is computed in this tab from the numbers
 // on screen; the relay animation is the actual order of execution, not decoration.
@@ -49,13 +49,13 @@ export default function Cortex({
     onRound(r);
     setHistory((h) => [...h, {
       speak: r.gate.action === "SPEAK", symbol: r.focus?.symbol || "-", why: r.gate.why,
-      flow: s.transfersPerMin, flagged: r.flagged,
+      flow: s.tradesPerMin, flagged: r.flagged,
     }].slice(-28));
     relay.current = { at: performance.now() };
     setStage(0);
   }, [onRound, relay]);
 
-  // a fresh block means fresh numbers: the council re-runs on its own, every poll
+  // a newer slot means fresh numbers: the council re-runs on its own, every poll
   useEffect(() => {
     if (!state?.ok || !state.tokens.length) return;
     if (state.block === lastBlock.current) return;
@@ -90,13 +90,13 @@ export default function Cortex({
         <div className="cx-meta">
           {round ? (
             <>
-              <span>block <b>{round.block.toLocaleString()}</b></span>
+              <span>slot <b>{round.block.toLocaleString()}</b></span>
               <span><b>{round.tokensMoving}</b> tokens read</span>
               <span><b>{round.flagged}</b> flagged</span>
               <span><b>{round.rounds}</b> rounds logged</span>
             </>
           ) : (
-            <span>waiting for the first block…</span>
+            <span>waiting for the first reading…</span>
           )}
           <button className="cx-run" onClick={() => state?.ok && play(state)} disabled={!state?.ok || running}>
             {running ? "running…" : "run a round"}
@@ -115,11 +115,11 @@ export default function Cortex({
             onToggle={() => setOpen(open === a.id ? null : a.id)}
             onPick={onFocus}
             // Scout has no verdict to meter, so it shows the thing it actually watches:
-            // how hard the whole chain has been moving, one bar per round it has read
+            // how hard the tape has been moving, one bar per round it has read
             extra={a.id === "scout" && history.length > 1 ? (
               <Spark
                 values={history.map((h) => h.flow)}
-                note={`${Math.round(history[history.length - 1].flow).toLocaleString()} transfers/min · last ${history.length} rounds`}
+                note={`${Math.round(history[history.length - 1].flow).toLocaleString()} trades/min · last ${history.length} rounds`}
               />
             ) : null}
           />
@@ -257,7 +257,7 @@ function Readout({ v }: { v: Viz }) {
   );
 }
 
-// one bar per round of whatever the chain has been doing while the council watched
+// one bar per round of whatever the tape has been doing while the council watched
 function Spark({ values, note }: { values: number[]; note: string }) {
   const max = Math.max(...values, 1);
   return (

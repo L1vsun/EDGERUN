@@ -1,4 +1,5 @@
-// X / Twitter: a badge on any post that names a Robinhood Chain token.
+// X / Twitter: a badge on any post that hands over a contract - a Solana mint or an 0x
+// address - and a record of which account handed it over.
 //
 // The timeline is virtualised - posts are unmounted as they scroll away and remounted when
 // they come back - so every article is tagged the moment it is first seen and never
@@ -6,10 +7,11 @@
 // found in a scroll batch is resolved in one message to the worker, which answers the whole
 // batch from the registry plus a single JSON-RPC round trip.
 //
-// The check that matters here is the cross-check: a post that says $TSLA and pastes a
-// contract address which is not Robinhood's published TSLA address is showing you a
-// different token than the one it names. That is provable from the registry alone, it needs
-// no backend, and it is the whole reason this surface exists.
+// Two checks matter here and neither needs a backend. The cross-check: a post that names one
+// token and pastes the contract of another is showing you a different token than the one it
+// names. And the account: who posted it, what else they have posted, whether the token's own
+// metadata claims this very account, and - once asked - what the price did after each call.
+// The second is the half no scanner can produce, because it requires having been in the feed.
 
 (() => {
   const E = globalThis.EDGERUN;
@@ -23,10 +25,16 @@
   const tweets = () => document.querySelectorAll(`article[data-testid="tweet"]:not([${SEEN}])`);
 
   function textOf(article) {
-    // innerText of the whole article picks up the post, any quoted post, and link-card text
-    // in one read. Images and video are out of scope for this version by design.
-    return article.innerText || "";
+    // The whole article in one read: the post, any quoted post, link-card text - and the full
+    // text of its links, which is where a contract hides when a URL is displayed cut short.
+    // Images and video are out of scope for this version by design.
+    return E.textWithLinks(article);
   }
+
+  // Dexscreener links already resolved to the token they are about, kept for the page's life:
+  // a pair id in a post is not an address, so attribution has to go through this to know that
+  // the mint under a post is one its author linked.
+  const pairMints = new Map();
 
   /**
    * The account that posted this, not the one being quoted.
@@ -43,13 +51,54 @@
     return E.authorFrom({ hrefs, text: block.innerText || "" });
   }
 
-  const flush = E.debounce(async () => {
+  /**
+   * When the post was written, and its id.
+   *
+   * The first <time> in an article is the post's own - a quoted post carries its own, later
+   * in document order, for the same reason the first User-Name is the author. It sits inside
+   * the permalink, which is where the id comes from.
+   *
+   * This is what "what happened after" is measured from. The moment a reader scrolled past is
+   * not when the call was made: a profile opened today surfaces posts from last month.
+   */
+  function postOf(article) {
+    const time = article.querySelector("time[datetime]");
+    if (!time) return {};
+    const postedAt = Date.parse(time.getAttribute("datetime") || "");
+    const href = time.closest("a[href]")?.getAttribute("href") || "";
+    const id = /\/status\/(\d+)/.exec(href)?.[1] || null;
+    return { postedAt: Number.isFinite(postedAt) ? postedAt : null, post: id };
+  }
+
+  // Throttled, not debounced - the same mistake `E.watch` once made, in the one place it was
+  // still being made. A debounce restarts its timer on every call, so while a reader keeps
+  // scrolling and posts keep arriving it never fires; and a timeline unmounts a post as it
+  // leaves, so by the time the scrolling paused the posts it was holding answers for were
+  // gone. Reported from the field as "I scroll and no badge ever appears".
+  const flush = E.throttle(async () => {
     if (!pending.size) return;
     const batch = new Map(pending);
     pending.clear();
 
+    // A linked pair page is a contract too. Each is resolved to its token once, and the mint
+    // joins the post's own list before anything is scanned.
+    const pairIds = [...new Set([...batch.values()].flatMap((v) => v.pairs || []))].filter((id) => !pairMints.has(id)).slice(0, 3);
+    await Promise.all(pairIds.map(async (pairId) => {
+      try {
+        const pair = await E.settle(E.ask({ type: "pair", pairId, chain: "solana" }), null, 5000);
+        pairMints.set(pairId, pair?.baseToken || null);
+      } catch {
+        pairMints.set(pairId, null); // not a pair anybody knows: nothing to say, and not asked again
+      }
+    }));
+    for (const found of batch.values()) {
+      for (const id of found.pairs || []) {
+        const mint = pairMints.get(id);
+        if (mint && !found.mints.includes(mint)) found.mints.push(mint);
+      }
+    }
+
     const addresses = [...new Set([...batch.values()].flatMap((v) => v.addresses))];
-    const tickers = [...new Set([...batch.values()].flatMap((v) => v.tickers))];
     const candidates = [...new Set([...batch.values()].flatMap((v) => v.mints || []))];
 
     // Who wrote each post in this batch. Gathered here rather than in render() so the whole
@@ -61,30 +110,58 @@
     }
     const handles = [...new Set([...authors.values()].map((a) => a.handle))];
 
-    let verdicts = {};
-    let resolved = {};
-    let mints = [];
-    let callers = {};
-    let clusters = {};
-    try {
-      [verdicts, resolved, mints, callers, clusters] = await Promise.all([
-        addresses.length ? E.ask({ type: "verdicts", addresses }) : Promise.resolve({}),
-        tickers.length ? E.ask({ type: "tickers", tickers }) : Promise.resolve({}),
-        candidates.length ? E.ask({ type: "mints", candidates }) : Promise.resolve([]),
-        handles.length ? E.ask({ type: "graph:callers", handles }) : Promise.resolve({}),
-        addresses.length ? E.ask({ type: "graph:tokens", addresses }) : Promise.resolve({}),
-      ]);
-    } catch (err) {
-      E.log("batch failed", err.message);
-      return;
+    // ---- three kinds of post, because they have very different costs ----
+    //
+    // A post with no contract can only ever get a line about a ticker: one cached index
+    // lookup. A post with a Solana mint needs a chain read. A post with an 0x address needs a
+    // different chain and, sometimes, an explorer search per ticker. Awaiting all of that as
+    // one all-or-nothing group made the cheapest answer wait for the dearest - one slow
+    // explorer held back every badge on the screen, including the ones about another chain.
+    // A post that waits does not wait: it scrolls away, and the timeline unmounts it.
+    //
+    // So every source is asked once, bounded, and each post is drawn the moment the sources
+    // IT needs have landed. What has not answered in time is left out of that pass.
+    const isBare = (v) => !v.addresses.length && !(v.mints || []).length;
+    const groups = { bare: [], solana: [], evm: [] };
+    for (const entry of batch) {
+      const found = entry[1];
+      (isBare(found) ? groups.bare : found.addresses.length ? groups.evm : groups.solana).push(entry);
     }
 
-    const byMint = new Map((mints || []).map((r) => [r.address, r]));
+    // Tickers in posts that hand over no contract. Currencies are left out: "ape with $SOL"
+    // names what is being paid.
+    const bare = [...new Set(groups.bare.flatMap(([, v]) => v.tickers))].filter((t) => !E.isCurrency(t)).slice(0, 6);
+    // The issuer registry and the per-chain ticker count only ever speak beside an EVM
+    // contract, so only the tickers in THOSE posts are worth an explorer search.
+    const evmTickers = [...new Set(groups.evm.flatMap(([, v]) => v.tickers))];
+    const watched = [...addresses, ...candidates];
 
-    for (const [article, found] of batch) {
-      if (!article.isConnected) continue; // scrolled away and unmounted while we waited
-      render(article, found, verdicts, resolved, byMint, authors.get(article), callers, clusters);
-    }
+    const symbolsP = bare.length ? E.settle(E.ask({ type: "symbols", tickers: bare }), {}) : Promise.resolve({});
+    const verdictsP = addresses.length ? E.settle(E.ask({ type: "verdicts", addresses }), {}) : Promise.resolve({});
+    const resolvedP = evmTickers.length ? E.settle(E.ask({ type: "tickers", tickers: evmTickers }), {}) : Promise.resolve({});
+    const mintsP = (candidates.length ? E.settle(E.ask({ type: "mints", candidates }), []) : Promise.resolve([]))
+      .then((list) => new Map((list || []).map((r) => [r.address, r])));
+    // who wrote what is local storage, not a network call
+    const callersP = handles.length ? E.settle(E.ask({ type: "graph:callers", handles }), {}, 4000) : Promise.resolve({});
+    // mints too: a Solana contract arriving from six accounts is the same finding
+    const clustersP = watched.length ? E.settle(E.ask({ type: "graph:tokens", addresses: watched }), {}, 4000) : Promise.resolve({});
+
+    const draw = async (list, pending) => {
+      if (!list.length) return;
+      const [verdicts, resolved, byMint, callers, clusters, symbols] = await Promise.all(pending);
+      for (const [article, found] of list) {
+        if (!article.isConnected) continue; // scrolled away and unmounted while we waited
+        render(article, found, verdicts, resolved, byMint, authors.get(article), callers, clusters, symbols);
+      }
+    };
+    const none = Promise.resolve({});
+    const noMints = Promise.resolve(new Map());
+    await Promise.all([
+      draw(groups.bare, [none, none, noMints, callersP, none, symbolsP]),
+      draw(groups.solana, [none, none, mintsP, callersP, clustersP, none]),
+      draw(groups.evm, [verdictsP, resolvedP, mintsP, callersP, clustersP, none]),
+    ]);
+    const [verdicts, byMint] = await Promise.all([verdictsP, mintsP]);
 
     // After render, and that ordering is the point: the record shown under a post is the
     // account's record BEFORE this post was counted. "47 contracts, 9 flagged" describes what
@@ -134,8 +211,8 @@
       const own = article.querySelector('[data-testid="tweetText"]');
       if (!own) continue; // media- or card-only post: nothing the author themselves wrote
 
-      const theirs = E.findTokens(own.innerText || "");
-      const written = new Set([...theirs.addresses, ...theirs.mints]);
+      const theirs = E.findTokens(E.textWithLinks(own));
+      const written = new Set([...theirs.addresses, ...theirs.mints, ...theirs.pairs.map((id) => pairMints.get(id)).filter(Boolean)]);
 
       // Tickers the author wrote themselves. Counted, never charged - see the note on
       // `recordSightings`. A page of real timeline is mostly this, and dropping it was why a
@@ -144,22 +221,34 @@
         sightings.push({ handle: author.handle, display: author.display, ticker });
       }
 
+      const { postedAt, post } = postOf(article);
+      // mints whose own metadata names this author as their X account
+      const owned = new Set(E.ownTokens(author, mints.map((m) => byMint.get(m))).map((r) => r.address));
+
       for (const token of [...found.addresses, ...mints]) {
         if (!written.has(token)) continue; // it came from a quoted post, not from them
         const v = verdicts[token] || byMint.get(token) || null;
+        // An 0x address with no contract on the chain that was read is not a call on that
+        // chain. Counting it would put a wallet address, or another chain's token, into
+        // somebody's record under the wrong chain's name.
+        if (v?.absent) continue;
         sightings.push({
           handle: author.handle,
           display: author.display,
           address: token,
           symbol: v?.symbol || null,
           verdict: v?.verdict || null,
+          postedAt,
+          post,
+          chain: byMint.has(token) ? "solana" : null,
+          own: owned.has(token),
         });
       }
     }
     if (sightings.length) E.ask({ type: "graph:record", sightings }).catch(() => {});
   }
 
-  function render(article, found, verdicts, resolved, byMint, author, callers = {}, clusters = {}) {
+  function render(article, found, verdicts, resolved, byMint, author, callers = {}, clusters = {}, symbols = {}) {
     if (article.querySelector('[data-edgerun="badge"]')) return;
 
     const results = found.addresses.map((a) => verdicts[a]).filter(Boolean);
@@ -178,6 +267,7 @@
       onchain: tickers.filter((t) => t.kind === "onchain"),
       namedTickers: found.tickers,
       solana,
+      symbols: found.tickers.map((t) => symbols[t]).filter(Boolean),
     });
 
     // Computed before the early return, because it can be the ONLY thing worth saying. Six
@@ -188,6 +278,10 @@
       caller: author ? callers[author.handle.toLowerCase()] || null : null,
       clusters,
       addresses: [...found.addresses, ...(found.mints || []).filter((m) => byMint.has(m))],
+      // the token's own metadata names the account that is posting it: said even when the
+      // account has no record yet, because it is a fact about this post, not about history
+      own: E.ownTokens(author, solana),
+      handle: author?.handle || null,
     });
     if (!found_.length && !account) return;
 
@@ -201,7 +295,10 @@
         mode: "block",
         onFull: async (address) => {
           try {
-            const full = await E.ask({ type: "verdict", address, level: "full", fresh: true });
+            // a mint has no second tier - its whole scan is one read - so "full" is a re-read
+            const full = E.isAddress(address)
+              ? await E.ask({ type: "verdict", address, level: "full", fresh: true })
+              : await E.ask({ type: "mint", address, fresh: true });
             badge.update(full);
           } catch (err) {
             badge.fail(err.message);
@@ -406,6 +503,7 @@
     currentCard = E.makeProfileCard(handle, record, {
       onScan: scanProfile,
       onOpen: (h) => E.ask({ type: "panel:caller", handle: h }).catch(() => {}),
+      onAfter: (h) => E.ask({ type: "graph:outcomes", handle: h }),
     });
     mountCard(currentCard, fresh);
   }
@@ -419,7 +517,7 @@
         // Mints count here too. Leaving them out of this gate meant a post whose only
         // contract was a Solana mint never entered the batch at all - no scan, no badge, no
         // sighting - which on a pump.fun-shaped feed is most of the posts that matter.
-        if (!found.addresses.length && !found.tickers.length && !found.mints.length) return;
+        if (!found.addresses.length && !found.tickers.length && !found.mints.length && !found.pairs.length) return;
         pending.set(article, found);
         flush();
       });

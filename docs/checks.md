@@ -1,5 +1,9 @@
 # Checks
 
+> Scope: the EVM contract lane - source, mint, ownership, LP, exit test - as run by the Python
+> engine and by the extension on the chain where an explorer and an issuer's registry are
+> wired. The Solana mint scan is documented in [`extension/README.md`](../extension/README.md#solana).
+
 Every check below, the exact call behind it, and what an unresolved result means for
 that specific check. Field names and endpoint paths were confirmed live against
 `robinhoodchain.blockscout.com` on 2026-09-08 (same Blockscout version as

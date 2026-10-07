@@ -2,8 +2,9 @@
 
 ## Scope
 edgerun is a read-only checker. It never connects a wallet, never signs a transaction,
-and never custodies funds - every check is a public read against Blockscout's REST API
-or a public `eth_call`/`eth_getCode` against Robinhood Chain's RPC.
+and never custodies funds - every check is a public read: a keyless chain RPC
+(`getAccountInfo` on Solana, `eth_call`/`eth_getCode` on the EVM chains), a block
+explorer's REST API, a published token list or registry, or a keyless market index.
 
 ## $EDGERUN contract address and audit status
 The token is not deployed yet. This file will be updated with the real contract

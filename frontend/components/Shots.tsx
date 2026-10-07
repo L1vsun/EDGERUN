@@ -10,28 +10,22 @@ import Zoomable from "./Zoomable";
 
 const SHOTS = [
   {
-    file: "x-fake.jpg",
-    where: "On X",
-    caption: "A post names $NVDA and pastes a contract. The badge lands under the text and says it is a different token - with both addresses and the chain it is on.",
-    hint: "x.com - any post with a Robinhood Chain contract address in it",
-  },
-  {
     file: "solana.jpg",
-    where: "On Solana",
-    caption: "A mint read from the chain: who can create supply, who can freeze your account, and whether a transfer hook can reject the sale.",
-    hint: "x.com - a post naming a Solana mint, or paste one into the panel",
-  },
-  {
-    file: "explorer.jpg",
-    where: "On the block explorer",
-    caption: "The full report as a standing panel: source, mint selectors, ownership, and a simulated transfer out of a real holder's wallet.",
-    hint: "robinhoodchain.blockscout.com/token/0xD18F5e73eC5E2D0b18eBe97426Dc5edC2C887715",
+    where: "In the panel",
+    caption: "A Solana mint read from the chain, the launch as an index records it, and - on request - who actually holds it: here one wallet with 58% of supply, and the launchpad's curve drawn as what it is.",
+    hint: "the side panel - paste a mint, expand the row, dig deeper",
   },
   {
     file: "dexscreener.jpg",
     where: "On Dexscreener",
-    caption: "Next to the ticker in the pair header, before you trade it.",
-    hint: "dexscreener.com/robinhood/<any pair>",
+    caption: "Next to the ticker in the pair header, before you trade it. This mint calls itself PUMP; the lists give that symbol to a different one.",
+    hint: "dexscreener.com/solana/<any pair>",
+  },
+  {
+    file: "pumpfun.jpg",
+    where: "On the token's own page",
+    caption: "A fixed corner of the launchpad's page, so it can never land in the wrong row. Same check, same answer.",
+    hint: "pump.fun/coin/<mint>",
   },
 ];
 

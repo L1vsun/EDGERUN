@@ -24,6 +24,9 @@
 // They are there because a page of real timeline is mostly tickers, and an account that talks
 // about them all day and never posts a contract is a known quantity rather than an empty file.
 
+import { readOutcome, sayOutcomes, summarizeOutcomes } from "./outcome.js";
+import { spend } from "./budget.js";
+
 const ACCT = "acct:";
 const CA = "ca:";
 const SETTINGS = "graph:settings";
@@ -43,6 +46,20 @@ const CALLERS_PER_TOKEN = 40;
 
 const acctKey = (h) => ACCT + String(h).toLowerCase();
 const caKey = (a) => CA + String(a).toLowerCase();
+
+// The KEY is folded so one contract is one record however it was written. The stored ADDRESS
+// is not, unless it is hex: a Solana mint is base58 and lowercasing it produces a string that
+// is not the address. This file folded everything until 2026-10-07, which was invisible while
+// the record was only ever counted and became a bug the moment something needed to look a
+// recorded mint up again - pricing a call, or matching a panel row to its callers.
+const same = (a, b) => String(a).toLowerCase() === String(b).toLowerCase();
+const keep = (a) => (/^0x[0-9a-fA-F]{40}$/.test(String(a)) ? String(a).toLowerCase() : String(a));
+
+// A post's own timestamp, when the page gave one that can be believed.
+const postTime = (s, now) => {
+  const t = Number(s?.postedAt);
+  return Number.isFinite(t) && t > 1_142_000_000_000 && t <= now + 60_000 ? t : null;
+};
 
 const FLAGGED = new Set(["FAIL", "CAUTION"]);
 
@@ -77,7 +94,21 @@ export async function setPaused(paused) {
  * `sightings` is [{ handle, display, address, symbol, verdict }]. Anything without both a
  * handle and an address is dropped rather than half-recorded.
  */
-export async function recordSightings(sightings, now = Date.now()) {
+// One writer at a time, for the reason lib/ledger.js gives: two batches off the same scroll
+// touching the same account would each read it, add their own call, and write it back - and
+// the account would keep one of the two.
+let tail = Promise.resolve();
+const serial = (fn) => {
+  const run = tail.then(fn, fn);
+  tail = run.catch(() => {});
+  return run;
+};
+
+export function recordSightings(sightings, now = Date.now()) {
+  return serial(() => recordSightingsNow(sightings, now));
+}
+
+async function recordSightingsNow(sightings, now) {
   const clean = (sightings || []).filter((s) => s?.handle && (s?.address || s?.ticker));
   if (!clean.length) return { recorded: 0 };
   if ((await graphSettings()).paused) return { recorded: 0, paused: true };
@@ -128,13 +159,27 @@ export async function recordSightings(sightings, now = Date.now()) {
     }
     if (!s.address) continue;
 
-    const address = String(s.address).toLowerCase();
+    const address = keep(s.address);
+    const posted = postTime(s, now);
 
     const ak = acctKey(handle);
     const acct = read(ak) || { handle, display: null, first: now, last: now, seen: 0, calls: [] };
     if (s.display) acct.display = s.display;
 
-    const prior = acct.calls.find((c) => c.address === address);
+    const prior = acct.calls.find((c) => same(c.address, address));
+    if (prior) {
+      // Filled in even inside the dedupe window, because they are facts about the call and
+      // not a second sighting of it: a record written before these existed heals the first
+      // time its post is seen again.
+      prior.address = address; // an old lowercased mint gets its real casing back
+      // the EARLIEST post is the call - a repost a week later is not when they called it
+      if (posted && (!prior.posted || posted < prior.posted)) {
+        prior.posted = posted;
+        if (s.post) prior.post = String(s.post);
+      }
+      if (s.chain && !prior.chain) prior.chain = s.chain;
+      if (s.own) prior.own = true;
+    }
     if (prior && now - (prior.last || prior.at) < DEDUPE_MS) {
       acct.last = now;
       next[ak] = acct;
@@ -159,6 +204,13 @@ export async function recordSightings(sightings, now = Date.now()) {
         at: now,
         last: now,
         n: 1,
+        // when the post was WRITTEN, which is not when it was seen: a profile read today
+        // surfaces posts from last month, and "what happened after" is measured from then
+        ...(posted ? { posted } : {}),
+        ...(s.post ? { post: String(s.post) } : {}),
+        ...(s.chain ? { chain: s.chain } : {}),
+        // the token's own metadata names this account as its X account
+        ...(s.own ? { own: true } : {}),
       });
       // oldest calls fall off first - a caller's recent record is the one being asked about
       if (acct.calls.length > CALLS_PER_ACCOUNT) {
@@ -170,9 +222,17 @@ export async function recordSightings(sightings, now = Date.now()) {
 
     const ck = caKey(address);
     const token = read(ck) || { address, first: now, callers: [] };
-    if (!token.callers.some((c) => c.handle === handle)) {
-      token.callers.push({ handle, at: now });
+    token.address = address;
+    // `at` is when they POSTED it, when the page said. Coordination is a claim about when
+    // accounts acted, and the time a reader happened to scroll past is not that: reading
+    // three profiles in one sitting used to make three posts written weeks apart look like
+    // three accounts arriving inside the same hour.
+    const mine = token.callers.find((c) => c.handle === handle);
+    if (!mine) {
+      token.callers.push({ handle, at: posted || now });
       if (token.callers.length > CALLERS_PER_TOKEN) token.callers = token.callers.slice(-CALLERS_PER_TOKEN);
+    } else if (posted && posted < mine.at) {
+      mine.at = posted;
     }
     next[ck] = token;
   }
@@ -214,10 +274,9 @@ export function detectCluster(callers, { window = CLUSTER_WINDOW_MS, min = CLUST
 /**
  * A caller's record, reduced to the numbers a reader can act on.
  *
- * Deliberately not a price claim. The extension stores the verdict it reached at each
- * sighting, not what the token did afterwards, so the honest metric is how many of the
- * contracts this account posted came back failing - a number that is checkable, from data
- * this extension actually holds.
+ * Two halves. The verdict reached at each sighting is always there, because the extension
+ * holds it. What the price did afterwards is there only once it has been asked for
+ * (`priceCalls`), and it is reported beside the first half rather than folded into it.
  */
 export function summarizeCaller(acct, now = Date.now()) {
   if (!acct) return null;
@@ -240,6 +299,15 @@ export function summarizeCaller(acct, now = Date.now()) {
     // Context, never a charge: `tone` and every rule that can mark an account read `tokens`
     // and `flagged` only. These two exist so an account that talks about tickets all day and
     // never posts a contract is a KNOWN quantity rather than an empty record.
+    // How many of these contracts name THIS account as their own X account in their
+    // metadata. One is a project posting its own token. Several is an account that keeps
+    // launching them, and it is a count of facts rather than a judgement.
+    owned: calls.filter((c) => c.own).length,
+    // The price half of the record, once somebody has asked for it. Describes; never feeds
+    // `tone`, for the reason at the top of lib/outcome.js.
+    outcomes: summarizeOutcomes(calls),
+    // already a sentence, because the feed draws it from a content script that cannot import
+    outcomeSay: sayOutcomes(summarizeOutcomes(calls)),
     mentions: acct.mentions || 0,
     tickers: Object.entries(acct.tickers || {}).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t, n]) => ({ ticker: t, n })),
     tone: !tokens || !flagged.length ? "clean" : ratio >= 1 / 3 ? "bad" : "mixed",
@@ -383,4 +451,83 @@ export async function pruneGraph() {
     const drop = accounts.slice(0, accounts.length - MAX_ACCOUNTS).map(([k]) => k);
     await chrome.storage.local.remove(drop);
   } catch {}
+}
+
+// ---- what happened after ----
+
+const PRICED_TTL_MS = 30 * 60 * 1000;      // a price moves; a call priced half an hour ago is stale
+const UNPRICED_TTL_MS = 6 * 60 * 60 * 1000; // "no pool" rarely changes inside an afternoon
+// The candle source allows very few requests a minute and each call costs one. Four keeps a
+// run inside it with room for somebody to open a chart, and the button can be pressed again:
+// results are stored, so a second press continues where the first stopped.
+export const PRICE_PER_RUN = 4;
+
+const stale = (c, now) => {
+  const o = c.out;
+  if (!o) return true;
+  return now - (o.at || 0) > (Number.isFinite(o.pct) ? PRICED_TTL_MS : UNPRICED_TTL_MS);
+};
+
+/**
+ * Price an account's most recent calls and store the result on the record.
+ *
+ * Newest first, because what an account has been posting lately is the question. Stops at
+ * the first rate limit and reports it rather than spending the rest of the budget failing -
+ * and a call that was rate limited is NOT stored, because "we were limited" is about this
+ * extension and must not be remembered as a fact about a token.
+ *
+ * Returns the refreshed record in the same shape `callerRecord` gives, plus `run`.
+ */
+export async function priceCalls(handle, { now = Date.now(), fetchImpl = fetch, limit = PRICE_PER_RUN } = {}) {
+  const key = acctKey(handle);
+  let acct;
+  try {
+    acct = (await chrome.storage.local.get(key))[key];
+  } catch {
+    return null;
+  }
+  if (!acct) return null;
+
+  const queue = [...(acct.calls || [])]
+    .sort((a, b) => (b.last || b.at) - (a.last || a.at))
+    .filter((c) => stale(c, now))
+    .slice(0, limit);
+
+  const run = { asked: queue.length, priced: 0, limited: false, left: 0 };
+  const results = new Map();
+  for (const call of queue) {
+    if (!(await spend("candles"))) {
+      run.limited = true;
+      break;
+    }
+    const out = await readOutcome(call, { fetchImpl, now });
+    if (out.status === "limited") {
+      run.limited = true;
+      break;
+    }
+    if (out.status === "unreachable") continue; // nothing learned, nothing stored
+    results.set(call.address, { ...out, at: now });
+    if (out.status === "priced") run.priced += 1;
+  }
+
+  // Re-read before writing: pricing takes seconds, and a scroll in another tab may have
+  // recorded new sightings on this same account while it ran.
+  try {
+    const fresh = (await chrome.storage.local.get(key))[key] || acct;
+    for (const c of fresh.calls || []) {
+      const out = results.get(c.address);
+      if (out) c.out = out;
+    }
+    await chrome.storage.local.set({ [key]: fresh });
+    acct = fresh;
+  } catch {
+    /* storage blocked: the answer is still returned, it just will not be remembered */
+  }
+
+  run.left = (acct.calls || []).filter((c) => stale(c, now)).length;
+  return {
+    ...summarizeCaller(acct, now),
+    calls: [...(acct.calls || [])].sort((a, b) => (b.last || b.at) - (a.last || a.at)),
+    run,
+  };
 }

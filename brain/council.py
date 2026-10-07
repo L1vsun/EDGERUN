@@ -1,4 +1,4 @@
-"""The council: four cortical regions read the chain and argue, a code gate decides.
+"""The council: four cortical regions read the tape and argue, a code gate decides.
 
 Why this is a scheduled script and not something the website does: the site is a static
 page on GitHub Pages. Anything it can call, a visitor can read, so an API key can never
@@ -11,7 +11,7 @@ publishes its answer as a JSON file the site loads like any other asset.
 Regions, in order. Each is an ordinary Claude call with its own prompt from
 `brain/council/`; each only sees what its role needs:
 
-    SCOUT      sensory        the chain numbers                  -> what is happening
+    SCOUT      sensory        the tape's numbers                 -> what is happening
     SKEPTIC    inhibitory     the same numbers + Scout           -> why it is a trap
     HISTORIAN  hippocampus    the numbers + the run log          -> what followed last time
     SYNTHESIS  association    all three                          -> one call, with confidence
@@ -47,27 +47,30 @@ def briefing(snap: dict) -> str:
     """The shared context every region sees. Identical text for all four calls, so the
     cache can serve it to regions 2-4 after region 1 writes it."""
     lines = [
-        "# Robinhood Chain, right now",
-        f"block {snap['block']} · window {snap['window_seconds']}s · "
-        f"{snap['transfers_total']} transfers · {snap['wallets_total']} wallets · "
-        f"{snap['tokens_moving']} tokens moved",
+        "# Solana, the last five minutes",
+        f"slot {snap['block']} · window {snap['window_seconds']}s · "
+        f"{snap['trades_total']} trades · {snap['traders_total']} trading wallets · "
+        f"{snap['tokens_moving']} tokens traded",
         "",
-        "Busiest tokens in the window. `one_addr_share` is the fraction of this token's",
-        "transfers that the single busiest address appears in. `accel` is the last ~15s",
-        "rate over the window rate. `flags` are fixed thresholds, not opinions.",
+        "This is an index's tape of what is trending and what just launched - not every",
+        "transaction on the chain. Busiest tokens in the window. `top10` is the share of",
+        "supply the ten largest wallets hold. `accel` is this window's volume rate over the",
+        "last hour's. `new_holders` is holders gained in the window. `flags` are fixed",
+        "thresholds, not opinions.",
         "",
     ]
     for t in snap["tokens"]:
         lines.append(
-            f"- {t['symbol']}  transfers={t['transfers']} per_min={t['per_min']} "
-            f"wallets={t['wallets']} one_addr_share={t['one_addr_share']} accel={t['accel']} "
-            f"mints={t['mints']} burns={t['burns']} swaps={t['swaps']} "
+            f"- {t['symbol']}  trades={t['trades']} per_min={t['per_min']} "
+            f"traders={t['traders']} new_holders={t['new_holders']} buys={t['buys']} sells={t['sells']} "
+            f"top10={t['top10']} accel={t['accel']} mint_open={t['mint_open']} "
+            f"age_min={t['age_min']} launchpad={t['launchpad']} "
             f"flags={','.join(t['flags']) or 'none'}"
         )
     lines += [
         "",
-        "You cannot see price, liquidity, or holders - only what is above. A window this",
-        "short makes small numbers meaningless; treat anything under ~20 transfers as noise.",
+        "You cannot see price or liquidity - only what is above. A window this short makes",
+        "small numbers meaningless; treat anything under ~100 trades as noise.",
     ]
     return "\n".join(lines)
 
@@ -128,9 +131,9 @@ def gate(synth: dict, snap: dict) -> dict:
         return {"action": "SILENCE", "why": f"confidence {conf:.2f} is under the {MIN_CONFIDENCE} bar"}
     if row is None:
         return {"action": "SILENCE", "why": "synthesis named a token that is not in the window"}
-    if row["transfers"] < 20:
-        return {"action": "SILENCE", "why": f"{focus} has only {row['transfers']} transfers - too few to stand behind"}
-    return {"action": "SPEAK", "why": f"confidence {conf:.2f} on {focus}, {row['transfers']} transfers behind it"}
+    if row["trades"] < council_rules.MIN_TRADES:
+        return {"action": "SILENCE", "why": f"{focus} has only {row['trades']} trades - too few to stand behind"}
+    return {"action": "SPEAK", "why": f"confidence {conf:.2f} on {focus}, {row['trades']} trades behind it"}
 
 
 def main() -> int:
@@ -167,8 +170,8 @@ def main() -> int:
         print(f"  {region:10} {'ERROR: ' + str(out['error'])[:60] if 'error' in out else 'ok'}", flush=True)
         return out
 
-    print(f"council round · block {snap['block']} · {len(snap['tokens'])} tokens")
-    scout = run("scout", "Report what is happening on the chain right now.")
+    print(f"council round · slot {snap['block']} · {len(snap['tokens'])} tokens")
+    scout = run("scout", "Report what is happening on the tape right now.")
     run("skeptic", "Scout reported:\n" + json.dumps(scout, indent=1) + "\n\nArgue the bear case.")
     history = json.dumps(log[-LOG_KEEP:], indent=1) if log else "(the log is empty - this is an early run)"
     run("historian", f"Previous rounds, oldest first:\n{history}\n\nWhat precedent applies now?")
@@ -195,7 +198,7 @@ def write_round(snap, regions, log, *, mode, model, usage, out) -> int:
         "model": model,
         "block": snap["block"],
         "window_seconds": snap["window_seconds"],
-        "chain": {k: snap[k] for k in ("transfers_total", "wallets_total", "tokens_moving")},
+        "chain": {k: snap[k] for k in ("trades_total", "traders_total", "tokens_moving")},
         "tokens": snap["tokens"],
         "regions": [
             {"id": "scout", "name": "Scout", "region": "sensory cortex", "says": regions.get("scout")},
@@ -215,8 +218,8 @@ def write_round(snap, regions, log, *, mode, model, usage, out) -> int:
         "focus": synth.get("focus") if isinstance(synth, dict) else None,
         "confidence": synth.get("confidence") if isinstance(synth, dict) else None,
         "action": decision["action"],
-        "tokens": [{"symbol": t["symbol"], "per_min": t["per_min"], "wallets": t["wallets"],
-                    "one_addr_share": t["one_addr_share"], "flags": t["flags"]} for t in snap["tokens"][:8]],
+        "tokens": [{"symbol": t["symbol"], "per_min": t["per_min"], "traders": t["traders"],
+                    "top10": t["top10"], "flags": t["flags"]} for t in snap["tokens"][:8]],
     })
     LOG.write_text(json.dumps(log[-400:], indent=1))
 

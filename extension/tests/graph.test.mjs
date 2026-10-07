@@ -199,4 +199,143 @@ assert.equal(stats.tokens, 0);
 assert.equal(stats.paused, true, "settings survive a wipe");
 assert.ok(store.has("mem:0xkeepme"), "a wipe takes the graph and nothing else");
 
+// ================= what changed when Solana became the main chain =================
+
+// ---- a Solana mint keeps its casing ----
+// Everything used to be folded to lowercase. For hex that is harmless; for base58 it produces
+// a string that is not the address, which went unnoticed while the record was only counted
+// and broke the moment a recorded mint had to be looked up again.
+chrome.storage.session = { get: async () => ({}), set: async () => {} };
+store.clear();
+const MINT = "8xu4aFUUJ1Uq7Vye2Pr5eNyetPm9egNMaEeT4WbApump";
+const POSTED = Date.parse("2026-10-06T23:59:00Z");
+const SEEN = Date.parse("2026-10-07T09:00:00Z");
+await G.recordSightings([{ handle: "Caller", address: MINT, symbol: "JACKASS", verdict: "PASS", postedAt: POSTED, post: "2107621644365713694", chain: "solana" }], SEEN);
+rec = await G.callerRecord("caller");
+assert.equal(rec.calls[0].address, MINT, "base58 is stored as written");
+assert.equal(rec.calls[0].posted, POSTED, "when it was posted, not when it was scrolled past");
+assert.equal(rec.calls[0].post, "2107621644365713694");
+assert.equal(rec.calls[0].chain, "solana");
+assert.equal((await G.tokenCallers(MINT)).address, MINT);
+assert.ok((await G.tokenCallersMany([MINT]))[MINT.toLowerCase()], "lookups stay keyed by the folded form, so either spelling finds it");
+
+// hex still folds, so one contract is still one record
+await G.recordSightings([{ handle: "caller", address: A, verdict: "PASS" }], SEEN);
+rec = await G.callerRecord("caller");
+assert.ok(rec.calls.some((c) => c.address === A.toLowerCase()));
+
+// ---- a record written by the old code heals instead of doubling ----
+store.clear();
+store.set("acct:old", { handle: "old", display: null, first: 1, last: 1, seen: 1, calls: [{ address: MINT.toLowerCase(), symbol: "JACKASS", verdict: "PASS", at: 1, last: 1, n: 1 }] });
+await G.recordSightings([{ handle: "old", address: MINT, verdict: "PASS", postedAt: POSTED }], SEEN);
+rec = await G.callerRecord("old");
+assert.equal(rec.tokens, 1, "the same mint in two spellings is one call, not two");
+assert.equal(rec.calls[0].address, MINT, "and it gets its real casing back");
+assert.equal(rec.calls[0].posted, POSTED);
+
+// ---- the EARLIEST post is the call ----
+store.clear();
+await G.recordSightings([{ handle: "c", address: MINT, verdict: "PASS", postedAt: POSTED + 86400_000 }], SEEN);
+await G.recordSightings([{ handle: "c", address: MINT, verdict: "PASS", postedAt: POSTED, post: "1" }], SEEN + 1000);
+await G.recordSightings([{ handle: "c", address: MINT, verdict: "PASS", postedAt: POSTED + 3600_000, post: "2" }], SEEN + 2000);
+rec = await G.callerRecord("c");
+assert.equal(rec.calls[0].posted, POSTED, "a repost a day later is not when they called it");
+assert.equal(rec.calls[0].post, "1", "and the link goes to the post that was the call");
+
+// a timestamp the page could not have meant is not stored
+store.clear();
+await G.recordSightings([
+  { handle: "c", address: MINT, verdict: "PASS", postedAt: SEEN + 86400_000 }, // tomorrow
+  { handle: "d", address: MINT, verdict: "PASS", postedAt: 5 },                 // 1970
+  { handle: "e", address: MINT, verdict: "PASS", postedAt: "nonsense" },
+], SEEN);
+for (const h of ["c", "d", "e"]) assert.equal((await G.callerRecord(h)).calls[0].posted, undefined, `${h}: no post time rather than a wrong one`);
+
+// ---- coordination is about when they POSTED ----
+// Three profiles read in one sitting used to make three posts written weeks apart look like
+// three accounts arriving inside the same hour. That is an accusation, and it was false.
+store.clear();
+const WEEK = 7 * 86400_000;
+await G.recordSightings([
+  { handle: "a", address: MINT, verdict: "PASS", postedAt: POSTED - 3 * WEEK },
+  { handle: "b", address: MINT, verdict: "PASS", postedAt: POSTED - 2 * WEEK },
+  { handle: "c", address: MINT, verdict: "PASS", postedAt: POSTED - WEEK },
+], SEEN);
+assert.equal((await G.tokenCallers(MINT)).cluster, null, "seen in one minute, posted over three weeks: not a cluster");
+
+// ...and the reverse: read on different days, but posted inside eleven minutes
+store.clear();
+await G.recordSightings([{ handle: "a", address: MINT, verdict: "PASS", postedAt: POSTED }], SEEN);
+await G.recordSightings([{ handle: "b", address: MINT, verdict: "PASS", postedAt: POSTED + 4 * MIN }], SEEN + 2 * 86400_000);
+await G.recordSightings([{ handle: "c", address: MINT, verdict: "PASS", postedAt: POSTED + 11 * MIN }], SEEN + 5 * 86400_000);
+const pushed = (await G.tokenCallers(MINT)).cluster;
+assert.equal(pushed.count, 3);
+assert.equal(pushed.spanMs, 11 * MIN, "the span is the posts', not the reader's");
+
+// no post time at all: the old behaviour, the time it was seen
+store.clear();
+await G.recordSightings([{ handle: "a", address: MINT, verdict: "PASS" }], SEEN);
+assert.equal((await G.tokenCallers(MINT)).callers[0].at, SEEN);
+
+// ---- a token that names the poster as its own X account ----
+store.clear();
+await G.recordSightings([
+  { handle: "dev", address: MINT, verdict: "PASS", own: true },
+  { handle: "dev", address: "3TWZ2jxSYUiRm9aS2PiD8dUUaUac7Kd8627cvFGDpump", verdict: "PASS", own: true },
+  { handle: "dev", address: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", verdict: "PASS" },
+], SEEN);
+rec = await G.callerRecord("dev");
+assert.equal(rec.owned, 2, "two of the three tokens this account posted name it as their own");
+assert.equal(rec.tone, "clean", "a count of facts, not a mark against anyone");
+
+// ---- what happened after: priced on request, stored, and never guessed ----
+const dsPairs = (price, created) => ({ pairs: [{ chainId: "solana", pairAddress: "PoolAaaa", liquidity: { usd: 20000 }, volume: { h24: 5000 }, pairCreatedAt: created, priceUsd: String(price) }] });
+const gtBars = (list) => ({ data: { attributes: { ohlcv_list: list } } });
+const market = ({ price, entry, status = 200 }) => async (url) => {
+  const u = String(url);
+  if (u.includes("dexscreener")) return { ok: true, status: 200, json: async () => dsPairs(price, POSTED - 3600_000) };
+  return { ok: status === 200, status, json: async () => gtBars([[POSTED / 1000 - 30, entry, entry, entry, entry, 1], [POSTED / 1000 + 600, entry, entry * 3, price, price, 1]]) };
+};
+const NOW = POSTED + 3600_000;
+const MINTS = [MINT, "3TWZ2jxSYUiRm9aS2PiD8dUUaUac7Kd8627cvFGDpump", "9qggaAJgctnNUJT1ZtpMfJQwVg3WXwVXEqyBfiDyH9wG", "EWtVtmYPwTEk8abdZa7WK42sD3sgLjqU1T5JGpkusUgF", "966ByMtjhaFDgRJsMFxqzkJk1o46o3ZJru2noLh1GR4W", "C9bXCNx3xUjwY3xSz7wmAXM8CcXKGjjsTTgG36EVFG2v"];
+
+store.clear();
+await G.recordSightings(MINTS.map((address, i) => ({ handle: "kol", address, verdict: "PASS", postedAt: POSTED, symbol: `T${i}` })), POSTED + 1000);
+rec = await G.callerRecord("kol");
+assert.equal(rec.outcomes, null, "nothing is priced until somebody asks");
+assert.equal(rec.outcomeSay, null);
+
+let after = await G.priceCalls("kol", { now: NOW, fetchImpl: market({ price: 0.1, entry: 1 }) });
+assert.equal(after.run.asked, G.PRICE_PER_RUN, "a run prices a few, not all - the source allows very little");
+assert.equal(after.run.priced, G.PRICE_PER_RUN);
+assert.equal(after.run.left, MINTS.length - G.PRICE_PER_RUN, "and says how many are left");
+assert.equal(after.outcomes.priced, 4);
+assert.equal(after.outcomes.down50, 4);
+assert.match(after.outcomeSay, /4 of 4 priced calls are down more than half since the post\. Median -90%/);
+assert.equal(after.tone, "clean", "a price falling never marks an account - the one warning you about it posted it too");
+
+// stored: the feed's one-storage-read path sees it without pricing anything again
+const viaFeed = (await G.callerRecords(["kol"])).kol;
+assert.equal(viaFeed.outcomes.priced, 4);
+assert.match(viaFeed.outcomeSay, /4 of 4/);
+
+// a second press continues where the first stopped
+after = await G.priceCalls("kol", { now: NOW + 1000, fetchImpl: market({ price: 2, entry: 1 }) });
+assert.equal(after.run.asked, 2, "only the ones not yet priced");
+assert.equal(after.outcomes.priced, 6);
+assert.equal(after.outcomes.up, 2);
+assert.equal(after.run.left, 0);
+
+// ---- a rate limit is about us, and is not remembered as a fact about a token ----
+store.clear();
+await G.recordSightings([{ handle: "kol", address: MINT, verdict: "PASS", postedAt: POSTED }], POSTED + 1000);
+after = await G.priceCalls("kol", { now: NOW, fetchImpl: market({ price: 1, entry: 1, status: 429 }) });
+assert.equal(after.run.limited, true);
+assert.equal(after.run.priced, 0);
+assert.equal(after.calls[0].out, undefined, "nothing is stored for a call that was never actually priced");
+assert.equal(after.run.left, 1, "so it is still owed");
+
+// nobody by that name
+assert.equal(await G.priceCalls("ghost", { now: NOW, fetchImpl: market({ price: 1, entry: 1 }) }), null);
+
 console.log("graph: ok");

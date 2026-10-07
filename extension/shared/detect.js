@@ -2,13 +2,14 @@
 //
 // Two things are being looked for, and they are not equally trustworthy:
 //
-//   a contract address - unambiguous. 0x + 40 hex, and the chain settles the rest.
-//   a $TICKER          - ambiguous by construction on this chain. A ten-ticker sweep found
-//                        213 contracts using an official ticker. So a ticker is only ever
-//                        resolved against Robinhood's own registry: if it is an official
-//                        stock ticker we can name the one true address, and if it is not,
-//                        no badge is drawn at all. Guessing which of 213 contracts someone
-//                        meant would be worse than saying nothing.
+//   a contract address - unambiguous. A base58 Solana mint, or 0x + 40 hex.
+//   a $TICKER          - ambiguous by construction, on every chain. A ten-ticker sweep of
+//                        one chain found 213 contracts using a registered ticker, and on
+//                        Solana anybody can mint a second $ANYTHING for the price of lunch.
+//                        So a ticker alone never draws a badge. It is only ever compared
+//                        against a contract the same post hands over, or resolved against an
+//                        issuer's published registry where one exists. Guessing which of 213
+//                        contracts someone meant would be worse than saying nothing.
 
 (() => {
   const E = (globalThis.EDGERUN = globalThis.EDGERUN || {});
@@ -26,20 +27,46 @@
   // disagreeing.
   const MINT_RE = /(?<![1-9A-HJ-NP-Za-km-z])[1-9A-HJ-NP-Za-km-z]{32,44}(?![1-9A-HJ-NP-Za-km-z])/g;
 
+  // A link to a Solana pair page. The id is a pair - or the mint - and Dexscreener writes its
+  // own links lowercased, so what is in the URL is not an address anybody can read from a
+  // chain: the worker asks Dexscreener which token it is and uses the answer.
+  const DEX_LINK_RE = /dexscreener\.com\/solana\/([0-9A-Za-z]{32,44})(?![0-9A-Za-z])/g;
+
   E.ADDRESS_RE = ADDRESS_RE;
   E.POOL_ID_RE = POOL_ID_RE;
   E.isAddress = (s) => /^0x[0-9a-fA-F]{40}$/.test(String(s || "").trim());
 
   /** Everything worth asking about in a blob of text. */
   E.findTokens = function findTokens(text) {
-    if (!text) return { addresses: [], tickers: [], mints: [] };
-    const withoutPools = text.replace(POOL_ID_RE, " ");
+    if (!text) return { addresses: [], tickers: [], mints: [], pairs: [] };
+    const pairs = [...new Set([...text.matchAll(DEX_LINK_RE)].map((m) => m[1]))].slice(0, 3);
+    // taken out before anything else looks: a pair id is 32-44 characters of the right
+    // alphabet and would otherwise be offered as a mint, which it is not
+    const withoutPools = text.replace(DEX_LINK_RE, " ").replace(POOL_ID_RE, " ");
     const addresses = [...new Set((withoutPools.match(ADDRESS_RE) || []).map((a) => a.toLowerCase()))];
     const tickers = [...new Set([...text.matchAll(TICKER_RE)].map((m) => m[1].toUpperCase()))];
     // 0x addresses are stripped first so a hex string is never offered as a base58 candidate,
     // and the candidates are capped: a post is allowed to name a few tokens, not forty.
     const mints = [...new Set((withoutPools.replace(ADDRESS_RE, " ").match(MINT_RE) || []))].slice(0, 6);
-    return { addresses, tickers, mints };
+    return { addresses, tickers, mints, pairs };
+  };
+
+  /**
+   * The text of a post, plus the full text of every link in it.
+   *
+   * A long URL in a post is displayed cut short, and the contract is usually in the part that
+   * was cut: `pump.fun/coin/8xu4aFUU…`. Where the page keeps the rest of the URL in the link's
+   * own markup - hidden from the eye, present in the document - `textContent` returns it and
+   * `innerText` may not. So both are read. If the page does not keep it, this adds nothing
+   * and costs nothing; it cannot produce a contract that is not written in the post.
+   *
+   * (Whether X keeps it could not be checked while this was written: a logged-out visitor is
+   * served a different, static page with none of the app's markup.)
+   */
+  E.textWithLinks = function textWithLinks(el) {
+    if (!el) return "";
+    const links = [...(el.querySelectorAll?.("a[href]") || [])].map((a) => a.textContent || "").filter((t) => t.length >= 24);
+    return links.length ? `${el.innerText || ""}\n${links.join("\n")}` : el.innerText || "";
   };
 
   /** Promise wrapper over the worker's message API. Resolves to data, throws on error. */
@@ -58,9 +85,34 @@
         });
       } catch (err) {
         // the worker is gone mid-navigation, or the extension was just reloaded
+        // either the call throws "Extension context invalidated", or `chrome.runtime` is
+        // simply gone - both mean this page has outlived the extension that injected it
+        if (/context invalidated/i.test(String(err?.message)) || !globalThis.chrome?.runtime?.id) E.contextLost?.();
         if (!settled) reject(err);
       }
     });
+  };
+
+  /**
+   * The extension was updated or reloaded underneath this page.
+   *
+   * From that moment this script can no longer reach its worker, and it fails in the worst
+   * way available: silently. The page looks normal and no post ever gets a badge again until
+   * the tab is reloaded - which nobody knows to do, because nothing says so. So it says so,
+   * once, in a corner, and reloads on a click.
+   */
+  let lostShown = false;
+  E.contextLost = function contextLost() {
+    if (lostShown || !document.body) return;
+    lostShown = true;
+    const tip = document.createElement("div");
+    tip.setAttribute("data-edgerun", "reload");
+    tip.textContent = "EDGERUN was updated - click to reload this page and keep checking";
+    tip.style.cssText = "position:fixed;right:14px;bottom:14px;z-index:2147483647;max-width:300px;padding:10px 14px;" +
+      "font:600 13px/1.4 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#12171a;background:#fff;" +
+      "border:1px solid #e0e5e7;border-left:5px solid #a15c07;border-radius:12px;box-shadow:0 6px 24px rgba(10,16,20,.22);cursor:pointer;";
+    tip.addEventListener("click", () => location.reload());
+    document.body.appendChild(tip);
   };
 
   E.debounce = function debounce(fn, ms) {
@@ -281,19 +333,23 @@
    * A ticker several contracts answer to. A finding that needs no address at all.
    */
   E.collisionResult = function collisionResult(t) {
-    const url = (a) => `https://robinhoodchain.blockscout.com/address/${a}`;
+    // which chain the count is about travels with the lookup - a count with no chain on it
+    // is an answer to an unstated question
+    const where = t.chainName || "this chain";
+    const url = (a) => (t.explorer ? `${t.explorer}/address/${a}` : null);
     return {
       level: "identity",
       scannedAt: Date.now(),
       address: t.candidates[0].address,
+      chainName: t.chainName || null,
       symbol: `$${t.ticker}`,
       verdict: "CAUTION",
       explorerUrl: url(t.candidates[0].address),
-      lead: `$${t.ticker} is not one token here - at least ${t.count} different contracts use that ticker on this chain, and this post does not say which. That is how people buy the wrong one.`,
+      lead: `$${t.ticker} is not one token on ${where} - at least ${t.count} different contracts use that ticker there. Check that the address in this post is the one you mean.`,
       checks: [
         {
           id: "ticker", label: "ticker", status: "warn",
-          detail: `${t.count}${t.capped ? "+" : ""} contracts on Robinhood Chain use the symbol ${t.ticker}. No registry decides which is "the" one - only an address does.`,
+          detail: `${t.count}${t.capped ? "+" : ""} contracts on ${where} use the symbol ${t.ticker}. No registry decides which is "the" one - only an address does.`,
         },
         ...t.candidates.map((c) => ({
           id: `cand:${c.address}`, label: c.name || "unnamed", status: "unresolved",
@@ -303,9 +359,130 @@
     };
   };
 
+  // Tickers that name what a trade is paid in, not what is being bought. "Ape with $SOL"
+  // beside a contract is not a claim that the contract is SOL.
+  const CURRENCIES = new Set(["SOL", "WSOL", "USDC", "USDT", "USD", "ETH", "WETH", "BTC", "WBTC", "BNB"]);
+  E.isCurrency = (t) => CURRENCIES.has(String(t || "").toUpperCase().replace(/^\$/, ""));
+
+  /**
+   * A ticker that several Solana mints answer to, in a post that gives no contract.
+   *
+   * "The ticker in that post is not one token" - said under the post, with the mints. When a
+   * list vouches for one of them the line is quiet and names it: most readers mean that one,
+   * and it is worth one glance to know there are others. When NONE is vouched for there is no
+   * right answer to point at, only the fact that the name is shared - which is exactly the
+   * position somebody is in when they go and buy "the" token from a ticker.
+   *
+   * It carries no accusation and names no account. It is about the ticker.
+   */
+  E.symbolResult = function symbolResult(t) {
+    const top = t.mints[0];
+    const short = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
+    const held = (m) => (m.holders ? `${Number(m.holders).toLocaleString("en-US")} wallets` : "an unknown number of wallets");
+    const others = t.count - 1;
+    return {
+      level: "identity",
+      scannedAt: Date.now(),
+      ticker: true,
+      count: t.count,
+      address: top.mint,
+      chainName: "Solana",
+      symbol: `$${t.ticker}`,
+      verdict: t.verified ? "UNRESOLVED" : "CAUTION",
+      explorerUrl: `https://solscan.io/token/${top.mint}`,
+      dexUrl: `https://dexscreener.com/solana/${top.mint}`,
+      lead: t.verified
+        ? `The listed $${t.ticker} is ${short(top.mint)}, held by ${held(top)}. At least ${others} other mint${others === 1 ? " uses" : "s use"} the same symbol, and this post gives no contract.`
+        : `At least ${t.count} mints use $${t.ticker} and no list vouches for any of them. The most-held is ${short(top.mint)}, with ${held(top)}. This post does not say which one it means.`,
+      checks: [
+        {
+          id: "ticker", label: "ticker", status: t.verified ? "unresolved" : "warn",
+          detail: `at least ${t.count} mints on Solana use the symbol ${t.ticker}. Only an address says which one a post means.`,
+        },
+        ...t.mints.map((m) => ({
+          id: `mint:${m.mint}`, label: m.name || "unnamed", status: m.verified ? "ok" : "unresolved",
+          detail: `${m.mint} · ${held(m)}${m.verified ? " · on a verified list" : ""}`,
+        })),
+      ],
+    };
+  };
+
+  /** Resolve with `fallback` if `promise` has not settled in `ms`. Never rejects. */
+  E.settle = function settle(promise, fallback, ms = 9000) {
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => resolve(fallback), ms);
+      Promise.resolve(promise).then(
+        (value) => { clearTimeout(timer); resolve(value); },
+        () => { clearTimeout(timer); resolve(fallback); },
+      );
+    });
+  };
+  const bare = (s) => String(s || "").toUpperCase().replace(/^\$/, "").trim();
+
+  /**
+   * The post names one ticker and hands over one Solana mint that calls itself something else.
+   *
+   * The Solana form of the oldest check here, and deliberately the gentlest version of it.
+   * A mint's symbol is whatever its creator typed, and "$WIF is dead, this is next" beside a
+   * new mint names $WIF without claiming to be it - so this never changes the verdict and
+   * never colours the badge. It supplies the sentence, and the sentence is only a statement
+   * of two facts that are both on the page.
+   *
+   * Silent unless the pairing is unambiguous: exactly one ticker that is not a currency,
+   * exactly one mint, and no EVM contract in the post that the ticker could belong to instead.
+   */
+  E.mintClaim = function mintClaim({ solana = [], results = [], namedTickers = [] } = {}) {
+    const named = [...new Set((namedTickers || []).map(bare))].filter((t) => t && !CURRENCIES.has(t));
+    if (named.length !== 1 || solana.length !== 1) return null;
+    const mint = solana[0];
+    const symbol = bare(mint?.symbol);
+    if (!symbol || symbol === named[0]) return null;
+    if ((results || []).some((r) => bare(r?.symbol) === named[0])) return null; // the ticker is the EVM contract's
+    return {
+      ...mint,
+      lead: `The post says $${named[0]}, but the mint it gives calls itself ${mint.symbol}. They are not the same token - check which one you actually want.`,
+    };
+  };
+
+  /**
+   * The line of launch facts under a Solana badge: where, how old, how widely held.
+   *
+   * Context from an index, so it describes and never accuses - there is no threshold in here
+   * and nothing in it can change a verdict. It is on the badge because for a token that is
+   * forty minutes old these are the first three things anybody asks.
+   */
+  E.launchLine = function launchLine(ctx, now = Date.now()) {
+    if (!ctx) return "";
+    const parts = [];
+    if (ctx.launchpad) parts.push(ctx.launchpad);
+    if (ctx.createdAt && now > ctx.createdAt) {
+      const mins = Math.floor((now - ctx.createdAt) / 60000);
+      const age = mins < 1 ? "under a minute" : mins < 60 ? `${mins} min` : mins < 2880 ? `${Math.floor(mins / 60)} h` : `${Math.floor(mins / 1440)} days`;
+      parts.push(`${age} old`);
+    }
+    if (ctx.holders != null) parts.push(`${Number(ctx.holders).toLocaleString("en-US")} holder${Number(ctx.holders) === 1 ? "" : "s"}`);
+    if (ctx.top10Pct != null) parts.push(`top 10 hold ${Math.round(ctx.top10Pct)}%`);
+    return parts.join(" · ");
+  };
+
+  /**
+   * Which of the mints in a post name the POSTER as their own X account.
+   *
+   * A token names an account by writing a link into its metadata, which proves nothing on
+   * its own. It becomes a fact when the named account is the one holding the contract out:
+   * the link then holds in both directions, and the reader is looking at a token's own
+   * account promoting it rather than at a stranger who found it.
+   */
+  E.ownTokens = function ownTokens(author, solana = []) {
+    const handle = String(author?.handle || "").toLowerCase();
+    if (!handle) return [];
+    return (solana || []).filter((r) => {
+      const x = r?.context?.x;
+      return x && (x.kind === "account" || x.kind === "post") && x.handle === handle;
+    });
+  };
+
   E.decideBadge = function decideBadge({ results = [], official = [], onchain = [], namedTickers = [] }) {
-    const url = (a) => `https://robinhoodchain.blockscout.com/address/${a}`;
-    const stamp = { level: "identity", scannedAt: Date.now() };
     const RANK = { FAIL: 4, CAUTION: 3, OFFICIAL: 2, PASS: 2, UNRESOLVED: 1 };
 
     // A post that only NAMES a ticker is a post about a stock, not about a contract.
@@ -314,14 +491,19 @@
     // the timeline, which is how a security tool teaches people to stop seeing it: when
     // everything is marked, the red one stops meaning anything.
     //
-    // The single exception is a ticker that is genuinely not one token here. If several
-    // contracts share it, that count is a real finding and it holds with no address at all.
-    const collision = onchain.find((t) => t.count > 1) || null;
+    // A ticker several contracts share is a real finding, but it is a finding about ONE
+    // chain - and a post with no contract in it has not said which chain it is about. So the
+    // count is only ever shown beside a contract (see decideBadges), never on its own.
 
     const claim = E.pairTickerClaims(official, results, namedTickers);
 
+    // Same exemption the registry pairing has: a contract whose symbol is ANOTHER ticker the
+    // post names is explained, and saying "the post says $PUMP but the contract is PONS"
+    // under a post about both would be charging it with a mismatch it did not make.
+    const namedSet = new Set((namedTickers || []).map((t) => String(t).toUpperCase().replace(/^\$/, "")));
+    const symOf = (r) => String(r.symbol || "").toUpperCase().replace(/^\$/, "");
     const wrongSymbol = !claim && onchain
-      .map((t) => ({ t, given: results.find((r) => r.symbol && r.symbol.toUpperCase().replace(/^\$/, "") !== t.ticker) }))
+      .map((t) => ({ t, given: results.find((r) => r.symbol && symOf(r) !== t.ticker && !namedSet.has(symOf(r))) }))
       .find((x) => x.given);
 
     if (claim && claim.strength === "ambiguous") {
@@ -332,7 +514,7 @@
       return {
         ...given,
         verdict: given.verdict === "FAIL" ? "FAIL" : "CAUTION",
-        lead: `This post names several tickers, $${o.ticker} among them, and one contract address. That address is ${given.symbol ? `${given.symbol}, ` : ""}not Robinhood's $${o.ticker} at ${o.address.slice(0, 10)}… - worth checking which token you are being pointed at.`,
+        lead: `This post names several tickers, $${o.ticker} among them, and one contract address. That address is ${given.symbol ? `${given.symbol}, ` : ""}not the $${o.ticker} its issuer publishes at ${o.address.slice(0, 10)}… - worth checking which token you are being pointed at.`,
       };
     }
 
@@ -341,8 +523,10 @@
       return {
         ...given,
         verdict: "FAIL",
+        // an identity failure, which is what lets the badge say "not the real one"
+        claimed: true,
         symbol: `$${o.ticker}`,
-        lead: `This post names $${o.ticker}, which Robinhood publishes at ${o.address.slice(0, 10)}… - but the contract in the post is ${given.address.slice(0, 10)}…, a different token.`,
+        lead: `This post names $${o.ticker}, which its issuer publishes at ${o.address.slice(0, 10)}… - but the contract in the post is ${given.address.slice(0, 10)}…, a different token.`,
       };
     }
 
@@ -361,8 +545,6 @@
       // all - so this no longer needs to apologise for picking one.
       return [...results].sort((a, b) => (RANK[b.verdict] || 0) - (RANK[a.verdict] || 0))[0];
     }
-
-    if (collision) return E.collisionResult(collision);
 
     return null;
   };
@@ -397,7 +579,7 @@
    *   2. A record with something against it.
    *   3. A long clean record, which is worth stating precisely because most are not.
    */
-  E.decideAccount = function decideAccount({ caller = null, clusters = {}, addresses = [] } = {}) {
+  E.decideAccount = function decideAccount({ caller = null, clusters = {}, addresses = [], own = [], handle = null } = {}) {
     const cluster = addresses
       .map((a) => clusters[String(a).toLowerCase()]?.cluster)
       .filter(Boolean)
@@ -407,14 +589,24 @@
     const flagged = caller?.flagged || 0;
     const hasRecord = Boolean(caller?.handle) && tokens > 0;
     const worthSaying = flagged >= 1 || tokens >= CALLER_MIN_TOKENS;
-    if (!cluster && !(hasRecord && worthSaying)) return null;
+    // the price half of the record, already reduced to a sentence by the worker - and only
+    // ever present once enough calls have been priced for a sentence to be fair
+    const after = hasRecord ? caller.outcomeSay || null : null;
+    if (!cluster && !own.length && !after && !(hasRecord && worthSaying)) return null;
 
     // A cluster is never "ok" - the point of saying it is that arriving together is not the
     // same as several people noticing the same thing.
     const ratio = tokens ? flagged / tokens : 0;
-    const tone = flagged && ratio >= 1 / 3 ? "bad" : flagged || cluster ? "warn" : "ok";
+    // "ok" is earned by a record long enough to mean something. A strip that is only here to
+    // say "this is the token's own account" is a fact with no colour: green beside it would
+    // read as approval of a token for naming its own promoter.
+    const tone = flagged && ratio >= 1 / 3 ? "bad" : flagged || cluster ? "warn" : hasRecord && worthSaying ? "ok" : "flat";
 
     const lines = [];
+    if (own.length) {
+      const names = own.slice(0, 2).map((r) => r.symbol || "this token").join(" and ");
+      lines.push(`${names} names this account as its own X account - you are reading the token's own account.`);
+    }
     if (cluster) {
       lines.push(
         `${cluster.count} accounts put this contract in your feed inside ${E.spanText(cluster.spanMs)}.`,
@@ -425,9 +617,10 @@
       const count = `${tokens} contract${tokens === 1 ? "" : "s"} ${span}`;
       lines.push(flagged ? `${count}, ${flagged} flagged.` : `${count}, none flagged.`);
     }
+    if (after) lines.push(after);
 
     return {
-      handle: caller?.handle || null,
+      handle: caller?.handle || handle || null,
       display: caller?.display || null,
       tokens,
       flagged,
@@ -520,7 +713,7 @@
    * sentence that explains it, because it is a statement about the post rather than about one
    * contract. Everything else follows in the order it was named.
    */
-  E.decideBadges = function decideBadges({ results = [], official = [], onchain = [], namedTickers = [], solana = [] }) {
+  E.decideBadges = function decideBadges({ results = [], official = [], onchain = [], namedTickers = [], solana = [], symbols = [] }) {
     const out = [];
     const seen = new Set();
     const push = (r) => {
@@ -530,16 +723,36 @@
       out.push(r);
     };
 
+    // An 0x address with no contract behind it on the chain that was read is not a token
+    // THERE - it is a wallet, or a token on a chain this pass did not ask. Saying
+    // "unresolved" under the post would be answering about the wrong chain, so it gets no
+    // badge; the panel still holds the row, and "dig deeper" asks the other chains.
+    const present = results.filter((r) => !r?.absent);
+
     // the decisive finding carries a rewritten verdict and lead, so it must be pushed before
     // the raw result for the same address, which the seen-set then skips
-    push(E.decideBadge({ results, official, onchain, namedTickers }));
-    for (const r of results) push(r);
+    push(E.decideBadge({ results: present, official, onchain, namedTickers }));
+    push(E.mintClaim({ solana, results: present, namedTickers }));
+    for (const r of present) push(r);
     for (const r of solana) push(r);
     // Every ticker the post names that several contracts answer to, in the order it was
     // named. decideBadge only ever returns the first collision, so a post about two contested
     // tickers used to get one answer about the wrong one: a post whose subject was $PONS
-    // (15 contracts here) was handed a badge about $PUMP because $PUMP appeared first.
-    for (const t of onchain) if (t.count > 1) push(E.collisionResult(t));
+    // (15 contracts on one chain) was handed a badge about $PUMP because $PUMP appeared first.
+    //
+    // Only beside a contract on that same chain. The count is a fact about one chain, and a
+    // post that names a ticker and no contract has not said which chain it means - under a
+    // post about a Solana token it would be a warning about somewhere else entirely.
+    if (present.some((r) => r?.symbol)) {
+      for (const t of onchain) if (t.count > 1) push(E.collisionResult(t));
+    }
+
+    // A ticker several Solana mints share, when the post hands over no contract at all. With
+    // a contract in the post there is nothing to add: the contract IS the answer to "which
+    // one", and it is already checked above.
+    if (!present.length && !solana.length) {
+      for (const t of symbols.slice(0, 2)) if (t?.count > 1 && t.mints?.length) push(E.symbolResult(t));
+    }
 
     return out.slice(0, MAX_BADGES);
   };

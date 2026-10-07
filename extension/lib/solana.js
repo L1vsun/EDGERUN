@@ -12,9 +12,15 @@
 //                      single field that is either null or a public key.
 //
 // One `getAccountInfo` with `jsonParsed` returns both, plus decimals, supply, the owning
-// token program and - for Token-2022 mints - the metadata and extension set inline, which
-// means name and symbol with no Metaplex PDA derivation. Measured 2026-09-24 against
-// solana-rpc.publicnode.com: batched, keyless, `access-control-allow-origin: *`.
+// token program and - for Token-2022 mints - the metadata and extension set inline. A legacy
+// SPL mint carries no name at all, so its Metaplex metadata account is read in the SAME
+// batched request (see lib/metaplex.js): one round trip either way. Measured 2026-09-24
+// against solana-rpc.publicnode.com: batched, keyless, `access-control-allow-origin: *`.
+//
+// What this RPC will not answer, measured 2026-10-07: `getTokenLargestAccounts` is blocked
+// outright and `getTokenSupply` wants a paid key, and no other keyless endpoint offered both
+// CORS and that method. So nothing here claims to have read holders from the chain. Holder
+// numbers exist in this product only as an index's figure, attributed, in lib/jupiter.js.
 //
 // THE THING TO BE CAREFUL ABOUT: real USDC has both authorities set. A live mint authority is
 // a fact about who can do what, not a verdict - a centrally issued stablecoin is supposed to
@@ -27,6 +33,7 @@ import { isSolanaAddress } from "./base58.js";
 import { spend } from "./budget.js";
 import { SOLANA_LIST_ID } from "./chains.js";
 import { getList } from "./lists.js";
+import { METADATA_PROGRAM, metadataAddress, parseMetadata } from "./metaplex.js";
 
 export const RPC_URL = "https://solana-rpc.publicnode.com";
 export const CHAIN_ID = SOLANA_LIST_ID;
@@ -61,10 +68,12 @@ function readMint(value) {
   const parsed = value?.data?.parsed;
   if (!parsed || parsed.type !== "mint") return null;
   const info = parsed.info || {};
-  const extensions = (info.extensions || []).map((e) => e.extension);
-  const metadata = (info.extensions || []).find((e) => e.extension === "tokenMetadata")?.state || null;
-  const transferFee = (info.extensions || []).find((e) => e.extension === "transferFeeConfig")?.state || null;
-  const transferHook = (info.extensions || []).find((e) => e.extension === "transferHook")?.state || null;
+  const list = info.extensions || [];
+  const extensions = list.map((e) => e.extension);
+  const state = (name) => list.find((e) => e.extension === name)?.state || null;
+  const metadata = state("tokenMetadata");
+  const transferFee = state("transferFeeConfig");
+  const transferHook = state("transferHook");
 
   return {
     program: value.owner,
@@ -76,18 +85,71 @@ function readMint(value) {
     extensions,
     symbol: metadata?.symbol || null,
     name: metadata?.name || null,
+    // Token-2022 metadata has no "immutable" flag: it can be rewritten for as long as this
+    // key exists, and is fixed only once it is null
+    inlineMetadata: Boolean(metadata),
+    metadataAuthority: metadata?.updateAuthority || null,
     transferFee,
+    transferFeeAuthority: transferFee?.transferFeeConfigAuthority || null,
     // a hook with a real programId runs arbitrary code on every transfer; one with a null
     // programId is the extension present but unarmed, which is not the same thing
     transferHookProgram: transferHook?.programId || null,
+    transferHookAuthority: transferHook?.authority || null,
+    permanentDelegate: state("permanentDelegate")?.delegate || null,
+    defaultFrozen: state("defaultAccountState")?.accountState === "frozen",
+    nonTransferable: extensions.includes("nonTransferable"),
+    pausable: state("pausableConfig"),
   };
+}
+
+/**
+ * The Metaplex account, believed only when it is what it claims to be.
+ *
+ * Two things are checked before a name is taken from it: that the metadata program owns the
+ * account, and that the account names THIS mint. The address was derived rather than looked
+ * up, so both should always hold - which is exactly why a mismatch means something is wrong
+ * with the read and the name must not be used.
+ */
+function readMetaplex(value, mint) {
+  if (!value || value.owner !== METADATA_PROGRAM) return null;
+  const raw = Array.isArray(value.data) ? value.data[0] : null;
+  const meta = parseMetadata(raw);
+  if (!meta || meta.mint !== mint) return null;
+  return meta;
 }
 
 /**
  * Everything worth saying about a Solana mint, in the same shape an EVM verdict uses so the
  * panel and the ledger need to know nothing about which chain produced it.
  */
-export async function scanMint(mint) {
+/**
+ * The chain read on its own: the mint account and its metadata account, in one request.
+ *
+ * Split out so a caller can start it BEFORE it knows anything else about the mint. The index
+ * lookup that decides how the result is worded is a separate round trip, and waiting for it
+ * before starting this one put a whole extra second or two between a post and its badge.
+ *
+ * Never throws: `{ limited: true }` is the local budget, `{ error }` is the read failing.
+ */
+export async function readMintAccounts(mint) {
+  const address = String(mint || "").trim();
+  if (!(await spend("solana"))) return { limited: true };
+  try {
+    // The metadata address depends only on the mint, so it is known before anything is read
+    // and both accounts come back in one request.
+    const pda = await metadataAddress(address).catch(() => null);
+    const calls = [{ method: "getAccountInfo", params: [address, { encoding: "jsonParsed" }] }];
+    if (pda) calls.push({ method: "getAccountInfo", params: [pda, { encoding: "base64" }] });
+    const [res, metaRes] = await rpc(calls);
+    if (res?.error) throw new Error(res.error.message || "rpc error");
+    // a failed name read never fails the scan
+    return { value: res?.result?.value, metaValue: metaRes?.result?.value || null };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+export async function scanMint(mint, { context = null, accounts = null } = {}) {
   const address = String(mint || "").trim();
   if (!isSolanaAddress(address)) throw new Error("that is not a Solana address");
 
@@ -101,20 +163,17 @@ export async function scanMint(mint) {
     dexUrl: dexUrl(address),
   };
 
-  if (!(await spend("solana"))) {
+  // `accounts` is a read somebody already started; otherwise it is started here
+  const read = await (accounts || readMintAccounts(address));
+  if (read.limited) {
     return { ...base, symbol: null, name: null, verdict: "UNRESOLVED", facts: 0, unresolved: 1,
       checks: [check("identity", "identity", "unresolved", "local rate budget spent - try again in a minute")] };
   }
-
-  let value;
-  try {
-    const [res] = await rpc([{ method: "getAccountInfo", params: [address, { encoding: "jsonParsed" }] }]);
-    if (res?.error) throw new Error(res.error.message || "rpc error");
-    value = res?.result?.value;
-  } catch (err) {
+  if (read.error) {
     return { ...base, symbol: null, name: null, verdict: "UNRESOLVED", facts: 0, unresolved: 1,
-      checks: [check("identity", "identity", "unresolved", `could not read the mint: ${err.message}`)] };
+      checks: [check("identity", "identity", "unresolved", `could not read the mint: ${read.error}`)] };
   }
+  const { value, metaValue } = read;
 
   if (!value) {
     return { ...base, symbol: null, name: null, verdict: "UNRESOLVED", facts: 0, unresolved: 1,
@@ -130,19 +189,36 @@ export async function scanMint(mint) {
 
   const list = await getList();
   const listed = list.loaded ? list.byAddress[`${CHAIN_ID}:${address.toLowerCase()}`] : null;
-  const symbol = listed?.symbol || m.symbol || null;
-  const name = listed?.name || m.name || null;
+  // Inline Token-2022 metadata wins over the Metaplex account when a mint has both: it is
+  // the one the token program itself serves.
+  const metaplex = m.inlineMetadata ? null : readMetaplex(metaValue, address);
+  const symbol = listed?.symbol || m.symbol || metaplex?.symbol || null;
+  const name = listed?.name || m.name || metaplex?.name || null;
 
-  const checks = [identityCheck(listed, m), ...authorityChecks(m, Boolean(listed)), ...extensionChecks(m)];
-  const impersonation = symbolClaimCheck(list, address, symbol, Boolean(listed));
+  // Two sources can vouch, and both are lists - neither is an issuer's registry. The curated
+  // list is the one this extension loads itself; `context.verified` is Jupiter's, handed in
+  // by the worker when it has it. Without either, a token is simply unvouched.
+  const vouchedBy = listed ? "the curated Solana list" : context?.verified ? "Jupiter's verified token list" : null;
+  const vouched = Boolean(vouchedBy);
+
+  const checks = [
+    identityCheck(listed, { ...m, symbol: m.symbol || metaplex?.symbol || null, name: m.name || metaplex?.name || null }, vouchedBy),
+    ...authorityChecks(m, vouched),
+    ...extensionChecks(m, vouched),
+    metadataCheck(m, metaplex),
+  ].filter(Boolean);
+  const impersonation = symbolClaimCheck(list, address, symbol, vouched) || rivalCheck(context?.rivals, address, symbol, vouched);
   if (impersonation) checks.unshift(impersonation);
 
   return { ...base, symbol, name, ...assemble(checks) };
 }
 
-function identityCheck(listed, m) {
+function identityCheck(listed, m, vouchedBy) {
   if (listed) {
     return check("listed", "curated list", "ok", `this mint is ${listed.symbol}${listed.name ? ` (${listed.name})` : ""} on the curated Solana list`);
+  }
+  if (vouchedBy) {
+    return check("listed", "curated list", "ok", `this mint is ${m.symbol || m.name || "listed"} on ${vouchedBy}`);
   }
   if (m.symbol || m.name) {
     return check("listed", "curated list", "unresolved",
@@ -180,30 +256,93 @@ function authorityChecks(m, vouched) {
   return out;
 }
 
-/** Token-2022 can attach powers to a mint that legacy SPL simply does not have. */
-function extensionChecks(m) {
+/**
+ * Token-2022 can attach powers to a mint that legacy SPL simply does not have.
+ *
+ * The rule for each is the one the authorities already follow: a power is always REPORTED,
+ * and it is a WARNING only on a token nobody has vouched for. PayPal's PYUSD carries a
+ * permanent delegate, a fee authority and a hook authority at once, on purpose - it is a
+ * regulated stablecoin - and flagging it would be the USDC mistake again with more rows.
+ *
+ * Two of them are not powers but STATES, and those do not soften for anyone: a token that is
+ * paused right now, or that cannot be transferred at all, is a fact about whether you can
+ * leave, whoever issued it.
+ */
+function extensionChecks(m, vouched) {
   const out = [];
   if (!m.is2022) {
-    out.push(check("program", "token program", "ok", "a legacy SPL token - no transfer hooks or transfer fees exist on this program"));
+    out.push(check("program", "token program", "ok", "a legacy SPL token - no transfer hooks, transfer fees or delegates exist on this program"));
     return out;
   }
+
+  const power = vouched ? "unresolved" : "warn";
 
   out.push(check("program", "token program", "unresolved",
     `Token-2022${m.extensions.length ? ` with ${m.extensions.join(", ")}` : ""} - this program allows powers legacy SPL tokens cannot have`));
 
+  if (m.permanentDelegate) {
+    out.push(check("permanent_delegate", "permanent delegate", power,
+      `${m.permanentDelegate} can move or burn tokens out of ANY holder's account, at any time, with no approval${vouched ? " - a recovery power some regulated issuers keep" : ". No holder can refuse it and it cannot be seen in a wallet"}`));
+  }
+
+  if (m.defaultFrozen) {
+    out.push(check("default_frozen", "accounts start frozen", power,
+      `every new holder's account is created FROZEN${m.freezeAuthority ? ` and only ${m.freezeAuthority} can thaw it` : ""} - you can be sent this token and be unable to move it${vouched ? ", which is how a permissioned asset works" : ". This is the Token-2022 honeypot"}`));
+  }
+
+  if (m.nonTransferable) {
+    out.push(check("non_transferable", "non-transferable", "warn",
+      "this token cannot be transferred at all - whoever holds it keeps it. That is by design for a badge or a receipt, and it means there is no selling it"));
+  }
+
+  if (m.pausable?.paused) {
+    out.push(check("paused", "paused", "fail",
+      "every transfer of this token is PAUSED right now - nobody can move it until whoever paused it lifts the pause"));
+  } else if (m.pausable?.authority) {
+    out.push(check("pausable", "pausable", power,
+      `${m.pausable.authority} can pause every transfer of this token at once${vouched ? "" : ", and nobody has vouched for this token"}`));
+  }
+
   if (m.transferHookProgram) {
     out.push(check("transfer_hook", "transfer hook", "warn",
       `every transfer calls ${m.transferHookProgram} first, and that program can reject it - this is the Solana equivalent of a blocked transfer and it is not visible in the token itself`));
+  } else if (m.transferHookAuthority && !vouched) {
+    // Unarmed on a vouched token is nothing: the real PUMP is exactly this. Unarmed on a
+    // token nobody vouches for is a switch that has not been thrown yet.
+    out.push(check("hook_authority", "transfer hook, unarmed", "warn",
+      `no hook program is set today, but ${m.transferHookAuthority} can attach one at any time - and a hook can reject any transfer`));
   }
 
   const fee = m.transferFee?.newerTransferFee || m.transferFee?.olderTransferFee || null;
   const bps = fee?.transferFeeBasisPoints ?? null;
   if (bps != null && Number(bps) > 0) {
     out.push(check("transfer_fee", "transfer fee", "warn",
-      `${(Number(bps) / 100).toFixed(2)}% is taken by the token on every transfer`));
+      `${(Number(bps) / 100).toFixed(2)}% is taken by the token on every transfer${m.transferFeeAuthority ? `, and ${m.transferFeeAuthority} can change that rate` : ""}`));
+  } else if (m.transferFee && m.transferFeeAuthority && !vouched) {
+    out.push(check("fee_authority", "transfer fee, at zero", "warn",
+      `the fee is 0% today, but ${m.transferFeeAuthority} can raise it - a sell tax that can be switched on after you buy`));
   }
 
   return out;
+}
+
+/**
+ * Can the name change after you have read it.
+ *
+ * Reported for every mint and never a warning: BONK and USDC are both mutable. It is here
+ * because the symbol is what every other identity check compares, and a reader should know
+ * whether it is fixed or merely current.
+ */
+function metadataCheck(m, metaplex) {
+  if (m.inlineMetadata) {
+    return m.metadataAuthority
+      ? check("metadata", "name and symbol", "unresolved", `${m.metadataAuthority} can rewrite this token's name and symbol - what it is called today is not fixed`)
+      : check("metadata", "name and symbol", "ok", "fixed - the metadata has no update authority, so the name and symbol cannot be changed");
+  }
+  if (!metaplex) return null;
+  return metaplex.isMutable
+    ? check("metadata", "name and symbol", "unresolved", `${metaplex.updateAuthority} can rewrite this token's name and symbol - what it is called today is not fixed`)
+    : check("metadata", "name and symbol", "ok", "fixed - the metadata is immutable, so the name and symbol cannot be changed");
 }
 
 /**
@@ -220,6 +359,32 @@ function symbolClaimCheck(list, address, symbol, vouched) {
   const one = claimants[0];
   return check("symbol_claim", "symbol already taken", "warn",
     `the curated Solana list gives ${one.symbol} to ${one.address}${one.name ? ` (${one.name})` : ""}. This is a different mint using that symbol.`);
+}
+
+/**
+ * The same question asked of a much longer list.
+ *
+ * The curated list above knows a couple of hundred Solana tokens. Jupiter's verified set
+ * knows thousands, and the worker hands in whichever VERIFIED tokens already use this symbol.
+ * A hit is still list-grade evidence - "a different mint already has this name", never
+ * "this is a fake" - so it is a warning, exactly as the curated-list version is.
+ *
+ * Only an exact symbol counts, and only a verified holder of it. An unverified token sharing
+ * a ticker with other unverified tokens is every memecoin on the chain, and saying so under
+ * each of them would be the bare-ticker noise problem again.
+ */
+const sym = (s) => String(s || "").toUpperCase().replace(/^\$/, "").trim();
+
+export function rivalCheck(rivals, address, symbol, vouched) {
+  if (vouched || !symbol || !rivals?.length) return null;
+  const mine = sym(symbol);
+  const taken = rivals
+    .filter((r) => r?.verified && r.mint && r.mint !== address && sym(r.symbol) === mine)
+    .sort((a, b) => (b.holders || 0) - (a.holders || 0))[0];
+  if (!taken) return null;
+  const held = taken.holders ? `, held by ${Number(taken.holders).toLocaleString("en-US")} wallets` : "";
+  return check("symbol_claim", "symbol already taken", "warn",
+    `Jupiter's verified list gives ${taken.symbol} to ${taken.mint}${taken.name ? ` (${taken.name})` : ""}${held}. This is a different mint using that symbol.`);
 }
 
 function assemble(checks) {

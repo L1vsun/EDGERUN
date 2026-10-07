@@ -43,7 +43,19 @@ const num = (v) => (v === null || v === undefined || v === "" ? null : Number.is
 export function pickPair(pairs, { chain } = {}) {
   const usable = (pairs || []).filter((p) => p && p.pairAddress);
   const scoped = chain ? usable.filter((p) => String(p.chainId) === String(chain)) : usable;
-  const pool = scoped.length ? scoped : usable;
+  const all = scoped.length ? scoped : usable;
+  // A pool the token has LEFT is not a candidate. A launchpad token that graduated today
+  // still shows more 24h volume on its finished bonding curve than on the pool it trades in
+  // now - measured live 2026-10-07: $187k against $39k - and that curve holds nothing, which
+  // Dexscreener reports as no liquidity figure at all. So a pool with no liquidity is set
+  // aside when a pool created after it holds real liquidity. A rugged pool keeps a few
+  // dollars and has no successor, so it still leads, which is what the volume ranking is for.
+  const liqOf = (p) => num(p.liquidity?.usd) || 0;
+  const left = (p) =>
+    !(liqOf(p) > 0) &&
+    all.some((q) => q !== p && liqOf(q) >= 1000 && num(p.pairCreatedAt) && num(q.pairCreatedAt) > num(p.pairCreatedAt));
+  const live = all.filter((p) => !left(p));
+  const pool = live.length ? live : all;
   // Ranked by VOLUME first. Liquidity alone picks the wrong pool for exactly the token this
   // matters most on: after a rug the pool holding the whole story has been drained to a few
   // dollars, so the deepest pool is some other one with nothing in it and nothing to say.
@@ -151,7 +163,49 @@ export async function readMarket(address, { fetchImpl = fetch, chain, now = Date
     const body = await res.json();
     const pair = pickPair(body?.pairs, { chain });
     if (!pair) return { none: true };
-    return summarize(pair, now);
+    const paid = await readOrders(pair.chainId, pair.baseToken?.address || address, { fetchImpl });
+    return { ...summarize(pair, now), paid };
+  } catch {
+    return null;
+  }
+}
+
+const ORDERS = "https://api.dexscreener.com/orders/v1/";
+
+/**
+ * What somebody has PAID Dexscreener for on this token's page.
+ *
+ * "Is dex paid" is asked under every launch, and it has a factual answer at a keyless
+ * endpoint (verified live 2026-10-07): the orders placed for a token, their type and whether
+ * they were approved. It is reported as what it is - somebody bought a profile, an advert or
+ * a takeover - and never scored. A paid profile says a person spent money; it does not say
+ * who, and a rug costs the same to dress as a project.
+ *
+ * Only a POSITIVE answer is ever shown. `null` means the source did not answer - and an empty
+ * list means almost as little: on 2026-10-07 the same mint returned an approved profile order
+ * and, a few hours later, an empty list. So "nothing listed" is not "nothing was bought", and
+ * the panel says nothing at all rather than print "no paid profile" off an answer that has
+ * already been seen to forget one.
+ */
+export function shapeOrders(body) {
+  const approved = (body?.orders || []).filter((o) => o?.status === "approved");
+  const first = (type) => approved.filter((o) => o.type === type).sort((a, b) => (a.paymentTimestamp || 0) - (b.paymentTimestamp || 0))[0] || null;
+  const profile = first("tokenProfile");
+  const takeover = first("communityTakeover");
+  return {
+    profileAt: profile ? num(profile.paymentTimestamp) : null,
+    takeoverAt: takeover ? num(takeover.paymentTimestamp) : null,
+    ads: approved.filter((o) => o.type === "tokenAd" || o.type === "trendingBarAd").length,
+    boosts: (body?.boosts || []).length,
+  };
+}
+
+export async function readOrders(chain, address, { fetchImpl = fetch } = {}) {
+  if (!chain || !address) return null;
+  try {
+    const res = await fetchImpl(`${ORDERS}${encodeURIComponent(chain)}/${encodeURIComponent(address)}`, { headers: { Accept: "application/json" } });
+    if (!res?.ok) return null;
+    return shapeOrders(await res.json());
   } catch {
     return null;
   }

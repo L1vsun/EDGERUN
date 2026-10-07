@@ -15,6 +15,8 @@ import { whereItLives } from "../lib/crosschain.js";
 import { getList, listCheck } from "../lib/lists.js";
 import { isSolanaAddress } from "../lib/base58.js";
 import * as solana from "../lib/solana.js";
+import { bindingCheck, deepChecks, launchChecks, lookupSymbol, readContext, readDeep, sameSymbol } from "../lib/jupiter.js";
+import { readHolders } from "../lib/holders.js";
 import { deployerTrail, trailChecks } from "../lib/deployer.js";
 import { exitSweep } from "../lib/exit.js";
 import * as graph from "../lib/graph.js";
@@ -129,13 +131,26 @@ async function getExitSweep(address) {
 const SOL_TTL = 10 * 60 * 1000;
 const solCache = new Map();
 
-async function getMint(mint, { fresh = false } = {}) {
+const mintCached = (mint, fresh) => {
   const hit = solCache.get(mint);
-  if (!fresh && hit && Date.now() - hit.at < SOL_TTL) return hit.data;
-  const data = await solana.scanMint(mint);
+  return !fresh && hit && Date.now() - hit.at < SOL_TTL ? hit.data : null;
+};
+
+async function getMint(mint, { fresh = false, context = null, accounts = null } = {}) {
+  const hit = mintCached(mint, fresh);
+  if (hit) return hit;
+  const scanned = await solana.scanMint(mint, { context, accounts });
+  // The index's context rides along on the result but stays OUT of the checks: the verdict
+  // above was reached from the chain and two lists, and a row that says "147 holders" next
+  // to "freeze authority revoked" would be passing off somebody's count as something read.
+  const data = context ? { ...scanned, context: slim(context) } : scanned;
   solCache.set(mint, { at: Date.now(), data });
   return data;
 }
+
+/** The part of the context a badge or a panel row draws from, and nothing else. */
+const slim = ({ verified, x, dev, launchpad, createdAt, graduatedAt, holders, top10Pct, devPct, devMints, devMigrations, at }) =>
+  ({ verified, x, dev, launchpad, createdAt, graduatedAt, holders, top10Pct, devPct, devMints, devMigrations, at });
 
 /**
  * Resolve base58 candidates found in page text.
@@ -145,37 +160,112 @@ async function getMint(mint, { fresh = false } = {}) {
  * real account but not a MINT is dropped too rather than badged: a wallet address in a post
  * is not a token, and putting "this is not a mint" under every post that quotes one is the
  * bare-ticker noise problem in a new alphabet.
+ *
+ * One request to the index covers the whole batch, before any mint is scanned, because two
+ * things in it change what the scan is allowed to say: whether a list vouches for the mint,
+ * and which verified mints already hold its symbol. If the index does not answer, every mint
+ * is scanned exactly as it was before the index existed.
  */
-async function resolveMints(candidates, { fresh = false } = {}) {
-  const wanted = [...new Set(candidates || [])].filter(isSolanaAddress).slice(0, 4);
-  const out = [];
-  for (const mint of wanted) {
+async function scanMints(wanted, { fresh = false } = {}) {
+  if (!wanted.length) return [];
+  // The chain reads start NOW, before the index has said anything. They do not depend on it -
+  // only the wording of the result does - so the two run together rather than in a queue.
+  const reads = new Map(wanted.filter((m) => !mintCached(m, fresh)).map((m) => [m, solana.readMintAccounts(m)]));
+  const known = await readContext(wanted, { fresh }).catch(() => ({}));
+  // Side by side, not one after another. A timeline unmounts a post the moment it scrolls
+  // away, so an answer that arrives late arrives to nothing: four mints read in sequence was
+  // nine round trips before the first badge could be drawn, and by then the post was gone.
+  const scanned = await Promise.all(wanted.map(async (mint) => {
     try {
-      const r = await getMint(mint, { fresh });
-      if (r.verdict === "UNRESOLVED" && !r.symbol) continue; // not a mint, or unreadable
-      out.push(r);
+      const ctx = known[mint] || null;
+      const rivals = ctx && !ctx.verified && ctx.symbol ? await sameSymbol(ctx.symbol).catch(() => null) : null;
+      return await getMint(mint, { fresh, context: ctx ? { ...ctx, rivals } : null, accounts: reads.get(mint) || null });
     } catch {
-      /* one bad mint must not sink the batch */
+      return null; // one bad mint must not sink the batch
     }
-  }
-  return out;
+  }));
+  return scanned.filter(Boolean);
 }
 
-// Dexscreener puts the *pair* in the URL, not the token - and on this chain some of those
-// are Uniswap v4 pool ids (32 bytes), not addresses. Resolving pair -> baseToken is the
-// worker's job because it owns the network and the cache.
-async function resolvePair(pairId) {
-  const key = `pair:${pairId.toLowerCase()}`;
+// not a mint, or unreadable: nothing a badge could honestly say
+const isNothing = (r) => r.verdict === "UNRESOLVED" && !r.symbol;
+
+async function resolveMints(candidates, { fresh = false, limit = 4 } = {}) {
+  const wanted = [...new Set(candidates || [])].filter(isSolanaAddress).slice(0, limit);
+  return (await scanMints(wanted, { fresh })).filter((r) => !isNothing(r));
+}
+
+/**
+ * One mint, asked for by name - a token page, or a re-check.
+ *
+ * Unlike a batch off a timeline, a failure here is reported rather than dropped, and reported
+ * as what it was: "not a mint", "could not be read" and "out of budget" are three different
+ * answers and the page that asked shows whichever one is true.
+ */
+async function resolveMint(address, { fresh = false } = {}) {
+  if (!isSolanaAddress(address)) throw new Error("that is not a Solana address");
+  const [r] = await scanMints([address], { fresh });
+  if (!r) throw new Error("the mint could not be read");
+  if (isNothing(r)) throw new Error(r.checks?.[0]?.detail || "that address is not a token mint");
+  return r;
+}
+
+/**
+ * Who launched a Solana token, and whether its claimed X account has ever posted it.
+ *
+ * The Solana half of "who launched it". Asked for, never automatic, and every row says whose
+ * count it is. The last row is the one only this extension can write: the token names an X
+ * account in its own metadata, and the account graph knows whether that account has actually
+ * put this contract in front of the reader.
+ */
+async function getLaunch(mint, { fresh = false } = {}) {
+  if (!isSolanaAddress(mint)) throw new Error("that is not a Solana mint");
+  const ctx = (await readContext([mint], { fresh }))[mint] || null;
+  if (!ctx) return { context: null, checks: [] };
+  const callers = ctx.x?.handle ? (await graph.tokenCallers(mint))?.callers || [] : [];
+  const posted = callers.some((c) => c.handle === ctx.x?.handle);
+  return { context: slim(ctx), checks: [...launchChecks(ctx), bindingCheck(ctx.x, posted)].filter(Boolean) };
+}
+
+// Dexscreener puts the *pair* in the URL, not the token - and on some chains those are
+// Uniswap v4 pool ids (32 bytes), not addresses. Resolving pair -> baseToken is the worker's
+// job because it owns the network and the cache.
+//
+// `chain` is Dexscreener's own slug, straight from the path. On Solana the id in the URL may
+// also be the MINT rather than a pair, and may arrive lowercased - their site folds it. Both
+// endpoints accept the folded form and answer with the real casing (verified live
+// 2026-10-07), so the address that comes back is always the one to use, never the one in
+// the URL.
+const PAIR_CHAINS = new Set(["solana", "robinhood"]);
+
+async function resolvePair(pairId, chain = "robinhood") {
+  const slug = String(chain || "").toLowerCase();
+  if (!PAIR_CHAINS.has(slug)) throw new Error("this chain is not read from a pair page yet");
+  const key = `pair:${slug}:${String(pairId).toLowerCase()}`;
   try {
     const got = await chrome.storage.local.get(key);
     if (got[key]) return got[key];
   } catch {}
-  const res = await fetch(`https://api.dexscreener.com/latest/dex/pairs/robinhood/${pairId}`);
+
+  let pair = null;
+  const res = await fetch(`https://api.dexscreener.com/latest/dex/pairs/${slug}/${pairId}`);
   if (!res.ok) throw new Error(`dexscreener HTTP ${res.status}`);
-  const pair = (await res.json())?.pairs?.[0];
+  pair = (await res.json())?.pairs?.[0] || null;
+
+  if (!pair && slug === "solana") {
+    // not a pair: the URL was carrying the token itself
+    const byToken = await fetch(`https://api.dexscreener.com/tokens/v1/solana/${pairId}`);
+    const pairs = byToken.ok ? await byToken.json() : [];
+    const mine = (p) => String(p?.baseToken?.address || "").toLowerCase() === String(pairId).toLowerCase();
+    pair = (Array.isArray(pairs) ? pairs : []).find(mine) || null;
+  }
   if (!pair) throw new Error("no such pair on this chain");
+
+  const base = pair.baseToken?.address || null;
   const info = {
-    baseToken: pair.baseToken?.address?.toLowerCase() || null,
+    chain: slug,
+    // hex folds safely; a Solana mint must keep the casing the API answered with
+    baseToken: base && slug !== "solana" ? base.toLowerCase() : base,
     baseSymbol: pair.baseToken?.symbol || null,
     quoteSymbol: pair.quoteToken?.symbol || null,
     dex: pair.dexId || null,
@@ -190,14 +280,22 @@ async function resolvePair(pairId) {
 async function watchList() {
   try {
     const got = await chrome.storage.local.get("watch");
-    return got.watch || [];
+    // Entries written while every address was folded to lowercase are not addresses if they
+    // were Solana mints - a real base58 key always carries capitals - so they are left out
+    // rather than counted as things being watched that can never be re-checked.
+    return (got.watch || []).filter((w) => isAddress(w.address) || /[A-Z]/.test(String(w.address)));
   } catch {
     return [];
   }
 }
 
+// Hex folds; base58 does not. A watched Solana mint was being stored lowercased, which is a
+// different string from the address - so it could never be found again, the button never
+// turned to "unwatch", and the watch tab silently had nothing to re-check.
+const watchKey = (address) => (isAddress(address) ? String(address).toLowerCase() : String(address));
+
 async function watchToggle(address) {
-  const addr = String(address).toLowerCase();
+  const addr = watchKey(address);
   const list = await watchList();
   const next = list.some((w) => w.address === addr)
     ? list.filter((w) => w.address !== addr)
@@ -267,7 +365,19 @@ const HANDLERS = {
     }
     return out;
   },
-  pair: (m) => resolvePair(m.pairId),
+  // A bare $TICKER, asked of Solana: which mints use that symbol. One index request per
+  // ticker the first time, then cached for hours - so they run together, capped, and a
+  // ticker that could not be looked up is simply left out.
+  symbols: async (m) => {
+    const out = {};
+    const wanted = [...new Set((m.tickers || []).map((t) => String(t).toUpperCase()))].slice(0, 6);
+    await Promise.all(wanted.map(async (t) => {
+      const hit = await lookupSymbol(t).catch(() => null);
+      if (hit) out[t] = hit;
+    }));
+    return out;
+  },
+  pair: (m) => resolvePair(m.pairId, m.chain),
   deployer: (m) => getTrail(m.address),
   exit: (m) => getExitSweep(m.address),
   rank: (m) => rankCandidates(m.addresses),
@@ -297,11 +407,23 @@ const HANDLERS = {
   },
 
   // Solana. A separate provider, not a chain row - see lib/solana.js.
-  mint: (m) => getMint(m.address, { fresh: m.fresh }),
+  mint: async (m, sender) => {
+    const r = await resolveMint(m.address, { fresh: m.fresh });
+    await ledger.record(sender?.tab?.url ?? m.url, r);
+    return r;
+  },
   mints: async (m, sender) => {
-    const out = await resolveMints(m.candidates, { fresh: m.fresh });
+    const out = await resolveMints(m.candidates, { fresh: m.fresh, limit: m.limit === "watch" ? 12 : 4 });
     await ledger.recordMany(sender?.tab?.url ?? m.url, out);
     return out;
+  },
+  launch: (m) => getLaunch(m.address, { fresh: m.fresh }),
+  // The two expensive Solana reads, each behind a click. Holders come from the chain, through
+  // the one keyless endpoint that will list them; the rest is an index's deeper record.
+  holders: (m) => readHolders(m.address, { vouched: Boolean(m.vouched) }),
+  deep: async (m) => {
+    const deep = await readDeep(m.address);
+    return { deep, checks: deepChecks(deep) };
   },
 
   chains: () => ALL_CHAINS.map(({ key, id, name, authority, explorer }) => ({ key, id, name, authority, explorer: Boolean(explorer) })),
@@ -317,6 +439,9 @@ const HANDLERS = {
   "graph:token": (m) => graph.tokenCallers(m.address),
   "graph:tokens": (m) => graph.tokenCallersMany(m.addresses),
   "graph:top": (m) => graph.topCallers(m.limit),
+  // What the price did after each of an account's calls. Asked for, never automatic: every
+  // call priced costs a request against the tightest rate limit in the product.
+  "graph:outcomes": (m) => graph.priceCalls(m.handle),
   "graph:stats": () => graph.graphStats(),
   "graph:pause": (m) => graph.setPaused(m.paused),
   "graph:wipe": () => graph.wipeGraph(),
@@ -339,6 +464,12 @@ const HANDLERS = {
     if (m.address) await ledger.setFocus(tabId, m.address);
     if (!chrome.sidePanel?.open) throw new Error("this browser has no side panel");
     await chrome.sidePanel.open({ tabId });
+    // A line about a ticker points at a mint nobody has scanned yet. The panel is opened
+    // first - it needs the click it was opened with - and the mint is read behind it, so the
+    // row it is waiting for arrives a moment later instead of never.
+    if (m.address && !isAddress(m.address) && isSolanaAddress(m.address)) {
+      resolveMint(m.address).then((r) => ledger.record(sender?.tab?.url ?? m.url, r)).catch(() => {});
+    }
     return { opened: true };
   },
 
@@ -423,11 +554,15 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.alarms.create("upkeep", { periodInMinutes: 180 });
   getRegistry({ force: true }).catch(() => {});
   getBlocklist({ force: true }).catch(() => {});
+  // The curated list is over a megabyte and the first mint scan used to wait for it: four
+  // and a half seconds, measured, before the first badge on a fresh install.
+  getList().catch(() => {});
 });
 chrome.runtime.onStartup.addListener(() => {
   useSidePanel();
   getRegistry().catch(() => {});
   getBlocklist().catch(() => {});
+  getList().catch(() => {});
 });
 chrome.alarms.onAlarm.addListener((a) => {
   if (a.name === "registry") {

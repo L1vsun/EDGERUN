@@ -1,177 +1,195 @@
-// Who is behind a token - from public records only.
+// Who is behind a token - from one public index, and worded as that.
 //
-// Everything here comes from the block explorer's public API, which sends
-// `access-control-allow-origin: *`, so the browser can ask it directly. No key, no
-// backend, nothing scraped, nothing private. It is the same paper trail anyone can click
-// through by hand on the explorer; this just follows it in one go.
+// A Solana mint does not record who created it, when it launched, or how widely it is held;
+// an index does. Jupiter's token search answers all of it keyless and sends CORS headers, so
+// the browser asks it directly. No key, no backend, nothing scraped.
 //
-// What it does NOT do: read social networks. X's API is paid and cannot be called from a
-// page, and scraping it breaks their terms. Any social angle has to come from a proper
-// search tool running server-side - see the council.
+// Everything here is an INDEX'S RECORD, and every line says so. The one field to be most
+// careful with is the creator wallet: for the same fresh mint, two indexes named two
+// different creators on the same day, and a wallet with thousands of launches turned out to
+// be a launch tool signing for its users. So it is "attributed to", never "the dev is".
+//
+// What it does NOT do: read social networks. A token's X link is whatever its creator typed
+// into the metadata, and this only reports what kind of link it is.
 
-const BS = "https://robinhoodchain.blockscout.com";
-const LIMIT = 150; // the explorer's own per-window budget; we spend ~6 per dossier
+const HOSTS = ["https://lite-api.jup.ag", "https://api.jup.ag"];
+const SEARCH = "/tokens/v2/search?query=";
 
-export interface Funder {
-  address: string;
-  when: string;
+export interface XLink {
+  kind: "account" | "post" | "community" | "other";
+  handle: string | null;
 }
 
 export interface Dossier {
   address: string;
-  // the contract itself
-  verified: boolean;
-  contractName: string | null;
-  isScam: boolean;
-  reputation: string | null;
-  sourceUrls: string[];
-  // who put it there
-  factory: string | null; // the launchpad, when one was used
-  deployer: string | null; // the wallet that actually signed
-  deployedAt: string | null;
-  // what else that wallet has done
-  deployCount: number | null; // "at least this many" - one page of history
-  deployCountCapped: boolean;
-  firstDeploy: string | null;
-  lastDeploy: string | null;
-  funders: Funder[]; // who paid for the gas, oldest first
+  known: boolean;            // the index has a record of this mint at all
+  verified: boolean;         // on the index's verified list
+  launchpad: string | null;
+  launchedAt: number | null; // first trade, ms
+  graduatedAt: number | null;
+  // who put it there, as attributed
+  deployer: string | null;
+  deployCount: number | null;     // launches the index counts for that wallet
+  deployMigrated: number | null;  // how many of those reached an open pool
+  deployerHolds: number | null;   // percent of supply that wallet still holds
+  holders: number | null;
+  top10: number | null;           // percent held by the ten largest wallets
+  mintOpen: boolean;
+  freezeOpen: boolean;
+  x: XLink | null;
   notes: string[];
-  partial?: boolean; // still waiting on the slower endpoints
+  partial?: boolean;
 }
 
 const cache = new Map<string, Dossier>();
 
-// The explorer is behind Cloudflare and 403s a request with no Referer at all. Browsers
-// attach one automatically (any origin satisfies it), so nothing needs setting here -
-// scripts are not allowed to set Referer anyway.
-async function api(path: string, ms = 9000): Promise<any> {
-  const stop = AbortSignal.timeout ? AbortSignal.timeout(ms) : undefined;
-  const r = await fetch(`${BS}${path}`, { signal: stop });
-  if (!r.ok) throw new Error(`explorer ${r.status}`);
-  return r.json();
+const NOT_HANDLES = new Set(["i", "home", "search", "hashtag", "intent", "share", "explore", "settings"]);
+
+/** What a token's "twitter" field actually points at: an account, one post, or a community. */
+export function parseXLink(url: unknown): XLink | null {
+  let u: URL;
+  try {
+    u = new URL(String(url || "").trim());
+  } catch {
+    return null;
+  }
+  const host = u.hostname.toLowerCase().replace(/^(www|mobile)\./, "");
+  if (host !== "x.com" && host !== "twitter.com") return null;
+  const parts = u.pathname.split("/").filter(Boolean);
+  if (!parts.length) return null;
+  if (parts[0] === "i" && parts[1] === "communities") return { kind: "community", handle: null };
+  const handle = parts[0].replace(/^@/, "");
+  if (!/^[A-Za-z0-9_]{1,15}$/.test(handle) || NOT_HANDLES.has(handle.toLowerCase())) return { kind: "other", handle: null };
+  if (parts[1] === "status") return { kind: "post", handle: handle.toLowerCase() };
+  return parts.length === 1 ? { kind: "account", handle: handle.toLowerCase() } : { kind: "other", handle: null };
 }
 
-// `onPartial` fires as each record lands: the explorer's transaction lists take several
-// seconds, and there is no reason to withhold the contract facts while they load.
+async function search(query: string, ms = 9000): Promise<any[] | null> {
+  for (const host of HOSTS) {
+    try {
+      const stop = AbortSignal.timeout ? AbortSignal.timeout(ms) : undefined;
+      const r = await fetch(`${host}${SEARCH}${encodeURIComponent(query)}`, { signal: stop, headers: { Accept: "application/json" } });
+      if (!r.ok) continue;
+      const body = await r.json();
+      if (Array.isArray(body)) return body;
+    } catch {
+      /* try the other host */
+    }
+  }
+  return null;
+}
+
+const when = (v: unknown): number | null => {
+  const t = Date.parse(String(v || ""));
+  return Number.isFinite(t) ? t : null;
+};
+const num = (v: unknown): number | null => (typeof v === "number" && Number.isFinite(v) ? v : null);
+
+// `onPartial` is kept for the caller's sake: this is one request now, so it fires once.
 export async function investigate(address: string, onPartial?: (d: Dossier) => void): Promise<Dossier> {
-  const addr = address.toLowerCase();
-  const hit = cache.get(addr);
+  const mint = address.trim();
+  const hit = cache.get(mint);
   if (hit) return hit;
 
   const d: Dossier = {
-    address: addr, verified: false, contractName: null, isScam: false, reputation: null,
-    sourceUrls: [], factory: null, deployer: null, deployedAt: null,
-    deployCount: null, deployCountCapped: false, firstDeploy: null, lastDeploy: null,
-    funders: [], notes: [],
+    address: mint, known: false, verified: false, launchpad: null, launchedAt: null, graduatedAt: null,
+    deployer: null, deployCount: null, deployMigrated: null, deployerHolds: null,
+    holders: null, top10: null, mintOpen: false, freezeOpen: false, x: null, notes: [],
   };
 
-  const info = await api(`/api/v2/addresses/${addr}`).catch(() => null);
-  if (!info) {
-    d.notes.push("the explorer has no record of this address");
-    cache.set(addr, d);
+  const rows = await search(mint);
+  if (rows === null) {
+    // not cached: the index being unreachable is about the index, and the next ask may land
+    d.notes.push("the index did not answer - nothing follows from that about the token");
     return d;
   }
-  d.verified = !!info.is_verified;
-  d.contractName = info.name || null;
-  d.isScam = !!info.is_scam;
-  d.reputation = info.reputation ?? null;
-  d.factory = info.creator_address_hash || null;
-  d.partial = true;
+  const t = rows.find((r) => r?.id === mint);
+  if (!t) {
+    d.notes.push("the index has no record of this mint - it may have no pool yet");
+    cache.set(mint, d);
+    return d;
+  }
+
+  d.known = true;
+  d.verified = t.isVerified === true;
+  d.launchpad = t.launchpad || null;
+  d.launchedAt = when(t.firstPool?.createdAt) ?? when(t.createdAt);
+  d.graduatedAt = when(t.graduatedAt);
+  d.deployer = t.dev || null;
+  d.deployCount = num(t.audit?.devMints);
+  d.deployMigrated = num(t.audit?.devMigrations);
+  d.deployerHolds = num(t.audit?.devBalancePercentage);
+  d.holders = num(t.holderCount);
+  d.top10 = num(t.audit?.topHoldersPercentage);
+  d.mintOpen = t.audit?.mintAuthorityDisabled === false;
+  d.freezeOpen = t.audit?.freezeAuthorityDisabled === false;
+  d.x = parseXLink(t.twitter);
   onPartial?.({ ...d });
-
-  // The creator is often a launchpad factory. The wallet that signed the creation
-  // transaction is the human, and that is the one worth following.
-  const txHash = info.creation_transaction_hash;
-  if (txHash) {
-    const tx = await api(`/api/v2/transactions/${txHash}`).catch(() => null);
-    if (tx) {
-      d.deployer = tx.from?.hash || null;
-      d.deployedAt = tx.timestamp || null;
-      if (d.factory && d.deployer && d.factory.toLowerCase() !== d.deployer.toLowerCase()) {
-        d.notes.push("launched through a factory, so the contract itself is boilerplate - judge the wallet, not the code");
-      }
-      onPartial?.({ ...d });
-    }
-  }
-
-  const [out, inc, sc] = await Promise.all([
-    d.deployer ? api(`/api/v2/addresses/${d.deployer}/transactions?filter=from`).catch(() => null) : null,
-    d.deployer ? api(`/api/v2/addresses/${d.deployer}/transactions?filter=to`).catch(() => null) : null,
-    d.verified ? api(`/api/v2/smart-contracts/${addr}`).catch(() => null) : null,
-  ]);
-
-  if (d.deployer) {
-    const items: any[] = out?.items || [];
-    if (items.length) {
-      const deploys = items.filter((t) => t.method === "deploy" || !t.to);
-      d.deployCount = deploys.length;
-      d.deployCountCapped = !!out?.next_page_params || items.length >= 50;
-      d.lastDeploy = items[0]?.timestamp || null;
-      d.firstDeploy = items[items.length - 1]?.timestamp || null;
-    }
-    const fund: any[] = inc?.items || [];
-    d.funders = fund
-      .slice(-3)
-      .reverse()
-      .map((t) => ({ address: t.from?.hash || "?", when: t.timestamp || "" }))
-      .filter((f) => f.address !== "?");
-  }
-
-  if (sc) {
-    const src: string = sc.source_code || "";
-    const urls = Array.from(new Set(src.match(/https?:\/\/[\w./\-@:]+/g) || []));
-    // links a project put in its own source: a site, a channel, a repo
-    d.sourceUrls = urls.filter(
-      (u) => !/eips\.ethereum\.org|openzeppelin\.com|solidity|spdx|github\.com\/OpenZeppelin/i.test(u),
-    ).slice(0, 5);
-  }
-  d.partial = false;
-  cache.set(addr, d);
+  cache.set(mint, d);
   return d;
 }
 
-// Plain-language read of the dossier. Same discipline as the on-chain flags: every line
-// names the record behind it, and "we cannot tell" is a real answer.
-export function readDossier(d: Dossier): { tone: "bad" | "good" | "flat"; text: string }[] {
-  const out: { tone: "bad" | "good" | "flat"; text: string }[] = [];
-  if (d.isScam) out.push({ tone: "bad", text: "the explorer has flagged this address as a scam" });
+const span = (ms: number): string => {
+  const m = Math.max(1, Math.round(ms / 60_000));
+  if (m < 90) return `${m} minute${m === 1 ? "" : "s"}`;
+  const h = Math.round(m / 60);
+  if (h < 48) return `${h} hours`;
+  return `${Math.round(h / 24)} days`;
+};
 
-  if (d.deployCount !== null && d.deployCount >= 8) {
-    const span = d.firstDeploy && d.lastDeploy
-      ? ` between ${d.firstDeploy.slice(0, 10)} and ${d.lastDeploy.slice(0, 10)}`
-      : "";
-    out.push({
-      tone: "bad",
-      text: `this wallet has launched ${d.deployCountCapped ? "at least " : ""}${d.deployCount} contracts${span} - a production line, not a project`,
-    });
-  } else if (d.deployCount !== null && d.deployCount <= 2 && !d.partial) {
-    out.push({ tone: "good", text: `the deployer has only ${d.deployCount} launch${d.deployCount === 1 ? "" : "es"} on record` });
+// Plain-language read of the dossier. Same discipline as the flags: every line names whose
+// record it is, and "we cannot tell" is a real answer.
+export function readDossier(d: Dossier, now = Date.now()): { tone: "bad" | "good" | "flat"; text: string }[] {
+  const out: { tone: "bad" | "good" | "flat"; text: string }[] = [];
+  for (const note of d.notes) out.push({ tone: "flat", text: note });
+  if (!d.known) return out.length ? out : [{ tone: "flat", text: "nothing on the public record either way" }];
+
+  if (d.verified) out.push({ tone: "good", text: "on the index's verified token list" });
+
+  if (d.mintOpen && !d.verified) out.push({ tone: "bad", text: "the mint authority is still live - new supply can be created at any time" });
+  if (d.freezeOpen && !d.verified) out.push({ tone: "bad", text: "a freeze authority exists - any holder's account can be frozen, which is how a Solana token stops you selling" });
+  if (!d.mintOpen && !d.freezeOpen) out.push({ tone: "good", text: "mint and freeze authority are both revoked: supply is fixed and no account can be frozen" });
+
+  if (d.launchedAt) {
+    const where = d.launchpad ? ` on ${d.launchpad}` : "";
+    const grad = d.graduatedAt
+      ? `, and reached an open pool ${d.graduatedAt - d.launchedAt < 60_000 ? "inside the first minute" : `${span(d.graduatedAt - d.launchedAt)} later`}`
+      : d.launchpad ? " and has not graduated from the launchpad's own curve" : "";
+    out.push({ tone: "flat", text: `first traded ${span(now - d.launchedAt)} ago${where}${grad}` });
   }
 
-  if (d.funders.length) {
-    const who = d.funders[d.funders.length - 1];
+  if (d.top10 !== null && d.holders !== null) {
+    out.push({
+      tone: d.top10 > 50 && !d.verified ? "bad" : "flat",
+      text: `${d.holders.toLocaleString()} wallets hold it and the ten largest hold ${d.top10.toFixed(1)}% of supply - the index's count`,
+    });
+  }
+
+  if (d.deployer && d.deployCount !== null) {
+    const migrated = d.deployMigrated !== null ? `, ${d.deployMigrated.toLocaleString()} of which reached an open pool` : "";
+    const many = d.deployCount >= 10 && !d.verified;
+    out.push({
+      tone: many ? "bad" : "flat",
+      text: `the index attributes this mint to a wallet it counts ${d.deployCount.toLocaleString()} launch${d.deployCount === 1 ? "" : "es"} for${migrated}${many ? " - one operator or a shared launch tool, and either way this is one of many" : ""}`,
+    });
+    if (d.deployerHolds !== null && d.deployerHolds >= 0.01) {
+      out.push({ tone: "flat", text: `that wallet still holds ${d.deployerHolds.toFixed(2)}% of supply` });
+    }
+  }
+
+  if (d.x) {
     out.push({
       tone: "flat",
-      text: `gas came from ${who.address.slice(0, 10)}…${who.address.slice(-4)} - follow that wallet to find the operator's other launches`,
+      text: d.x.kind === "community"
+        ? "its X link is a community, which anyone can open in a minute - it names nobody"
+        : d.x.kind === "post"
+          ? `its X link is one post by @${d.x.handle}, not an account - anyone can paste any post there`
+          : d.x.kind === "account"
+            ? `it names @${d.x.handle} as its X account - written by whoever created the token, and proof of nothing about that account`
+            : "its X link does not point at an account",
     });
   }
-  if (!d.verified) {
-    out.push({ tone: "bad", text: "the contract source is not verified, so nobody can read what it actually does" });
-  } else if (!d.deployer) {
-    // the factory question is not settled until the creation transaction is read, and
-    // claiming either way before then would be a statement we would have to take back
-    out.push({ tone: "flat", text: "source is verified - checking whether it came out of a factory" });
-  } else if (d.factory && d.factory.toLowerCase() !== d.deployer.toLowerCase()) {
-    out.push({ tone: "flat", text: "verified, but it is factory boilerplate - verification says nothing about intent here" });
-  } else {
-    out.push({ tone: "good", text: "source is verified and was not stamped out by a factory" });
-  }
-  if (d.sourceUrls.length) {
-    out.push({ tone: "flat", text: `links published in the contract source: ${d.sourceUrls.join(" · ")}` });
-  }
-  if (d.partial) out.push({ tone: "flat", text: "still following the deployer's history…" });
+
   if (!out.length) out.push({ tone: "flat", text: "nothing on the public record either way" });
   return out;
 }
-
-export const EXPLORER_BUDGET = LIMIT;

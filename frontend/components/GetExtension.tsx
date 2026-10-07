@@ -108,7 +108,7 @@ export default function GetExtension({ className = "cta", children = "Get the ex
                   <ol>
                     <li>
                       <b>Open X and scroll.</b> Posts naming a contract get a strip under them.
-                      A post that only names a ticker is left alone, on purpose.
+                      A post that only names a ticker gets one line saying how many mints share it.
                     </li>
                     <li>
                       <b>Open somebody&rsquo;s profile.</b> A card shows what they have put in

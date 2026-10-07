@@ -49,7 +49,41 @@ export function decodeBase58(input) {
   const bytes = out.reverse();
   // the seed 0 survives as a leading byte whenever the value did not fill it
   while (bytes.length > 1 && bytes[0] === 0) bytes.shift();
+  // ...and when the value is zero it is ALL that is left. Every zero byte is already counted
+  // by `leading`, so keeping it made thirty-two 1s - the system program - decode to 33 bytes.
+  if (bytes.length === 1 && bytes[0] === 0) bytes.length = 0;
   return [...new Array(leading).fill(0), ...bytes];
+}
+
+/**
+ * Bytes back to base58 - needed the moment an address is DERIVED rather than read off a page
+ * (a metadata account) or lifted out of raw account data (an update authority).
+ */
+export function encodeBase58(bytes) {
+  const digits = [0];
+  for (const byte of bytes) {
+    let carry = byte;
+    for (let i = 0; i < digits.length; i++) {
+      carry += digits[i] << 8;
+      digits[i] = carry % 58;
+      carry = (carry / 58) | 0;
+    }
+    while (carry > 0) {
+      digits.push(carry % 58);
+      carry = (carry / 58) | 0;
+    }
+  }
+  let out = "";
+  for (const byte of bytes) {
+    if (byte !== 0) break;
+    out += "1";
+  }
+  // the seed digit is a leading zero unless the value filled it, and leading zero bytes are
+  // already written above
+  while (digits.length > 1 && digits[digits.length - 1] === 0) digits.pop();
+  if (digits.length === 1 && digits[0] === 0) return out;
+  for (let i = digits.length - 1; i >= 0; i--) out += ALPHABET[digits[i]];
+  return out;
 }
 
 /** A Solana address is a 32-byte ed25519 public key written in base58. */

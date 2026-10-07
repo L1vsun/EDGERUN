@@ -1,4 +1,4 @@
-// Five modules reading the chain, running in this tab.
+// Five modules reading the tape, running in this tab.
 //
 // This is the deterministic version of the same pipeline `brain/council_rules.py` runs on
 // a schedule: same four seats, same thresholds, same gate, same order. The difference is
@@ -6,8 +6,8 @@
 // instead of on a snapshot taken up to half an hour ago.
 //
 // It is RULES, not reasoning, and the UI says so. Each sentence below is assembled from a
-// number measured on-chain seconds earlier; no model has seen any of it. The reasoning
-// version (each seat an `claude-opus-5` call) cannot run in a static page - it needs a key -
+// number the feed reported seconds earlier; no model has seen any of it. The reasoning
+// version (each seat a model call) cannot run in a static page - it needs a key -
 // so it publishes `council.json` from a scheduled job and the page reads that separately.
 
 import { ChainState, TokenStat, signals } from "./chain";
@@ -71,10 +71,25 @@ const LOG_KEEP = 40;
 const MIN_CONFIDENCE = 0.55;
 
 // what each flag is worth when deciding whether anything deserves saying out loud
+// Calibrated so the gate is quiet by default, which on this feed takes deliberate effort: a
+// trending list is, by construction, a list of tokens that are heating. Wired to it with the
+// old weights the gate spoke EVERY round - once about a token with 34 trades and 18 wallets
+// behind it - and with two-flags-is-enough it still spoke three rounds out of three.
+//
+// So: one good sign names nothing. Two name a token to watch and leave the gate shut. Only
+// all three together - volume above its own hour, buyers outnumbering sellers, and most of
+// the wallets trading it new to it - clear the bar. Anything negative costs more than all
+// three earn.
 const WEIGHT: Record<string, number> = {
-  heating: 0.34, "dex live": 0.2, "fresh wallets": 0.16,
-  "one wallet": -0.3, printing: -0.34, cooling: -0.12,
+  heating: 0.09, "buyers lead": 0.07, "new holders": 0.07,
+  "top-heavy": -0.3, "mint open": -0.34, "sellers lead": -0.2, cooling: -0.12,
 };
+const BASE_CONFIDENCE = 0.34;
+// What a token needs behind it before Synthesis may name it or the gate may speak about it.
+// Five minutes of tape: a hundred trades from forty wallets is a market, less is a rumour.
+const MIN_TRADES = 100;
+const MIN_TRADERS = 40;
+const TOO_SMALL = 60; // below this Skeptic says nothing either way
 
 const n0 = (x: number) => Math.round(x).toLocaleString();
 const pct = (x: number) => `${Math.round(x * 100)}%`;
@@ -107,11 +122,11 @@ function scout(toks: Flagged[], moving: number): AgentOut {
   const top = [...(flagged.length ? flagged : toks)].sort((a, b) => b.perMin - a.perMin).slice(0, 3);
   const lines: AgentLine[] = top.map((t) => {
     let what: string;
-    if (t.flags.includes("heating")) what = `${n0(t.perMin)} transfers/min, ${t.accel.toFixed(1)}x its own average`;
-    else if (t.flags.includes("one wallet")) what = `${n0(t.perMin)}/min but one address touches ${pct(Math.min(1, t.concentration * 2))} of them`;
-    else if (t.flags.includes("printing")) what = `${t.mints} mints against ${t.burns} burns while ${n0(t.wallets)} wallets hold it`;
-    else if (t.flags.includes("dex live")) what = `${t.swaps} swaps, ${n0(t.perMin)}/min across ${n0(t.wallets)} wallets`;
-    else what = `${n0(t.perMin)} transfers/min across ${n0(t.wallets)} wallets`;
+    if (t.flags.includes("heating")) what = `${n0(t.perMin)} trades/min, ${t.accel.toFixed(1)}x its own hourly average`;
+    else if (t.flags.includes("top-heavy")) what = `${n0(t.perMin)}/min but the ten largest wallets hold ${pct(t.top10)} of it`;
+    else if (t.flags.includes("mint open")) what = `the mint authority is still live while ${n0(t.traders)} wallets trade it`;
+    else if (t.flags.includes("buyers lead")) what = `${t.buys} buys against ${t.sells} sells, ${n0(t.perMin)}/min across ${n0(t.traders)} wallets`;
+    else what = `${n0(t.perMin)} trades/min across ${n0(t.traders)} wallets`;
     return { text: what, tone: "flat" as Tone, symbol: t.symbol, address: t.address };
   });
   return {
@@ -119,7 +134,7 @@ function scout(toks: Flagged[], moving: number): AgentOut {
     name: "SCOUT",
     seat: "antennal lobe · sensory in",
     job: "says what is happening, with no opinion about it",
-    reads: "the raw chain window only",
+    reads: "the raw five-minute tape only",
     saw: `${moving} tokens moving · ${toks.length} in the window · ${flagged.length} flagged`,
     lead: flagged.length
       ? `${moving} tokens moving · ${flagged.length} showing something worth a look`
@@ -132,15 +147,15 @@ function skeptic(toks: Flagged[], scoutOut: AgentOut): AgentOut {
   const traps: AgentLine[] = [];
   const clean: string[] = [];
   for (const t of toks) {
-    if (t.flags.includes("one wallet")) {
-      traps.push({ text: `one address is on ${pct(Math.min(1, t.concentration * 2))} of ${n0(t.transfers)} transfers - that is one actor, not demand`, tone: "bad", symbol: t.symbol, address: t.address });
-    } else if (t.flags.includes("printing")) {
-      traps.push({ text: `${t.mints} mints against only ${t.burns} burns - supply is growing under whoever is buying`, tone: "bad", symbol: t.symbol, address: t.address });
-    } else if (t.transfers < 20) {
+    if (t.flags.includes("top-heavy")) {
+      traps.push({ text: `the ten largest wallets hold ${pct(t.top10)} of supply - that is a handful of holders, not demand`, tone: "bad", symbol: t.symbol, address: t.address });
+    } else if (t.flags.includes("mint open")) {
+      traps.push({ text: `the mint authority is still live - supply can grow under whoever is buying`, tone: "bad", symbol: t.symbol, address: t.address });
+    } else if (t.trades < TOO_SMALL) {
       continue; // too small to judge either way; saying nothing is the correct answer
-    } else if (t.swaps === 0 && t.perMin > 60) {
-      traps.push({ text: `${n0(t.perMin)} transfers/min and no DEX swap in the window - movement with no visible way out`, tone: "bad", symbol: t.symbol, address: t.address });
-    } else if (t.swaps >= 3 && t.concentration * 2 < 0.4) {
+    } else if (t.flags.includes("sellers lead")) {
+      traps.push({ text: `${t.sells} sells against ${t.buys} buys in five minutes - more leaving than arriving`, tone: "bad", symbol: t.symbol, address: t.address });
+    } else if (t.buys >= t.sells * 0.8 && t.top10 < 0.3) {
       clean.push(t.symbol);
     }
   }
@@ -160,7 +175,7 @@ function skeptic(toks: Flagged[], scoutOut: AgentOut): AgentOut {
     reads: "the same numbers, plus Scout's report",
     saw: `${toks.length} tokens re-read after Scout · ${scoutOut.lines.length} of them named`,
     lead: traps.length
-      ? `${traps.length} of the ${toks.length} busiest look like one actor or fresh supply`
+      ? `${traps.length} of the ${toks.length} busiest are top-heavy, printable or being sold`
       : "nothing in this window matches a known trap pattern",
     lines,
   };
@@ -232,11 +247,11 @@ function synthesis(toks: Flagged[], sk: AgentOut, hi: AgentOut): { out: AgentOut
   let best: Flagged | null = null;
   let score = 0;
   for (const t of toks) {
-    if (t.transfers < 20) continue;
-    if (t.pools >= 2) continue; // a quote asset: everything is priced against it, so it is always busy
+    if (t.trades < MIN_TRADES || t.traders < MIN_TRADERS) continue;
+    if (t.quote) continue; // a quote asset: everything is priced against it, so it is always busy
     let s = 0;
     for (const f of t.flags) s += WEIGHT[f] || 0;
-    s += Math.min(0.16, t.perMin / 2500); // a little credit for actually moving
+    s += Math.min(0.03, t.perMin / 5000); // a little credit for actually moving - never a flag's worth
     if (s > score) { best = t; score = s; }
   }
 
@@ -253,13 +268,13 @@ function synthesis(toks: Flagged[], sk: AgentOut, hi: AgentOut): { out: AgentOut
     note: `confidence ${conf.toFixed(2)} · the gate opens at ${MIN_CONFIDENCE}`,
   });
 
-  if (!best || score < 0.3) {
+  if (!best || score < 0.15) {
     return {
       out: {
         ...base,
         viz: meter(Math.min(0.4, score)),
         lead: "nothing in this window is worth acting on",
-        lines: [{ text: `${trapped.size} of the busiest look like a single actor; the rest are moving normally or are too small to read.`, tone: "flat" }],
+        lines: [{ text: `${trapped.size} of the busiest tripped a trap pattern; the rest are trading normally or are too small to read.`, tone: "flat" }],
       },
       focus: null,
       confidence: Math.min(0.4, score),
@@ -267,14 +282,14 @@ function synthesis(toks: Flagged[], sk: AgentOut, hi: AgentOut): { out: AgentOut
   }
 
   const b: Flagged = best;
-  let conf = Math.min(0.86, 0.42 + score);
+  let conf = Math.min(0.86, BASE_CONFIDENCE + score);
   const lines: AgentLine[] = [{
-    text: `${n0(b.perMin)} transfers/min across ${n0(b.wallets)} wallets, ${b.accel.toFixed(1)}x its own average, one address on ${pct(Math.min(1, b.concentration * 2))} of transfers, ${b.swaps} swaps.`,
+    text: `${n0(b.perMin)} trades/min across ${n0(b.traders)} wallets, ${b.accel.toFixed(1)}x its own hourly average, top ten hold ${pct(b.top10)}, ${b.buys} buys against ${b.sells} sells.`,
     tone: "flat",
   }];
   if (trapped.has(b.symbol)) {
     conf = conf - 0.2;
-    lines.push({ text: `overruled: Skeptic flagged ${b.symbol} as a single actor - kept because the flow is broad enough to be worth watching anyway`, tone: "bad" });
+    lines.push({ text: `overruled: Skeptic flagged ${b.symbol} - kept because the flow is broad enough to be worth watching anyway`, tone: "bad" });
   }
   return {
     out: {
@@ -293,12 +308,14 @@ function synthesis(toks: Flagged[], sk: AgentOut, hi: AgentOut): { out: AgentOut
 function gate(focus: Flagged | null, confidence: number): { action: "SPEAK" | "SILENCE"; why: string } {
   if (confidence < MIN_CONFIDENCE) return { action: "SILENCE", why: `confidence ${confidence.toFixed(2)} is under the ${MIN_CONFIDENCE} bar` };
   if (!focus) return { action: "SILENCE", why: "synthesis named nothing to stand behind" };
-  if (focus.transfers < 20) return { action: "SILENCE", why: `${focus.symbol} has only ${focus.transfers} transfers - too few to stand behind` };
-  return { action: "SPEAK", why: `confidence ${confidence.toFixed(2)} on ${focus.symbol}, ${n0(focus.transfers)} transfers behind it` };
+  if (focus.trades < MIN_TRADES) return { action: "SILENCE", why: `${focus.symbol} has only ${focus.trades} trades - too few to stand behind` };
+  return { action: "SPEAK", why: `confidence ${confidence.toFixed(2)} on ${focus.symbol}, ${n0(focus.trades)} trades behind it` };
 }
 
 export function runCouncil(state: ChainState, log: LogEntry[]): { round: Round; flagged: Flagged[] } {
-  const toks: Flagged[] = state.tokens.slice(0, 40).map((t) => ({ ...t, flags: signals(t).map((s) => s.label) }));
+  // "new launch" is a fact about age, not a sign of anything, and a feed of recent launches
+  // carries it on every row: it is shown in the table and kept out of what the seats weigh.
+  const toks: Flagged[] = state.tokens.slice(0, 40).map((t) => ({ ...t, flags: signals(t).filter((s) => s.id !== "new").map((s) => s.label) }));
   const sc = scout(toks, state.tokens.length);
   const sk = skeptic(toks, sc);
   const hi = historian(toks, log);

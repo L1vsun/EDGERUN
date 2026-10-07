@@ -26,6 +26,43 @@
     UNRESOLVED: { label: "unverified", glyph: "?", cls: "flat" },
   };
 
+  /**
+   * "Not the real one" is a claim about identity, and a verdict can fail for other reasons:
+   * holders that cannot move the token, a mint that is paused. Printing the impersonation
+   * label over those would be accusing a token of something nobody found.
+   */
+  const isFake = (r) =>
+    Boolean(r?.impersonates) || r?.claimed === true ||
+    (r?.checks || []).some((c) => c.status === "fail" && c.id === "stock_token");
+
+  const isMint = (r) => r?.chainName === "Solana";
+
+  /**
+   * The colour a verdict is drawn in.
+   *
+   * Green is kept for a FULL check that found nothing. A mint scan that found nothing is
+   * drawn grey, and that is a decision, not an oversight: on a real pair page, on the first
+   * day this ran there, the chip sat in the header of a token that was sixteen minutes old
+   * and down 91% - correctly reporting a clean mint, in green, with a tick. The mint WAS
+   * clean. Green said more than that.
+   */
+  function toneOf(r) {
+    if (r.verdict === "PASS" && isMint(r)) return { ...TONE.PASS, cls: "flat" };
+    return TONE[r.verdict] || TONE.UNRESOLVED;
+  }
+
+  function labelOf(r) {
+    const tone = TONE[r.verdict] || TONE.UNRESOLVED;
+    // a line about a ticker is not a verdict on a contract, so it does not borrow one's label
+    if (r.ticker) return `${r.count} mints`;
+    if (r.verdict === "FAIL" && !isFake(r)) return "failed a check";
+    // A mint scan reads the mint and nothing else. "Checks pass" over a token that launched
+    // four minutes ago would be read as "safe", and all it means is that the mint itself
+    // cannot be turned against a holder.
+    if (r.verdict === "PASS" && isMint(r)) return "mint is clean";
+    return tone.label;
+  }
+
   const ago = (ts) => {
     const m = Math.round((Date.now() - ts) / 60000);
     if (m < 1) return "just now";
@@ -50,7 +87,7 @@
     --warn-soft: #fdf3e0;
     --ok: #4a7c0f;
     --ok-soft: #f0f8e2;
-    --signal: #b2e604;
+    --signal: #ff3d9a;
     --radius: 12px;
     --shadow: 0 6px 24px rgba(10, 16, 20, 0.18), 0 1px 3px rgba(10, 16, 20, 0.12);
   `;
@@ -97,6 +134,8 @@
     .strip .body { flex: 1; min-width: 0; }
     .strip .title { display: block; font-weight: 800; font-size: 14.5px; letter-spacing: -0.01em; margin-bottom: 2px; }
     .strip .say { display: block; color: var(--muted); font-size: 13px; }
+    /* launch facts from an index: context, set apart from the sentence the checks produced */
+    .strip .facts { display: block; margin-top: 4px; font-family: ${MONO}; font-size: 11px; color: var(--muted); opacity: .9; }
     .strip .more { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; align-self: center; }
 
     /* Window mode. The sidebar is the default because it carries the whole session, but the
@@ -173,7 +212,7 @@
     button { font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; padding: 7px 11px;
       border-radius: 8px; color: var(--ink); background: var(--card); border: 1px solid var(--line); }
     button:hover { background: #e9eef0; }
-    button.go { background: var(--signal); border-color: #a5d604; color: #131a02; }
+    button.go { background: var(--signal); border-color: #ed398f; color: #1d0812; }
     button.go:hover { filter: brightness(1.04); }
     .x { margin-left: auto; padding: 4px 9px; font-size: 18px; line-height: 1; color: var(--muted);
       background: none; border: none; border-radius: 8px; }
@@ -185,14 +224,21 @@
 
   function lead(r) {
     if (r.lead) return r.lead; // a surface that knows more than the verdict alone (the X cross-check)
+    const first = (status) => (r.checks || []).find((c) => c.status === status)?.detail;
     if (r.verdict === "FAIL" && r.impersonates) {
-      return `$${r.impersonates.ticker} is an official Robinhood stock token at ${r.impersonates.officialAddress.slice(0, 10)}… - this is a different contract.`;
+      return `$${r.impersonates.ticker} is a registered stock token at ${r.impersonates.officialAddress.slice(0, 10)}… - this is a different contract.`;
     }
-    if (r.verdict === "FAIL") return (r.checks || []).find((c) => c.status === "fail")?.detail || "failed a check";
-    if (r.verdict === "OFFICIAL") return "This address is in Robinhood's published registry of tokenised stocks.";
+    if (r.verdict === "FAIL") return first("fail") || "failed a check";
+    if (r.verdict === "OFFICIAL") return "This address is in its issuer's published registry of tokenised stocks.";
+    if (r.verdict === "PASS" && isMint(r)) {
+      return "Nothing in the mint can be used against a holder: supply is fixed and no key can freeze or block a transfer. That is all this says - it is not who holds it, and not a price call.";
+    }
     if (r.verdict === "PASS") return "The full check ran and found nothing against it. Not advice, and not a price call.";
-    if (r.verdict === "CAUTION") return (r.checks || []).find((c) => c.status === "fail")?.detail || "something in the contract lane needs a look";
-    return "No claim on an official asset. The contract itself has not been checked yet.";
+    // a warning is a finding too: saying "needs a look" over a live freeze authority hides
+    // the one sentence the reader came for
+    if (r.verdict === "CAUTION") return first("fail") || first("warn") || "something in the contract lane needs a look";
+    if (isMint(r)) return first("unresolved") || "Nothing has been established about this mint yet.";
+    return "No claim on a registered asset. The contract itself has not been checked yet.";
   }
   E.badgeLead = lead;
 
@@ -373,17 +419,22 @@
     host.update = function update(result) {
       current = result;
       if (!result) return;
-      const tone = TONE[result.verdict] || TONE.UNRESOLVED;
+      const tone = toneOf(result);
+      const label = labelOf(result);
       const ticker = result.symbol || (result.address ? `${result.address.slice(0, 8)}…` : "token");
       const base = block ? "strip" : "chip";
       chip.className = `${base} ${tone.cls}${result.verdict === "FAIL" ? " attn" : ""}`;
       const win = `<button class="win" data-win title="open as a window on this page" aria-label="open as a window on this page">⧉</button>`;
+      // every verdict says which chain it is about: the same ticker, and the same 0x address,
+      // exist on more than one
+      const where = result.chainName ? ` · ${esc(result.chainName)}` : "";
+      const facts = E.launchLine ? E.launchLine(result.context) : "";
       chip.innerHTML = block
         ? `<span class="g">${tone.glyph}</span>
-           <span class="body"><span class="title">${esc(ticker)} · ${esc(tone.label)}</span>
-           <span class="say">${esc(lead(result))}</span></span>
+           <span class="body"><span class="title">${esc(ticker)}${where} · ${esc(label)}</span>
+           <span class="say">${esc(lead(result))}</span>${facts ? `<span class="facts">${esc(facts)}</span>` : ""}</span>
            <span class="more">details</span>${win}`
-        : `<span class="g">${tone.glyph}</span><span class="sym">${esc(ticker)}</span><span class="mark">${esc(tone.label)}</span>${win}`;
+        : `<span class="g">${tone.glyph}</span><span class="sym">${esc(ticker)}</span><span class="mark">${esc(label)}</span>${win}`;
       chip.title = lead(result);
       if (openFor?.chip === chip && panelRoot) {
         const panel = panelRoot.querySelector(".panel");
@@ -403,7 +454,7 @@
     };
 
     function renderPanel(panel, r) {
-      const tone = TONE[r.verdict] || TONE.UNRESOLVED;
+      const tone = toneOf(r);
       // The checks that decided the verdict first, and only those, until asked for the rest.
       // A panel that opens with eight rows is a wall; the fail and warn lines are the answer.
       const all = r.checks || [];
@@ -414,7 +465,8 @@
         <div class="row"><i class="${esc(c.status)}"></i>
           <span><b>${esc(c.label)}</b><span>${esc(c.detail)}</span></span></div>`).join("")
         + (hidden > 0 ? `<button class="more-rows" data-act="expand">+ ${hidden} more check${hidden === 1 ? "" : "s"}</button>` : "");
-      const needsFull = r.level !== "full" && r.verdict !== "FAIL";
+      const evm = E.isAddress(r.address);
+      const needsFull = evm && r.level !== "full" && r.verdict !== "FAIL";
       panel.innerHTML = `
         <div class="head"><b>${esc(r.symbol || "unknown token")}</b>
           <span class="v ${tone.cls}">${esc(r.verdict)}</span>
@@ -432,6 +484,8 @@
           ${r.dexUrl ? `<a href="${esc(r.dexUrl)}" target="_blank" rel="noreferrer">chart ↗</a>` : ""}
           <span class="when">${r.cached ? "cached · " : ""}${ago(r.scannedAt)}</span>
         </div>`;
+      // no explorer link to offer (a ticker count on a chain with no explorer wired)
+      if (!r.explorerUrl) panel.querySelector('.foot a[href=""]')?.remove();
       panel.querySelector('[data-act="close"]')?.addEventListener("click", (e) => { e.stopPropagation(); closePanel(); });
       panel.querySelector('[data-act="expand"]')?.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -459,8 +513,14 @@
         btn.disabled = true;
         btn.textContent = "reading records…";
         try {
-          const { checks } = await E.ask({ type: "deployer", address: r.address });
-          current = { ...current, checks: [...current.checks.filter((c) => !String(c.id).startsWith("deployer") && c.id !== "production_line" && c.id !== "explorer_scam"), ...checks] };
+          // Two different questions behind one button. On an EVM chain the wallet's own
+          // transactions are read; for a Solana mint the launch comes from an index, and each
+          // row says so.
+          const { checks } = evm
+            ? await E.ask({ type: "deployer", address: r.address })
+            : await E.ask({ type: "launch", address: r.address });
+          const LAUNCH = new Set(["production_line", "explorer_scam", "launch", "holders", "creator", "x_binding"]);
+          current = { ...current, checks: [...current.checks.filter((c) => !String(c.id).startsWith("deployer") && !LAUNCH.has(c.id)), ...checks] };
           renderPanel(panel, current);
           position(panel, chip, anchorOf());
         } catch (err) {
@@ -633,7 +693,7 @@
     .acts button { font: inherit; font-size: 12px; font-weight: 700; padding: 6px 11px; cursor: pointer;
       color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
     .acts button:hover { background: var(--soft); }
-    .acts button.go { color: #131a02; background: var(--signal); border-color: var(--signal); }
+    .acts button.go { color: #1d0812; background: var(--signal); border-color: var(--signal); }
     .acts button:disabled { opacity: .6; cursor: default; }
     .acts.running { align-items: center; }
     .prog { font-size: 12.5px; color: var(--muted); }
@@ -643,6 +703,11 @@
     .warn-box b { display: block; font-size: 12.5px; margin-bottom: 4px; }
     .warn-box span { display: block; font-size: 12px; line-height: 1.5; color: var(--muted); }
     .summary { margin: 9px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--ink); }
+    .call .px { font-family: ${MONO}; font-size: 11px; font-weight: 700; color: var(--muted); }
+    .call .px.down { color: var(--bad); }
+    .call .px.up { color: var(--ok); }
+    .after { margin: 9px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--ink); }
+    .after small { display: block; margin-top: 3px; font-size: 11.5px; color: var(--muted); }
     .talk { margin: 8px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
     .talk b { color: var(--ink); }
   `;
@@ -655,7 +720,15 @@
    * @param onScan  called to read this profile's recent posts into the record
    * @param onOpen  called to open the side panel on this account
    */
-  E.makeProfileCard = function makeProfileCard(handle, record, { onScan, onOpen } = {}) {
+  const pct = (n) => {
+    const r = Math.abs(n) >= 100 ? Math.round(n) : Math.round(n * 10) / 10;
+    return `${r > 0 ? "+" : ""}${r}%`;
+  };
+
+  /**
+   * @param onAfter  called to price this account's recent calls; resolves to the new record
+   */
+  E.makeProfileCard = function makeProfileCard(handle, record, { onScan, onOpen, onAfter } = {}) {
     const host = document.createElement("div");
     host.className = "edgerun-profile";
     host.setAttribute("data-edgerun", "profile");
@@ -699,6 +772,8 @@
     let progress = 0;
     let summary = null;
     let stopFlag = false;
+    let pricing = false;
+    let priceNote = null;
 
     const draw = (rec, busy) => {
       const tokens = rec?.tokens || 0;
@@ -706,10 +781,31 @@
       const ratio = tokens ? flagged / tokens : 0;
       card.className = `card ${!tokens ? "" : flagged && ratio >= 1 / 3 ? "bad" : flagged ? "warn" : "ok"}`;
 
-      const calls = (rec?.calls || []).slice(0, 5).map((c) => `
+      // what the price did after each one, where it has been asked for and could be read
+      const px = (c) => {
+        const o = c.out;
+        if (!o || !Number.isFinite(o.pct)) return "";
+        return `<span class="px ${o.pct <= -50 ? "down" : o.pct > 0 ? "up" : ""}" title="${
+          o.basis === "first_trade" ? "since its first trade - the post is older than the pool" : o.since === "seen" ? "since it crossed your feed" : "since the post"
+        }">${esc(pct(o.pct))}</span>`;
+      };
+      const calls = (rec?.calls || []).slice(0, 6).map((c) => `
         <div class="call"><span>${esc(c.symbol || "unnamed")}</span>
         <code>${esc(String(c.address).slice(0, 10))}…</code>
+        ${px(c)}
         <span class="v ${VTONE[c.verdict] || ""}">${esc(c.verdict || "unresolved")}</span></div>`).join("");
+
+      const o = rec?.outcomes;
+      const after = o
+        ? `<p class="after">${
+            rec.outcomeSay
+              ? esc(rec.outcomeSay)
+              : `${o.priced} call${o.priced === 1 ? "" : "s"} priced so far - too few for a pattern.`
+          }<small>Price since each post, from public pool candles. It describes what happened; an account warning about a contract has posted it too.</small></p>`
+        : "";
+      const owned = rec?.owned
+        ? `<p class="talk"><b>${rec.owned}</b> of these tokens name${rec.owned === 1 ? "s" : ""} this account as ${rec.owned === 1 ? "its" : "their"} own X account in ${rec.owned === 1 ? "its" : "their"} metadata.</p>`
+        : "";
 
       // Mentions are context and sit apart from the numbers that can mark an account.
       const mentions = rec?.mentions || 0;
@@ -727,6 +823,8 @@
              <div><b>${rec.days || 1}</b><span>day${(rec.days || 1) === 1 ? "" : "s"}</span></div>
            </div>
            <p class="say">${esc(rec.say || "")}. Counted only from posts you have actually scrolled past - this is your record of them, not a public score.</p>
+           ${after}
+           ${owned}
            ${talk}
            ${calls ? `<div class="calls">${calls}</div>` : ""}`
         : mentions
@@ -760,6 +858,7 @@
                </div>`
             : `<div class="acts">
                  <button class="go" data-act="scan"${busy ? " disabled" : ""}>${tokens ? "read more posts" : "read their recent posts"}</button>
+                 ${tokens && onAfter ? `<button data-act="after"${pricing ? " disabled" : ""}>${pricing ? "pricing…" : o ? "price more calls" : "what happened after"}</button>` : ""}
                  ${tokens ? '<button data-act="open">open the record</button>' : ""}
                </div>`;
 
@@ -767,9 +866,32 @@
         <div class="h"><b>Edgerun</b><span class="who">@${esc(handle)}</span></div>
         ${body}
         ${summary ? `<p class="summary">${esc(summary)}</p>` : ""}
+        ${priceNote ? `<p class="summary">${esc(priceNote)}</p>` : ""}
         ${acts}`;
 
       card.querySelector('[data-act="open"]')?.addEventListener("click", () => onOpen?.(handle));
+      card.querySelector('[data-act="after"]')?.addEventListener("click", async () => {
+        pricing = true;
+        priceNote = null;
+        draw(rec, false);
+        let next = rec;
+        try {
+          const out = await onAfter?.(handle);
+          if (out) {
+            next = out;
+            const r = out.run || {};
+            priceNote = r.limited
+              ? `Priced ${r.priced}. The price source limits how often it can be asked - try the rest in a minute.`
+              : r.asked === 0
+                ? "Every recent call is already priced."
+                : `Priced ${r.priced} of ${r.asked}.${r.left ? ` ${r.left} more to go.` : ""}`;
+          }
+        } catch {
+          priceNote = "The price source could not be reached. Nothing follows from that about these tokens.";
+        }
+        pricing = false;
+        draw(next, false);
+      });
       card.querySelector('[data-act="cancel"]')?.addEventListener("click", () => {
         stage = "idle";
         draw(rec, false);

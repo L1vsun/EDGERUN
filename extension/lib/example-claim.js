@@ -31,7 +31,7 @@ export function exampleClaim() {
     type: "impersonation",
     subject: { chain: HOME.id, address: SUBJECT, label: "TSLA" },
     target: { chain: HOME.id, address: OFFICIAL, label: "TSLA" },
-    says: `${SUBJECT} presents itself as $TSLA on ${HOME.name}. Robinhood publishes $TSLA at ${OFFICIAL}, which is a different contract.`,
+    says: `${SUBJECT} presents itself as $TSLA on ${HOME.name}. ${HOME.issuer} publishes $TSLA at ${OFFICIAL}, which is a different contract.`,
     evidence: [
       rpcEvidence({
         endpoint: HOME.rpc,

@@ -177,4 +177,30 @@ assert.equal(profileAnchorIn(el("div", { "data-testid": "primaryColumn" }, [el("
 assert.equal(profileAnchorIn(el("div", {})), null);
 assert.equal(profileAnchorIn(null), null);
 
+// ---- the token's own account, and the price half of the record ----
+// A mint whose metadata names the poster: said even with no record at all, because it is a
+// fact about this post and not about history - and with no colour, because green beside it
+// would read as approval of a token for naming its own promoter.
+let own = decideAccount({ handle: "newdev", caller: null, own: [{ symbol: "TTK" }] });
+assert.equal(own.handle, "newdev");
+assert.equal(own.tone, "flat");
+assert.match(own.lead, /TTK names this account as its own X account/);
+
+// beside a record it leads, and the record's own tone is untouched
+own = decideAccount({ handle: "dev", caller: { handle: "dev", tokens: 12, flagged: 0, days: 9 }, own: [{ symbol: "TTK" }, { symbol: "KKK" }, { symbol: "ZZZ" }] });
+assert.equal(own.tone, "ok");
+assert.match(own.lead, /^TTK and KKK names this account/, "two are named, the rest are in the record");
+
+// what happened after: present only when the worker has a sentence, i.e. enough priced calls
+const SAY = "5 of 6 priced calls are down more than half since the post. Median -83%.";
+let after = decideAccount({ caller: { handle: "kol", tokens: 2, flagged: 0, days: 1, outcomeSay: SAY } });
+assert.ok(after, "two calls is under the floor for a record line, but the priced outcome is worth saying");
+assert.match(after.lead, /5 of 6 priced calls/);
+assert.equal(after.tone, "flat", "a price falling never colours an account - whoever warned you about it posted it too");
+after = decideAccount({ caller: { handle: "kol", tokens: 9, flagged: 4, days: 3, outcomeSay: SAY } });
+assert.equal(after.tone, "bad", "tone still comes from verdicts alone");
+assert.match(after.lead, /9 contracts over 3 days, 4 flagged\. 5 of 6 priced calls/);
+// no sentence, nothing new
+assert.equal(decideAccount({ caller: { handle: "kol", tokens: 2, flagged: 0, days: 1, outcomeSay: null } }), null);
+
 console.log("account: ok");

@@ -18,6 +18,14 @@ const LIMITS = {
   dexscreener: { max: 30, windowMs: 60_000 },
   registry: { max: 6, windowMs: 60_000 },
   solana: { max: 40, windowMs: 60_000 },
+  jupiter: { max: 30, windowMs: 60_000 },
+  // The candle source's free tier is the tightest thing this extension talks to - a burst of
+  // seven requests earned a 429 while building the call pricing (2026-10-07) - so it gets a
+  // budget of its own rather than relying on being asked rarely.
+  candles: { max: 8, windowMs: 60_000 },
+  // The one endpoint that will list a mint's largest holders answers a burst with a 403.
+  // One every ten seconds has never been refused.
+  holders: { max: 6, windowMs: 60_000 },
 };
 
 const KEY = "budget";

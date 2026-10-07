@@ -1,7 +1,7 @@
 # The council
 
 Four Claude calls with different prompts, wired like brain regions, arguing about what
-the chain is doing. A code gate decides whether the result is worth saying out loud.
+the tape is doing. A code gate decides whether the result is worth saying out loud.
 
     SCOUT      sensory cortex          what is happening      (numbers only, no opinion)
     SKEPTIC    inhibitory prefrontal   why it is a trap       (sees Scout)
@@ -16,7 +16,7 @@ Prompts are plain markdown in `brain/council/` - edit them without touching the 
 The website is static. Anything it can call, a visitor can read, so an API key cannot
 ship in it. The council runs somewhere trusted and publishes `council.json`, which the
 site loads like any other file. A round is therefore minutes old, not seconds - the raw
-chain data on the page stays live either way.
+data on the page stays live either way.
 
 ## Running it
 
