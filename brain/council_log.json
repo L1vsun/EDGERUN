@@ -150,5 +150,82 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-10T17:25:27+00:00",
+  "block": 455336950,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Altai",
+    "per_min": 321.2,
+    "traders": 457,
+    "top10": 0.25,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 171.8,
+    "traders": 222,
+    "top10": 0.31,
+    "flags": []
+   },
+   {
+    "symbol": "GOOGLx",
+    "per_min": 103.0,
+    "traders": 128,
+    "top10": 0.78,
+    "flags": []
+   },
+   {
+    "symbol": "Q*bert",
+    "per_min": 93.8,
+    "traders": 215,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "JOEVER",
+    "per_min": 76.0,
+    "traders": 166,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "Tschuna",
+    "per_min": 74.0,
+    "traders": 192,
+    "top10": 0.21,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 70.2,
+    "traders": 84,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SAROS",
+    "per_min": 60.6,
+    "traders": 42,
+    "top10": 0.78,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
