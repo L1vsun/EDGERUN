@@ -8,10 +8,10 @@
   /* The flat cards made from the renders: the link preview, the profile header, the avatar.
      One page, one card at a time (?card=og), sized to the card and photographed by
      render.mjs. The art arrives as data URLs in window.__art. */
-  :root { --pink: #ff3d9a; --deep: #b30a55; --bone: #fff4ea; --ink: #17060f; }
+  :root { --ground: linear-gradient(118deg, #ff3d9a 0%, #ff5a6e 46%, #ff9a3d 100%); --bone: #fff4ea; --ink: #17060f; }
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--pink); }
-  .card { position: relative; overflow: hidden; background: var(--pink); color: var(--ink); font-family: "Bricolage Grotesque", sans-serif; }
+  html, body { margin: 0; background: #ff5a6e; }
+  .card { position: relative; overflow: hidden; background: var(--ground); color: var(--ink); font-family: "Bricolage Grotesque", sans-serif; }
   .card[hidden] { display: none !important; }
   h1 { margin: 0; font-weight: 800; letter-spacing: -0.045em; line-height: 0.92; color: var(--bone); text-shadow: 5px 5px 0 var(--ink); }
   .word { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: -0.04em; }

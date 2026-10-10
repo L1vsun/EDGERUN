@@ -9,7 +9,13 @@
    has to second-guess.
 
    Red, amber and green are verdicts and are never used for decoration. A row's status shows
-   as its label and as the colour of the shadow it stands on. */
+   as its label and as the colour of the shadow it stands on.
+
+   The brand's ground is a sunset - pink running into orange - and it appears here only on
+   the two things that are plainly controls: the check button and the selected tab. The hard
+   shadows and the focus ring stay on the gradient's FIRST colour, the pink. Its middle is a
+   coral and its end an orange, and a row standing on either would read as "fail" or
+   "caution" from across the room, which is exactly what those two colours are reserved for. */
 
 @font-face {
   font-family: "Bricolage Grotesque";
@@ -34,6 +40,7 @@
   --ok: #4a7c0f;
   --ok-soft: #f0f8e2;
   --signal: #ff3d9a;
+  --sunset: linear-gradient(118deg, #ff3d9a 0%, #ff5a6e 46%, #ff9a3d 100%);
   --on-signal: #17060f;
   --on-status: #ffffff;
   --hover: rgba(23, 6, 15, 0.05);
@@ -130,7 +137,7 @@ button { font: inherit; cursor: pointer; }
 }
 .tab { border-width: 2px; font-weight: 800; }
 .tab:hover { background: var(--hover); }
-.tab.on { color: var(--on-signal); background: var(--signal); border-color: var(--edge); }
+.tab.on { color: var(--on-signal); background: var(--sunset); border-color: var(--edge); }
 .tab.on .n { color: var(--ink); background: var(--card); border-color: var(--edge); }
 .n {
   min-width: 20px;
@@ -250,8 +257,8 @@ button { font: inherit; cursor: pointer; }
 .acts button:disabled { opacity: 0.6; cursor: default; }
 /* The one button worth pressing next reads as such; the rest are the same weight as each
    other, because a row of six equally loud buttons is a row with no answer in it. */
-.acts .go-act { color: var(--on-signal); background: var(--signal); border-color: var(--signal); }
-.acts .go-act:hover { filter: brightness(0.94); background: var(--signal); }
+.acts .go-act { color: var(--on-signal); background: var(--sunset); }
+.acts .go-act:hover { filter: brightness(1.05); background: var(--sunset); }
 
 /* ---- empty + footer ---- */
 
@@ -288,7 +295,7 @@ button { font: inherit; cursor: pointer; }
 .check input::placeholder { color: var(--muted); }
 .check .go {
   padding: 9px 16px; font-size: 13px; font-weight: 800; color: var(--on-signal);
-  background: var(--signal); border: 2px solid var(--edge); border-radius: 999px;
+  background: var(--sunset); border: 2px solid var(--edge); border-radius: 999px;
   box-shadow: 3px 3px 0 var(--edge); margin-right: 4px;
 }
 .check .go:hover { filter: brightness(1.05); }

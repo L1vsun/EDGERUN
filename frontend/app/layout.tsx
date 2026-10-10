@@ -61,9 +61,9 @@ export const metadata: Metadata = {
   },
 };
 
-// The pink. It is the ground of the first screen, so the browser chrome on a phone continues
-// it instead of capping the page with a different colour.
-export const viewport = { themeColor: "#ff3d9a" };
+// The colour the gradient has along the top edge of a phone screen, so the browser chrome
+// continues the first screen instead of capping it with a different colour.
+export const viewport = { themeColor: "#ff4d84" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

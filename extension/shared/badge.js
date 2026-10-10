@@ -80,6 +80,10 @@
   // The status colours are the same three they have always been and are never borrowed for
   // decoration: red, amber and green mean a verdict and nothing else. Pink is the brand's and
   // means only "this is EDGERUN".
+  //
+  // The brand's ground elsewhere is a gradient that runs from this pink through coral to
+  // orange. Only the pink comes onto a badge: a card standing on a coral or an orange shadow
+  // would read as "fail" or "caution" before a word of it was read.
   const TOKENS = `
     --ink: #17060f;
     --muted: #6b5560;

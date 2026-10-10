@@ -26,7 +26,7 @@ One scene to look at while changing it: serve this folder and open
 ## What it writes
 
 - `frontend/public/art/*.webp` - the pictures on the site, with alpha, so one file sits on
-  the pink field, the bone one or the dark one
+  the gradient, the bone field or the dark one
 - `frontend/public/og.png`, `brand/banner.png` - the link preview (1200x630)
 - `brand/x-header.png` - the profile header (1500x500)
 - `brand/logo.png` - the avatar (512)
@@ -38,13 +38,20 @@ Small icons are the flat mark; at sixteen pixels a rendered object is a smudge.
 
 | | |
 |---|---|
-| pink | `#ff3d9a` - the ground |
-| deep | `#b30a55` - the sides of the mark, the dark objects |
+| ground | `linear-gradient(118deg, #ff3d9a 0%, #ff5a6e 46%, #ff9a3d 100%)` - pink running into orange |
+| coral | `#ff5a6e` - the gradient's middle, and the one flat accent: buttons, hard shadows, the bright objects |
+| deep | `#b5123f` - the sides of the mark, the dark objects |
 | bone | `#fff4ea` - the paper |
 | ink | `#17060f` - the type and every outline |
 
+The same three stops are written in four places and have to move together: `cards.html`,
+`build.py` (`GROUND`), the site's `--c-ground` in `frontend/app/globals.css`, and the side
+panel's `--sunset` in `extension/sidepanel/panel.css`.
+
 Red, amber and green are not in this table on purpose. They are the extension's verdict
-colours and are never used to decorate anything.
+colours and are never used to decorate anything. The gradient's coral and orange sit next to
+them, which is why the extension's badges take only the pink from it: a card standing on a
+coral or an orange shadow would read as a verdict.
 
 ## Soft shadows
 

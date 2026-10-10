@@ -4,7 +4,7 @@
 <title>EDGERUN art</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&display=swap" rel="stylesheet">
-<style>html, body { margin: 0; background: #ff3d9a; } canvas { display: block; }</style>
+<style>html, body { margin: 0; background: linear-gradient(118deg, #ff3d9a 0%, #ff5a6e 46%, #ff9a3d 100%); min-height: 100vh; } canvas { display: block; }</style>
 <canvas id="out"></canvas>
 <script type="importmap">
 { "imports": {
@@ -17,7 +17,7 @@
 //
 // Every picture here is the same small world: the brain mark and a few plain objects, glossy,
 // on nothing, lit like a product shot. Each is rendered with a transparent ground that only
-// catches the shadow, so one PNG sits on the pink field, the bone field or the dark one
+// catches the shadow, so one PNG sits on the gradient, the bone field or the dark one
 // without being re-rendered.
 //
 // Soft shadows are bought with time instead of a renderer: the scene is drawn many times
@@ -34,7 +34,9 @@ const Q = new URLSearchParams(location.search);
 const W = Number(Q.get("w") || 1400), H = Number(Q.get("h") || 1400);
 const SAMPLES = Number(Q.get("samples") || 48);
 
-const PINK = 0xff3d9a, DEEP = 0xb30a55, BONE = 0xfff4ea, INK = 0x1c0712;
+// Coral, not the pink the field starts with: the objects sit on a gradient that runs from
+// pink to orange, and its middle is the one colour that separates from both ends.
+const PINK = 0xff5a6e, DEEP = 0xb5123f, BONE = 0xfff4ea, INK = 0x1c0712;
 
 const gloss = (color, extra = {}) => new THREE.MeshPhysicalMaterial({ color, roughness: 0.22, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.12, ...extra });
 const clay = (color, extra = {}) => new THREE.MeshPhysicalMaterial({ color, roughness: 0.62, metalness: 0, clearcoat: 0.25, clearcoatRoughness: 0.5, ...extra });
@@ -125,14 +127,14 @@ const SCENES = {
       const m = new THREE.Mesh(geo, clay(BONE));
       const g = new THREE.Group();
       g.add(m);
-      const face = decal(label(lines, { w: 512, h: Math.round(512 * (h / w)), color: "#d9186f", size: 96 }), w * 0.92, h * 0.92);
+      const face = decal(label(lines, { w: 512, h: Math.round(512 * (h / w)), color: "#e4284f", size: 96 }), w * 0.92, h * 0.92);
       face.position.set(0, h / 2, d / 2 + 0.045);
       g.add(face);
       g.position.set(x, 0, z);
       g.rotation.y = turn;
       scene.add(g);
     };
-    const rip = { text: "R.I.P.", size: 54, color: "#e86aa6" };
+    const rip = { text: "R.I.P.", size: 54, color: "#f0808f" };
     stone(-1.85, 0.25, 1.9, 1.3, 0.3, [rip, { text: "$MOON", size: 104 }]);
     stone(0, -0.35, 2.5, 1.45, 0.04, [rip, { text: "$SAFE", size: 112 }]);
     stone(1.9, 0.3, 1.6, 1.25, -0.32, [rip, { text: "$100X", size: 100 }]);
@@ -180,7 +182,7 @@ const SCENES = {
         rimMesh.position.z = side * d / 2;
         g.add(rimMesh);
       }
-      const face = decal(label([{ text: "$CAT", size: 150 }], { w: 512, h: 512, color: real ? "#fff4ea" : "#d9186f" }), r * 1.7, r * 1.7);
+      const face = decal(label([{ text: "$CAT", size: 150 }], { w: 512, h: 512, color: real ? "#fff4ea" : "#e4284f" }), r * 1.7, r * 1.7);
       face.position.z = d / 2 + 0.012;
       g.add(face);
       g.position.set(x, r + 0.01, z);
@@ -229,7 +231,7 @@ const SCENES = {
     const tex = label([
       { text: "RECEIPT", size: 64, color: "#b9a79c" },
       { text: "- - - - - - - -", size: 44, color: "#d8c9bf" },
-      { text: "SOLD", size: 190, color: "#d9186f" },
+      { text: "SOLD", size: 190, color: "#e4284f" },
       { text: "- - - - - - - -", size: 44, color: "#d8c9bf" },
       { text: "same wallet", size: 62, color: "#1c0712" },
       { text: "same day", size: 62, color: "#1c0712" },
@@ -265,13 +267,13 @@ async function render(name) {
   scene.traverse((o) => { if (o.isMesh && !o.material.isMeshBasicMaterial) { o.castShadow = true; o.receiveShadow = true; } });
 
   // the ground is nothing but the shadow that falls on it
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ color: view.shadow ?? 0x5e0733, opacity: 0.36 }));
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ color: view.shadow ?? 0x6b0f2e, opacity: 0.36 }));
   ground.rotation.x = -Math.PI / 2;
   ground.receiveShadow = true;
   scene.add(ground);
 
-  // bounce: pink from below, white from above
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xff7fbd, 1.15));
+  // bounce: warm from below, white from above
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xff9a6b, 1.15));
   const key = new THREE.DirectionalLight(0xfff6ee, 2.2);
   key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048);
@@ -280,7 +282,7 @@ async function render(name) {
   const sc = key.shadow.camera;
   sc.left = -7; sc.right = 7; sc.top = 7; sc.bottom = -7; sc.near = 0.5; sc.far = 40;
   scene.add(key, key.target);
-  const rim = new THREE.DirectionalLight(0xff9fd0, 1.1);
+  const rim = new THREE.DirectionalLight(0xffc08a, 1.1);
   rim.position.set(5, 3, -6);
   scene.add(rim);
 

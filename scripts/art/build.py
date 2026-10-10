@@ -15,16 +15,37 @@ from PIL import Image, ImageDraw
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 HERE = pathlib.Path(__file__).parent
 OUT = HERE / "out"
-PINK, BONE, INK = "#ff3d9a", "#fff4ea", "#17060f"
+BONE, INK = "#fff4ea", "#17060f"
+# the ground: pink into orange, at the same angle the site and the cards draw it
+GROUND = [(0.0, (0xff, 0x3d, 0x9a)), (0.46, (0xff, 0x5a, 0x6e)), (1.0, (0xff, 0x9a, 0x3d))]
+ANGLE = 118
 SCENES = ["brain", "graves", "strings", "coins", "receipt"]
 
 
+def ground(size):
+    """The gradient, as a square image. The same maths as CSS `linear-gradient(118deg, ...)`."""
+    import math
+    import numpy as np
+    a = math.radians(ANGLE)
+    dx, dy = math.sin(a), -math.cos(a)
+    span = abs(size * dx) + abs(size * dy)
+    ys, xs = np.mgrid[0:size, 0:size]
+    t = ((xs - size / 2) * dx + (ys - size / 2) * dy) / span + 0.5
+    out = np.zeros((size, size, 3))
+    for (t0, c0), (t1, c1) in zip(GROUND, GROUND[1:]):
+        k = np.clip((t - t0) / (t1 - t0), 0, 1)[..., None]
+        seg = ((t >= t0) & (t <= t1))[..., None]
+        out = np.where(seg, np.array(c0) * (1 - k) + np.array(c1) * k, out)
+    out = np.where((t < 0)[..., None], np.array(GROUND[0][1]), out)
+    out = np.where((t > 1)[..., None], np.array(GROUND[-1][1]), out)
+    return Image.fromarray(out.astype("uint8"), "RGB")
+
+
 def flat_icon(size, radius=0.22, scale=0.62):
-    """The mark, bone on pink, on a rounded square. Drawn large and reduced, for clean edges."""
+    """The mark, bone on the gradient, on a rounded square. Drawn large and reduced, for clean edges."""
     big = size * 8
-    im = Image.new("RGBA", (big, big), (0, 0, 0, 0))
+    im = rounded(ground(big), radius)
     d = ImageDraw.Draw(im)
-    d.rounded_rectangle([0, 0, big - 1, big - 1], radius=int(big * radius), fill=PINK)
     faces = json.loads((HERE / "mark.json").read_text())["faces"]
     xs = [x for f in faces for x, _ in f]
     ys = [y for f in faces for _, y in f]

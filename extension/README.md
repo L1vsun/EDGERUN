@@ -312,6 +312,12 @@ Red, amber and green are verdicts and are never used for decoration. The verdict
 filled label, as the glyph, and - on a fake - as the colour of the shadow the card stands on.
 Pink is the brand's and means only "this is EDGERUN".
 
+The brand's ground everywhere else is a gradient, pink running through coral into orange.
+On a badge only the pink is used, because coral and orange sit beside the verdict colours and
+a card standing on either would read as "fail" or "caution". In the side panel the gradient
+is on the controls - the check button, the selected tab, the next action - and nowhere a
+verdict is shown.
+
 - **On X the badge is a strip under the post text**, not a chip in the action bar. The action
   bar is cramped, low-contrast and off the eye's path; a warning about a fake contract belongs
   in the reading flow where it cannot be scrolled past.
