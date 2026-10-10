@@ -77,5 +77,78 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-10T07:22:17+00:00",
+  "block": 455171141,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.11,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Musk",
+    "per_min": 270.4,
+    "traders": 520,
+    "top10": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 109.4,
+    "traders": 109,
+    "top10": 0.56,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PQC",
+    "per_min": 88.2,
+    "traders": 179,
+    "top10": 0.14,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 83.8,
+    "traders": 116,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "MASSIVE",
+    "per_min": 53.2,
+    "traders": 120,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "HOTBOT",
+    "per_min": 46.8,
+    "traders": 130,
+    "top10": 0.23,
+    "flags": [
+     "sellers lead"
+    ]
+   },
+   {
+    "symbol": "STRK",
+    "per_min": 40.6,
+    "traders": 75,
+    "top10": 0.5,
+    "flags": []
+   },
+   {
+    "symbol": "HOTBOT",
+    "per_min": 37.4,
+    "traders": 98,
+    "top10": 0.02,
+    "flags": []
+   }
+  ]
  }
 ]
