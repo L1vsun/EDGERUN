@@ -227,5 +227,76 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-10T20:38:20+00:00",
+  "block": 455389808,
+  "mode": "rules",
+  "call": "PENGU is the one to watch - buyers lead, heating",
+  "focus": "PENGU",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 1501.2,
+    "traders": 1782,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 739.8,
+    "traders": 808,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 387.2,
+    "traders": 357,
+    "top10": 0.73,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "AIRDROP",
+    "per_min": 321.2,
+    "traders": 564,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "SPCXx",
+    "per_min": 133.4,
+    "traders": 187,
+    "top10": 0.85,
+    "flags": []
+   },
+   {
+    "symbol": "SI",
+    "per_min": 86.0,
+    "traders": 115,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 71.8,
+    "traders": 121,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 70.8,
+    "traders": 79,
+    "top10": 0.53,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
