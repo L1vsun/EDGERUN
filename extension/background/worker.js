@@ -17,6 +17,10 @@ import { isSolanaAddress } from "../lib/base58.js";
 import * as solana from "../lib/solana.js";
 import { bindingCheck, deepChecks, launchChecks, lookupSymbol, readContext, readDeep, sameSymbol } from "../lib/jupiter.js";
 import { readHolders } from "../lib/holders.js";
+import {
+  creatorChecks, creatorTradeCheck, crowdChecks, forgetNamed, funderGroups, isBusy, namedHolders,
+  noteNamed, readCreator, readCrowd, readTrades, spreadCheck, stakeLine, stakeOf, walletsOf,
+} from "../lib/crowd.js";
 import { deployerTrail, trailChecks } from "../lib/deployer.js";
 import { exitSweep } from "../lib/exit.js";
 import * as graph from "../lib/graph.js";
@@ -149,8 +153,8 @@ async function getMint(mint, { fresh = false, context = null, accounts = null } 
 }
 
 /** The part of the context a badge or a panel row draws from, and nothing else. */
-const slim = ({ verified, x, dev, launchpad, createdAt, graduatedAt, holders, top10Pct, devPct, devMints, devMigrations, at }) =>
-  ({ verified, x, dev, launchpad, createdAt, graduatedAt, holders, top10Pct, devPct, devMints, devMigrations, at });
+const slim = ({ verified, x, dev, launchpad, createdAt, graduatedAt, holders, top10Pct, devPct, devMints, devMigrations, supply, priceUsd, mcapUsd, at }) =>
+  ({ verified, x, dev, launchpad, createdAt, graduatedAt, holders, top10Pct, devPct, devMints, devMigrations, supply, priceUsd, mcapUsd, at });
 
 /**
  * Resolve base58 candidates found in page text.
@@ -210,6 +214,107 @@ async function resolveMint(address, { fresh = false } = {}) {
   return r;
 }
 
+// ---- the crowd around a mint ----
+//
+// The index's holder list, kept for five minutes. Every list that is read also teaches the
+// book which wallet the index files under which X account - that is the only place such a
+// pairing ever appears, so it is harvested whenever it goes by.
+const CROWD_TTL = 5 * 60 * 1000;
+const crowdCache = new Map();
+
+async function getCrowd(mint, { fresh = false } = {}) {
+  const hit = crowdCache.get(mint);
+  if (!fresh && hit && Date.now() - hit.at < CROWD_TTL) return hit.data;
+  const ctx = (await readContext([mint]).catch(() => ({})))[mint] || null;
+  // no supply, no percentages: the list's amounts mean nothing without the total
+  if (!ctx?.supply) return { status: "none" };
+  const read = await readCrowd(mint, ctx.supply);
+  if (read.status !== "read") return read;
+  const data = { ...read, vouched: ctx.verified === true, supply: ctx.supply };
+  crowdCache.set(mint, { at: Date.now(), data });
+  await noteNamed(data.rows);
+  return data;
+}
+
+/** Who paid for the wallets that hold it. Asked for, never automatic. */
+async function getCrowdChecks(mint, { fresh = false, vouched = false } = {}) {
+  if (!isSolanaAddress(mint)) throw new Error("that is not a Solana mint");
+  const c = await getCrowd(mint, { fresh });
+  if (c.status !== "read") return { status: c.status, checks: [] };
+  // Only a group that could become a warning is worth a chain read, and only two are shown.
+  const busy = {};
+  for (const g of funderGroups(c.rows).slice(0, 2)) {
+    const b = await isBusy(g.funder);
+    if (b !== null) busy[g.funder] = b;
+  }
+  return {
+    status: "read",
+    count: c.count,
+    listed: c.listed,
+    named: namedHolders(c.rows).slice(0, 8),
+    spread: spreadCheck(c),
+    checks: crowdChecks(c, { vouched: vouched || c.vouched, busy }),
+  };
+}
+
+/** The creator wallet: what else it launched, and what it did with this token. Asked for. */
+async function getCreator(mint) {
+  if (!isSolanaAddress(mint)) throw new Error("that is not a Solana mint");
+  const ctx = (await readContext([mint]).catch(() => ({})))[mint] || null;
+  if (!ctx?.dev) return { record: null, checks: [] };
+  const [record, trades] = await Promise.all([readCreator(ctx.dev), readTrades(mint, ctx.dev)]);
+  const vouched = ctx.verified === true;
+  return {
+    record,
+    checks: [
+      ...creatorChecks(record, { vouched, mint }),
+      creatorTradeCheck(trades?.length ? stakeOf(trades) : null, { vouched }),
+    ].filter(Boolean),
+  };
+}
+
+/**
+ * The account that wrote a post, against its own wallet.
+ *
+ * Automatic, because it is the one line here a reader cannot get by clicking anything else:
+ * the post is by @someone, the index files a wallet under @someone, and that wallet's trades
+ * in this token have times on them. Null - which draws nothing - whenever any link in that
+ * chain is missing. It never guesses a wallet.
+ */
+const stakeCache = new Map();
+
+async function getStake({ handle, mint, postedAt = null }) {
+  const h = String(handle || "").toLowerCase();
+  if (!h || !isSolanaAddress(mint)) return null;
+  const key = `${h}:${mint}:${postedAt ?? ""}`;
+  const hit = stakeCache.get(key);
+  if (hit && Date.now() - hit.at < CROWD_TTL) return hit.data;
+
+  let wallets = await walletsOf(h);
+  // The holder list is read either way: it may be what names this account for the first
+  // time, and it says what the wallet holds now.
+  const crowd = await getCrowd(mint);
+  if (!wallets.length) wallets = await walletsOf(h);
+  let data = null;
+  if (wallets.length) {
+    const held = new Map(crowd.status === "read" ? crowd.rows.map((r) => [r.address, r.pct]) : []);
+    // wallets seen holding this token first; two reads at most
+    const order = [...wallets].sort((a, b) => (held.get(b) || 0) - (held.get(a) || 0)).slice(0, 2);
+    for (const wallet of order) {
+      const trades = await readTrades(mint, wallet);
+      const holdsPct = held.get(wallet) ?? null;
+      data = stakeLine({
+        handle: h, wallet, holdsPct,
+        stake: trades?.length ? stakeOf(trades, postedAt) : null,
+        holdsAmount: holdsPct != null && crowd.supply ? holdsPct / 100 * crowd.supply : null,
+      });
+      if (data) break;
+    }
+  }
+  stakeCache.set(key, { at: Date.now(), data });
+  return data;
+}
+
 /**
  * Who launched a Solana token, and whether its claimed X account has ever posted it.
  *
@@ -224,7 +329,10 @@ async function getLaunch(mint, { fresh = false } = {}) {
   if (!ctx) return { context: null, checks: [] };
   const callers = ctx.x?.handle ? (await graph.tokenCallers(mint))?.callers || [] : [];
   const posted = callers.some((c) => c.handle === ctx.x?.handle);
-  return { context: slim(ctx), checks: [...launchChecks(ctx), bindingCheck(ctx.x, posted)].filter(Boolean) };
+  // The creator's record is the other half of "who launched it": what else that wallet made,
+  // and what it did with this one. Asked for, so the two extra reads are paid for by a click.
+  const creator = await getCreator(mint).catch(() => ({ checks: [] }));
+  return { context: slim(ctx), checks: [...launchChecks(ctx), bindingCheck(ctx.x, posted), ...creator.checks].filter(Boolean) };
 }
 
 // Dexscreener puts the *pair* in the URL, not the token - and on some chains those are
@@ -341,7 +449,11 @@ const HANDLERS = {
   },
   verdicts: async (m, sender) => {
     const out = await getVerdicts(m.addresses);
-    await ledger.recordMany(sender?.tab?.url ?? m.url, Object.values(out));
+    // An address with no contract on the chain that was read gets no badge on the page, and
+    // gets no row here either: off a timeline it is a wallet or another chain's token, and a
+    // row would file it under this chain's name. A pasted address still gets its answer -
+    // that goes through `verdict`, singular.
+    await ledger.recordMany(sender?.tab?.url ?? m.url, Object.values(out).filter((r) => !r?.absent));
     return out;
   },
   ticker: (m) => resolveTicker(m.ticker),
@@ -425,6 +537,9 @@ const HANDLERS = {
     const deep = await readDeep(m.address);
     return { deep, checks: deepChecks(deep) };
   },
+  crowd: (m) => getCrowdChecks(m.address, { fresh: m.fresh, vouched: Boolean(m.vouched) }),
+  creator: (m) => getCreator(m.address),
+  stake: (m) => getStake({ handle: m.handle, mint: m.mint, postedAt: Number.isFinite(m.postedAt) ? m.postedAt : null }),
 
   chains: () => ALL_CHAINS.map(({ key, id, name, authority, explorer }) => ({ key, id, name, authority, explorer: Boolean(explorer) })),
 
@@ -444,7 +559,8 @@ const HANDLERS = {
   "graph:outcomes": (m) => graph.priceCalls(m.handle),
   "graph:stats": () => graph.graphStats(),
   "graph:pause": (m) => graph.setPaused(m.paused),
-  "graph:wipe": () => graph.wipeGraph(),
+  // "forget everyone" means everyone: the account records and the wallets filed under them
+  "graph:wipe": async () => { await forgetNamed(); return graph.wipeGraph(); },
 
   // ---- the sidebar ----
   "ledger:get": () => ledger.read(),
@@ -454,22 +570,25 @@ const HANDLERS = {
    * Open the side panel beside the tab that asked.
    *
    * chrome.sidePanel.open() needs a user gesture, and the gesture here happened in a content
-   * script (a click on the badge) rather than in an extension page. Whether that survives the
-   * hop through sendMessage is not something we can rely on, so this is allowed to fail and
-   * the badge falls back to its in-page panel when it does.
+   * script (a click on the badge). It survives the hop through sendMessage and does NOT
+   * survive an await: with one storage write in front of it Chrome answered every click with
+   * "may only be called in response to a user gesture" (measured 2026-10-07), so the badge
+   * fell back to its in-page window every time. open() is therefore the first thing called,
+   * and everything else waits behind it. It is still allowed to fail - the badge keeps its
+   * in-page window for a browser that has no side panel.
    */
   "panel:open": async (m, sender) => {
     const tabId = sender?.tab?.id ?? m.tabId;
     if (!tabId) throw new Error("no tab to open beside");
-    if (m.address) await ledger.setFocus(tabId, m.address);
-    if (!chrome.sidePanel?.open) throw new Error("this browser has no side panel");
-    await chrome.sidePanel.open({ tabId });
-    // A line about a ticker points at a mint nobody has scanned yet. The panel is opened
-    // first - it needs the click it was opened with - and the mint is read behind it, so the
-    // row it is waiting for arrives a moment later instead of never.
+    const opening = chrome.sidePanel?.open
+      ? chrome.sidePanel.open({ tabId })
+      : Promise.reject(new Error("this browser has no side panel"));
+    // A line about a ticker points at a mint nobody has scanned yet. It is read whichever
+    // window ends up showing it: the reader asked about it, so it belongs in the session.
     if (m.address && !isAddress(m.address) && isSolanaAddress(m.address)) {
       resolveMint(m.address).then((r) => ledger.record(sender?.tab?.url ?? m.url, r)).catch(() => {});
     }
+    await Promise.all([opening, m.address ? ledger.setFocus(tabId, m.address) : null]);
     return { opened: true };
   },
 
@@ -522,9 +641,11 @@ const HANDLERS = {
   "panel:caller": async (m, sender) => {
     const tabId = sender?.tab?.id ?? m.tabId;
     if (!tabId) throw new Error("no tab to open beside");
-    await ledger.setCallerFocus(tabId, m.handle);
-    if (!chrome.sidePanel?.open) throw new Error("this browser has no side panel");
-    await chrome.sidePanel.open({ tabId });
+    // open() first, for the same reason as above: the click does not survive an await
+    const opening = chrome.sidePanel?.open
+      ? chrome.sidePanel.open({ tabId })
+      : Promise.reject(new Error("this browser has no side panel"));
+    await Promise.all([opening, ledger.setCallerFocus(tabId, m.handle)]);
     return { opened: true };
   },
 };

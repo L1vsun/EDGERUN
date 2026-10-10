@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>EDGERUN cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  /* The flat cards made from the renders: the link preview, the profile header, the avatar.
+     One page, one card at a time (?card=og), sized to the card and photographed by
+     render.mjs. The art arrives as data URLs in window.__art. */
+  :root { --pink: #ff3d9a; --deep: #b30a55; --bone: #fff4ea; --ink: #17060f; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--pink); }
+  .card { position: relative; overflow: hidden; background: var(--pink); color: var(--ink); font-family: "Bricolage Grotesque", sans-serif; }
+  .card[hidden] { display: none !important; }
+  h1 { margin: 0; font-weight: 800; letter-spacing: -0.045em; line-height: 0.92; color: var(--bone); text-shadow: 5px 5px 0 var(--ink); }
+  .word { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: -0.04em; }
+  .word svg { fill: var(--bone); filter: drop-shadow(2.5px 2.5px 0 var(--ink)); }
+  p { margin: 0; font-family: Inter, sans-serif; font-weight: 600; }
+  img { position: absolute; display: block; }
+
+  #og { width: 1200px; height: 630px; padding: 54px 64px; }
+  #og .word { font-size: 34px; }
+  #og h1 { margin-top: 44px; font-size: 104px; max-width: 700px; }
+  #og p { position: absolute; left: 64px; bottom: 56px; font-size: 25px; max-width: 560px; line-height: 1.3; }
+  #og img { right: -150px; top: -70px; width: 830px; }
+
+  #header { width: 1500px; height: 500px; padding: 0 90px; display: flex; flex-direction: column; justify-content: center; }
+  #header h1 { font-size: 178px; letter-spacing: -0.06em; text-shadow: 7px 7px 0 var(--ink); }
+  #header p { margin-top: 18px; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 44px; letter-spacing: -0.035em; }
+  #header img { right: -40px; top: -130px; width: 760px; }
+
+  #logo { width: 1024px; height: 1024px; }
+  #logo img { left: -118px; top: -92px; width: 1260px; }
+</style>
+
+<div class="card" id="og" hidden>
+  <div class="word"><svg viewBox="0 0 100 100" width="46" height="46"><path class="mark"/></svg>EDGERUN</div>
+  <h1>The post says buy. The wallet says sold.</h1>
+  <p>A browser extension that reads the wallet behind the post. X, pump.fun, Dexscreener.</p>
+  <img data-art="brain" alt="">
+</div>
+
+<div class="card" id="header" hidden>
+  <h1>EDGERUN</h1>
+  <p>Read the wallet, not the post.</p>
+  <img data-art="brain" alt="">
+</div>
+
+<div class="card" id="logo" hidden>
+  <img data-art="icon" alt="">
+</div>
+
+<script>
+  window.__cards = { og: [1200, 630], header: [1500, 500], logo: [1024, 1024] };
+  window.__show = async (name, art, markPath) => {
+    for (const el of document.querySelectorAll(".card")) el.hidden = el.id !== name;
+    for (const p of document.querySelectorAll("path.mark")) p.setAttribute("d", markPath);
+    await Promise.all([...document.querySelectorAll(`#${name} img`)].map((img) => new Promise((done) => {
+      img.onload = done; img.onerror = done; img.src = art[img.dataset.art];
+    })));
+    await document.fonts.ready;
+    await document.fonts.load('800 100px "Bricolage Grotesque"');
+    return true;
+  };
+</script>
+</html>

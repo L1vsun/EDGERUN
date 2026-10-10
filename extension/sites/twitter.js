@@ -248,6 +248,33 @@
     if (sightings.length) E.ask({ type: "graph:record", sightings }).catch(() => {});
   }
 
+  /**
+   * The author against their own wallet, for the mints they wrote themselves.
+   *
+   * Asked after the verdicts are drawn and added when it lands, because it is the slowest
+   * thing under a post (an index's holder list, then one wallet's trades) and usually has
+   * nothing to say: most accounts have no wallet filed under them. Two mints at most - a post
+   * listing ten contracts is not ten questions about its author.
+   *
+   * Same rule as attribution: only a mint in the author's OWN text. A post quoting somebody
+   * else's contract has not called it.
+   */
+  function stakes(article, strips, author, solana) {
+    if (!author?.handle || !solana.length) return;
+    const own = article.querySelector('[data-testid="tweetText"]');
+    if (!own) return;
+    const theirs = E.findTokens(E.textWithLinks(own));
+    const written = new Set([...theirs.mints, ...theirs.pairs.map((id) => pairMints.get(id)).filter(Boolean)]);
+    const { postedAt } = postOf(article);
+    for (const r of solana.filter((x) => written.has(x.address)).slice(0, 2)) {
+      E.settle(E.ask({ type: "stake", handle: author.handle, mint: r.address, postedAt: postedAt ?? null }), null, 12000).then((stake) => {
+        if (!stake || !strips.isConnected) return;
+        const strip = E.makeStakeStrip(stake);
+        if (strip) strips.append(strip);
+      });
+    }
+  }
+
   function render(article, found, verdicts, resolved, byMint, author, callers = {}, clusters = {}, symbols = {}) {
     if (article.querySelector('[data-edgerun="badge"]')) return;
 
@@ -318,6 +345,8 @@
       });
       if (strip) strips.append(strip);
     }
+
+    stakes(article, strips, author, solana);
 
     const text = article.querySelector('[data-testid="tweetText"]');
     const anchor = text?.parentElement?.contains(text) ? text : null;

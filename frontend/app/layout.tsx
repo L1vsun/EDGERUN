@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 
-const display = Space_Grotesk({
+// Three faces, three jobs. The display face is the loud one and only ever sets a headline;
+// the text face is plain so the headline can be loud; mono is for addresses and nothing else.
+const display = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["800"],
   variable: "--font-display",
+  display: "swap",
+});
+
+const text = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-text",
   display: "swap",
 });
 
@@ -27,9 +36,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://l1vsun.github.io";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "EDGERUN - is that the real contract?",
+  title: "EDGERUN - the post says buy, the wallet says sold",
   description:
-    "A browser extension that checks whether the token in the post you are reading is the contract it claims to be, and keeps who posted it - Solana and five EVM chains, in your browser, with no server on the path.",
+    "A browser extension that checks the token in the post you are reading: which mint it really is, who paid for its holders, and what the poster's own wallet did with it. Solana first, five EVM chains, in your browser, with no server on the path.",
   icons: {
     icon: [
       { url: `${BASE}/favicon.ico`, sizes: "any" },
@@ -39,40 +48,26 @@ export const metadata: Metadata = {
     apple: `${BASE}/apple-touch-icon.png`,
   },
   openGraph: {
-    title: "EDGERUN - is that the real contract?",
-    description: "Anyone can mint a second $PUMP in a minute. EDGERUN tells you which one is in that post, who posted it, and what happened after - Solana and five EVM chains, in your browser.",
+    title: "EDGERUN - the post says buy, the wallet says sold",
+    description: "Which mint is really in that post, who paid for its holders, and what the poster's own wallet did with it. A browser extension for X, pump.fun and Dexscreener. No server.",
     images: [{ url: `${BASE}/og.png`, width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "EDGERUN - is that the real contract?",
-    description: "Anyone can mint a second $PUMP in a minute. EDGERUN tells you which one is in that post, who posted it, and what happened after - Solana and five EVM chains, in your browser.",
+    title: "EDGERUN - the post says buy, the wallet says sold",
+    description: "Which mint is really in that post, who paid for its holders, and what the poster's own wallet did with it. A browser extension for X, pump.fun and Dexscreener. No server.",
     images: [`${BASE}/og.png`],
   },
 };
 
-// The ground, not the accent. This paints the browser chrome on mobile, and the accent is an
-// edge colour in this identity - a whole phone status bar of it is the one place it would
-// read as a field.
-export const viewport = { themeColor: "#080a0b" };
+// The pink. It is the ground of the first screen, so the browser chrome on a phone continues
+// it instead of capping the page with a different colour.
+export const viewport = { themeColor: "#ff3d9a" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // the inline script below rewrites data-theme before hydration, which React would
-    // otherwise report as a server/client mismatch
-    <html lang="en" className={`${display.variable} ${mono.variable}`} data-theme="dark" suppressHydrationWarning>
-      <head>
-        {/* Applied before first paint, so a light-theme visitor never sees a dark flash.
-            Dark is the default because the brand is, and the OS preference is deliberately
-            not consulted: only a stored choice moves it, so the site looks the same to
-            everyone until they say otherwise. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('edgerun.theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}catch(e){}})();`,
-          }}
-        />
-      </head>
+    <html lang="en" className={`${display.variable} ${text.variable} ${mono.variable}`}>
       <body>
         <Header />
         <main>{children}</main>

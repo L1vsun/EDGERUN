@@ -37,8 +37,8 @@ export default function Chains() {
   return (
     <section className="chains" id="chains">
       <div className="fhead">
-        <h2>Six chains, and what each one can actually prove</h2>
-        <small>every endpoint public, keyless and batched - there is no API key anywhere in this repo</small>
+        <h2>Six chains, and what each one can prove.</h2>
+        <small>Every endpoint is public and keyless. There is no API key anywhere in this repo.</small>
       </div>
 
       <div className="chain-grid">

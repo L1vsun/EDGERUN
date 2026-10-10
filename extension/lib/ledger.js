@@ -164,7 +164,9 @@ export async function clear() {
 export async function setFocus(tabId, address) {
   if (!tabId) return;
   try {
-    await chrome.storage.session.set({ [focusKey(tabId)]: { address: String(address || "").toLowerCase(), at: Date.now() } });
+    // folded exactly as the rows are, or the hint never matches one: a Solana mint is
+    // case-sensitive, and lowercasing it here pointed the panel at a row that does not exist
+    await chrome.storage.session.set({ [focusKey(tabId)]: { address: fold(String(address || "")), at: Date.now() } });
   } catch {}
 }
 

@@ -33,8 +33,9 @@ and the reason is next to it.
   now, through the one keyless endpoint that will list them. Anything deeper - a real holder
   count, a distribution - is still an index's figure.
 - **Bundled and sniped launches, measured here.** The panel repeats Jupiter's bundle count
-  on request. Establishing it independently needs transaction history no keyless RPC serves
-  cheaply.
+  on request, and since 0.6.0 which of the largest holders it tags as bundle, sniper or
+  insider wallets and what they still hold. Establishing any of it independently needs
+  transaction history no keyless RPC serves cheaply.
 - **How often an account has been renamed.** X now shows a username-change count and the date
   of the last one on an account's *About* page. It could be read when a reader opens that
   page and kept on the record; it is not, because nothing here has been checked against that
@@ -51,6 +52,41 @@ and the reason is next to it.
   endpoint offers a browser.
 - **Deep checks on the other four EVM chains.** Identity and lists work everywhere; source,
   deployer and the exit test run on the one chain where an explorer is wired.
+
+## The wallet behind the post: what shipped, and what was looked at and left
+
+0.6.0 (2026-10-10) moved the product's weight from the mint to the people around it: the
+wallet line under a post, who paid for the largest holders, the creator's record. Each of the
+following was considered in the same pass and is not built, with the reason beside it.
+
+- **The wallet line for an account nobody has a wallet on file for.** The line needs a link
+  between an X account and a wallet, and the only public one is an index's own attribution,
+  which covers the accounts it tracks and nobody else. The other ways to establish a link
+  were each looked at: the account posting its own transaction (rare, and not built); holders
+  confirming a link (needs a network and a token that exists); the same funded cluster buying
+  ahead of one account's posts three times running (needs who bought before a given moment,
+  which nothing keyless serves - see the next item). A guessed wallet is worse than no line.
+- **Who bought in the first block.** The index's trade list pages backwards from now and
+  ignored every attempt to ask for it oldest-first (six parameter names tried). For a token
+  more than a few minutes old, reaching its first trades means walking its whole history.
+- **A creator's last five launches.** The index gives a creator's best three tokens, not its
+  latest five, and the launchpad's own API refuses an extension (403). So the panel shows
+  the best three and the counts, and does not claim to show the most recent.
+- **Collapsing a pushed contract into one card, and flagging a reused picture.** Both mean
+  rewriting someone else's timeline rather than adding a line to it, on markup that cannot be
+  tested without a signed-in session. The count underneath ("six accounts, eleven minutes")
+  is already drawn.
+- **Who else is looking at this page right now.** Presence needs a server that every copy of
+  the extension reports to. That is the one thing this product does not have and says it does
+  not have. Not built while that sentence is on the site.
+- **Reading every page for a name before it has a contract.** It needs permission to read
+  all sites. Not asked for.
+- **Features only a holder can use.** The extension is open source and runs entirely in the
+  browser, so a gate inside it is a convention any fork can remove. Worth doing only once a
+  token exists and only as an honest convention, not presented as a lock.
+- **What happened to the tokens you opened.** Not built yet and the likeliest next thing: the
+  session already knows every mint a reader looked at, and one batched index read prices all
+  of them. "Of the fourteen you opened today, eleven are down more than half."
 
 ## What's explicitly not being built
 - A numeric score. The verdict is PASS/CAUTION/FAIL plus facts, on purpose - see

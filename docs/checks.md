@@ -112,3 +112,23 @@ failed exit test is critical, ok->fail is critical, ok->warn is a warning, and
 a recovery is informational.
 
 Events are served at `GET /api/events` and rendered at `/changes`.
+
+## Solana: the crowd (extension only, `extension/lib/crowd.js`)
+
+None of these is on the path to a verdict. They come from an index's undocumented record
+(`datapi.jup.ag`), are asked for or drawn beside the verdict, and every one says whose record
+it is. Two can be amber; none can fail.
+
+| id | what it says | can be amber when |
+|---|---|---|
+| `stake_before` / `stake_after` / `stake_now` / `stake_sent` / `stake_money` | the wallet an index files under the account that wrote the post: when it bought, what it sold since the post, what it holds, how much of that was sent rather than bought | it held the token when the post went out and has sold half or more since |
+| `funders` | wallets among the fifty largest that one address first funded inside one hour | three or more wallets, a twentieth of supply, no list vouching for the token, **and** the funder read from the chain as not an exchange (under a thousand signatures a day) |
+| `bundle_holders` | holders the index tags as part of a bundled buy, and what they still hold | they still hold a tenth of supply, on a token no list vouches for |
+| `early_holders` | holders the index tags sniper or insider | never |
+| `named_holders` | wallets among the largest that the index files under an X account | never |
+| `venues` | exchange and market-maker wallets, counted as nobody's position | never |
+| `spread` | the largest wallet and the ten largest, by the index's list - shown only when the chain's own holder read was refused | never |
+| `creator_record` | launches the index attributes to the creator wallet, and how many left the launchpad | ten or more launches with under a tenth graduated; past a thousand it is named a launch service and is never amber |
+| `creator_best` | the creator's largest other tokens and whether they still trade | never |
+| `creator_trades` | what the creator wallet did with its own token | it has sold nine tenths or more of what it bought, on a token no list vouches for |
+

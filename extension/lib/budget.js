@@ -26,6 +26,9 @@ const LIMITS = {
   // The one endpoint that will list a mint's largest holders answers a burst with a 403.
   // One every ten seconds has never been refused.
   holders: { max: 6, windowMs: 60_000 },
+  // The index's holder, trade and creator records. Undocumented, so asked politely: twelve
+  // requests back to back were all answered (2026-10-10) and this stays well inside that.
+  datapi: { max: 24, windowMs: 60_000 },
 };
 
 const KEY = "budget";

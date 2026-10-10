@@ -1,142 +1,62 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { asset } from "@/lib/config";
 import GetExtension from "./GetExtension";
-import ProductShot from "./ProductShot";
+import Mark from "./Mark";
 
-// What the product actually is, shown rather than described: a post, the badge landing on
-// it, the verdict. The demo is the extension's real output on a real mint, read live on
-// 2026-10-07: GTiqdugp… calls itself PUMP, was hours old, and had four holders, while the
-// PUMP on every curated list is a different mint held by three hundred thousand wallets.
-// Nothing in that mint is malicious - which is the point. The check that catches it is not
-// about the code.
+// The first screen says one thing: the post and the wallet behind it can disagree, and this
+// is the tool that shows you both.
 //
-// One loop, four steps, no libraries. Anything more elaborate here would be a worse use of
-// the first five seconds than simply showing the thing working.
-
-const POST = "$PUMP still early 🚀 CA: GTiqdugptGkYwoF2xsY9vGNLUrXg3x9JGJGTk77ypump - send it";
-
-const STEPS = [
-  { at: 0, type: 0 },          // empty
-  { at: 600, type: 1 },        // typing
-  { at: 3400, type: 2 },       // badge appears, checking
-  { at: 4600, type: 3 },       // verdict
-  { at: 11000, type: 0 },      // hold, then loop
-];
-const LOOP = 11600;
+// The two cards beside the mark are drawn the way the extension draws them, but they are
+// EXAMPLES and the caption says so. The accounts and numbers in them are made up on purpose:
+// a real account with a made-up trade next to it would be an accusation, and a real trade
+// needs the real post it was read under - which is what the screenshots further down are for.
 
 export default function Hero() {
-  const [phase, setPhase] = useState(0);
-  const [typed, setTyped] = useState("");
-  const [still, setStill] = useState(false);
-
-  useEffect(() => {
-    // someone who asked for less motion gets the finished frame, not a loop
-    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) { setStill(true); setPhase(3); setTyped(POST); return; }
-
-    let raf = 0;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const t = (now - start) % LOOP;
-      let p = 0;
-      for (const s of STEPS) if (t >= s.at) p = s.type;
-      setPhase(p);
-      if (p === 1) {
-        const k = Math.min(1, (t - 600) / 2600);
-        setTyped(POST.slice(0, Math.round(k * POST.length)));
-      } else if (p >= 2) setTyped(POST);
-      else setTyped("");
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
   return (
-    <section className="lead">
-      <div className="lead-grid">
-      <div className="lead-in">
-        <span className="kicker">Solana + five EVM chains · browser extension · no server</span>
-        <h1>
-          The ticker in that post<br />
-          is not one token.
-        </h1>
-        <p>
-          Anyone can mint a second <b>$PUMP</b> in a minute. The one in this post had{" "}
-          <b>four holders</b>; the real one has three hundred thousand. The wallet behind
-          another launch we read that day had <b>3,648</b> more to its name.
-        </p>
-        <p className="lead-sub">
-          EDGERUN checks the contract while you are still reading the post - in your browser,
-          on Solana and five EVM chains. Then it keeps the half every scanner throws away:{" "}
-          <b>who put it in front of you, and what the price did after they posted it.</b>
-        </p>
-        <div className="lead-cta">
-          <GetExtension />
-          <a className="cta cta-ghost" href="#install">How to install</a>
-        </div>
-
-        {/* named here in one line; the install section below says what each one does */}
-        <p className="works-on">
-          Works on <b>X</b>, <b>Dexscreener</b>, <b>Solscan</b> and <b>pump.fun</b> - or paste
-          any Solana mint or contract address into the extension itself.
-        </p>
-        <div className="lead-facts">
-          <div><b>6</b><span>chains read live, no API key anywhere</span></div>
-          <div><b>1</b><span>request to read a mint, its name and every power over it</span></div>
-          <div><b>0</b><span>servers on the path, and nothing of yours leaves</span></div>
-        </div>
-      </div>
-
-      <div className={`demo${still ? " still" : ""}`} aria-hidden="true">
-        <div className="demo-chrome"><i /><i /><i /><span>x.com</span></div>
-        <div className="post">
-          <div className="post-who"><span className="av" />@someaccount</div>
-          <p className="post-text">
-            {typed}
-            {phase === 1 && <i className="caret" />}
+    <section className="first">
+      <div className="first-in">
+        <div className="first-copy">
+          <span className="pill"><i />Free browser extension · Solana first</span>
+          <h1>
+            The post says buy.<br />
+            The wallet says sold.
+          </h1>
+          <p>
+            EDGERUN checks the token in the post you are reading: which mint it really is,
+            who paid for its holders, and what the poster&apos;s own wallet did with it. The
+            answer lands right under the post.
           </p>
+          <div className="first-cta">
+            <GetExtension />
+            <a className="cta cta-line" href="#catches">See what it catches</a>
+          </div>
+          <p className="first-note">
+            Works on <b>X</b>, <b>pump.fun</b>, <b>Dexscreener</b> and <b>Solscan</b>. No account,
+            no server - it runs in your browser.
+          </p>
+        </div>
 
-          {phase >= 2 && (
-            <div className={`badge${phase >= 3 ? " done warn" : " busy"}`}>
-              {phase >= 3 ? (
-                <>
-                  <span className="g">!</span>
-                  <span className="b-body">
-                    <b>PUMP · Solana · caution</b>
-                    <span>
-                      The curated Solana list gives PUMP to pumpCmXq… (Pump.fun). This is a
-                      different mint using that symbol.
-                    </span>
-                    <span className="b-facts">pump.fun · 4 holders · top 10 hold 58%</span>
-                  </span>
-                  <span className="b-more">details</span>
-                </>
-              ) : (
-                // compact while it works: a full-width white bar with two words in it reads
-                // as a broken element rather than as progress
-                <>
-                  <span className="g spin" />
-                  <span className="b-body"><b>checking the chain…</b></span>
-                </>
-              )}
-            </div>
-          )}
+        <div className="first-art" aria-hidden="true">
+          <img className="first-brain" src={asset("/art/brain.webp")} alt="" width={900} height={900} />
 
-          <div className="post-bar"><span>12</span><span>48</span><span>301</span></div>
+          <div className="sticker s-wallet">
+            <span className="s-tag warn">wallet</span>
+            <span className="s-say">@caller&apos;s listed wallet bought 4m 12s before this post, sold 61% of it since.</span>
+          </div>
+
+          <div className="sticker s-ticker">
+            <span className="s-g">?</span>
+            <span className="s-body">
+              <span className="s-title"><b>$CAT</b><i>Solana</i><em>13 mints</em></span>
+              <span className="s-text">13 mints use this symbol, and the post gives no contract.</span>
+            </span>
+            <span className="s-stamp"><Mark size={11} />EDGERUN</span>
+          </div>
         </div>
       </div>
-
-      {/* the animation above says what happens; this says what it actually looks like */}
-      <ProductShot />
-      </div>
-
-      {/* the first screen says one thing and then says where to go next */}
-      <a className="next" href="#install">
-        <span>Next - install it in two minutes</span>
-        <i className="chev" aria-hidden="true" />
-      </a>
+      <p className="first-foot">
+        The two cards are examples of what the extension draws. The wallet line appears only when
+        a public index has a wallet on file for the account that posted.
+      </p>
     </section>
   );
 }

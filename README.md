@@ -4,19 +4,20 @@
 
 # EDGERUN
 
-**Is that the real contract? Answered before you finish reading the post.**
+**The post says buy. The wallet says sold.**
 
-A browser extension that checks whether the token in front of you is the contract it claims to
-be - on X, on Dexscreener, on a token's own page - in your own browser, on Solana and five EVM
-chains, with no server on the path. It also keeps the half every scanner throws away: **who put
-that contract in front of you, and what the price did after they posted it.**
+A browser extension that checks the token in the post you are reading: which mint it really
+is, who paid for its holders, and what the poster's own wallet did with it. On X, on
+Dexscreener, on a token's own page - in your own browser, on Solana and five EVM chains, with
+no server on the path. It keeps the half every scanner throws away: **who put that contract in
+front of you, what they did with it, and what the price did after they posted it.**
 
-[![chains](https://img.shields.io/badge/chains-6-FF3D9A?style=flat-square&labelColor=080A0B)](#the-chains-it-reads-and-what-each-is-allowed-to-claim)
-[![tests](https://img.shields.io/badge/engine%20tests-37%20passing-4FD1A5?style=flat-square&labelColor=080A0B)](edgerun/tests)
-[![extension tests](https://img.shields.io/badge/extension%20tests-21%20suites-4FD1A5?style=flat-square&labelColor=080A0B)](extension/tests)
-[![backend](https://img.shields.io/badge/servers%20required-none-4FD1A5?style=flat-square&labelColor=080A0B)](#no-backend-and-why-that-was-a-measurement-not-a-preference)
-[![keys](https://img.shields.io/badge/keys%20held-none-4FD1A5?style=flat-square&labelColor=080A0B)](SECURITY.md)
-[![license](https://img.shields.io/badge/license-MIT-E8B339?style=flat-square&labelColor=080A0B)](LICENSE)
+[![chains](https://img.shields.io/badge/chains-6-FF3D9A?style=flat-square&labelColor=17060F)](#the-chains-it-reads-and-what-each-is-allowed-to-claim)
+[![tests](https://img.shields.io/badge/engine%20tests-37%20passing-4FD1A5?style=flat-square&labelColor=17060F)](edgerun/tests)
+[![extension tests](https://img.shields.io/badge/extension%20tests-22%20suites-4FD1A5?style=flat-square&labelColor=17060F)](extension/tests)
+[![backend](https://img.shields.io/badge/servers%20required-none-4FD1A5?style=flat-square&labelColor=17060F)](#no-backend-and-why-that-was-a-measurement-not-a-preference)
+[![keys](https://img.shields.io/badge/keys%20held-none-4FD1A5?style=flat-square&labelColor=17060F)](SECURITY.md)
+[![license](https://img.shields.io/badge/license-MIT-E8B339?style=flat-square&labelColor=17060F)](LICENSE)
 
 `$EDGERUN` · not launched yet
 
@@ -143,6 +144,58 @@ no right answer to point at, which is exactly where somebody is standing when th
 ticker only one mint uses.
 
 It stays quiet otherwise. An account with no record says nothing.
+
+### The wallet behind the post
+
+A launchpad mint is clean nearly every time, so the mint scan passes and has told you almost
+nothing. What matters is who holds the token and who is telling you to buy it. When a public
+index has a wallet on file for the account that wrote the post, a second line goes under it:
+
+```
+  WALLET  @somehandle's listed wallet bought 4m 12s before this post,
+          sold 61% of it since.                                        details
+```
+
+That is the shape of the line with a placeholder account - a real one is not printed here,
+because a real account next to somebody else's numbers would be an accusation. What it reads
+is real: the index's holder list carries, beside some wallets, the X account it files them
+under, and it lists every trade one wallet made in one token, timed. Checked before being
+believed - for one such wallet the trades (bought 18,870,382, sold 14,705,362) left exactly
+the balance the holder list showed (4,165,020).
+
+Three rules keep it honest. **Only the account that wrote the mint itself** - quoting somebody
+else's contract is not calling it. **Only amber in one case**: the wallet held the token when
+the post went out and has sold most of that since. And **every sentence says whose record it
+is**: the wallet-to-account link is the index's attribution, not something read from the post.
+Most accounts have no wallet on file, and then nothing is drawn.
+
+Every holder list the extension reads also teaches it which wallet belongs to which account,
+and it keeps those pairs locally - an account that sold everything last week is in nobody's
+holder list today, and that is exactly when its next post matters.
+
+### Dig deeper: who paid for the holders, and what else the creator made
+
+One click on a Solana row, and three more blocks land. Real output, read 2026-10-10:
+
+```
+  who paid for the holders
+  ○ ONE FUNDER         3 of the largest wallets, holding 1.09% of supply between them,
+                       were first funded by one address (D54q…t8VY) within 1 minute
+
+  the creator
+     32 launched     4 graduated     0 this week
+     $DUCK $11k, no longer trading      $Pets $4k, no longer trading
+  ○ CREATOR'S OWN      the creator wallet bought $466 of its own token and has sold none
+    TRADES             of it
+```
+
+Wallets paid for by one address inside one hour are usually one holder wearing several. It
+becomes a warning only at three wallets holding a twentieth of supply - and only when the
+payer is **not an exchange**, because four people who all withdrew from Binance share a funder
+and nothing else. That is told from the payer's own traffic, read from the chain: a thousand
+signatures inside a day is a service. If that read fails, the finding is stated without
+colour. A "creator" with thousands of launches is a launch service signing for its users, and
+is named as one rather than blamed as one.
 
 ---
 
@@ -466,7 +519,8 @@ requests.
 ```
 extension/      the browser extension - MV3, no build step, no dependencies
   lib/          chains table, EVM + Solana providers, metadata-account derivation, the
-                launch index, the holder read, explorer, registry, verdict engine, curated token lists,
+                launch index, the holder read, the crowd (funders, named wallets, a wallet's
+                trades, the creator's record), explorer, registry, verdict engine, curated token lists,
                 blocklist, memory, deployer trail, exit-size sweep, cross-chain resolver, the
                 caller graph, call outcomes, the session ledger, the claim format, the claim
                 verifier, the trades reader, OHLC candles + rug detection
@@ -474,14 +528,16 @@ extension/      the browser extension - MV3, no build step, no dependencies
                 the shadow-DOM badge, the account strip, the profile card
   sites/        one thin adapter per surface (twitter, dexscreener, solana-pages, blockscout)
   sidepanel/    the side panel - the extension's main surface
-  tests/        21 plain `node` suites, no dependencies: `node tests/ledger.test.mjs`
+  tests/        22 plain `node` suites, no dependencies: `node tests/ledger.test.mjs`
 edgerun/        the original Python scan engine + CLI (37 tests)
 backend/        FastAPI service - optional, not on the extension's path
 docs/           what each check means, the impersonation rules, the claim format
 frontend/       the site (Next.js static export) + the public blocklist
 brain/          the council: five modules reading the tape, offline tools
 scripts/        pack-extension.sh - builds the download and records its hash
-                rebrand.py - moves the accent colour across the art and the style tokens
+                art/ - the brand art: the mark traced to an outline, rendered as objects,
+                and built into every icon, card and picture (see scripts/art/README.md)
+brand/          logo, link preview and X header, made by scripts/art
 ```
 
 The extension has no build step and no dependencies. What is in the folder is what runs.

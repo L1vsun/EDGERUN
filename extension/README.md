@@ -193,6 +193,54 @@ paid for. Keyless, answers an extension - and **undocumented**, so it is asked o
 deeper*, never on the way to a verdict, and expected to stop answering one day. "Bundled" and
 "bot" are Jupiter's classifications; each row says so.
 
+### The crowd (`lib/crowd.js`, the same undocumented source)
+
+A launchpad mint passes its scan almost every time, because the mint was never the weapon.
+Three more endpoints of `datapi.jup.ag` answer an extension keyless (measured 2026-10-10,
+twelve requests back to back, none refused) and are where the rest of the answer is:
+
+| endpoint | what it carries | used for |
+|---|---|---|
+| `/v1/holders/<mint>` | the hundred largest holders: who first funded each and when, the index's tags (pool, exchange, bundler, sniper, insider), and the accounts it files a wallet under | who paid for the holders; the wallet book |
+| `/v1/txs/<mint>?traderAddress=<wallet>` | every trade one wallet made in one token, timed | the wallet line; the creator's own trades |
+| `/v1/dev/stats/<wallet>` | how many tokens a creator launched, how many graduated, its best three | the creator's record |
+
+**The wallet line** is the only automatic one. A post by `@handle` carrying a mint the author
+wrote themselves asks the worker one question: does the index file a wallet under that handle,
+and what did it do in this token. The holder list is read (five-minute cache, `datapi` budget
+of 24 a minute), the wallet's trades are read, and `stakeOf(trades, postedAt)` reduces them to
+what was held when the post went out and what has been sold since. `stakeLine` turns that into
+a sentence and is amber in exactly one case - the wallet held the token at the post and has
+sold half or more of it since. A round trip that ended before the post is not "bought before
+this post". Tokens that arrived by transfer are invisible to a list of trades, so a holding
+the trades do not explain is said as that: *most of it sent to the wallet rather than bought*.
+
+**The book.** The index has no "wallets of @handle" question to ask - fourteen guesses at one
+were all 404. The only place an attribution appears is beside a wallet in a holder list. So
+every list that is read is also read for names, and the pairs are kept in
+`chrome.storage.local` (`book:x`, capped at 4,000 accounts, emptied by *forget everyone*).
+Only the index's **X** attribution is used; the same wallet's name on a launchpad or a trading
+app is a different namespace.
+
+**Who paid for the holders** is asked for (*dig deeper*). `funderGroups` sorts the largest
+fifty wallets by funding time and sweeps a one-hour window per funder, so a payer that also
+funded an unrelated wallet two years ago does not stretch the group. A group is a warning at
+three wallets holding a twentieth of supply, on a token no list vouches for, **and only when
+`isBusy` read the payer as quiet**: its thousand newest signatures, from the chain. A thousand
+inside a day is an exchange's withdrawal wallet, a bridge or a bot. The first version of that
+test looked at fifty signatures and was wrong in the direction that matters - a distributor
+paying for fifty wallets right now looks exactly like an exchange for an hour. If the read
+fails the row is stated without colour, and says the payer could not be told apart.
+
+**The creator's record** is asked for too. Past a thousand launches the "creator" is a launch
+service signing for its users, and the row says that and stops. Below it: launched, graduated,
+this week, its best other tokens marked by whether anybody still trades them, and what the
+creator wallet did with this one.
+
+Everything here is worded as the index's record, and none of it is on the path to a verdict.
+`readTrades` refuses an answer in which any trade belongs to another wallet: if the index ever
+stops honouring the filter, a stranger's trades must not be charged to this one.
+
 ### Contracts behind links
 
 `E.textWithLinks` reads a post's `innerText` plus the `textContent` of every link in it, for
@@ -254,10 +302,15 @@ is, the two strongest measured facts and the explorer link, so nobody has to tak
 
 ## Design
 
-Light, on purpose. This sits on other people's pages - X in dark mode, Dexscreener's near
-black, Blockscout's grey - and a dark chip on a dark page is something you have to go looking
-for. A bright card reads instantly against all three, and the status colour lands before any
-text is read.
+A sticker: a bone card with a hard ink outline on a hard flat shadow, no blur anywhere. It
+sits on other people's pages - X in dark mode, Dexscreener's near black, an explorer's grey -
+and nothing else on those pages has a flat pink shadow, so it reads instantly against all
+three and is recognisable in a screenshot with the page cropped away, which is how these
+lines travel. Every surface carries a small stamp: the mark and the name.
+
+Red, amber and green are verdicts and are never used for decoration. The verdict shows as a
+filled label, as the glyph, and - on a fake - as the colour of the shadow the card stands on.
+Pink is the brand's and means only "this is EDGERUN".
 
 - **On X the badge is a strip under the post text**, not a chip in the action bar. The action
   bar is cramped, low-contrast and off the eye's path; a warning about a fake contract belongs
@@ -277,6 +330,12 @@ text is read.
   leaves the screen.
 - **Fonts are declared on the inner elements**, not just `:host`. A page's own rules outrank
   `:host` rules on the host element, so the host page's font leaks in through inheritance.
+  In-page surfaces use the system face; the side panel, which is the extension's own page,
+  carries the display face (Bricolage Grotesque, SIL OFL, `sidepanel/fonts/`).
+- **The side panel opens before anything is awaited.** `chrome.sidePanel.open()` needs the
+  click it was called for, and that survives the hop through `sendMessage` but not an
+  `await`: with one storage write in front of it every badge click was answered "may only be
+  called in response to a user gesture" and fell back to the in-page window.
 
 ## Layout
 
@@ -292,13 +351,15 @@ lib/metaplex.js          metadata-account derivation and parsing for legacy mint
 lib/jupiter.js           launch context for Solana mints, the X link, list vouching
 lib/outcome.js           what the price did after a post
 lib/holders.js           the largest holders, read from the chain: wallets, pools, frozen
+lib/crowd.js             who paid for the holders, the wallet book, one wallet's trades
+                         against a post, the creator's record
 lib/graph.js             who posted what, when, and whether they arrived together
 lib/verdict.js           the checks and the verdict assembly
 lib/selectors.js         4-byte selectors, revert tables
 lib/known.js             the maintained reference list
 lib/budget.js            per-upstream spend caps
 shared/detect.js         address/ticker detection, DOM watching, messaging
-shared/badge.js          the shadow-DOM badge
+shared/badge.js          the shadow-DOM badge, the account line, the wallet line
 sites/{twitter,dexscreener,solana-pages,blockscout}.js
 providers/injected.js    inert - see "transaction interception"
 sidepanel/               the side panel: session ledger, paste-an-address,
@@ -348,6 +409,26 @@ being there. Two things must be settled before it does anything:
    never modify `params`, never delay or block a call, never touch a signature payload.
 
 ## Verified, and not
+
+**0.6.0, 2026-10-10.** What was checked:
+
+- 22 plain `node` suites pass. The new one (`crowd.test.mjs`) runs against two real holder
+  lists and one real trade list saved from the index that day.
+- **The wallet line, end to end in a real Chromium**: the unpacked extension, its real worker
+  and the live index, against a timeline carrying X's DOM contract. A post by an account the
+  index has a wallet for, carrying a mint that wallet trades, drew the line with its evidence;
+  a post by an account it has no wallet for drew nothing. The posts were stand-ins, so no such
+  line is shown anywhere as a real one.
+- **The side panel opening from a badge click**, in that browser: before the fix every click
+  failed with the user-gesture error; after it the panel opened in 22 ms and the row the badge
+  pointed at was focused.
+- *Dig deeper* in the real `panel.html` on two live mints: funders, exchange tags, the
+  creator's record and its own trades all drew, and the chain holder read being refused fell
+  back to the index's list, labelled as that.
+- The new skin on a live `pump.fun/coin/<mint>`: the corner badge and its window.
+- **Not verified: Dexscreener.** It answered the test browser with a "verify you are human"
+  page. That wall is meant for automated browsers, so it was not worked around.
+- **Not verified: any of this on X's own page**, for the same reason as before.
 
 **0.5.0, 2026-10-07.** What was checked:
 

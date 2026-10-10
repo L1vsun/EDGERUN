@@ -43,7 +43,7 @@ const STEPS = [
 const USES = [
   {
     where: "On X",
-    what: "Scroll normally. A post handing over a Solana mint or a contract address gets a badge under the text - one per token, because a post naming three contracts is talking about three things. For a new Solana token it also says where it launched, how old it is and how widely it is held. A $TICKER with no address gets one line when several mints share that symbol: which one the lists vouch for, and how many others there are.",
+    what: "Scroll normally. A post handing over a Solana mint or a contract address gets a line under the text - one per token. A new Solana token also says where it launched, how old it is and how widely it is held. A $TICKER with no address gets a line when several mints share that symbol. And when a public index has a wallet on file for the account that posted, a second line says what that wallet did: bought before the post, sold after it.",
   },
   {
     where: "Who posted it",
@@ -55,7 +55,7 @@ const USES = [
   },
   {
     where: "On a token's own page",
-    what: "Open a pair on Dexscreener, a token on Solscan or a coin on pump.fun. A Solana mint is read in one request: who can mint more, who can freeze or seize your tokens, whether a transfer can be blocked, taxed or paused, and whether its name can still be changed. An EVM contract gets source, ownership, deployer history and a simulated transfer out of a real holder's wallet.",
+    what: "Open a pair on Dexscreener, a token on Solscan or a coin on pump.fun. A Solana mint is read in one request: who can mint more, who can freeze or seize your tokens, whether a transfer can be blocked, taxed or paused. Dig deeper and it reads the holders: who paid for the largest wallets, which of them an index tags as bundle wallets, and what else the creator has launched.",
   },
   {
     where: "Anywhere else",
@@ -67,8 +67,8 @@ export default function Install() {
   return (
     <section className="install" id="install">
       <div className="fhead">
-        <h2>Install it in two minutes</h2>
-        <small>not in the Chrome Web Store yet - loaded from the repo, which means you can read every line first</small>
+        <h2>Install it in two minutes.</h2>
+        <small>Not in the Chrome Web Store yet. It loads from the repo, which means you can read every line first.</small>
       </div>
 
       <div className="steps">
@@ -82,7 +82,7 @@ export default function Install() {
       </div>
 
       <div className="uses" id="how">
-        <h3>Then just use the internet</h3>
+        <h3>Then just use the internet.</h3>
         <div className="use-grid">
           {USES.map((u) => (
             <div className="use" key={u.where}>

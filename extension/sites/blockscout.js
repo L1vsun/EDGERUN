@@ -36,9 +36,9 @@
     wrap.setAttribute("data-edgerun", "panel");
     wrap.style.cssText = "display:block;margin:16px 0;";
     const root = wrap.attachShadow({ mode: "open" });
-    const accent = { FAIL: "#c62828", CAUTION: "#a15c07", UNRESOLVED: "#5d6752" }[result.verdict] || "#4a7c0f";
+    const accent = { FAIL: "#c62828", CAUTION: "#a15c07", UNRESOLVED: "#6b5560" }[result.verdict] || "#4a7c0f";
     const rows = (result.checks || []).map((c) => {
-      const color = { ok: "#4a7c0f", warn: "#a15c07", fail: "#c62828", unresolved: "#b9c0aa" }[c.status] || "#b9c0aa";
+      const color = { ok: "#4a7c0f", warn: "#a15c07", fail: "#c62828", unresolved: "#cdbcb0" }[c.status] || "#cdbcb0";
       return `<div class="row"><i style="background:${color}"></i>
         <span><b>${E.esc(c.label)}</b><span>${E.esc(c.detail)}</span></span></div>`;
     }).join("");
@@ -48,18 +48,18 @@
         * { box-sizing: border-box; }
         /* re-declared inside the shadow root: the page's own rules beat :host on the host */
         .card { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
-          background: #fff; color: #151a11; border: 1px solid #e3e7d9; border-left: 6px solid ${accent};
-          border-radius: 14px; box-shadow: 0 6px 24px rgba(12,18,6,.16); overflow: hidden; }
-        .head { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #e3e7d9; flex-wrap: wrap; }
-        .brand { font-size: 13px; font-weight: 800; letter-spacing: .16em; color: #5d6752; }
+          width: calc(100% - 6px); background: #fff8f1; color: #17060f; border: 2px solid #17060f;
+          border-radius: 16px; box-shadow: 6px 6px 0 ${accent}; overflow: hidden; }
+        .head { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 2px solid #17060f; flex-wrap: wrap; }
+        .brand { font-size: 13px; font-weight: 800; letter-spacing: .16em; color: #17060f; }
         .v { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
           padding: 6px 12px; border-radius: 999px; color: #fff; background: ${accent}; }
-        .count { margin-left: auto; font-size: 13px; color: #5d6752; }
+        .count { margin-left: auto; font-size: 13px; color: #6b5560; }
         .lead { margin: 0; padding: 16px 20px; font-size: 16px; line-height: 1.5; font-weight: 600; }
         .rows { padding: 6px 0 14px; }
         .row { display: grid; grid-template-columns: 10px 1fr; gap: 12px; padding: 9px 20px; }
-        .row i { width: 9px; height: 9px; border-radius: 50%; margin-top: 7px; }
-        .row b { display: block; font-size: 12px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #5d6752; margin-bottom: 2px; }
+        .row i { width: 9px; height: 9px; border-radius: 3px; margin-top: 7px; }
+        .row b { display: block; font-size: 12px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #6b5560; margin-bottom: 2px; }
         .row span { display: block; font-size: 14.5px; line-height: 1.5; }
       </style>
       <div class="card">

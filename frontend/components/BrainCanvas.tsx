@@ -46,8 +46,8 @@ const SHELL_FILL = Array.from({ length: SHELL_BANDS }, (_, b) =>
 const shellBand = (d: number) => Math.min(SHELL_BANDS - 1, Math.max(0, Math.floor((d + 0.5) * SHELL_BANDS)));
 
 const COL: Record<string, [number, number, number]> = {
-  ORN: [255, 255, 255], ALLN: [150, 170, 110], PN: [207, 255, 4], KC: [172, 240, 40],
-  MBON: [255, 120, 120], DAN: [255, 208, 120], LH: [120, 145, 85], APL: [130, 210, 255],
+  ORN: [255, 244, 234], ALLN: [190, 150, 170], PN: [255, 61, 154], KC: [255, 150, 200],
+  MBON: [255, 120, 120], DAN: [255, 208, 120], LH: [170, 120, 145], APL: [130, 210, 255],
 };
 
 export default function BrainCanvas({

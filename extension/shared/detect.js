@@ -109,8 +109,8 @@
     tip.setAttribute("data-edgerun", "reload");
     tip.textContent = "EDGERUN was updated - click to reload this page and keep checking";
     tip.style.cssText = "position:fixed;right:14px;bottom:14px;z-index:2147483647;max-width:300px;padding:10px 14px;" +
-      "font:600 13px/1.4 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#12171a;background:#fff;" +
-      "border:1px solid #e0e5e7;border-left:5px solid #a15c07;border-radius:12px;box-shadow:0 6px 24px rgba(10,16,20,.22);cursor:pointer;";
+      "font:800 13px/1.4 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#17060f;background:#fff8f1;" +
+      "border:2px solid #17060f;border-radius:14px;box-shadow:4px 4px 0 #ff3d9a;cursor:pointer;";
     tip.addEventListener("click", () => location.reload());
     document.body.appendChild(tip);
   };

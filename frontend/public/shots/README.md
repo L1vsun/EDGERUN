@@ -1,43 +1,41 @@
 # Screenshots used on the site
 
 `components/Shots.tsx` picks these up by filename and shows a labelled placeholder for any
-that are missing, so a absent file never renders as a broken image.
+that are missing, so an absent file never renders as a broken image.
 
 | file | what it is |
 |---|---|
-| `product.jpg` | **the hero shot.** Two real captures side by side: the badge in a Dexscreener pair header, and the panel open on the same mint |
-| `solana.jpg` | a Solana mint in the panel: the checks, **the launch**, and **who holds it** after *dig deeper* |
-| `dexscreener.jpg` | a Dexscreener Solana pair page with the badge next to the ticker |
-| `pumpfun.jpg` | a pump.fun coin page with the badge in its fixed corner |
+| `pumpfun.jpg` | a pump.fun coin page with the badge in its fixed corner and its window open beside it |
+| `panel.jpg` | the same mint in the side panel: the checks and **the launch** |
+| `creator.jpg` | the panel after *dig deeper*: **who paid for the holders** and **the creator** |
 
-All four were captured on 2026-10-07 from the unpacked 0.5.0 extension running in a real
-Chromium, on live pages, for one real mint (`GTiqdugp…`, an unverified token calling itself
-PUMP). Nothing in them is staged.
+All three were captured on 2026-10-10 from the unpacked 0.6.0 extension running in a real
+Chromium, on a live page, for one real mint (`HnXDnwTa…`, an unlisted token calling itself
+Fartcoin). Nothing in them is staged. The pump.fun capture is cropped to the token's own
+column so that no other user's name is in frame.
 
-**There is no X shot, on purpose.** A logged-out browser is served a static copy of a post
-with none of the app's markup, so the extension has nothing to attach to and no capture was
-possible. The two X shots this folder used to carry showed the pre-0.5.0 badge - one of them
-a case the code no longer handles that way - and were removed rather than left to describe a
-product that has changed. To add one:
+**There is no X shot and no Dexscreener shot, and both are owed.**
 
-1. Signed in to X, with the extension loaded, find or write a post that pastes a mint.
-2. Let the badge land under the text. For the hero, click it so the side panel opens and
-   expand that row.
-3. Capture at **1440x900, 100% zoom, browser language English**. Save as JPEG, ~1500px wide,
-   quality 82, and add it to `SHOTS` in `components/Shots.tsx`.
+- X: a logged-out browser is served a static copy of a post with none of the app's markup,
+  so the extension has nothing to attach to. It has to be captured signed in.
+- Dexscreener: on the day these were taken the site answered an automated browser with a
+  "verify you are human" page. That is a wall meant for exactly this, so it was not worked
+  around. An ordinary browser gets the page.
 
-Use your own post. Crop out any other account's avatar, name or handle.
+To add either one:
+
+1. With the extension loaded, open the page in your everyday browser. For X, find or write
+   a post that pastes a mint and let the lines land under the text.
+2. Capture at **1440x900, 100% zoom, browser language English**.
+3. Save as JPEG, ~1500px wide, quality 84, and add it to `SHOTS` in `components/Shots.tsx`.
+
+Use your own post. Crop out any other account's avatar, name or handle - the wallet line
+names the account it is about, so for that one use a post you are happy to show.
 
 ---
 
 The grid is a masonry layout, so a shot keeps its own proportions - a tall side panel and a
-wide in-feed badge both sit correctly without being cropped or letterboxed. Nothing needs to
-match anything else's shape.
+wide in-feed badge both sit correctly without being cropped or letterboxed.
 
-Capture at 2x and crop tight. Save as **JPEG, ~1500px wide, quality 82**: these are dense UI
-screenshots and PNG costs three to five times as much for no visible gain. Every visitor pays
-for this page, and GitHub Pages' bandwidth is what caps launch day.
-
-**Crop out anyone's identity.** Avatar, display name and handle come off before a capture of
-a real post goes on the site - the badge and the post text are the evidence, whose post it was
-is not, and a real account does not need to appear in someone else's marketing.
+Capture at 2x and crop tight. Save as **JPEG, quality 84**: these are dense UI screenshots
+and PNG costs three to five times as much for no visible gain.

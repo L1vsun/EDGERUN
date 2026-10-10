@@ -10,22 +10,22 @@ import Zoomable from "./Zoomable";
 
 const SHOTS = [
   {
-    file: "solana.jpg",
-    where: "In the panel",
-    caption: "A Solana mint read from the chain, the launch as an index records it, and - on request - who actually holds it: here one wallet with 58% of supply, and the launchpad's curve drawn as what it is.",
-    hint: "the side panel - paste a mint, expand the row, dig deeper",
-  },
-  {
-    file: "dexscreener.jpg",
-    where: "On Dexscreener",
-    caption: "Next to the ticker in the pair header, before you trade it. This mint calls itself PUMP; the lists give that symbol to a different one.",
-    hint: "dexscreener.com/solana/<any pair>",
-  },
-  {
     file: "pumpfun.jpg",
     where: "On the token's own page",
-    caption: "A fixed corner of the launchpad's page, so it can never land in the wrong row. Same check, same answer.",
+    caption: "A coin page on pump.fun. This mint calls itself Fartcoin; the curated list gives that symbol to a different mint. The badge sits in a fixed corner, and its window opens beside it.",
     hint: "pump.fun/coin/<mint>",
+  },
+  {
+    file: "panel.jpg",
+    where: "In the side panel",
+    caption: "The same mint in the panel: what the chain says about it, then the launch as an index records it - where it launched, how widely it is held, whose wallet made it.",
+    hint: "the side panel - paste a mint and expand the row",
+  },
+  {
+    file: "creator.jpg",
+    where: "Dig deeper",
+    caption: "One click further: whether any of the largest holders were paid for together, and the creator's record - 32 launches, 4 off the launchpad, and its two best other tokens no longer trading.",
+    hint: "the side panel - dig deeper",
   },
 ];
 
@@ -56,8 +56,8 @@ export default function Shots() {
   return (
     <section className="shots" id="shots">
       <div className="fhead">
-        <h2>What it looks like</h2>
-        <small>real output on real contracts, not mockups</small>
+        <h2>Not a mockup.</h2>
+        <small>Real captures of the extension on a live page and a live mint, read on the day they were taken.</small>
       </div>
       <div className="shot-grid">
         {SHOTS.map((s) => (

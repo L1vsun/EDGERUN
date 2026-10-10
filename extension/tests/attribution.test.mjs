@@ -79,7 +79,9 @@ const ctx = {
               ? msg.candidates
                   .filter((c) => c === MINT)
                   .map((c) => ({ address: c, symbol: "PUMP", verdict: "PASS", chainName: "Solana" }))
-              : {};
+              : msg.type === "stake"
+                ? null // no wallet is filed under these accounts
+                : {};
         cb({ ok: true, data });
       },
     },
@@ -97,6 +99,7 @@ load("../shared/detect.js");
 // badge.js needs a real DOM. Rendering is not what this tests, but render() runs before
 // record() in the same flush, so the stub has to satisfy it or nothing downstream happens.
 ctx.EDGERUN.makeBadge = () => Object.assign(new El("badge", "", []), { update() {}, fail() {} });
+ctx.EDGERUN.makeStakeStrip = () => null;
 ctx.EDGERUN.log = () => {};
 
 const MINT = "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn";
@@ -113,6 +116,8 @@ ctx.document.kids = [
   // 4. a Solana mint the author wrote. Missed entirely until 2026-09-24: record() bailed on
   //    "no 0x addresses" and never looked at mints, so a Solana-heavy feed left the graph empty.
   post({ handle: "solcaller", text: `aping ${MINT} right now` }),
+  // 5. a quote of that mint: on the page, so it is badged, but not this author's call
+  post({ handle: "solquoter", text: "is this real", quoting: { handle: "solcaller", text: `aping ${MINT} right now` } }),
 ];
 
 load("../sites/twitter.js");
@@ -151,6 +156,17 @@ assert.equal(by("solcaller").filter((s) => s.address).length, 1, "a Solana mint 
 assert.equal(by("solcaller").find((s) => s.address).address, MINT, "and it keeps its base58 casing");
 assert.equal(by("solcaller").find((s) => s.address).symbol, "PUMP", "carrying the verdict the worker reached for it");
 
-assert.equal(calls.length, 2, "exactly two CALLS from four posts, which is what can accuse anyone");
+assert.equal(by("solquoter").length, 0, "quoting a mint is not calling it either");
+assert.equal(calls.length, 2, "exactly two CALLS from five posts, which is what can accuse anyone");
+
+// ---- the wallet question follows the same rule ----
+// "Did this account's wallet buy before the post" is asked about the author of the mint and
+// nobody else: asking it of an account that only quoted the contract would set their wallet
+// against a call they never made.
+const stakes = sent.filter((m) => m.type === "stake");
+assert.equal(stakes.length, 1, "one mint written by its author, one question");
+assert.equal(stakes[0].handle, "solcaller");
+assert.equal(stakes[0].mint, MINT);
+assert.ok(Number.isFinite(stakes[0].postedAt) || stakes[0].postedAt === null, "carrying the post's own time, or saying there is none");
 
 console.log("attribution: ok");

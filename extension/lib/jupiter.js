@@ -101,6 +101,9 @@ export function shape(t, now = Date.now()) {
     devMints: num(t.audit?.devMints),
     devMigrations: num(t.audit?.devMigrations),
     liquidityUsd: num(t.liquidity),
+    supply: num(t.totalSupply),
+    priceUsd: num(t.usdPrice),
+    mcapUsd: num(t.mcap),
     at: now,
   };
 }

@@ -90,6 +90,8 @@ const callerCalls = new Map();   // handle -> that account's calls, fetched when
 const pricing = new Map();       // handle -> what the last "what happened after" run reported
 const holdersBy = new Map();     // mint -> who holds it, read from the chain when asked
 const deepBy = new Map();        // mint -> the index's deeper record of the launch
+const crowdBy = new Map();       // mint -> who paid for the holders, and which accounts are among them
+const creatorBy = new Map();     // mint -> the creator wallet's other launches and its own trades
 
 const REPO = "https://github.com/L1vsun/EDGERUN";
 
@@ -647,16 +649,18 @@ function renderCallerRow(c) {
 // drawn as what they are, because counting them as holders is how every launch becomes "one
 // wallet owns 80%".
 
-function renderHolders(h) {
+function renderHolders(h, crowd) {
   if (!h) return "";
   const head = '<div class="d-head"><span class="d-label">who holds it</span></div>';
   if (h.status !== "read") {
     const why = {
-      limited: "The endpoint that lists holders limits how often it can be asked. Try again in a moment - nothing follows from that about the token.",
+      limited: "The one endpoint that lists holders from the chain limits how often it can be asked. Try again in a moment - nothing follows from that about the token.",
       none: "The chain lists no holder accounts for this mint.",
-      unreachable: "The holder list could not be read. Nothing follows from that about the token.",
-    }[h.status] || "The holder list could not be read.";
-    return `<div class="dossier">${head}<p class="d-none">${esc(why)}</p></div>`;
+      unreachable: "The holder list could not be read from the chain. Nothing follows from that about the token.",
+    }[h.status] || "The holder list could not be read from the chain.";
+    // the index's list answers the same question less well, and is better than nothing
+    const fallback = crowd?.spread ? checkRows([crowd.spread]) : "";
+    return `<div class="dossier">${head}${fallback}<p class="d-none">${esc(why)}</p></div>`;
   }
   const rows = h.rows.slice(0, 10).map((r) => {
     const who = r.kind === "program" ? "a program's account" : r.kind === "unknown" ? "owner not read" : esc(short(r.owner));
@@ -685,6 +689,77 @@ function renderDeep(d) {
       ${d.checks.map((c) => `<div class="check"><i class="${esc(c.status === "unresolved" ? "" : c.status)}"></i>
         <span><b>${esc(c.label)}</b><span>${esc(c.detail)}</span></span></div>`).join("")}
       <p class="d-note">From the data behind Jupiter's own token pages - its counts and its classifications, none of it read from the chain here.</p>
+    </div>`;
+}
+
+// ---- who paid for the holders ----
+//
+// The same hundred holders, looked at from the other side: not how much each has but where
+// each one's first money came from, what the index tags it as, and whose name it files it
+// under. Wallets paid for together inside an hour are usually one holder wearing several.
+
+const checkRows = (list) => (list || []).map((c) => `<div class="check"><i class="${esc(c.status === "unresolved" ? "" : c.status)}"></i>
+  <span><b>${esc(c.label)}</b><span>${esc(c.detail)}</span></span></div>`).join("");
+
+function renderCrowd(c) {
+  if (!c) return "";
+  const head = '<div class="d-head"><span class="d-label">who paid for the holders</span></div>';
+  if (c.status !== "read") {
+    const why = c.status === "limited"
+      ? "The index limits how often it can be asked. Try again in a moment - nothing follows from that about the token."
+      : "The index has no holder record for this mint, or did not answer. Nothing follows from that about the token.";
+    return `<div class="dossier">${head}<p class="d-none">${esc(why)}</p></div>`;
+  }
+  const body = c.checks.length
+    ? checkRows(c.checks)
+    : `<p class="d-none">Nothing stands out among the ${c.listed} largest holders: no group of wallets funded together, no bundle wallets, nobody the index has a name for.</p>`;
+  return `
+    <div class="dossier">
+      ${head}
+      ${body}
+      <p class="d-note">From the data behind Jupiter's token pages: who first funded each of the ${c.listed} largest holders, and its tags. Whether a shared funder is an exchange is read from the chain.</p>
+    </div>`;
+}
+
+// ---- the creator ----
+//
+// What else the creating wallet launched. The three figures are the record; the plaques under
+// them are its best three tokens, each marked by whether anybody still trades it.
+
+const compactUsd = (n) => (n >= 1e6 ? `$${(n / 1e6).toFixed(n >= 1e7 ? 0 : 1)}M` : n >= 1e3 ? `$${Math.round(n / 1e3)}k` : `$${Math.round(n)}`);
+
+function renderCreator(c, mint) {
+  if (!c) return "";
+  const head = '<div class="d-head"><span class="d-label">the creator</span></div>';
+  if (!c.checks?.length) {
+    return `<div class="dossier">${head}<p class="d-none">The index has no record of the wallet that created this token. Nothing follows from that about the token.</p></div>`;
+  }
+  const r = c.record;
+  const person = r && r.made < 1000;
+  const figures = person
+    ? `<div class="figs">
+        <div><b>${r.made.toLocaleString("en-US")}</b><span>launched</span></div>
+        <div><b>${r.graduated.toLocaleString("en-US")}</b><span>graduated</span></div>
+        <div><b>${r.week.toLocaleString("en-US")}</b><span>this week</span></div>
+      </div>`
+    : "";
+  const plaques = person
+    ? r.best.filter((t) => t.mint !== mint).map((t) => `
+        <div class="plaque ${t.state === "dead" ? "dead" : "live"}">
+          <b>$${esc(t.symbol || short(t.mint))}</b>
+          <span>${esc(compactUsd(t.mcap))}</span>
+          <i>${t.state === "dead" ? "no longer trading" : "trading"}</i>
+        </div>`).join("")
+    : "";
+  return `
+    <div class="dossier">
+      ${head}
+      ${figures}
+      ${plaques ? `<div class="plaques">${plaques}</div>` : ""}
+      ${checkRows(c.checks.filter((k) =>
+        // the figures and the plaques already say these two; a warning is still said in words
+        !(figures && k.id === "creator_record" && k.status !== "warn") && !(plaques && k.id === "creator_best")))}
+      <p class="d-note">From the data behind Jupiter's token pages: its count of this wallet's launches, and its record of the wallet's own trades.</p>
     </div>`;
 }
 
@@ -782,7 +857,9 @@ function renderRow(e) {
         ${rank}
         ${dossier}
         ${evm ? "" : renderLaunch(e)}
-        ${evm ? "" : renderHolders(holdersBy.get(e.address))}
+        ${evm ? "" : renderHolders(holdersBy.get(e.address), crowdBy.get(e.address))}
+        ${evm ? "" : renderCrowd(crowdBy.get(e.address))}
+        ${evm ? "" : renderCreator(creatorBy.get(e.address), e.address)}
         ${evm ? "" : renderDeep(deepBy.get(e.address))}
         ${sweep}
         ${xchain}
@@ -1121,12 +1198,15 @@ $("#list").addEventListener("click", async (ev) => {
     }
     open.add(address);
     render();
-    try {
-      deepBy.set(address, await ask({ type: "deep", address }));
-    } catch {
-      deepBy.set(address, { checks: [] });
-    }
-    return render();
+    // The three index reads are independent of each other, so they go together and each
+    // paints as it lands. A refusal on one is its own empty block, never a reason to drop
+    // the others.
+    await Promise.all([
+      ask({ type: "crowd", address, vouched }).catch(() => ({ status: "unreachable", checks: [] })).then((r) => { crowdBy.set(address, r); render(); }),
+      ask({ type: "creator", address }).catch(() => ({ record: null, checks: [] })).then((r) => { creatorBy.set(address, r); render(); }),
+      ask({ type: "deep", address }).catch(() => ({ checks: [] })).then((r) => { deepBy.set(address, r); render(); }),
+    ]);
+    return;
   }
 
   if (btn.dataset.act === "recheck") {
@@ -1323,8 +1403,13 @@ $("#check").addEventListener("submit", async (ev) => {
   // One box, both alphabets. An 0x address and a base58 mint are never ambiguous, so asking
   // the reader to pick a chain first would be asking them for something we can see.
   const solana = !isAddress(address) && isSolanaAddress(address);
+  if (!address) return void input.focus();
   if (!isAddress(address) && !solana) {
-    err.textContent = "that is not a contract address or a Solana mint";
+    // A ticker is the natural thing to type here and the one thing that cannot be checked:
+    // any number of mints can wear it. Say that, rather than "not an address".
+    err.textContent = /^\$?[A-Za-z][A-Za-z0-9]{1,11}$/.test(address)
+      ? `a ticker is not enough - many mints can call themselves ${address.startsWith("$") ? address : `$${address}`}. Paste the mint or contract address.`
+      : "that is not a contract address or a Solana mint";
     err.hidden = false;
     return;
   }
@@ -1602,6 +1687,17 @@ $("#clear").addEventListener("click", async () => {
 // The worker writes, we repaint. Falls back to the generic listener, then to polling, so a
 // browser missing the per-area event still gets a live panel rather than a frozen one.
 const onLedgerChange = async (changes) => {
+  // A badge was clicked while the panel was already open. Opening is a no-op then, so the
+  // hint is the only thing that changed - and without this the click did nothing visible.
+  if (tabId != null && changes[`focus:${tabId}`]?.newValue) {
+    await readFocus();
+    if (filter !== "callers") {
+      filter = "all";
+      for (const t of document.querySelectorAll(".tab")) t.classList.toggle("on", t.dataset.filter === "all");
+    }
+    await load();
+    document.querySelector("#list .row.focus")?.scrollIntoView({ block: "nearest" });
+  }
   const hit = changes.ledger;
   if (!hit) return;
   rows = hit.newValue || [];
