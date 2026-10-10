@@ -90,6 +90,7 @@ const callerCalls = new Map();   // handle -> that account's calls, fetched when
 const pricing = new Map();       // handle -> what the last "what happened after" run reported
 const holdersBy = new Map();     // mint -> who holds it, read from the chain when asked
 const deepBy = new Map();        // mint -> the index's deeper record of the launch
+const cards = new Map();         // address -> the row's finding drawn as a receipt: { image, caption, name }
 const crowdBy = new Map();       // mint -> who paid for the holders, and which accounts are among them
 const creatorBy = new Map();     // mint -> the creator wallet's other launches and its own trades
 
@@ -692,6 +693,34 @@ function renderDeep(d) {
     </div>`;
 }
 
+// ---- the receipt ----
+//
+// The row's finding as a picture to post, drawn by the worker from the row as it stands -
+// including whatever "dig deeper" has added to it by then. It says what it is about and when
+// it was read, so it can be checked by someone who has never seen this panel.
+
+function renderCard(e) {
+  const c = cards.get(e.address);
+  if (!c) return "";
+  if (c.error) return `<div class="dossier"><p class="d-none">${esc(c.error)}</p></div>`;
+  return `
+    <div class="receipt">
+      <img src="${esc(c.image)}" alt="EDGERUN receipt for ${esc(e.symbol || short(e.address))}" />
+      <div class="k-acts">
+        <button class="go" data-act="card-copy">copy image</button>
+        <button data-act="card-save">download</button>
+        <button data-act="card-text">copy text</button>
+      </div>
+    </div>`;
+}
+
+/** The row as the receipt's subject: its verdict, plus every finding the deeper reads added. */
+function cardRequest(e) {
+  const extra = [crowdBy.get(e.address), creatorBy.get(e.address), holdersBy.get(e.address), deepBy.get(e.address)]
+    .flatMap((b) => b?.checks || []).filter((c) => c.status === "fail" || c.status === "warn");
+  return { type: "card", kind: "token", result: { ...e, checks: [...(e.checks || []), ...extra] }, lead: e.say, label: rowVerdict(e).toLowerCase() };
+}
+
 // ---- who paid for the holders ----
 //
 // The same hundred holders, looked at from the other side: not how much each has but where
@@ -866,6 +895,7 @@ function renderRow(e) {
         ${chart}
         ${market}
         ${renderComposer(e)}
+        ${renderCard(e)}
         <div class="addr">${esc(e.address)}</div>
         <div class="acts">
           ${evm && e.level !== "full" && e.verdict !== "FAIL" ? '<button class="go-act" data-act="full">run full check</button>' : ""}
@@ -876,6 +906,7 @@ function renderRow(e) {
           ${market ? "" : '<button data-act="market">the trades</button>'}
           ${chart ? "" : '<button data-act="chart">chart</button>'}
           <button data-act="reply">reply</button>
+          <button data-act="card">${cards.has(e.address) ? "hide receipt" : "receipt"}</button>
           ${claimsFor(e).some((c) => validateClaim(c).ok) ? '<button data-act="copy-claim">copy claim</button>' : ""}
           <button data-act="watch">${watched ? "unwatch" : "watch"}</button>
           ${e.explorerUrl ? `<a href="${esc(e.explorerUrl)}" target="_blank" rel="noreferrer">explorer ↗</a>` : ""}
@@ -1080,6 +1111,8 @@ async function readFocus() {
 }
 
 async function stats() {
+  // which copy this is: the number a reader compares against the one being announced
+  $("#version").textContent = `v${chrome.runtime.getManifest().version}`;
   const set = (sel, text, warn) => {
     const el = $(sel);
     el.textContent = text;
@@ -1339,6 +1372,45 @@ $("#list").addEventListener("click", async (ev) => {
       btn.disabled = false;
       btn.textContent = "could not rank";
       btn.title = err.message;
+    }
+    return;
+  }
+
+  if (btn.dataset.act === "card") {
+    if (cards.has(address)) { cards.delete(address); return render(); }
+    btn.disabled = true;
+    btn.textContent = "drawing…";
+    try {
+      cards.set(address, await ask(cardRequest(entry)));
+    } catch (err) {
+      cards.set(address, { error: `The receipt could not be drawn: ${err.message}` });
+    }
+    return render();
+  }
+
+  if (btn.dataset.act === "card-copy" || btn.dataset.act === "card-save" || btn.dataset.act === "card-text") {
+    const c = cards.get(address);
+    if (!c?.image) return;
+    try {
+      if (btn.dataset.act === "card-text") {
+        await navigator.clipboard.writeText(c.caption || "");
+        btn.textContent = "copied ✓";
+      } else {
+        const blob = await (await fetch(c.image)).blob();
+        if (btn.dataset.act === "card-copy") {
+          await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+          btn.textContent = "copied ✓";
+        } else {
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = c.name || "edgerun-receipt.png";
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+          btn.textContent = "saved ✓";
+        }
+      }
+    } catch {
+      btn.textContent = btn.dataset.act === "card-copy" ? "use download" : "blocked";
     }
     return;
   }

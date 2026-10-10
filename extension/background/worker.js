@@ -17,6 +17,7 @@ import { isSolanaAddress } from "../lib/base58.js";
 import * as solana from "../lib/solana.js";
 import { bindingCheck, deepChecks, launchChecks, lookupSymbol, readContext, readDeep, sameSymbol } from "../lib/jupiter.js";
 import { readHolders } from "../lib/holders.js";
+import { cardCaption, renderCard, stakeCard, tokenCard } from "../lib/card.js";
 import {
   creatorChecks, creatorTradeCheck, crowdChecks, forgetNamed, funderGroups, isBusy, namedHolders,
   noteNamed, readCreator, readCrowd, readTrades, spreadCheck, stakeLine, stakeOf, walletsOf,
@@ -536,6 +537,18 @@ const HANDLERS = {
   deep: async (m) => {
     const deep = await readDeep(m.address);
     return { deep, checks: deepChecks(deep) };
+  },
+  /**
+   * A finding as a picture. The page sends back the result it was given and the sentence it
+   * showed; nothing is read again and nothing new is claimed. Drawn here because this is the
+   * one place with a canvas, the extension's own font and no page CSP in the way.
+   */
+  card: async (m) => {
+    const model = m.kind === "stake"
+      ? stakeCard(m.stake, { symbol: m.symbol, mint: m.mint, post: m.post })
+      : tokenCard(m.result, { lead: m.lead, label: m.label, post: m.post });
+    if (!model) throw new Error("nothing to put on a receipt");
+    return { image: await renderCard(model), caption: cardCaption(model), name: `edgerun-${(m.symbol || m.result?.symbol || "receipt").replace(/[^A-Za-z0-9]/g, "") || "receipt"}.png` };
   },
   crowd: (m) => getCrowdChecks(m.address, { fresh: m.fresh, vouched: Boolean(m.vouched) }),
   creator: (m) => getCreator(m.address),

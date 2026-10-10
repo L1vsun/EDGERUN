@@ -22,6 +22,12 @@ const SHOTS = [
     hint: "the side panel - paste a mint and expand the row",
   },
   {
+    file: "receipt.jpg",
+    where: "As a receipt",
+    caption: "Any finding, drawn as a picture to post: what was found, the full address, when it was read. One button, and it goes to your clipboard - nothing is posted for you.",
+    hint: "the receipt button - in the badge's window, or on a row in the panel",
+  },
+  {
     file: "creator.jpg",
     where: "Dig deeper",
     caption: "One click further: whether any of the largest holders were paid for together, and the creator's record - 32 launches, 4 off the launchpad, and its two best other tokens no longer trading.",

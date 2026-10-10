@@ -241,6 +241,28 @@ Everything here is worded as the index's record, and none of it is on the path t
 `readTrades` refuses an answer in which any trade belongs to another wallet: if the index ever
 stops honouring the filter, a stranger's trades must not be charged to this one.
 
+### The receipt (`lib/card.js`)
+
+A line under a post is seen by whoever installed this; a screenshot of it is seen by everyone
+else. `card.js` draws a finding as a 1080 x 1350 picture so that making one is a button and
+not a crop.
+
+- **Two halves.** `tokenCard` and `stakeCard` are pure and tested: they turn a result this
+  extension already produced into a headline, rows and references. `drawCard` puts that on a
+  canvas, and `renderCard` runs it in the worker on an `OffscreenCanvas` - the one place with
+  a canvas, the extension's own font, and no page CSP in the way. A surface sends back the
+  result it was given and the sentence it showed (`{ type: "card" }`) and gets a PNG.
+- **Nothing new is claimed.** The headline is the strongest finding's own label; the rows are
+  the checks' own sentences; a wallet receipt is amber exactly where the wallet line is. There
+  is no free-text field anywhere in it.
+- **What may never come off.** When the slip runs out of room, rows are dropped from the end.
+  The full address, the time it was read and the source line - for a wallet, the sentence
+  saying the wallet-to-account link is an index's attribution - are laid out after the rows
+  and are never among what is dropped. A picture that travels without its context has to
+  carry its own.
+- **Where it goes.** To the clipboard or to a file. The viewer (`E.showCard`) builds its blob
+  from the data URL by hand, because a page's CSP can refuse a `fetch` of one.
+
 ### Contracts behind links
 
 `E.textWithLinks` reads a post's `innerText` plus the `textContent` of every link in it, for
@@ -359,6 +381,7 @@ lib/outcome.js           what the price did after a post
 lib/holders.js           the largest holders, read from the chain: wallets, pools, frozen
 lib/crowd.js             who paid for the holders, the wallet book, one wallet's trades
                          against a post, the creator's record
+lib/card.js              a finding drawn as a receipt: the models, and the canvas
 lib/graph.js             who posted what, when, and whether they arrived together
 lib/verdict.js           the checks and the verdict assembly
 lib/selectors.js         4-byte selectors, revert tables
@@ -415,6 +438,19 @@ being there. Two things must be settled before it does anything:
    never modify `params`, never delay or block a call, never touch a signature payload.
 
 ## Verified, and not
+
+**0.7.0, 2026-10-10.** The receipt:
+
+- 23 plain `node` suites pass. `card.test.mjs` covers the models and, with a recording
+  context, that a crowded receipt drops rows and keeps the address, the time and the source.
+- **Drawn by the real worker in a real Chromium**: a token receipt from the panel, before and
+  after *dig deeper*, and a wallet receipt asked of the worker directly. The headline face
+  loaded in the worker (`FontFace` from the packaged file).
+- **The viewer on a live `pump.fun/coin/<mint>`**: opened from the badge's window; copy image
+  put `image/png` on the clipboard, copy text put the caption, download saved the file. A
+  headless browser needs the clipboard permission granted to it; a real one asks nothing.
+- Not seen: the wallet line's own receipt button on X's real page, for the same reason as
+  everything else there.
 
 **0.6.0, 2026-10-10.** What was checked:
 

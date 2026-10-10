@@ -14,7 +14,7 @@ front of you, what they did with it, and what the price did after they posted it
 
 [![chains](https://img.shields.io/badge/chains-6-FF3D9A?style=flat-square&labelColor=17060F)](#the-chains-it-reads-and-what-each-is-allowed-to-claim)
 [![tests](https://img.shields.io/badge/engine%20tests-37%20passing-4FD1A5?style=flat-square&labelColor=17060F)](edgerun/tests)
-[![extension tests](https://img.shields.io/badge/extension%20tests-22%20suites-4FD1A5?style=flat-square&labelColor=17060F)](extension/tests)
+[![extension tests](https://img.shields.io/badge/extension%20tests-23%20suites-4FD1A5?style=flat-square&labelColor=17060F)](extension/tests)
 [![backend](https://img.shields.io/badge/servers%20required-none-4FD1A5?style=flat-square&labelColor=17060F)](#no-backend-and-why-that-was-a-measurement-not-a-preference)
 [![keys](https://img.shields.io/badge/keys%20held-none-4FD1A5?style=flat-square&labelColor=17060F)](SECURITY.md)
 [![license](https://img.shields.io/badge/license-MIT-E8B339?style=flat-square&labelColor=17060F)](LICENSE)
@@ -196,6 +196,23 @@ and nothing else. That is told from the payer's own traffic, read from the chain
 signatures inside a day is a service. If that read fails, the finding is stated without
 colour. A "creator" with thousands of launches is a launch service signing for its users, and
 is named as one rather than blamed as one.
+
+### The receipt
+
+Any of these findings can be turned into a picture to post. One button - in the badge's
+window, in the wallet line's evidence, on a row in the panel - and the finding is drawn as a
+till receipt: the strongest thing found as the headline, the checks behind it, the full
+address, the post it was read under, the time it was read.
+
+<img src="frontend/public/shots/receipt.jpg" width="360" alt="An EDGERUN receipt: symbol already taken, for a mint calling itself Fartcoin" />
+
+That one is real output for a real mint. A receipt says nothing the line did not say: it is
+built from a result the extension already produced, in the words the checks already chose,
+and there is no field on it a reader can type into. When it runs out of room it drops
+evidence from the end and never the three things a stranger needs to check it - the address,
+the time, and the sentence saying whose record a wallet-to-account link is. It is drawn in
+the extension and goes to the clipboard or to a file; nothing is uploaded and nothing is
+posted for you.
 
 ---
 
@@ -520,7 +537,7 @@ requests.
 extension/      the browser extension - MV3, no build step, no dependencies
   lib/          chains table, EVM + Solana providers, metadata-account derivation, the
                 launch index, the holder read, the crowd (funders, named wallets, a wallet's
-                trades, the creator's record), explorer, registry, verdict engine, curated token lists,
+                trades, the creator's record), the receipt (a finding drawn as a picture), explorer, registry, verdict engine, curated token lists,
                 blocklist, memory, deployer trail, exit-size sweep, cross-chain resolver, the
                 caller graph, call outcomes, the session ledger, the claim format, the claim
                 verifier, the trades reader, OHLC candles + rug detection
@@ -528,7 +545,7 @@ extension/      the browser extension - MV3, no build step, no dependencies
                 the shadow-DOM badge, the account strip, the profile card
   sites/        one thin adapter per surface (twitter, dexscreener, solana-pages, blockscout)
   sidepanel/    the side panel - the extension's main surface
-  tests/        22 plain `node` suites, no dependencies: `node tests/ledger.test.mjs`
+  tests/        23 plain `node` suites, no dependencies: `node tests/ledger.test.mjs`
 edgerun/        the original Python scan engine + CLI (37 tests)
 backend/        FastAPI service - optional, not on the extension's path
 docs/           what each check means, the impersonation rules, the claim format

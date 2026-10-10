@@ -295,6 +295,111 @@
   }
   E.badgeReceipt = receipt;
 
+  /* ---- the receipt ----
+   *
+   * A finding as a picture to post. The worker draws it (lib/card.js) from the result this
+   * page was already given, and this shows it with the two things a reader does next: copy
+   * it, or save it. Nothing is uploaded and nothing is posted from here - the picture goes
+   * to the clipboard or to a file, and what happens to it after that is the reader's act.
+   */
+  const CARD_CSS = `
+    :host { all: initial; ${TOKENS} font-family: ${FONT}; }
+    * { box-sizing: border-box; }
+    .veil { position: fixed; inset: 0; z-index: 2147483647; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px; padding: 18px; background: rgba(23, 6, 15, .78); font-family: ${FONT}; }
+    img { display: block; max-height: calc(100vh - 150px); max-width: min(92vw, 520px); border: 2px solid var(--ink); border-radius: 14px; box-shadow: 6px 6px 0 var(--signal); }
+    .bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    button { font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; padding: 8px 15px; border-radius: 999px; color: var(--ink);
+      background: var(--card); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+    button:hover { background: #fff; }
+    button:active { transform: translate(3px, 3px); box-shadow: none; }
+    button.go { background: var(--signal); }
+    .note { margin: 0; max-width: 520px; text-align: center; font-size: 12px; line-height: 1.45; color: #f0d9e3; }
+  `;
+  let cardHost = null;
+
+  function closeCard() {
+    cardHost?.remove();
+    cardHost = null;
+  }
+
+  /** @param card what the worker's `card` answer carries: `{ image, caption, name }` */
+  E.showCard = function showCard(card) {
+    closeCard();
+    if (!card?.image) return;
+    // from the data URL by hand: a page's CSP can refuse a `fetch` of one
+    const raw = atob(card.image.split(",")[1]);
+    const bytes = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    const blob = new Blob([bytes], { type: "image/png" });
+    const url = URL.createObjectURL(blob);
+
+    cardHost = document.createElement("div");
+    cardHost.setAttribute("data-edgerun", "receipt");
+    const root = cardHost.attachShadow({ mode: "open" });
+    const style = document.createElement("style");
+    style.textContent = CARD_CSS;
+    const veil = document.createElement("div");
+    veil.className = "veil";
+    veil.innerHTML = `
+      <img alt="EDGERUN receipt" />
+      <div class="bar">
+        <button class="go" data-act="image">copy image</button>
+        <button data-act="save">download</button>
+        <button data-act="text">copy text</button>
+        <button data-act="close">close</button>
+      </div>
+      <p class="note">Built from what was just read, in the words it was shown in. It names what it is about and when it was read, so anyone can check it.</p>`;
+    veil.querySelector("img").src = url;
+    const done = () => { URL.revokeObjectURL(url); closeCard(); document.removeEventListener("keydown", onKey, true); };
+    const onKey = (e) => { if (e.key === "Escape") { e.stopPropagation(); done(); } };
+    document.addEventListener("keydown", onKey, true);
+    veil.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      // Kept, because it will not be there later: once dispatch ends, an event whose target
+      // sits in a shadow tree has that target cleared, so after the first `await` e.target is
+      // null. The copy worked and the button never said so.
+      const btn = e.target;
+      const act = btn?.dataset?.act;
+      if (btn === veil || act === "close") return done();
+      if (act === "image") {
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+          btn.textContent = "copied ✓";
+        } catch {
+          btn.textContent = "use download";
+        }
+      }
+      if (act === "save") {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = card.name || "edgerun-receipt.png";
+        a.click();
+        btn.textContent = "saved ✓";
+      }
+      if (act === "text") {
+        try { await navigator.clipboard.writeText(card.caption || ""); btn.textContent = "copied ✓"; } catch { btn.textContent = "copy blocked"; }
+      }
+    });
+    root.append(style, veil);
+    (document.documentElement || document.body).appendChild(cardHost);
+  };
+
+  /** Ask for a receipt and show it. `btn` carries the wait and, if it fails, the reason. */
+  async function makeCard(btn, request) {
+    const was = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "drawing…";
+    try {
+      E.showCard(await E.ask({ type: "card", ...request }));
+      btn.textContent = was;
+    } catch (err) {
+      btn.textContent = "no receipt";
+      btn.title = err.message;
+    }
+    btn.disabled = false;
+  }
+
   // One panel element for the whole page, parked at the document root.
   let panelHost = null;
   let panelRoot = null;
@@ -507,6 +612,7 @@
           ${candidates(r).length ? '<button data-act="rank">which one is real?</button>' : ""}
           <button data-act="trail">who launched it</button>
           <button data-act="copy">copy proof</button>
+          <button data-act="card">receipt</button>
           <button data-act="watch">watch</button>
           <a href="${esc(r.explorerUrl)}" target="_blank" rel="noreferrer">explorer ↗</a>
           ${r.dexUrl ? `<a href="${esc(r.dexUrl)}" target="_blank" rel="noreferrer">chart ↗</a>` : ""}
@@ -590,6 +696,12 @@
           btn.textContent = "could not rank";
           btn.title = err.message;
         }
+      });
+
+      // The same finding as a picture. It carries the post it was read under when there is one.
+      panel.querySelector('[data-act="card"]')?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        makeCard(e.target, { kind: "token", result: current, lead: lead(current), label: labelOf(current), post: opts.post || null });
       });
 
       // Something you can paste under the post as a reply.
@@ -717,10 +829,17 @@
     .row span { display: block; overflow-wrap: anywhere; }
     .foot { display: flex; align-items: flex-end; gap: 10px; margin-top: 6px; }
     .note { flex: 1; margin: 0; font-size: 11px; color: var(--muted); }
+    button { margin-top: 8px; font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; padding: 6px 13px; border-radius: 999px;
+      color: var(--ink); background: var(--signal); border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+    button:active { transform: translate(2px, 2px); box-shadow: none; }
+    button:disabled { opacity: .7; cursor: default; }
   `;
 
-  /** @param stake what the worker's `stake` answer carries: `{ handle, wallet, tone, lead, checks }` */
-  E.makeStakeStrip = function makeStakeStrip(stake) {
+  /**
+   * @param stake what the worker's `stake` answer carries: `{ handle, wallet, tone, lead, checks, facts }`
+   * @param about what the line is about, for its receipt: `{ symbol, mint, post }`
+   */
+  E.makeStakeStrip = function makeStakeStrip(stake, about = {}) {
     if (!stake || !stake.lead) return null;
     const host = document.createElement("div");
     host.className = "edgerun-stake";
@@ -739,6 +858,7 @@
         <span class="tag">wallet</span><span class="say">${esc(stake.lead)}</span><span class="more">details</span>
       </div>
       <div class="rows" hidden>${rows}
+        <button data-act="card">receipt</button>
         <div class="foot"><p class="note">Which wallet belongs to this account is the index's attribution (Jupiter), and so are the trades. Nothing here was read from the post.</p>${STAMP}</div>
       </div>`;
 
@@ -753,7 +873,11 @@
     top.addEventListener("click", toggle);
     top.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") toggle(e); });
     // a click inside the evidence must not open the post it sits in
-    body.addEventListener("click", (e) => e.stopPropagation());
+    body.addEventListener("click", (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (e.target?.dataset?.act === "card") makeCard(e.target, { kind: "stake", stake, symbol: about.symbol || null, mint: about.mint || null, post: about.post || null });
+    });
 
     root.append(style, box);
     return host;

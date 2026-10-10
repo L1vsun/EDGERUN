@@ -277,6 +277,10 @@ button { font: inherit; cursor: pointer; }
   bottom: 0;
 }
 .stat { font-size: 11px; color: var(--muted); }
+/* its own line under the figures: small enough to ignore, always there to be found */
+.update { flex-basis: 100%; margin: 0; font-size: 11px; line-height: 1.45; color: var(--muted); }
+.update b { margin-right: 4px; padding: 1px 7px; border-radius: 999px; background: var(--ink); color: var(--card); font-weight: 800; }
+.update a { color: var(--ink); font-weight: 800; text-decoration: underline; text-decoration-color: var(--signal); text-decoration-thickness: 2px; text-underline-offset: 2px; }
 .stat.warn { color: var(--warn); font-weight: 700; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -677,3 +681,15 @@ button { font: inherit; cursor: pointer; }
 .plaque i { font-style: normal; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .plaque.dead { opacity: 0.62; border-style: dashed; }
 .plaque.dead b { text-decoration: line-through; }
+
+/* the row's finding as a picture: shown whole, with the two things to do with it */
+.receipt { margin-top: 12px; }
+.receipt img { display: block; width: 100%; height: auto; border: 2px solid var(--edge); border-radius: 12px; box-shadow: 4px 4px 0 var(--signal); }
+.receipt .k-acts { margin-top: 12px; }
+.receipt .k-acts button {
+  padding: 6px 12px; font-size: 12px; font-weight: 800; color: var(--ink); background: var(--card);
+  border: 2px solid var(--edge); border-radius: 999px; box-shadow: 2px 2px 0 var(--edge);
+}
+.receipt .k-acts button:active { transform: translate(2px, 2px); box-shadow: none; }
+.receipt .k-acts .go { color: var(--on-signal); background: var(--sunset); }
+

@@ -335,10 +335,19 @@ export function stakeLine({ handle, wallet, stake, holdsPct = null, holdsAmount 
     checks.push(check("stake_money", "in and out", "unresolved",
       `bought $${people(Math.round(stake.usdIn))} of it and sold $${people(Math.round(stake.usdOut))}, across ${stake.trades} trade${stake.trades === 1 ? "" : "s"} - the index's record of that wallet`));
   }
+  const held = stake?.postedAt != null && stake.heldAtPost > 0;
   return {
     handle, wallet, tone,
     lead: `@${handle}'s listed wallet ${said.join(", ")}.`,
     checks,
+    // the same findings as numbers, for anything that has to pick the loudest one (a receipt)
+    facts: {
+      leadMs: stake?.leadMs ?? null,
+      boughtAfterMs: stake?.boughtAfterMs ?? null,
+      heldAtPost: held,
+      soldAfterPct: held ? (stake.soldAfter > 0 ? stake.soldAfterPct : 0) : null,
+      holdsPct: holdsPct > 0 ? holdsPct : null,
+    },
   };
 }
 

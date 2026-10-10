@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "EDGERUN - token and caller checks",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Which mint is in that post, who paid for its holders, and what the poster's wallet did. Solana and five EVM chains, in your browser.",
   "permissions": [
     "storage",

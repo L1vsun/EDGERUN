@@ -265,11 +265,11 @@
     if (!own) return;
     const theirs = E.findTokens(E.textWithLinks(own));
     const written = new Set([...theirs.mints, ...theirs.pairs.map((id) => pairMints.get(id)).filter(Boolean)]);
-    const { postedAt } = postOf(article);
+    const { postedAt, post } = postOf(article);
     for (const r of solana.filter((x) => written.has(x.address)).slice(0, 2)) {
       E.settle(E.ask({ type: "stake", handle: author.handle, mint: r.address, postedAt: postedAt ?? null }), null, 12000).then((stake) => {
         if (!stake || !strips.isConnected) return;
-        const strip = E.makeStakeStrip(stake);
+        const strip = E.makeStakeStrip(stake, { symbol: r.symbol, mint: r.address, post: { handle: author.handle, id: post || null } });
         if (strip) strips.append(strip);
       });
     }
@@ -317,9 +317,12 @@
     // about a fake contract has to sit in the reading flow, where it cannot be scrolled past.
     const strips = document.createElement("div");
     strips.setAttribute("data-edgerun", "badge");
+    // which post these lines stand under: a receipt made from one of them says so
+    const under = author?.handle ? { handle: author.handle, id: postOf(article).post || null } : null;
     for (const result of found_) {
       const badge = E.makeBadge({
         mode: "block",
+        post: under,
         onFull: async (address) => {
           try {
             // a mint has no second tier - its whole scan is one read - so "full" is a re-read

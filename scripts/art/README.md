@@ -28,7 +28,8 @@ One scene to look at while changing it: serve this folder and open
 - `frontend/public/art/*.webp` - the pictures on the site, with alpha, so one file sits on
   the gradient, the bone field or the dark one
 - `frontend/public/og.png`, `brand/banner.png` - the link preview (1200x630)
-- `brand/x-header.png` - the profile header (1500x500)
+- `brand/x-header.png` - the profile header on X (1500x500). Its words stay in the top band:
+  the avatar covers the bottom-left corner, roughly left of 400 and below 320
 - `brand/logo.png` - the avatar (512)
 - `extension/icons/`, `frontend/public/icon-*.png`, `apple-touch-icon.png`, `favicon.ico`
 

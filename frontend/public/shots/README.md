@@ -8,10 +8,12 @@ that are missing, so an absent file never renders as a broken image.
 | `pumpfun.jpg` | a pump.fun coin page with the badge in its fixed corner and its window open beside it |
 | `panel.jpg` | the same mint in the side panel: the checks and **the launch** |
 | `creator.jpg` | the panel after *dig deeper*: **who paid for the holders** and **the creator** |
+| `receipt.jpg` | a finding drawn as a receipt by the extension itself - the picture the *receipt* button makes |
 
-All three were captured on 2026-10-10 from the unpacked 0.6.0 extension running in a real
-Chromium, on a live page, for one real mint (`HnXDnwTa…`, an unlisted token calling itself
-Fartcoin). Nothing in them is staged. The pump.fun capture is cropped to the token's own
+The three captures were taken on 2026-10-10 from the unpacked 0.6.0 extension running in a
+real Chromium, on a live page, for one real mint (`HnXDnwTa…`, an unlisted token calling
+itself Fartcoin), and the receipt was drawn the same day by 0.7.0 for the same mint. Nothing
+in them is staged. The pump.fun capture is cropped to the token's own
 column so that no other user's name is in frame.
 
 **There is no X shot and no Dexscreener shot, and both are owed.**
