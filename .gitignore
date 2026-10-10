@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+
+node_modules/
+.next/
+out/
+next-env.d.ts
+
+*.db
+.env
+.env.local
+
+.DS_Store
+*.tsbuildinfo
+extension/_metadata/
+
+# internal working docs - kept locally, not published
+.internal/
