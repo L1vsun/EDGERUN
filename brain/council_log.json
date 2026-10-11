@@ -608,5 +608,88 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-11T22:16:44+00:00",
+  "block": 455812569,
+  "mode": "rules",
+  "call": "ORE is the one to watch - heating, new holders",
+  "focus": "ORE",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ZEC",
+    "per_min": 694.6,
+    "traders": 468,
+    "top10": 0.35,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 423.2,
+    "traders": 709,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "baton",
+    "per_min": 149.8,
+    "traders": 228,
+    "top10": 0.17,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "NEON",
+    "per_min": 74.6,
+    "traders": 42,
+    "top10": 0.78,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 46.8,
+    "traders": 63,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "FARM",
+    "per_min": 45.0,
+    "traders": 105,
+    "top10": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "Tesselai",
+    "per_min": 33.8,
+    "traders": 97,
+    "top10": 0.23,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ORE",
+    "per_min": 32.4,
+    "traders": 47,
+    "top10": 0.29,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
