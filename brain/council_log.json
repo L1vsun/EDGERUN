@@ -454,5 +454,80 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-11T13:16:44+00:00",
+  "block": 455664549,
+  "mode": "rules",
+  "call": "GRASS is the one to watch - buyers lead, heating",
+  "focus": "GRASS",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 457.6,
+    "traders": 618,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 251.0,
+    "traders": 306,
+    "top10": 0.31,
+    "flags": []
+   },
+   {
+    "symbol": "Dacity",
+    "per_min": 94.0,
+    "traders": 267,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "CYBERLEEK",
+    "per_min": 91.2,
+    "traders": 232,
+    "top10": 0.1,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 82.6,
+    "traders": 97,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ALON",
+    "per_min": 70.8,
+    "traders": 186,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 51.2,
+    "traders": 76,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 51.0,
+    "traders": 97,
+    "top10": 0.73,
+    "flags": []
+   }
+  ]
  }
 ]
