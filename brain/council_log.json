@@ -529,5 +529,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-11T18:18:03+00:00",
+  "block": 455747154,
+  "mode": "rules",
+  "call": "RAY is the one to watch - buyers lead, heating",
+  "focus": "RAY",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Larp",
+    "per_min": 344.6,
+    "traders": 593,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 206.6,
+    "traders": 132,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 80.6,
+    "traders": 123,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "DOPE",
+    "per_min": 61.8,
+    "traders": 137,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "DOPE",
+    "per_min": 47.2,
+    "traders": 207,
+    "top10": 0.11,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "baton",
+    "per_min": 42.6,
+    "traders": 48,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CYBERLEEK",
+    "per_min": 32.2,
+    "traders": 75,
+    "top10": 0.11,
+    "flags": []
+   },
+   {
+    "symbol": "tradeup",
+    "per_min": 26.6,
+    "traders": 67,
+    "top10": 0.22,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
