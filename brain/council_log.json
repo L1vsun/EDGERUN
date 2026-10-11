@@ -377,5 +377,82 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-11T06:10:28+00:00",
+  "block": 455547207,
+  "mode": "rules",
+  "call": "SECRETFROG is the one to watch - buyers lead, heating, new holders",
+  "focus": "SECRETFROG",
+  "confidence": 0.58,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "QWOLF",
+    "per_min": 317.6,
+    "traders": 431,
+    "top10": 0.15,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "PAID",
+    "per_min": 106.6,
+    "traders": 133,
+    "top10": 0.14,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CLAUDIA",
+    "per_min": 93.6,
+    "traders": 196,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 42.4,
+    "traders": 72,
+    "top10": 0.44,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 30.0,
+    "traders": 58,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "SECRETFROG",
+    "per_min": 28.2,
+    "traders": 41,
+    "top10": 0.12,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "SWOLF",
+    "per_min": 26.2,
+    "traders": 62,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "Altai",
+    "per_min": 23.6,
+    "traders": 59,
+    "top10": 0.15,
+    "flags": []
+   }
+  ]
  }
 ]
