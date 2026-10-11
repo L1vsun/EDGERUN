@@ -298,5 +298,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-11T00:05:46+00:00",
+  "block": 455446837,
+  "mode": "rules",
+  "call": "Ollie is the one to watch - heating, new holders",
+  "focus": "Ollie",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Ollie",
+    "per_min": 406.8,
+    "traders": 710,
+    "top10": 0.21,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 281.8,
+    "traders": 221,
+    "top10": 0.73,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 185.4,
+    "traders": 159,
+    "top10": 0.31,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 139.2,
+    "traders": 201,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "CYBERLEEK",
+    "per_min": 138.4,
+    "traders": 231,
+    "top10": 0.11,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STRK",
+    "per_min": 123.6,
+    "traders": 139,
+    "top10": 0.46,
+    "flags": []
+   },
+   {
+    "symbol": "ORCA",
+    "per_min": 91.6,
+    "traders": 43,
+    "top10": 0.48,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STASH",
+    "per_min": 91.2,
+    "traders": 168,
+    "top10": 0.01,
+    "flags": []
+   }
+  ]
  }
 ]
