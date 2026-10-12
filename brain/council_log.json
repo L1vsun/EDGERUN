@@ -768,5 +768,77 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-12T08:38:25+00:00",
+  "block": 455983559,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Phloi",
+    "per_min": 261.8,
+    "traders": 477,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 234.2,
+    "traders": 313,
+    "top10": 0.59,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "DOPEBAT",
+    "per_min": 161.6,
+    "traders": 330,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 89.6,
+    "traders": 74,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "PYTH",
+    "per_min": 40.8,
+    "traders": 30,
+    "top10": 0.46,
+    "flags": []
+   },
+   {
+    "symbol": "RENDER",
+    "per_min": 38.8,
+    "traders": 35,
+    "top10": 0.4,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Gem",
+    "per_min": 33.0,
+    "traders": 92,
+    "top10": 0.01,
+    "flags": []
+   },
+   {
+    "symbol": "baton",
+    "per_min": 28.8,
+    "traders": 77,
+    "top10": 0.17,
+    "flags": []
+   }
+  ]
  }
 ]
