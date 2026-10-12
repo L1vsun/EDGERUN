@@ -142,6 +142,8 @@ span.btn-ink:hover, span.btn-ink:active { box-shadow: 3px 3px 0 var(--c-deep); }
 .first-copy > p.first-note { margin-top: 26px; font-size: 15.5px; font-weight: 500; max-width: 520px; }
 .first-note b { font-weight: 800; }
 
+/* the right-hand column: the mark, and under it the token's address once there is one */
+.first-side { display: grid; justify-items: center; gap: 14px; min-width: 0; }
 .first-art { position: relative; aspect-ratio: 1 / 1; width: 100%; max-width: 640px; justify-self: center; }
 .first-brain { position: absolute; inset: -9% -9% -9% -9%; width: 118%; max-width: none; height: 118%; object-fit: contain;
   animation: float 7s ease-in-out infinite; }
@@ -171,11 +173,21 @@ span.btn-ink:hover, span.btn-ink:active { box-shadow: 3px 3px 0 var(--c-deep); }
   font-size: 9.5px; font-weight: 800; letter-spacing: 0.14em; opacity: 0.8; }
 .s-stamp svg { color: var(--c-pop); }
 .s-ticker { padding-bottom: 24px; }
+/* the token's address, under the mark - only there once config.ts has one */
+.ca { position: relative; z-index: 2; display: flex; flex-wrap: wrap; align-items: center;
+  justify-content: center; gap: 6px 10px; max-width: 100%; padding: 8px 9px 8px 16px; border: var(--edge); border-radius: 22px;
+  background: #fff8f1; color: var(--c-ink); box-shadow: 4px 4px 0 var(--c-ink); font-size: 14.5px; }
+.ca-k { flex: none; font-weight: 800; }
+.ca-v { min-width: 0; font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; user-select: all; }
+.ca-c { flex: none; padding: 5px 13px; border: 0; border-radius: 999px; background: var(--c-ink); color: var(--c-bone);
+  font-family: var(--sans); font-size: 12.5px; font-weight: 800; cursor: pointer; }
 .first-foot { max-width: var(--wrap); margin: 6px auto 0; font-size: 13.5px; font-weight: 500; color: rgba(23, 6, 15, 0.72); }
 
 @media (max-width: 960px) {
   .first-in { grid-template-columns: 1fr; min-height: 0; gap: 8px; }
   .first-art { max-width: 440px; margin-top: 8px; }
+  .ca { justify-content: space-between; }
+  .ca-v { order: 3; flex-basis: 100%; font-size: 12px; text-align: center; }
   .first h1 { text-shadow: 3px 3px 0 var(--c-ink); }
 }
 @media (prefers-reduced-motion: reduce) { .first-brain, .sticker, .pill i { animation: none; } }

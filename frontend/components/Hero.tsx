@@ -1,4 +1,5 @@
 import { asset } from "@/lib/config";
+import ContractLine from "./ContractLine";
 import GetExtension from "./GetExtension";
 import Mark from "./Mark";
 
@@ -35,22 +36,25 @@ export default function Hero() {
           </p>
         </div>
 
-        <div className="first-art" aria-hidden="true">
-          <img className="first-brain" src={asset("/art/brain.webp")} alt="" width={900} height={900} />
+        <div className="first-side">
+          <div className="first-art" aria-hidden="true">
+            <img className="first-brain" src={asset("/art/brain.webp")} alt="" width={900} height={900} />
 
-          <div className="sticker s-wallet">
-            <span className="s-tag warn">wallet</span>
-            <span className="s-say">@caller&apos;s listed wallet bought 4m 12s before this post, sold 61% of it since.</span>
-          </div>
+            <div className="sticker s-wallet">
+              <span className="s-tag warn">wallet</span>
+              <span className="s-say">@caller&apos;s listed wallet bought 4m 12s before this post, sold 61% of it since.</span>
+            </div>
 
-          <div className="sticker s-ticker">
-            <span className="s-g">?</span>
-            <span className="s-body">
-              <span className="s-title"><b>$CAT</b><i>Solana</i><em>13 mints</em></span>
-              <span className="s-text">13 mints use this symbol, and the post gives no contract.</span>
-            </span>
-            <span className="s-stamp"><Mark size={11} />EDGERUN</span>
+            <div className="sticker s-ticker">
+              <span className="s-g">?</span>
+              <span className="s-body">
+                <span className="s-title"><b>$CAT</b><i>Solana</i><em>13 mints</em></span>
+                <span className="s-text">13 mints use this symbol, and the post gives no contract.</span>
+              </span>
+              <span className="s-stamp"><Mark size={11} />EDGERUN</span>
+            </div>
           </div>
+          <ContractLine />
         </div>
       </div>
       <p className="first-foot">

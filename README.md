@@ -592,7 +592,7 @@ unless three separate signs line up on a token with real volume behind it. It ru
 
 <div align="center">
 
-[Site](https://edgerun.pro) · [X](https://x.com/L1vsun) · [Security](SECURITY.md) · [Roadmap](ROADMAP.md)
+[Site](https://edgerun.pro) · [X](https://x.com/EdgerunPro) · [Security](SECURITY.md) · [Roadmap](ROADMAP.md)
 
 Circuit data: [FlyWire](https://flywire.ai) connectome (Dorkenwald et al., 2024).
 Market data read live from a public index; chain data from public RPCs.

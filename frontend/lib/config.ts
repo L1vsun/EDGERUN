@@ -58,7 +58,7 @@ export const EXTENSION_URL = process.env.NEXT_PUBLIC_EXTENSION_URL || GITHUB_REP
 
 
 export const GITHUB_USER_URL = "https://github.com/L1vsun";
-export const X_URL = "https://x.com/L1vsun";
+export const X_URL = "https://x.com/EdgerunPro";
 
 // Static files in /public are NOT basePath-prefixed automatically for plain
 // <img src>, so anything under /public must go through this. Netlify serves
