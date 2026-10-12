@@ -12,10 +12,8 @@ import extensionMeta from "./extension-meta.json";
 //  it, and each one turns from "soon" into a link the moment it is filled in.
 //
 //  A Solana mint (base58) or an EVM contract (0x…) both work. A mint links to
-//  the token's page on Jupiter, which trades whatever pool the token is in -
-//  including a launchpad's own curve - so the link does not depend on where
-//  it launched or whether it has graduated. Set NEXT_PUBLIC_EDGERUN_DEX_URL
-//  to send buyers somewhere else instead.
+//  the token's own page on pump.fun: https://pump.fun/coin/<the address>.
+//  Set NEXT_PUBLIC_EDGERUN_DEX_URL to send buyers somewhere else instead.
 //
 //  Commit, push, done. An env var of the same name overrides the address if
 //  you would rather not commit it.
@@ -38,7 +36,7 @@ export const TOKEN_LIVE = IS_EVM || IS_SOLANA;
 // set there is no link at all and the buttons render a pre-launch state
 // instead of pointing somewhere useless.
 export const SOLANA_BUY_BASE =
-  process.env.NEXT_PUBLIC_SOLANA_BUY_BASE || "https://jup.ag/tokens";
+  process.env.NEXT_PUBLIC_SOLANA_BUY_BASE || "https://pump.fun/coin";
 export const PONS_LAUNCHPAD_BASE =
   process.env.NEXT_PUBLIC_PONS_LAUNCHPAD_BASE || "https://www.ponsfamily.com/launchpad";
 
