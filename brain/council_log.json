@@ -691,5 +691,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-12T01:32:40+00:00",
+  "block": 455866545,
+  "mode": "rules",
+  "call": "ANSEM is the one to watch - heating, new holders",
+  "focus": "ANSEM",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ANSEM",
+    "per_min": 330.6,
+    "traders": 298,
+    "top10": 0.65,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "GRASS",
+    "per_min": 69.2,
+    "traders": 70,
+    "top10": 0.51,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "baton",
+    "per_min": 68.2,
+    "traders": 93,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "p-",
+    "per_min": 51.4,
+    "traders": 92,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "REGGIE",
+    "per_min": 30.8,
+    "traders": 111,
+    "top10": 0.01,
+    "flags": []
+   },
+   {
+    "symbol": "ALT-COIN",
+    "per_min": 30.4,
+    "traders": 54,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "MU",
+    "per_min": 28.6,
+    "traders": 34,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "BAT",
+    "per_min": 20.8,
+    "traders": 13,
+    "top10": 0.56,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
