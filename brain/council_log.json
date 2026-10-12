@@ -840,5 +840,87 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-12T18:36:52+00:00",
+  "block": 456147605,
+  "mode": "rules",
+  "call": "CASINU is the one to watch - buyers lead, heating, new holders",
+  "focus": "CASINU",
+  "confidence": 0.59,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "Angelique",
+    "per_min": 394.0,
+    "traders": 636,
+    "top10": 0.22,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "BP",
+    "per_min": 332.0,
+    "traders": 276,
+    "top10": 0.95,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GROKBIT",
+    "per_min": 161.6,
+    "traders": 357,
+    "top10": 0.27,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SEAN",
+    "per_min": 136.8,
+    "traders": 76,
+    "top10": 0.03,
+    "flags": []
+   },
+   {
+    "symbol": "CASINU",
+    "per_min": 98.8,
+    "traders": 106,
+    "top10": 0.22,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "STRK",
+    "per_min": 89.2,
+    "traders": 111,
+    "top10": 0.41,
+    "flags": []
+   },
+   {
+    "symbol": "casino",
+    "per_min": 54.6,
+    "traders": 191,
+    "top10": 0.19,
+    "flags": [
+     "sellers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "MarsX",
+    "per_min": 49.4,
+    "traders": 88,
+    "top10": 0.31,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
