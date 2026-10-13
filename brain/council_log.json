@@ -922,5 +922,79 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-13T01:06:40+00:00",
+  "block": 456254495,
+  "mode": "rules",
+  "call": "wNEAR is the one to watch - buyers lead, heating",
+  "focus": "wNEAR",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 1124.2,
+    "traders": 941,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 281.8,
+    "traders": 215,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 247.4,
+    "traders": 100,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "wNEAR",
+    "per_min": 240.4,
+    "traders": 59,
+    "top10": 0.16,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 211.6,
+    "traders": 164,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 206.8,
+    "traders": 99,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 119.2,
+    "traders": 66,
+    "top10": 0.53,
+    "flags": []
+   },
+   {
+    "symbol": "Bonk",
+    "per_min": 102.0,
+    "traders": 63,
+    "top10": 0.3,
+    "flags": []
+   }
+  ]
  }
 ]
