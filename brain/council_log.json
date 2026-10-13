@@ -996,5 +996,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-13T08:07:13+00:00",
+  "block": 456370340,
+  "mode": "rules",
+  "call": "DOPE is the one to watch - buyers lead, new holders",
+  "focus": "DOPE",
+  "confidence": 0.49,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "NVDAx",
+    "per_min": 925.4,
+    "traders": 818,
+    "top10": 0.72,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 151.4,
+    "traders": 234,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "nonce",
+    "per_min": 114.4,
+    "traders": 316,
+    "top10": 0.22,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 101.2,
+    "traders": 91,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "DOPE",
+    "per_min": 66.0,
+    "traders": 114,
+    "top10": 0.17,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "Artemi",
+    "per_min": 52.4,
+    "traders": 140,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "MSTRx",
+    "per_min": 51.4,
+    "traders": 31,
+    "top10": 0.67,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 44.2,
+    "traders": 48,
+    "top10": 0.35,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
