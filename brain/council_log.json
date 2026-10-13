@@ -1150,5 +1150,87 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-13T21:25:15+00:00",
+  "block": 456589152,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "DOGE",
+    "per_min": 5471.6,
+    "traders": 2701,
+    "top10": 0.2,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "MIKAN",
+    "per_min": 2133.8,
+    "traders": 2163,
+    "top10": 0.18,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "MIKAN",
+    "per_min": 1092.6,
+    "traders": 1294,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "PICK",
+    "per_min": 431.4,
+    "traders": 224,
+    "top10": 0.11,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 199.0,
+    "traders": 213,
+    "top10": 0.21,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "arc",
+    "per_min": 58.8,
+    "traders": 69,
+    "top10": 0.44,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "PONZI",
+    "per_min": 56.4,
+    "traders": 126,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "CATE",
+    "per_min": 38.0,
+    "traders": 52,
+    "top10": 0.15,
+    "flags": [
+     "sellers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
