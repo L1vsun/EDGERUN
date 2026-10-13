@@ -1075,5 +1075,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-13T16:14:49+00:00",
+  "block": 456503972,
+  "mode": "rules",
+  "call": "UNITS is the one to watch - heating, new holders",
+  "focus": "UNITS",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "GOOGLx",
+    "per_min": 1995.6,
+    "traders": 1672,
+    "top10": 0.78,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "RUNNER",
+    "per_min": 529.8,
+    "traders": 897,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "LONGINU",
+    "per_min": 214.2,
+    "traders": 302,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 123.6,
+    "traders": 188,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "CIG/ACC",
+    "per_min": 73.4,
+    "traders": 193,
+    "top10": 0.28,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "DOPE",
+    "per_min": 64.4,
+    "traders": 145,
+    "top10": 0.14,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PURRITO",
+    "per_min": 42.8,
+    "traders": 95,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "\ud83c\udf2f",
+    "per_min": 42.6,
+    "traders": 85,
+    "top10": 0.23,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
