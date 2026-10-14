@@ -1609,5 +1609,87 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-14T22:58:53+00:00",
+  "block": 457013010,
+  "mode": "rules",
+  "call": "Tailing is the one to watch - heating, new holders",
+  "focus": "Tailing",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "DOGE",
+    "per_min": 243.0,
+    "traders": 259,
+    "top10": 0.2,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ASTEROID",
+    "per_min": 126.4,
+    "traders": 177,
+    "top10": 0.01,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 69.0,
+    "traders": 111,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "Tailing",
+    "per_min": 62.2,
+    "traders": 137,
+    "top10": 0.27,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "BOOT",
+    "per_min": 44.0,
+    "traders": 99,
+    "top10": 0.48,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "SI",
+    "per_min": 41.4,
+    "traders": 44,
+    "top10": 0.16,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 41.2,
+    "traders": 75,
+    "top10": 0.35,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "$HOGG",
+    "per_min": 26.4,
+    "traders": 20,
+    "top10": 0.53,
+    "flags": [
+     "top-heavy"
+    ]
+   }
+  ]
  }
 ]
