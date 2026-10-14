@@ -1456,5 +1456,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-14T15:22:53+00:00",
+  "block": 456886622,
+  "mode": "rules",
+  "call": "PONKE is the one to watch - buyers lead, heating",
+  "focus": "PONKE",
+  "confidence": 0.52,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "HYPE",
+    "per_min": 103.4,
+    "traders": 62,
+    "top10": 0.31,
+    "flags": []
+   },
+   {
+    "symbol": "VEIL",
+    "per_min": 85.6,
+    "traders": 128,
+    "top10": 0.1,
+    "flags": []
+   },
+   {
+    "symbol": "PONKE",
+    "per_min": 80.4,
+    "traders": 72,
+    "top10": 0.26,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 78.8,
+    "traders": 63,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "SPCXx",
+    "per_min": 45.0,
+    "traders": 49,
+    "top10": 0.85,
+    "flags": []
+   },
+   {
+    "symbol": "ReplyBot",
+    "per_min": 45.0,
+    "traders": 120,
+    "top10": 0.19,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "PENGU",
+    "per_min": 43.8,
+    "traders": 54,
+    "top10": 0.37,
+    "flags": []
+   },
+   {
+    "symbol": "MASK",
+    "per_min": 42.6,
+    "traders": 42,
+    "top10": 0.56,
+    "flags": [
+     "top-heavy",
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
