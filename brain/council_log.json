@@ -1381,5 +1381,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-14T10:26:50+00:00",
+  "block": 456804691,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.08,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "KMNO",
+    "per_min": 56.6,
+    "traders": 65,
+    "top10": 0.53,
+    "flags": []
+   },
+   {
+    "symbol": "UDR",
+    "per_min": 56.4,
+    "traders": 271,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "baton",
+    "per_min": 39.0,
+    "traders": 36,
+    "top10": 0.17,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Miso",
+    "per_min": 24.0,
+    "traders": 56,
+    "top10": 0.31,
+    "flags": []
+   },
+   {
+    "symbol": "Altai",
+    "per_min": 19.2,
+    "traders": 50,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 16.8,
+    "traders": 28,
+    "top10": 0.73,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JEANPHIL",
+    "per_min": 15.4,
+    "traders": 40,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "NEON",
+    "per_min": 14.2,
+    "traders": 14,
+    "top10": 0.77,
+    "flags": [
+     "sellers lead"
+    ]
+   }
+  ]
  }
 ]
