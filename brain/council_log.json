@@ -1532,5 +1532,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-14T19:35:31+00:00",
+  "block": 456956531,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "NVDAx",
+    "per_min": 175.0,
+    "traders": 161,
+    "top10": 0.72,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPYx",
+    "per_min": 98.6,
+    "traders": 115,
+    "top10": 0.69,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 91.2,
+    "traders": 83,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "Geminu",
+    "per_min": 36.0,
+    "traders": 123,
+    "top10": 0.01,
+    "flags": []
+   },
+   {
+    "symbol": "ZEREBRO",
+    "per_min": 32.6,
+    "traders": 47,
+    "top10": 0.74,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "CRCLx",
+    "per_min": 31.8,
+    "traders": 18,
+    "top10": 0.42,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPCXx",
+    "per_min": 29.0,
+    "traders": 49,
+    "top10": 0.85,
+    "flags": []
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 28.8,
+    "traders": 35,
+    "top10": 0.57,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
