@@ -1232,5 +1232,79 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-14T00:28:40+00:00",
+  "block": 456639688,
+  "mode": "rules",
+  "call": "USELESS is the one to watch - buyers lead, heating",
+  "focus": "USELESS",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ZEC",
+    "per_min": 605.8,
+    "traders": 627,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 297.4,
+    "traders": 301,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 156.6,
+    "traders": 158,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 77.8,
+    "traders": 86,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "DOPE",
+    "per_min": 64.4,
+    "traders": 104,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "wNEAR",
+    "per_min": 59.4,
+    "traders": 41,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "UDR",
+    "per_min": 55.4,
+    "traders": 264,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "USELESS",
+    "per_min": 52.0,
+    "traders": 48,
+    "top10": 0.32,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
