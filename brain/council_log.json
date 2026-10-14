@@ -1306,5 +1306,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-14T05:16:37+00:00",
+  "block": 456718970,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "CATE",
+    "per_min": 265.4,
+    "traders": 184,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 247.4,
+    "traders": 306,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 184.0,
+    "traders": 249,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "ZEREBRO",
+    "per_min": 166.0,
+    "traders": 169,
+    "top10": 0.73,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "UNICORN",
+    "per_min": 132.8,
+    "traders": 207,
+    "top10": 0.23,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 111.0,
+    "traders": 100,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 105.4,
+    "traders": 119,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "UDR",
+    "per_min": 67.4,
+    "traders": 320,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
