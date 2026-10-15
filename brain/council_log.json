@@ -1987,5 +1987,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-15T19:58:47+00:00",
+  "block": 457362616,
+  "mode": "rules",
+  "call": "Nihilism is the one to watch - buyers lead, heating, new holders",
+  "focus": "Nihilism",
+  "confidence": 0.58,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "SI",
+    "per_min": 429.2,
+    "traders": 723,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 224.4,
+    "traders": 292,
+    "top10": 0.57,
+    "flags": []
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 182.2,
+    "traders": 146,
+    "top10": 0.53,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GOOGLx",
+    "per_min": 149.4,
+    "traders": 210,
+    "top10": 0.79,
+    "flags": []
+   },
+   {
+    "symbol": "BUBBLE",
+    "per_min": 125.8,
+    "traders": 205,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SPYx",
+    "per_min": 123.4,
+    "traders": 92,
+    "top10": 0.68,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 120.2,
+    "traders": 135,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 84.8,
+    "traders": 46,
+    "top10": 0.31,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
