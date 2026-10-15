@@ -1837,5 +1837,76 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-15T11:54:58+00:00",
+  "block": 457228367,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "GOAT",
+    "per_min": 368.4,
+    "traders": 123,
+    "top10": 0.42,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HELLCAT",
+    "per_min": 189.6,
+    "traders": 423,
+    "top10": 0.13,
+    "flags": []
+   },
+   {
+    "symbol": "Groklet",
+    "per_min": 148.8,
+    "traders": 273,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "GROKLET",
+    "per_min": 118.8,
+    "traders": 197,
+    "top10": 0.02,
+    "flags": []
+   },
+   {
+    "symbol": "CHUMP",
+    "per_min": 75.4,
+    "traders": 147,
+    "top10": 0.01,
+    "flags": []
+   },
+   {
+    "symbol": "STRK",
+    "per_min": 50.0,
+    "traders": 52,
+    "top10": 0.42,
+    "flags": []
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 48.0,
+    "traders": 93,
+    "top10": 0.43,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JLP",
+    "per_min": 47.6,
+    "traders": 61,
+    "top10": 0.5,
+    "flags": []
+   }
+  ]
  }
 ]
