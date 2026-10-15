@@ -2063,5 +2063,78 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-15T22:59:46+00:00",
+  "block": 457412847,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.08,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TRUMP",
+    "per_min": 259.4,
+    "traders": 315,
+    "top10": 0.81,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "1",
+    "per_min": 216.6,
+    "traders": 300,
+    "top10": 0.1,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "PONK",
+    "per_min": 61.8,
+    "traders": 136,
+    "top10": 0.03,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 48.0,
+    "traders": 61,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "CATCH",
+    "per_min": 44.0,
+    "traders": 77,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "USDF",
+    "per_min": 42.6,
+    "traders": 199,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 42.4,
+    "traders": 30,
+    "top10": 0.31,
+    "flags": []
+   },
+   {
+    "symbol": "IBM",
+    "per_min": 35.8,
+    "traders": 46,
+    "top10": 0.24,
+    "flags": []
+   }
+  ]
  }
 ]
