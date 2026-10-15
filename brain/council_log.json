@@ -1691,5 +1691,78 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-15T01:22:36+00:00",
+  "block": 457052979,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "BABA",
+    "per_min": 591.6,
+    "traders": 563,
+    "top10": 0.13,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "RAVE",
+    "per_min": 242.2,
+    "traders": 490,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "ZEREBRO",
+    "per_min": 201.2,
+    "traders": 100,
+    "top10": 0.74,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 159.8,
+    "traders": 95,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 79.4,
+    "traders": 80,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "KODA",
+    "per_min": 76.2,
+    "traders": 180,
+    "top10": 0.17,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "CALI",
+    "per_min": 71.0,
+    "traders": 89,
+    "top10": 0.13,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CATE",
+    "per_min": 46.2,
+    "traders": 66,
+    "top10": 0.15,
+    "flags": []
+   }
+  ]
  }
 ]
