@@ -1908,5 +1908,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-15T16:21:28+00:00",
+  "block": 457302270,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "POLYMARKET",
+    "per_min": 309.2,
+    "traders": 311,
+    "top10": 0.42,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 280.2,
+    "traders": 187,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "Dacity",
+    "per_min": 77.6,
+    "traders": 160,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "DOPE",
+    "per_min": 72.0,
+    "traders": 157,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "ZEREBRO",
+    "per_min": 49.2,
+    "traders": 46,
+    "top10": 0.75,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "Agency",
+    "per_min": 45.2,
+    "traders": 83,
+    "top10": 0.24,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JEANPHIL",
+    "per_min": 38.6,
+    "traders": 57,
+    "top10": 0.22,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CRCLx",
+    "per_min": 31.0,
+    "traders": 30,
+    "top10": 0.42,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
