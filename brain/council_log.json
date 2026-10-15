@@ -1764,5 +1764,78 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-15T06:12:34+00:00",
+  "block": 457133040,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "cbBTC",
+    "per_min": 134.6,
+    "traders": 73,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "NIHILISM",
+    "per_min": 107.8,
+    "traders": 236,
+    "top10": 0.18,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 86.8,
+    "traders": 90,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 71.8,
+    "traders": 106,
+    "top10": 0.57,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 68.8,
+    "traders": 62,
+    "top10": 0.72,
+    "flags": []
+   },
+   {
+    "symbol": "MET",
+    "per_min": 57.6,
+    "traders": 42,
+    "top10": 0.28,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SPCXx",
+    "per_min": 52.6,
+    "traders": 39,
+    "top10": 0.85,
+    "flags": []
+   },
+   {
+    "symbol": "ZEREBRO",
+    "per_min": 51.8,
+    "traders": 47,
+    "top10": 0.74,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
