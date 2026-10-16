@@ -2520,5 +2520,78 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-16T22:32:58+00:00",
+  "block": 457805138,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 866.4,
+    "traders": 1017,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 467.4,
+    "traders": 576,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 118.0,
+    "traders": 188,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "AAPLx",
+    "per_min": 68.6,
+    "traders": 105,
+    "top10": 0.92,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "DOPE",
+    "per_min": 50.4,
+    "traders": 45,
+    "top10": 0.14,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "tOpenAI",
+    "per_min": 48.4,
+    "traders": 74,
+    "top10": 0.28,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "DOTS",
+    "per_min": 45.8,
+    "traders": 95,
+    "top10": 0.3,
+    "flags": []
+   },
+   {
+    "symbol": "1",
+    "per_min": 39.4,
+    "traders": 97,
+    "top10": 0.09,
+    "flags": []
+   }
+  ]
  }
 ]
