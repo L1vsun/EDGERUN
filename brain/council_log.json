@@ -2367,5 +2367,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-16T16:07:49+00:00",
+  "block": 457698439,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 459.4,
+    "traders": 655,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 278.2,
+    "traders": 333,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 200.8,
+    "traders": 118,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 195.8,
+    "traders": 285,
+    "top10": 0.56,
+    "flags": []
+   },
+   {
+    "symbol": "AUDIO",
+    "per_min": 128.4,
+    "traders": 75,
+    "top10": 0.6,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 98.0,
+    "traders": 153,
+    "top10": 0.17,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 81.0,
+    "traders": 128,
+    "top10": 0.16,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "PYTH",
+    "per_min": 65.2,
+    "traders": 38,
+    "top10": 0.46,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
