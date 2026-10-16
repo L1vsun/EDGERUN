@@ -2136,5 +2136,83 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-16T01:10:21+00:00",
+  "block": 457449014,
+  "mode": "rules",
+  "call": "JTO is the one to watch - buyers lead, heating",
+  "focus": "JTO",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TRUMP",
+    "per_min": 1078.0,
+    "traders": 1213,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 119.6,
+    "traders": 129,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 101.4,
+    "traders": 132,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 100.0,
+    "traders": 150,
+    "top10": 0.35,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 64.4,
+    "traders": 73,
+    "top10": 0.15,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "BUBBLE",
+    "per_min": 46.0,
+    "traders": 84,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "USDF",
+    "per_min": 42.2,
+    "traders": 199,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "JTO",
+    "per_min": 40.6,
+    "traders": 57,
+    "top10": 0.47,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
