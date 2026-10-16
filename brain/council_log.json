@@ -2214,5 +2214,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-16T06:08:42+00:00",
+  "block": 457531792,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "XMR",
+    "per_min": 299.4,
+    "traders": 276,
+    "top10": 0.22,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 83.6,
+    "traders": 91,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 73.6,
+    "traders": 89,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "yoki\u9171",
+    "per_min": 64.4,
+    "traders": 130,
+    "top10": 0.08,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ZEREBRO",
+    "per_min": 57.8,
+    "traders": 67,
+    "top10": 0.75,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 55.2,
+    "traders": 19,
+    "top10": 0.53,
+    "flags": []
+   },
+   {
+    "symbol": "arc",
+    "per_min": 49.8,
+    "traders": 14,
+    "top10": 0.42,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "USDF",
+    "per_min": 49.4,
+    "traders": 183,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
