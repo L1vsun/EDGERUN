@@ -2291,5 +2291,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-16T11:45:34+00:00",
+  "block": 457625628,
+  "mode": "rules",
+  "call": "SI is the one to watch - buyers lead, heating",
+  "focus": "SI",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "1",
+    "per_min": 183.2,
+    "traders": 537,
+    "top10": 0.11,
+    "flags": []
+   },
+   {
+    "symbol": "ZEREBRO",
+    "per_min": 127.8,
+    "traders": 66,
+    "top10": 0.75,
+    "flags": []
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 126.6,
+    "traders": 216,
+    "top10": 0.56,
+    "flags": []
+   },
+   {
+    "symbol": "Jato",
+    "per_min": 91.0,
+    "traders": 202,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 74.4,
+    "traders": 135,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SI",
+    "per_min": 73.4,
+    "traders": 93,
+    "top10": 0.12,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 68.6,
+    "traders": 75,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "PYTH",
+    "per_min": 64.8,
+    "traders": 37,
+    "top10": 0.46,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
