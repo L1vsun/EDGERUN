@@ -3136,5 +3136,79 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-17T23:45:08+00:00",
+  "block": 458223427,
+  "mode": "rules",
+  "call": "ANTWAR is the one to watch - heating, new holders",
+  "focus": "ANTWAR",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 824.4,
+    "traders": 1157,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 198.8,
+    "traders": 186,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "ANTWAR",
+    "per_min": 126.2,
+    "traders": 276,
+    "top10": 0.21,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 83.4,
+    "traders": 109,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "DEGEN",
+    "per_min": 79.8,
+    "traders": 175,
+    "top10": 0.08,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "USDF",
+    "per_min": 58.6,
+    "traders": 277,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 53.2,
+    "traders": 55,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 33.4,
+    "traders": 49,
+    "top10": 0.7,
+    "flags": []
+   }
+  ]
  }
 ]
