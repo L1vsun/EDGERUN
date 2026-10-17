@@ -2593,5 +2593,76 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-17T01:04:12+00:00",
+  "block": 457847080,
+  "mode": "rules",
+  "call": "MET is the one to watch - buyers lead, heating",
+  "focus": "MET",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 747.0,
+    "traders": 947,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "George",
+    "per_min": 237.2,
+    "traders": 726,
+    "top10": 0.05,
+    "flags": []
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 191.6,
+    "traders": 241,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 135.4,
+    "traders": 196,
+    "top10": 0.7,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 105.8,
+    "traders": 80,
+    "top10": 0.35,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "Ronke",
+    "per_min": 59.6,
+    "traders": 175,
+    "top10": 0.01,
+    "flags": []
+   },
+   {
+    "symbol": "USDF",
+    "per_min": 57.4,
+    "traders": 271,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "wNEAR",
+    "per_min": 54.8,
+    "traders": 35,
+    "top10": 0.2,
+    "flags": []
+   }
+  ]
  }
 ]
