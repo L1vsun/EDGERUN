@@ -2899,5 +2899,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-17T16:50:44+00:00",
+  "block": 458109039,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 300.8,
+    "traders": 424,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "MUSK4",
+    "per_min": 144.0,
+    "traders": 145,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 142.6,
+    "traders": 118,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Gigabite",
+    "per_min": 117.2,
+    "traders": 258,
+    "top10": 0.19,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 75.2,
+    "traders": 119,
+    "top10": 0.81,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "FTR",
+    "per_min": 75.0,
+    "traders": 110,
+    "top10": 0.14,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "USDF",
+    "per_min": 54.0,
+    "traders": 256,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "QUID",
+    "per_min": 50.2,
+    "traders": 143,
+    "top10": 0.01,
+    "flags": []
+   }
+  ]
  }
 ]
