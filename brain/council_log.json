@@ -2976,5 +2976,82 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-17T19:01:45+00:00",
+  "block": 458145210,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.11,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "SPCX",
+    "per_min": 284.6,
+    "traders": 375,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "invest",
+    "per_min": 127.8,
+    "traders": 310,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "CATE",
+    "per_min": 118.2,
+    "traders": 121,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 54.8,
+    "traders": 58,
+    "top10": 0.53,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "USDF",
+    "per_min": 54.0,
+    "traders": 258,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "FTR",
+    "per_min": 44.2,
+    "traders": 88,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "invest",
+    "per_min": 38.2,
+    "traders": 86,
+    "top10": 0.27,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "Oui",
+    "per_min": 37.6,
+    "traders": 95,
+    "top10": 0.23,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
