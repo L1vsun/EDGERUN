@@ -2741,5 +2741,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-17T10:11:24+00:00",
+  "block": 457998713,
+  "mode": "rules",
+  "call": "DOPE is the one to watch - buyers lead, heating",
+  "focus": "DOPE",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "GOOGLx",
+    "per_min": 162.4,
+    "traders": 225,
+    "top10": 0.79,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 109.0,
+    "traders": 174,
+    "top10": 0.19,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 71.4,
+    "traders": 88,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "USDF",
+    "per_min": 61.8,
+    "traders": 291,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 52.2,
+    "traders": 55,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 49.2,
+    "traders": 108,
+    "top10": 0.55,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 42.6,
+    "traders": 69,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "MASK",
+    "per_min": 36.6,
+    "traders": 48,
+    "top10": 0.56,
+    "flags": [
+     "top-heavy",
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
