@@ -3053,5 +3053,88 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-17T21:35:57+00:00",
+  "block": 458187781,
+  "mode": "rules",
+  "call": "SPCXx is the one to watch - buyers lead, heating, new holders",
+  "focus": "SPCXx",
+  "confidence": 0.6,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "PVE",
+    "per_min": 340.8,
+    "traders": 617,
+    "top10": 0.22,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "SPCXx",
+    "per_min": 186.6,
+    "traders": 82,
+    "top10": 0.82,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 167.2,
+    "traders": 124,
+    "top10": 0.7,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "MUSK4",
+    "per_min": 149.2,
+    "traders": 144,
+    "top10": 0.12,
+    "flags": []
+   },
+   {
+    "symbol": "MU",
+    "per_min": 125.8,
+    "traders": 40,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 111.4,
+    "traders": 94,
+    "top10": 0.55,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SNDK",
+    "per_min": 92.2,
+    "traders": 42,
+    "top10": 0.57,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SKHY",
+    "per_min": 91.4,
+    "traders": 36,
+    "top10": 0.09,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
