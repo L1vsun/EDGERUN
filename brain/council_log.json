@@ -2820,5 +2820,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-17T13:51:13+00:00",
+  "block": 458059493,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 279.2,
+    "traders": 424,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "USDF",
+    "per_min": 58.8,
+    "traders": 280,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "QUANT",
+    "per_min": 51.6,
+    "traders": 140,
+    "top10": 0.06,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 49.2,
+    "traders": 70,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "$CAT",
+    "per_min": 46.4,
+    "traders": 18,
+    "top10": 0.56,
+    "flags": [
+     "top-heavy",
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 43.4,
+    "traders": 82,
+    "top10": 0.45,
+    "flags": []
+   },
+   {
+    "symbol": "PENGU",
+    "per_min": 30.4,
+    "traders": 42,
+    "top10": 0.37,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GCAT",
+    "per_min": 29.6,
+    "traders": 118,
+    "top10": 0.05,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
