@@ -3210,5 +3210,85 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-18T03:08:05+00:00",
+  "block": 458279670,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.14,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 254.4,
+    "traders": 369,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 175.6,
+    "traders": 85,
+    "top10": 0.35,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "wNEAR",
+    "per_min": 153.6,
+    "traders": 53,
+    "top10": 0.19,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 130.6,
+    "traders": 167,
+    "top10": 0.11,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 112.4,
+    "traders": 73,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ZEREBRO",
+    "per_min": 67.6,
+    "traders": 48,
+    "top10": 0.73,
+    "flags": [
+     "sellers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "USDF",
+    "per_min": 59.0,
+    "traders": 279,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 52.0,
+    "traders": 67,
+    "top10": 0.81,
+    "flags": []
+   }
+  ]
  }
 ]
