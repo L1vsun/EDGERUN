@@ -3676,5 +3676,85 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-18T23:29:44+00:00",
+  "block": 458617664,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ZEC",
+    "per_min": 300.4,
+    "traders": 219,
+    "top10": 0.35,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "neet",
+    "per_min": 288.2,
+    "traders": 172,
+    "top10": 0.17,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 205.0,
+    "traders": 128,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 178.6,
+    "traders": 281,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 113.2,
+    "traders": 126,
+    "top10": 0.81,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 111.2,
+    "traders": 76,
+    "top10": 0.56,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "$15",
+    "per_min": 92.2,
+    "traders": 90,
+    "top10": 0.22,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "PYTH",
+    "per_min": 76.4,
+    "traders": 62,
+    "top10": 0.46,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
