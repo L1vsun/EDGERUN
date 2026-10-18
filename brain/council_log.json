@@ -3600,5 +3600,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-18T21:16:21+00:00",
+  "block": 458580830,
+  "mode": "rules",
+  "call": "JUP is the one to watch - buyers lead, heating",
+  "focus": "JUP",
+  "confidence": 0.52,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 1508.0,
+    "traders": 1079,
+    "top10": 0.14,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 538.8,
+    "traders": 530,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 402.2,
+    "traders": 479,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "DCY",
+    "per_min": 281.8,
+    "traders": 445,
+    "top10": 0.25,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 92.0,
+    "traders": 73,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 75.4,
+    "traders": 75,
+    "top10": 0.16,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CATE",
+    "per_min": 72.6,
+    "traders": 45,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 67.0,
+    "traders": 99,
+    "top10": 0.81,
+    "flags": []
+   }
+  ]
  }
 ]
