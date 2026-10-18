@@ -3290,5 +3290,82 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-18T08:14:28+00:00",
+  "block": 458364460,
+  "mode": "rules",
+  "call": "REBONDIT is the one to watch - buyers lead, new holders",
+  "focus": "REBONDIT",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "REBONDIT",
+    "per_min": 113.8,
+    "traders": 424,
+    "top10": 0.15,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 78.2,
+    "traders": 67,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "TSI",
+    "per_min": 59.4,
+    "traders": 124,
+    "top10": 0.19,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "OWOWO",
+    "per_min": 41.0,
+    "traders": 108,
+    "top10": 0.01,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "SKR",
+    "per_min": 37.6,
+    "traders": 35,
+    "top10": 0.6,
+    "flags": []
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 35.2,
+    "traders": 75,
+    "top10": 0.44,
+    "flags": []
+   },
+   {
+    "symbol": "DOPE",
+    "per_min": 29.2,
+    "traders": 124,
+    "top10": 0.1,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "AgenC",
+    "per_min": 27.4,
+    "traders": 62,
+    "top10": 0.53,
+    "flags": []
+   }
+  ]
  }
 ]
