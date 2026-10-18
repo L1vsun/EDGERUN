@@ -3367,5 +3367,82 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-18T12:43:12+00:00",
+  "block": 458438931,
+  "mode": "rules",
+  "call": "HOOKED is the one to watch - buyers lead, heating, new holders",
+  "focus": "HOOKED",
+  "confidence": 0.58,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "ZEC",
+    "per_min": 310.2,
+    "traders": 325,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "CATE",
+    "per_min": 56.4,
+    "traders": 33,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "HOOKED",
+    "per_min": 41.4,
+    "traders": 71,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 41.2,
+    "traders": 69,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "cyclops",
+    "per_min": 37.8,
+    "traders": 111,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 32.0,
+    "traders": 23,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 30.8,
+    "traders": 55,
+    "top10": 0.73,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Fini",
+    "per_min": 28.8,
+    "traders": 79,
+    "top10": 0.25,
+    "flags": []
+   }
+  ]
  }
 ]
