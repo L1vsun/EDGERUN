@@ -3519,5 +3519,86 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-18T18:46:47+00:00",
+  "block": 458539526,
+  "mode": "rules",
+  "call": "TTWO is the one to watch - buyers lead, heating",
+  "focus": "TTWO",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ZEC",
+    "per_min": 1238.6,
+    "traders": 992,
+    "top10": 0.35,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 696.6,
+    "traders": 942,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "HeySiri",
+    "per_min": 439.4,
+    "traders": 855,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "MUSK4",
+    "per_min": 348.0,
+    "traders": 301,
+    "top10": 0.08,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 331.6,
+    "traders": 312,
+    "top10": 0.09,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 149.6,
+    "traders": 208,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 134.6,
+    "traders": 189,
+    "top10": 0.23,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Gato",
+    "per_min": 84.6,
+    "traders": 165,
+    "top10": 0.16,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
