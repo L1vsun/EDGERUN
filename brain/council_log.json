@@ -3444,5 +3444,80 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-18T16:21:54+00:00",
+  "block": 458499473,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.11,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "bien",
+    "per_min": 372.4,
+    "traders": 666,
+    "top10": 0.25,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 231.8,
+    "traders": 227,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 85.0,
+    "traders": 80,
+    "top10": 0.53,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "simulator",
+    "per_min": 54.8,
+    "traders": 64,
+    "top10": 0.24,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GLDx",
+    "per_min": 51.0,
+    "traders": 102,
+    "top10": 0.91,
+    "flags": []
+   },
+   {
+    "symbol": "MEGA",
+    "per_min": 39.2,
+    "traders": 113,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "VERDIS",
+    "per_min": 39.0,
+    "traders": 102,
+    "top10": 0.41,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "MISTAKE",
+    "per_min": 30.0,
+    "traders": 134,
+    "top10": 0.05,
+    "flags": []
+   }
+  ]
  }
 ]
