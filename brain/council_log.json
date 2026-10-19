@@ -3912,5 +3912,83 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-19T14:52:08+00:00",
+  "block": 458873158,
+  "mode": "rules",
+  "call": "KIBI is the one to watch - buyers lead, heating, new holders",
+  "focus": "KIBI",
+  "confidence": 0.58,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "INJ",
+    "per_min": 342.2,
+    "traders": 284,
+    "top10": 0.43,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TRUMPFOLIO",
+    "per_min": 305.8,
+    "traders": 559,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "CATE",
+    "per_min": 127.4,
+    "traders": 157,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 62.0,
+    "traders": 87,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 54.8,
+    "traders": 93,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 40.4,
+    "traders": 74,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "KIBI",
+    "per_min": 32.8,
+    "traders": 77,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "METAx",
+    "per_min": 26.6,
+    "traders": 18,
+    "top10": 0.91,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
