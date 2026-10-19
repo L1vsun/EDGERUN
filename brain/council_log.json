@@ -3990,5 +3990,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-19T20:22:29+00:00",
+  "block": 458964153,
+  "mode": "rules",
+  "call": "BUBBLE is the one to watch - buyers lead, heating, new holders",
+  "focus": "BUBBLE",
+  "confidence": 0.59,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "cbADA",
+    "per_min": 2211.2,
+    "traders": 1661,
+    "top10": 0.06,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "QUINELINGS",
+    "per_min": 740.4,
+    "traders": 1173,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 448.2,
+    "traders": 453,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 257.2,
+    "traders": 350,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "OPENAI",
+    "per_min": 223.2,
+    "traders": 306,
+    "top10": 0.47,
+    "flags": []
+   },
+   {
+    "symbol": "Kim",
+    "per_min": 160.8,
+    "traders": 386,
+    "top10": 0.29,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "BUBBLE",
+    "per_min": 123.2,
+    "traders": 133,
+    "top10": 0.26,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "DOGE",
+    "per_min": 108.8,
+    "traders": 145,
+    "top10": 0.26,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
