@@ -4067,5 +4067,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-19T23:51:40+00:00",
+  "block": 459021710,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Pok\u00e9mon",
+    "per_min": 181.2,
+    "traders": 367,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "Agency",
+    "per_min": 64.4,
+    "traders": 63,
+    "top10": 0.23,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 41.6,
+    "traders": 67,
+    "top10": 0.17,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "POKEDOLLAR",
+    "per_min": 40.8,
+    "traders": 84,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "NEKO AI",
+    "per_min": 28.2,
+    "traders": 30,
+    "top10": 0.48,
+    "flags": []
+   },
+   {
+    "symbol": "BULKLOT",
+    "per_min": 28.2,
+    "traders": 28,
+    "top10": 0.15,
+    "flags": [
+     "sellers lead"
+    ]
+   },
+   {
+    "symbol": "DJT",
+    "per_min": 23.4,
+    "traders": 42,
+    "top10": 0.14,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GtaIV",
+    "per_min": 19.2,
+    "traders": 11,
+    "top10": 0.51,
+    "flags": [
+     "top-heavy"
+    ]
+   }
+  ]
  }
 ]

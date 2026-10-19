@@ -1,254 +1,259 @@
 {
  "mode": "rules",
- "generated_at": "2026-10-19T20:22:29+00:00",
+ "generated_at": "2026-10-19T23:51:40+00:00",
  "model": "rule-based",
- "block": 458964153,
+ "block": 459021710,
  "window_seconds": 300,
  "chain": {
-  "trades_total": 25832,
-  "traders_total": 6113,
-  "tokens_moving": 69
+  "trades_total": 3264,
+  "traders_total": 1255,
+  "tokens_moving": 77
  },
  "tokens": [
   {
-   "address": "cbADAmv9issuPfhFwyQG3xac4DGPd1LDSt1oz7vwJsg",
-   "symbol": "cbADA",
-   "trades": 11056,
-   "per_min": 2211.2,
-   "traders": 1661,
-   "new_holders": 220,
-   "buys": 5602,
-   "sells": 5454,
-   "top10": 0.06,
+   "address": "D42TjMjz5H7toPu5md5KBXreZkCSdZMEfLQwmBhJXvb1",
+   "symbol": "Pok\u00e9mon",
+   "trades": 906,
+   "per_min": 181.2,
+   "traders": 367,
+   "new_holders": 48,
+   "buys": 506,
+   "sells": 400,
+   "top10": 0.2,
    "mint_open": false,
-   "verified": true,
-   "accel": 10.72,
+   "verified": false,
+   "accel": 1.75,
    "quote_asset": false,
    "is_new": false,
-   "age_min": 32712,
-   "launchpad": null,
+   "age_min": 1512,
+   "launchpad": "pump.fun",
+   "flags": []
+  },
+  {
+   "address": "7VertkgF9KLhxxJXHX6uaWuoYZTP9LdGj2bWmVXVpump",
+   "symbol": "Agency",
+   "trades": 322,
+   "per_min": 64.4,
+   "traders": 63,
+   "new_holders": 19,
+   "buys": 164,
+   "sells": 158,
+   "top10": 0.23,
+   "mint_open": false,
+   "verified": false,
+   "accel": 7.53,
+   "quote_asset": false,
+   "is_new": false,
+   "age_min": 25992,
+   "launchpad": "pump.fun",
    "flags": [
     "heating"
    ]
   },
   {
-   "address": "UqTPsPZ6nwWG4FBbzchVb24AuyHeKEgjxXEAWQipump",
-   "symbol": "QUINELINGS",
-   "trades": 3702,
-   "per_min": 740.4,
-   "traders": 1173,
-   "new_holders": 453,
-   "buys": 1869,
-   "sells": 1833,
+   "address": "TTWofwAge91oFhZs7kpQdyrVRkmevgM88xijGvQFbKo",
+   "symbol": "TTWO",
+   "trades": 208,
+   "per_min": 41.6,
+   "traders": 67,
+   "new_holders": 1,
+   "buys": 108,
+   "sells": 100,
    "top10": 0.17,
    "mint_open": false,
-   "verified": false,
-   "accel": 1.0,
-   "quote_asset": false,
-   "is_new": true,
-   "age_min": 6,
-   "launchpad": "pump.fun",
-   "flags": []
-  },
-  {
-   "address": "CARDSccUMFKoPRZxt5vt3ksUbxEFEcnZ3H2pd3dKxYjp",
-   "symbol": "CARDS",
-   "trades": 2241,
-   "per_min": 448.2,
-   "traders": 453,
-   "new_holders": 0,
-   "buys": 1272,
-   "sells": 969,
-   "top10": 0.73,
-   "mint_open": false,
    "verified": true,
-   "accel": 0.78,
+   "accel": 0.4,
    "quote_asset": false,
    "is_new": false,
-   "age_min": 599128,
+   "age_min": 108186,
    "launchpad": null,
-   "flags": []
-  },
-  {
-   "address": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
-   "symbol": "PUMP",
-   "trades": 1286,
-   "per_min": 257.2,
-   "traders": 350,
-   "new_holders": 42,
-   "buys": 752,
-   "sells": 534,
-   "top10": 0.59,
-   "mint_open": false,
-   "verified": true,
-   "accel": 1.99,
-   "quote_asset": false,
-   "is_new": false,
-   "age_min": 668471,
-   "launchpad": null,
-   "flags": []
-  },
-  {
-   "address": "PreweJYECqtQwBtpxHL171nL2K6umo692gTm7Q3rpgF",
-   "symbol": "OPENAI",
-   "trades": 1116,
-   "per_min": 223.2,
-   "traders": 306,
-   "new_holders": 52,
-   "buys": 568,
-   "sells": 548,
-   "top10": 0.47,
-   "mint_open": false,
-   "verified": true,
-   "accel": 0.55,
-   "quote_asset": false,
-   "is_new": false,
-   "age_min": 574029,
-   "launchpad": null,
-   "flags": []
-  },
-  {
-   "address": "ESABfJpt9cocXgWX7HF8WwSXrcv785oyaA8imwojpump",
-   "symbol": "Kim",
-   "trades": 804,
-   "per_min": 160.8,
-   "traders": 386,
-   "new_holders": 143,
-   "buys": 404,
-   "sells": 400,
-   "top10": 0.29,
-   "mint_open": false,
-   "verified": false,
-   "accel": 0.44,
-   "quote_asset": false,
-   "is_new": false,
-   "age_min": 1255,
-   "launchpad": "pump.fun",
    "flags": [
     "cooling"
    ]
   },
   {
-   "address": "ALDVtr9JeLjKH91fHFvLxFoyd7C6eLUxi9dUoN2FsWdD",
-   "symbol": "BUBBLE",
-   "trades": 616,
-   "per_min": 123.2,
-   "traders": 133,
-   "new_holders": 183,
-   "buys": 421,
-   "sells": 195,
-   "top10": 0.26,
-   "mint_open": false,
-   "verified": false,
-   "accel": 10.67,
-   "quote_asset": false,
-   "is_new": false,
-   "age_min": 5794,
-   "launchpad": "stonkfun",
-   "flags": [
-    "buyers lead",
-    "heating",
-    "new holders"
-   ]
-  },
-  {
-   "address": "DoGEV7LASBkQbibMc5k5vKnTZoMg423GpJ5QtJEGfm7R",
-   "symbol": "DOGE",
-   "trades": 544,
-   "per_min": 108.8,
-   "traders": 145,
-   "new_holders": 8,
-   "buys": 278,
-   "sells": 266,
-   "top10": 0.26,
-   "mint_open": false,
-   "verified": true,
-   "accel": 3.58,
-   "quote_asset": false,
-   "is_new": false,
-   "age_min": 61631,
-   "launchpad": null,
-   "flags": [
-    "heating"
-   ]
-  },
-  {
-   "address": "WENAZ2WyPbmgvUcKfQ8hyMDfBQP9bZ65hsZ5KTFrRGZ",
-   "symbol": "WEN",
-   "trades": 459,
-   "per_min": 91.8,
-   "traders": 98,
-   "new_holders": 4,
-   "buys": 222,
-   "sells": 237,
-   "top10": 0.16,
-   "mint_open": false,
-   "verified": true,
-   "accel": 11.67,
-   "quote_asset": false,
-   "is_new": false,
-   "age_min": 55971,
-   "launchpad": null,
-   "flags": [
-    "heating"
-   ]
-  },
-  {
-   "address": "98sMhvDwXj1RQi5c5Mndm3vPe9cBqPrbLaufMXFNMh5g",
-   "symbol": "HYPE",
-   "trades": 399,
-   "per_min": 79.8,
-   "traders": 67,
-   "new_holders": 2,
-   "buys": 231,
-   "sells": 168,
-   "top10": 0.31,
-   "mint_open": false,
-   "verified": true,
-   "accel": 1.15,
-   "quote_asset": false,
-   "is_new": false,
-   "age_min": 538712,
-   "launchpad": null,
-   "flags": []
-  },
-  {
-   "address": "Pren1FvFX6J3E4kXhJuCiAD5aDmGEb7qJRncwA8Lkhw",
-   "symbol": "ANTHROPIC",
-   "trades": 383,
-   "per_min": 76.6,
-   "traders": 120,
-   "new_holders": 14,
-   "buys": 201,
-   "sells": 182,
-   "top10": 0.39,
-   "mint_open": false,
-   "verified": true,
-   "accel": 0.55,
-   "quote_asset": false,
-   "is_new": false,
-   "age_min": 573934,
-   "launchpad": null,
-   "flags": []
-  },
-  {
-   "address": "9eeExWnsFPYcwyTE8Y8inpiPWz5ncNpBJCaBkt56pump",
-   "symbol": "KUM",
-   "trades": 371,
-   "per_min": 74.2,
-   "traders": 207,
-   "new_holders": 0,
-   "buys": 205,
-   "sells": 166,
-   "top10": 0.2,
+   "address": "BduvkQfRXfHAkEA8twA6bejSWzDoDxDiXoCzUEsupump",
+   "symbol": "POKEDOLLAR",
+   "trades": 204,
+   "per_min": 40.8,
+   "traders": 84,
+   "new_holders": 13,
+   "buys": 105,
+   "sells": 99,
+   "top10": 0.15,
    "mint_open": false,
    "verified": false,
    "accel": 1.0,
    "quote_asset": false,
-   "is_new": false,
-   "age_min": 48,
+   "is_new": true,
+   "age_min": 0,
    "launchpad": "pump.fun",
    "flags": []
+  },
+  {
+   "address": "C6oP59v7ZhmSTiHG2DwDXFzBAnAuFzzuCDEWGcR4pump",
+   "symbol": "NEKO AI",
+   "trades": 141,
+   "per_min": 28.2,
+   "traders": 30,
+   "new_holders": 4,
+   "buys": 63,
+   "sells": 78,
+   "top10": 0.48,
+   "mint_open": false,
+   "verified": false,
+   "accel": 1.0,
+   "quote_asset": false,
+   "is_new": true,
+   "age_min": 1,
+   "launchpad": "pump.fun",
+   "flags": []
+  },
+  {
+   "address": "HEM2UxHUo2EjTbAT8kqydhq2RyefFMovgpeZxe8Wpump",
+   "symbol": "BULKLOT",
+   "trades": 141,
+   "per_min": 28.2,
+   "traders": 28,
+   "new_holders": 1,
+   "buys": 54,
+   "sells": 87,
+   "top10": 0.15,
+   "mint_open": false,
+   "verified": false,
+   "accel": 1.0,
+   "quote_asset": false,
+   "is_new": true,
+   "age_min": 1,
+   "launchpad": "pump.fun",
+   "flags": [
+    "sellers lead"
+   ]
+  },
+  {
+   "address": "DJTu7vi8norVzdVAffgvb39VP7wjKeTsgaMBJrzfxvoF",
+   "symbol": "DJT",
+   "trades": 117,
+   "per_min": 23.4,
+   "traders": 42,
+   "new_holders": 0,
+   "buys": 64,
+   "sells": 53,
+   "top10": 0.14,
+   "mint_open": false,
+   "verified": true,
+   "accel": 2.12,
+   "quote_asset": false,
+   "is_new": false,
+   "age_min": 57954,
+   "launchpad": null,
+   "flags": [
+    "heating"
+   ]
+  },
+  {
+   "address": "FYKnACiwPjQLKuvfmXVtExTpLHAE85nMbkCBrpXVpump",
+   "symbol": "GtaIV",
+   "trades": 96,
+   "per_min": 19.2,
+   "traders": 11,
+   "new_holders": 5,
+   "buys": 55,
+   "sells": 41,
+   "top10": 0.51,
+   "mint_open": false,
+   "verified": false,
+   "accel": 1.0,
+   "quote_asset": false,
+   "is_new": true,
+   "age_min": 1,
+   "launchpad": "pump.fun",
+   "flags": [
+    "top-heavy"
+   ]
+  },
+  {
+   "address": "H4KUxsEgCp2yDpFvyDuGM5k6XevSKKrrKUxZ3Zr6nyJc",
+   "symbol": "COCKROACH",
+   "trades": 89,
+   "per_min": 17.8,
+   "traders": 22,
+   "new_holders": 10,
+   "buys": 54,
+   "sells": 35,
+   "top10": 0.23,
+   "mint_open": false,
+   "verified": false,
+   "accel": 9.56,
+   "quote_asset": false,
+   "is_new": false,
+   "age_min": 29412,
+   "launchpad": "pump.fun",
+   "flags": [
+    "buyers lead",
+    "heating"
+   ]
+  },
+  {
+   "address": "GM18gmLAAZf6HJS77FbGU9QzoYSJVfi8DXDmDwUbpump",
+   "symbol": "Vendox",
+   "trades": 58,
+   "per_min": 11.6,
+   "traders": 34,
+   "new_holders": 0,
+   "buys": 37,
+   "sells": 21,
+   "top10": 0.01,
+   "mint_open": false,
+   "verified": false,
+   "accel": 1.0,
+   "quote_asset": false,
+   "is_new": true,
+   "age_min": 0,
+   "launchpad": "pump.fun",
+   "flags": [
+    "buyers lead"
+   ]
+  },
+  {
+   "address": "Ez7eEs53hQiXgCGmcbhdX5i1jgg2gC3F6MoeosuVpump",
+   "symbol": "LUKE",
+   "trades": 56,
+   "per_min": 11.2,
+   "traders": 26,
+   "new_holders": 1,
+   "buys": 29,
+   "sells": 27,
+   "top10": 0.22,
+   "mint_open": false,
+   "verified": false,
+   "accel": 0.68,
+   "quote_asset": false,
+   "is_new": false,
+   "age_min": 2088,
+   "launchpad": "pump.fun",
+   "flags": []
+  },
+  {
+   "address": "D3S6J9s1byrNBt3ZKwEDiPsNRqHtoEP8zQKdhyBdpump",
+   "symbol": "PIERRE",
+   "trades": 56,
+   "per_min": 11.2,
+   "traders": 29,
+   "new_holders": 0,
+   "buys": 23,
+   "sells": 33,
+   "top10": 0.21,
+   "mint_open": false,
+   "verified": false,
+   "accel": 0.33,
+   "quote_asset": false,
+   "is_new": false,
+   "age_min": 1889,
+   "launchpad": "pump.fun",
+   "flags": [
+    "cooling"
+   ]
   }
  ],
  "regions": [
@@ -257,19 +262,19 @@
    "name": "Scout",
    "region": "sensory cortex",
    "says": {
-    "headline": "69 tokens moving \u00b7 5 showing something worth a look",
+    "headline": "77 tokens moving \u00b7 8 showing something worth a look",
     "tokens": [
      {
-      "symbol": "cbADA",
-      "what": "2211 trades/min and running 10.7x its own hourly average"
+      "symbol": "Agency",
+      "what": "64 trades/min and running 7.5x its own hourly average"
      },
      {
-      "symbol": "Kim",
-      "what": "161 trades/min across 386 wallets"
+      "symbol": "TTWO",
+      "what": "42 trades/min across 67 wallets"
      },
      {
-      "symbol": "BUBBLE",
-      "what": "123 trades/min and running 10.7x its own hourly average"
+      "symbol": "BULKLOT",
+      "what": "28 trades/min across 28 wallets"
      }
     ],
     "quiet": false
@@ -280,14 +285,23 @@
    "name": "Skeptic",
    "region": "inhibitory prefrontal",
    "says": {
-    "verdict": "nothing in this window matches a known trap pattern",
-    "traps": [],
+    "verdict": "2 of the 12 busiest are top-heavy, printable or being sold",
+    "traps": [
+     {
+      "symbol": "BULKLOT",
+      "why": "87 sells against 54 buys in five minutes - more leaving than arriving"
+     },
+     {
+      "symbol": "GtaIV",
+      "why": "the ten largest wallets hold 51% of supply - that is a handful of holders, not demand"
+     }
+    ],
     "clean": [
-     "cbADA",
-     "QUINELINGS",
-     "Kim",
-     "BUBBLE",
-     "DOGE"
+     "Pok\u00e9mon",
+     "Agency",
+     "TTWO",
+     "POKEDOLLAR",
+     "DJT"
     ]
    }
   },
@@ -299,19 +313,19 @@
     "precedent": "3 of today's flagged tokens resemble something already logged",
     "matches": [
      {
-      "now": "cbADA",
+      "now": "Agency",
       "before": "RAY",
       "what_followed": "RAY carried the same flags at 584/min and its flow fell to 98/min over 6 rounds"
      },
      {
-      "now": "Kim",
+      "now": "TTWO",
       "before": "PUMP",
-      "what_followed": "PUMP carried the same flags at 423/min and its flow fell to 117/min over 21 rounds"
+      "what_followed": "PUMP carried the same flags at 423/min and its flow fell to 257/min over 22 rounds"
      },
      {
-      "now": "BUBBLE",
-      "before": "MASK",
-      "what_followed": "MASK carried the same flags at 43/min and its flow held to 37/min over 2 rounds"
+      "now": "BULKLOT",
+      "before": "CATE",
+      "what_followed": "CATE carried the same flags at 38/min and its flow rose to 127/min over 7 rounds"
      }
     ],
     "confidence": "fair"
@@ -322,17 +336,17 @@
    "name": "Synthesis",
    "region": "association cortex",
    "says": {
-    "call": "BUBBLE is the one to watch - buyers lead, heating, new holders",
-    "focus": "BUBBLE",
-    "reason": "123 trades/min across 133 wallets, 10.7x its own hourly average, top ten hold 26%, 421 buys against 195 sells.",
-    "confidence": 0.59,
+    "call": "nothing in this window is worth acting on",
+    "focus": null,
+    "reason": "2 of the busiest tokens tripped a trap pattern; the rest are trading normally or are too small to read.",
+    "confidence": 0.1,
     "overruled": ""
    }
   }
  ],
  "gate": {
-  "action": "SPEAK",
-  "why": "confidence 0.59 on BUBBLE, 616 trades behind it"
+  "action": "SILENCE",
+  "why": "confidence 0.10 is under the 0.55 bar"
  },
  "usage": {
   "in": 0,
