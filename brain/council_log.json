@@ -3835,5 +3835,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-19T07:20:24+00:00",
+  "block": 458747966,
+  "mode": "rules",
+  "call": "LILVADER is the one to watch - heating, new holders",
+  "focus": "LILVADER",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "LILVADER",
+    "per_min": 371.0,
+    "traders": 487,
+    "top10": 0.25,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "HNT",
+    "per_min": 331.6,
+    "traders": 118,
+    "top10": 0.26,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 267.4,
+    "traders": 371,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "SPSI",
+    "per_min": 121.0,
+    "traders": 499,
+    "top10": 0.11,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 116.6,
+    "traders": 199,
+    "top10": 0.59,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 67.4,
+    "traders": 98,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 66.2,
+    "traders": 56,
+    "top10": 0.31,
+    "flags": []
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 58.4,
+    "traders": 95,
+    "top10": 0.45,
+    "flags": []
+   }
+  ]
  }
 ]
