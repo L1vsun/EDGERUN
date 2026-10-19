@@ -3756,5 +3756,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-19T01:35:23+00:00",
+  "block": 458652398,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "UHI",
+    "per_min": 353.6,
+    "traders": 680,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 136.2,
+    "traders": 177,
+    "top10": 0.73,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 109.8,
+    "traders": 115,
+    "top10": 0.35,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 98.0,
+    "traders": 72,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "wNEAR",
+    "per_min": 96.4,
+    "traders": 54,
+    "top10": 0.19,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 74.6,
+    "traders": 98,
+    "top10": 0.25,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "UHI",
+    "per_min": 72.2,
+    "traders": 155,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 63.0,
+    "traders": 48,
+    "top10": 0.53,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
