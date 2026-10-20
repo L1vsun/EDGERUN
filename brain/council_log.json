@@ -4144,5 +4144,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-20T03:30:53+00:00",
+  "block": 459081906,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 1514.8,
+    "traders": 1373,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "MSFTx",
+    "per_min": 45.4,
+    "traders": 56,
+    "top10": 0.96,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 40.0,
+    "traders": 56,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "COLLECTOOOR",
+    "per_min": 36.6,
+    "traders": 95,
+    "top10": 0.17,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 33.6,
+    "traders": 46,
+    "top10": 0.7,
+    "flags": []
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 27.4,
+    "traders": 43,
+    "top10": 0.44,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 23.4,
+    "traders": 45,
+    "top10": 0.18,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "ONEPIECE",
+    "per_min": 23.0,
+    "traders": 58,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
