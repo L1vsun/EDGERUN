@@ -4221,5 +4221,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-20T09:08:13+00:00",
+  "block": 459174831,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "MPLX",
+    "per_min": 375.4,
+    "traders": 229,
+    "top10": 0.66,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TRAIN",
+    "per_min": 28.0,
+    "traders": 15,
+    "top10": 0.0,
+    "flags": []
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 24.0,
+    "traders": 47,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "TAI",
+    "per_min": 19.6,
+    "traders": 10,
+    "top10": 0.55,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPRITE",
+    "per_min": 18.0,
+    "traders": 43,
+    "top10": 0.0,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "TRX",
+    "per_min": 17.4,
+    "traders": 11,
+    "top10": 0.31,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEREBRO",
+    "per_min": 16.2,
+    "traders": 22,
+    "top10": 0.71,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "$STILLUP",
+    "per_min": 16.0,
+    "traders": 7,
+    "top10": 0.0,
+    "flags": []
+   }
+  ]
  }
 ]
