@@ -4372,5 +4372,75 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-20T18:36:48+00:00",
+  "block": 459331678,
+  "mode": "rules",
+  "call": "PYTH is the one to watch - buyers lead, heating",
+  "focus": "PYTH",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PND",
+    "per_min": 234.2,
+    "traders": 436,
+    "top10": 0.0,
+    "flags": []
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 137.2,
+    "traders": 175,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "MCDx",
+    "per_min": 105.4,
+    "traders": 123,
+    "top10": 0.92,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 63.2,
+    "traders": 39,
+    "top10": 0.31,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 60.4,
+    "traders": 87,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "PYTH",
+    "per_min": 59.4,
+    "traders": 49,
+    "top10": 0.46,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 57.8,
+    "traders": 64,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "arc",
+    "per_min": 45.4,
+    "traders": 40,
+    "top10": 0.42,
+    "flags": []
+   }
+  ]
  }
 ]
