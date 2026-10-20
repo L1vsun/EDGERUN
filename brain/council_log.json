@@ -4301,5 +4301,76 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-20T14:25:31+00:00",
+  "block": 459262383,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "SPCX",
+    "per_min": 570.4,
+    "traders": 451,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 339.6,
+    "traders": 230,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 329.0,
+    "traders": 447,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "USELESS",
+    "per_min": 293.8,
+    "traders": 187,
+    "top10": 0.32,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 182.0,
+    "traders": 158,
+    "top10": 0.7,
+    "flags": []
+   },
+   {
+    "symbol": "PENGU",
+    "per_min": 127.2,
+    "traders": 78,
+    "top10": 0.36,
+    "flags": []
+   },
+   {
+    "symbol": "SPYx",
+    "per_min": 94.6,
+    "traders": 66,
+    "top10": 0.69,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "PEACHY",
+    "per_min": 84.6,
+    "traders": 170,
+    "top10": 0.0,
+    "flags": [
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
