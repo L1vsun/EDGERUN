@@ -4595,5 +4595,80 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-21T05:44:14+00:00",
+  "block": 459516782,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.11,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "SOLMATE",
+    "per_min": 758.4,
+    "traders": 613,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "X",
+    "per_min": 381.0,
+    "traders": 660,
+    "top10": 0.21,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "Kimchi",
+    "per_min": 200.6,
+    "traders": 397,
+    "top10": 0.78,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "USELESS",
+    "per_min": 108.4,
+    "traders": 103,
+    "top10": 0.32,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 64.8,
+    "traders": 107,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "X",
+    "per_min": 51.2,
+    "traders": 51,
+    "top10": 0.3,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 40.8,
+    "traders": 42,
+    "top10": 0.53,
+    "flags": []
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 39.8,
+    "traders": 62,
+    "top10": 0.1,
+    "flags": []
+   }
+  ]
  }
 ]
