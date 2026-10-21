@@ -4823,5 +4823,76 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-21T20:17:48+00:00",
+  "block": 459761248,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 400.8,
+    "traders": 634,
+    "top10": 0.09,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SAYLOR",
+    "per_min": 346.8,
+    "traders": 554,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 235.2,
+    "traders": 335,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 114.4,
+    "traders": 63,
+    "top10": 0.57,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "Sailor",
+    "per_min": 107.4,
+    "traders": 239,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "METAx",
+    "per_min": 66.6,
+    "traders": 48,
+    "top10": 0.9,
+    "flags": []
+   },
+   {
+    "symbol": "Bear",
+    "per_min": 56.8,
+    "traders": 186,
+    "top10": 0.02,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 49.6,
+    "traders": 80,
+    "top10": 0.18,
+    "flags": []
+   }
+  ]
  }
 ]
