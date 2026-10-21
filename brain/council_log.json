@@ -4748,5 +4748,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-21T16:02:47+00:00",
+  "block": 459689410,
+  "mode": "rules",
+  "call": "people is the one to watch - buyers lead, heating",
+  "focus": "people",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 1128.2,
+    "traders": 1047,
+    "top10": 0.08,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "MET",
+    "per_min": 237.0,
+    "traders": 180,
+    "top10": 0.28,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 193.4,
+    "traders": 185,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 150.2,
+    "traders": 109,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 116.0,
+    "traders": 125,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "wNEAR",
+    "per_min": 41.8,
+    "traders": 52,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "RACE",
+    "per_min": 36.8,
+    "traders": 47,
+    "top10": 0.16,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "swordcat",
+    "per_min": 33.4,
+    "traders": 53,
+    "top10": 0.23,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
