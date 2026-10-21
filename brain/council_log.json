@@ -4670,5 +4670,83 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-21T11:12:48+00:00",
+  "block": 459608055,
+  "mode": "rules",
+  "call": "Lovot is the one to watch - heating, new holders",
+  "focus": "Lovot",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "NVDAx",
+    "per_min": 570.0,
+    "traders": 515,
+    "top10": 0.7,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "KIMPHIL",
+    "per_min": 461.8,
+    "traders": 574,
+    "top10": 0.13,
+    "flags": []
+   },
+   {
+    "symbol": "Lovot",
+    "per_min": 253.6,
+    "traders": 416,
+    "top10": 0.23,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 253.4,
+    "traders": 160,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "wNEAR",
+    "per_min": 94.2,
+    "traders": 48,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 67.2,
+    "traders": 115,
+    "top10": 0.81,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "PYTH",
+    "per_min": 60.6,
+    "traders": 45,
+    "top10": 0.46,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Pok\u00e9mon",
+    "per_min": 58.2,
+    "traders": 83,
+    "top10": 0.15,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
