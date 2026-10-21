@@ -4517,5 +4517,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-21T00:45:48+00:00",
+  "block": 459433914,
+  "mode": "rules",
+  "call": "ANTHROPIC is the one to watch - heating, new holders",
+  "focus": "ANTHROPIC",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ANTHROPIC",
+    "per_min": 260.6,
+    "traders": 84,
+    "top10": 0.39,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "SUPA",
+    "per_min": 201.4,
+    "traders": 259,
+    "top10": 0.26,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "MPLX",
+    "per_min": 168.4,
+    "traders": 80,
+    "top10": 0.69,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 152.0,
+    "traders": 121,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "USELESS",
+    "per_min": 106.4,
+    "traders": 91,
+    "top10": 0.32,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 65.0,
+    "traders": 74,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 63.6,
+    "traders": 106,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "SPCXx",
+    "per_min": 44.2,
+    "traders": 55,
+    "top10": 0.82,
+    "flags": []
+   }
+  ]
  }
 ]
