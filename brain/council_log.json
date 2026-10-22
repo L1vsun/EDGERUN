@@ -5050,5 +5050,85 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-22T08:50:19+00:00",
+  "block": 459973614,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.11,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "XMR",
+    "per_min": 497.4,
+    "traders": 620,
+    "top10": 0.12,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 275.8,
+    "traders": 382,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "Private",
+    "per_min": 267.6,
+    "traders": 437,
+    "top10": 0.29,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ANTHROPIC",
+    "per_min": 121.2,
+    "traders": 153,
+    "top10": 0.37,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "incoginu",
+    "per_min": 82.0,
+    "traders": 189,
+    "top10": 0.16,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "KAKA",
+    "per_min": 43.2,
+    "traders": 23,
+    "top10": 0.63,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 36.6,
+    "traders": 33,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "Kimchi",
+    "per_min": 32.0,
+    "traders": 79,
+    "top10": 0.78,
+    "flags": [
+     "top-heavy",
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
