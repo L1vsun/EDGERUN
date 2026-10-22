@@ -5210,5 +5210,82 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-22T18:42:34+00:00",
+  "block": 460141050,
+  "mode": "rules",
+  "call": "SI is the one to watch - buyers lead, heating, new holders",
+  "focus": "SI",
+  "confidence": 0.6,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 1674.2,
+    "traders": 1165,
+    "top10": 0.09,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 558.0,
+    "traders": 512,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "KIMCHAI",
+    "per_min": 549.8,
+    "traders": 250,
+    "top10": 0.11,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "FAILE",
+    "per_min": 412.6,
+    "traders": 601,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 390.0,
+    "traders": 332,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 231.4,
+    "traders": 273,
+    "top10": 0.12,
+    "flags": []
+   },
+   {
+    "symbol": "SI",
+    "per_min": 149.2,
+    "traders": 206,
+    "top10": 0.11,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "BTC",
+    "per_min": 110.6,
+    "traders": 190,
+    "top10": 0.68,
+    "flags": [
+     "top-heavy"
+    ]
+   }
+  ]
  }
 ]
