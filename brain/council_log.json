@@ -5287,5 +5287,72 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-22T22:06:34+00:00",
+  "block": 460198736,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "cbBTC",
+    "per_min": 646.6,
+    "traders": 406,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 346.2,
+    "traders": 316,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 194.8,
+    "traders": 165,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 184.4,
+    "traders": 150,
+    "top10": 0.79,
+    "flags": []
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 172.0,
+    "traders": 189,
+    "top10": 0.09,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 157.4,
+    "traders": 183,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 109.2,
+    "traders": 60,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 63.0,
+    "traders": 51,
+    "top10": 0.3,
+    "flags": []
+   }
+  ]
  }
 ]
