@@ -5130,5 +5130,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-22T14:21:36+00:00",
+  "block": 460067284,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.08,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 580.2,
+    "traders": 483,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 404.0,
+    "traders": 266,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "DOPE",
+    "per_min": 372.6,
+    "traders": 18,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "pill",
+    "per_min": 85.6,
+    "traders": 80,
+    "top10": 0.19,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 84.6,
+    "traders": 99,
+    "top10": 0.35,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "CRCLx",
+    "per_min": 75.8,
+    "traders": 27,
+    "top10": 0.45,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "Kimchi",
+    "per_min": 63.6,
+    "traders": 122,
+    "top10": 0.78,
+    "flags": [
+     "top-heavy",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "FRONTIER",
+    "per_min": 63.0,
+    "traders": 135,
+    "top10": 0.26,
+    "flags": []
+   }
+  ]
  }
 ]
