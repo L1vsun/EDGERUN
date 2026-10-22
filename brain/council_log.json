@@ -4969,5 +4969,86 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-22T03:23:52+00:00",
+  "block": 459881293,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 317.2,
+    "traders": 366,
+    "top10": 0.09,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "moggersha",
+    "per_min": 222.8,
+    "traders": 374,
+    "top10": 0.07,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "MONEYBIZ",
+    "per_min": 190.4,
+    "traders": 117,
+    "top10": 0.03,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "simulator",
+    "per_min": 99.4,
+    "traders": 130,
+    "top10": 0.25,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 35.8,
+    "traders": 62,
+    "top10": 0.16,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "ORE",
+    "per_min": 33.4,
+    "traders": 53,
+    "top10": 0.29,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 31.2,
+    "traders": 25,
+    "top10": 0.57,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 29.0,
+    "traders": 51,
+    "top10": 0.7,
+    "flags": []
+   }
+  ]
  }
 ]
