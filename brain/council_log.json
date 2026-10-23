@@ -5423,5 +5423,80 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-23T05:44:55+00:00",
+  "block": 460328577,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "DOGE",
+    "per_min": 324.2,
+    "traders": 403,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "DDP",
+    "per_min": 215.0,
+    "traders": 468,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "SPYx",
+    "per_min": 167.2,
+    "traders": 28,
+    "top10": 0.68,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 141.4,
+    "traders": 170,
+    "top10": 0.08,
+    "flags": []
+   },
+   {
+    "symbol": "ANDURIL",
+    "per_min": 138.8,
+    "traders": 152,
+    "top10": 0.44,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 136.0,
+    "traders": 158,
+    "top10": 0.19,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 113.4,
+    "traders": 147,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "McRib",
+    "per_min": 87.2,
+    "traders": 103,
+    "top10": 0.16,
+    "flags": []
+   }
+  ]
  }
 ]
