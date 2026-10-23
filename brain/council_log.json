@@ -5498,5 +5498,88 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-23T11:03:18+00:00",
+  "block": 460418858,
+  "mode": "rules",
+  "call": "OPENAI is the one to watch - buyers lead, heating",
+  "focus": "OPENAI",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 273.6,
+    "traders": 162,
+    "top10": 0.09,
+    "flags": []
+   },
+   {
+    "symbol": "OPENAI",
+    "per_min": 149.0,
+    "traders": 100,
+    "top10": 0.44,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "AAPLx",
+    "per_min": 47.0,
+    "traders": 62,
+    "top10": 0.92,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 43.0,
+    "traders": 15,
+    "top10": 0.92,
+    "flags": []
+   },
+   {
+    "symbol": "calajo",
+    "per_min": 33.4,
+    "traders": 64,
+    "top10": 0.12,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "WINGS",
+    "per_min": 32.6,
+    "traders": 39,
+    "top10": 0.76,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 29.6,
+    "traders": 58,
+    "top10": 0.47,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "MPLX",
+    "per_min": 29.4,
+    "traders": 17,
+    "top10": 0.7,
+    "flags": [
+     "sellers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
