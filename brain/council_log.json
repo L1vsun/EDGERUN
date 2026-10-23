@@ -5354,5 +5354,74 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-23T00:49:06+00:00",
+  "block": 460244751,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 314.8,
+    "traders": 375,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 186.0,
+    "traders": 209,
+    "top10": 0.09,
+    "flags": []
+   },
+   {
+    "symbol": "GMI",
+    "per_min": 157.8,
+    "traders": 257,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 131.4,
+    "traders": 166,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 100.6,
+    "traders": 102,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "CYBER",
+    "per_min": 86.4,
+    "traders": 230,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SNDK",
+    "per_min": 85.0,
+    "traders": 26,
+    "top10": 0.55,
+    "flags": []
+   },
+   {
+    "symbol": "MU",
+    "per_min": 84.8,
+    "traders": 46,
+    "top10": 0.16,
+    "flags": []
+   }
+  ]
  }
 ]
