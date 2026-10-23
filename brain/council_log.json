@@ -5581,5 +5581,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-23T15:49:38+00:00",
+  "block": 460499994,
+  "mode": "rules",
+  "call": "MPLX is the one to watch - buyers lead, heating",
+  "focus": "MPLX",
+  "confidence": 0.52,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 715.6,
+    "traders": 712,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 267.8,
+    "traders": 92,
+    "top10": 0.92,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 204.8,
+    "traders": 144,
+    "top10": 0.53,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "BLACKTOBER",
+    "per_min": 181.4,
+    "traders": 383,
+    "top10": 0.23,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 162.8,
+    "traders": 182,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 113.6,
+    "traders": 198,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "MPLX",
+    "per_min": 99.2,
+    "traders": 74,
+    "top10": 0.7,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Bonk",
+    "per_min": 98.2,
+    "traders": 91,
+    "top10": 0.3,
+    "flags": []
+   }
+  ]
  }
 ]
