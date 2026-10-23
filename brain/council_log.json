@@ -5728,5 +5728,87 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-23T22:54:19+00:00",
+  "block": 460620162,
+  "mode": "rules",
+  "call": "CHOO is the one to watch - heating, new holders",
+  "focus": "CHOO",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "MRNA",
+    "per_min": 346.2,
+    "traders": 305,
+    "top10": 0.23,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "MUSK4",
+    "per_min": 233.8,
+    "traders": 237,
+    "top10": 0.07,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Foodslop",
+    "per_min": 189.6,
+    "traders": 324,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "JLP",
+    "per_min": 152.8,
+    "traders": 161,
+    "top10": 0.5,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CHOO",
+    "per_min": 140.0,
+    "traders": 286,
+    "top10": 0.13,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "YMB",
+    "per_min": 102.6,
+    "traders": 316,
+    "top10": 0.13,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 95.8,
+    "traders": 93,
+    "top10": 0.19,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "VOLT",
+    "per_min": 48.6,
+    "traders": 108,
+    "top10": 0.01,
+    "flags": [
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
