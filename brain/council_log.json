@@ -5657,5 +5657,76 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-23T19:47:25+00:00",
+  "block": 460567362,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "SPCX",
+    "per_min": 320.6,
+    "traders": 303,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "AAPLx",
+    "per_min": 163.4,
+    "traders": 211,
+    "top10": 0.92,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 118.0,
+    "traders": 157,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "BMNTP",
+    "per_min": 87.0,
+    "traders": 197,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "McRib",
+    "per_min": 76.4,
+    "traders": 166,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "SPCXx",
+    "per_min": 57.0,
+    "traders": 52,
+    "top10": 0.8,
+    "flags": []
+   },
+   {
+    "symbol": "SQUADS",
+    "per_min": 52.6,
+    "traders": 152,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "OPENAI",
+    "per_min": 42.0,
+    "traders": 38,
+    "top10": 0.44,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
