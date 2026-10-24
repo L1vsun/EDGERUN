@@ -6030,5 +6030,76 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-24T14:44:53+00:00",
+  "block": 460888899,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.11,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 686.0,
+    "traders": 664,
+    "top10": 0.07,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 161.0,
+    "traders": 186,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "Memegle",
+    "per_min": 151.6,
+    "traders": 357,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 107.8,
+    "traders": 75,
+    "top10": 0.31,
+    "flags": []
+   },
+   {
+    "symbol": "YMB",
+    "per_min": 90.4,
+    "traders": 236,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 78.8,
+    "traders": 87,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "swordcat",
+    "per_min": 45.0,
+    "traders": 147,
+    "top10": 0.01,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 42.4,
+    "traders": 83,
+    "top10": 0.16,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
