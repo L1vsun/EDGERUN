@@ -6257,5 +6257,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-24T22:38:29+00:00",
+  "block": 461022844,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "MON",
+    "per_min": 688.4,
+    "traders": 815,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 193.4,
+    "traders": 249,
+    "top10": 0.17,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 153.4,
+    "traders": 290,
+    "top10": 0.17,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 152.2,
+    "traders": 181,
+    "top10": 0.35,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 152.0,
+    "traders": 159,
+    "top10": 0.29,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 85.8,
+    "traders": 101,
+    "top10": 0.29,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "\u30e4\u30ae",
+    "per_min": 72.4,
+    "traders": 137,
+    "top10": 0.19,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 51.0,
+    "traders": 86,
+    "top10": 0.73,
+    "flags": []
+   }
+  ]
  }
 ]
