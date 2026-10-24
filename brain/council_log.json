@@ -6101,5 +6101,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-24T17:50:36+00:00",
+  "block": 460941364,
+  "mode": "rules",
+  "call": "RAY is the one to watch - buyers lead, heating",
+  "focus": "RAY",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 564.8,
+    "traders": 419,
+    "top10": 0.59,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "WEN",
+    "per_min": 523.4,
+    "traders": 383,
+    "top10": 0.13,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 258.6,
+    "traders": 289,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 148.0,
+    "traders": 103,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 147.8,
+    "traders": 169,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "HOOKED",
+    "per_min": 147.8,
+    "traders": 224,
+    "top10": 0.2,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ORCA",
+    "per_min": 90.6,
+    "traders": 63,
+    "top10": 0.51,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 84.4,
+    "traders": 68,
+    "top10": 0.53,
+    "flags": []
+   }
+  ]
  }
 ]
