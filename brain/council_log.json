@@ -5883,5 +5883,76 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-24T06:13:15+00:00",
+  "block": 460744231,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 522.4,
+    "traders": 564,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 279.8,
+    "traders": 319,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 162.4,
+    "traders": 68,
+    "top10": 0.93,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 110.6,
+    "traders": 139,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 54.0,
+    "traders": 109,
+    "top10": 0.81,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Lab",
+    "per_min": 51.2,
+    "traders": 118,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 47.8,
+    "traders": 90,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "BMT",
+    "per_min": 47.4,
+    "traders": 33,
+    "top10": 0.6,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
