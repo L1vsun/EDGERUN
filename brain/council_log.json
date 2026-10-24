@@ -5954,5 +5954,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-24T11:24:45+00:00",
+  "block": 460832289,
+  "mode": "rules",
+  "call": "UTANG is the one to watch - buyers lead, heating",
+  "focus": "UTANG",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "BIRB",
+    "per_min": 609.2,
+    "traders": 148,
+    "top10": 0.93,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "Pumptache",
+    "per_min": 136.6,
+    "traders": 437,
+    "top10": 0.13,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 114.0,
+    "traders": 94,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "TRINITY",
+    "per_min": 72.2,
+    "traders": 168,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "UTANG",
+    "per_min": 42.2,
+    "traders": 96,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 34.0,
+    "traders": 64,
+    "top10": 0.16,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 28.0,
+    "traders": 62,
+    "top10": 0.47,
+    "flags": []
+   },
+   {
+    "symbol": "SOCKGOB",
+    "per_min": 26.0,
+    "traders": 11,
+    "top10": 0.63,
+    "flags": [
+     "top-heavy"
+    ]
+   }
+  ]
  }
 ]
