@@ -6808,5 +6808,86 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-25T23:26:50+00:00",
+  "block": 461443364,
+  "mode": "rules",
+  "call": "Olivia is the one to watch - buyers lead, new holders",
+  "focus": "Olivia",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "NFLX",
+    "per_min": 176.4,
+    "traders": 270,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "Olivia",
+    "per_min": 89.2,
+    "traders": 236,
+    "top10": 0.05,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "CATTLEAXE",
+    "per_min": 59.4,
+    "traders": 126,
+    "top10": 0.03,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "LINKR",
+    "per_min": 46.2,
+    "traders": 103,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 43.4,
+    "traders": 104,
+    "top10": 0.81,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Olivia",
+    "per_min": 39.6,
+    "traders": 109,
+    "top10": 0.06,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "peace",
+    "per_min": 34.0,
+    "traders": 18,
+    "top10": 0.58,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 30.4,
+    "traders": 10,
+    "top10": 0.91,
+    "flags": []
+   }
+  ]
  }
 ]
