@@ -6646,5 +6646,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-25T18:08:59+00:00",
+  "block": 461353506,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "STONK",
+    "per_min": 887.2,
+    "traders": 1078,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "LAUNCH",
+    "per_min": 492.0,
+    "traders": 921,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 84.0,
+    "traders": 13,
+    "top10": 0.91,
+    "flags": []
+   },
+   {
+    "symbol": "INU",
+    "per_min": 78.4,
+    "traders": 203,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 54.4,
+    "traders": 49,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "LAUNCHCAT",
+    "per_min": 49.0,
+    "traders": 130,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "BOYCOTT",
+    "per_min": 47.6,
+    "traders": 127,
+    "top10": 0.27,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "DOPE",
+    "per_min": 32.0,
+    "traders": 20,
+    "top10": 0.19,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
