@@ -6410,5 +6410,81 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-25T05:42:25+00:00",
+  "block": 461142574,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "QQQx",
+    "per_min": 84.2,
+    "traders": 92,
+    "top10": 0.82,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "\u2588\u2588\u2588",
+    "per_min": 52.6,
+    "traders": 67,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "UP",
+    "per_min": 29.6,
+    "traders": 12,
+    "top10": 0.51,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 25.4,
+    "traders": 34,
+    "top10": 0.79,
+    "flags": []
+   },
+   {
+    "symbol": "NEX Ai",
+    "per_min": 25.0,
+    "traders": 91,
+    "top10": 0.07,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 24.0,
+    "traders": 41,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 18.4,
+    "traders": 34,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "Messi",
+    "per_min": 17.0,
+    "traders": 43,
+    "top10": 0.11,
+    "flags": []
+   }
+  ]
  }
 ]
