@@ -6334,5 +6334,81 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-25T00:50:40+00:00",
+  "block": 461060214,
+  "mode": "rules",
+  "call": "ELOC is the one to watch - buyers lead, heating",
+  "focus": "ELOC",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "STONK",
+    "per_min": 627.8,
+    "traders": 529,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "BTC",
+    "per_min": 343.0,
+    "traders": 357,
+    "top10": 0.68,
+    "flags": [
+     "top-heavy",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 150.4,
+    "traders": 184,
+    "top10": 0.07,
+    "flags": []
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 94.6,
+    "traders": 27,
+    "top10": 0.93,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "DOPE",
+    "per_min": 92.2,
+    "traders": 20,
+    "top10": 0.19,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "DOGE",
+    "per_min": 92.0,
+    "traders": 147,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "USELESS",
+    "per_min": 52.6,
+    "traders": 72,
+    "top10": 0.32,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPY",
+    "per_min": 48.0,
+    "traders": 124,
+    "top10": 0.02,
+    "flags": []
+   }
+  ]
  }
 ]
