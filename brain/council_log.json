@@ -6726,5 +6726,87 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-25T21:04:45+00:00",
+  "block": 461403212,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.11,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 752.6,
+    "traders": 870,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "Kimchi",
+    "per_min": 147.0,
+    "traders": 298,
+    "top10": 0.79,
+    "flags": [
+     "top-heavy",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "USELESS",
+    "per_min": 92.6,
+    "traders": 84,
+    "top10": 0.32,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PARANOID",
+    "per_min": 63.8,
+    "traders": 117,
+    "top10": 0.23,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CATTLEAXE",
+    "per_min": 57.6,
+    "traders": 89,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "DOPE",
+    "per_min": 37.2,
+    "traders": 18,
+    "top10": 0.19,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "PYTH",
+    "per_min": 23.2,
+    "traders": 15,
+    "top10": 0.45,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "McRib",
+    "per_min": 22.6,
+    "traders": 48,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
