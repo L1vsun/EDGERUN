@@ -6565,5 +6565,86 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-25T14:49:20+00:00",
+  "block": 461297135,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ELON",
+    "per_min": 619.4,
+    "traders": 1071,
+    "top10": 0.14,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "CATTLEAXE",
+    "per_min": 562.2,
+    "traders": 1439,
+    "top10": 0.01,
+    "flags": [
+     "sellers lead"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 489.0,
+    "traders": 528,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "GEOD",
+    "per_min": 469.8,
+    "traders": 171,
+    "top10": 0.5,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 415.4,
+    "traders": 406,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GMEx",
+    "per_min": 216.6,
+    "traders": 328,
+    "top10": 0.96,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "GME",
+    "per_min": 169.2,
+    "traders": 316,
+    "top10": 0.18,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 138.6,
+    "traders": 146,
+    "top10": 0.73,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
