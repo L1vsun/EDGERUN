@@ -6486,5 +6486,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-25T10:46:43+00:00",
+  "block": 461228572,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "$HORNED",
+    "per_min": 25.4,
+    "traders": 10,
+    "top10": 0.53,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "JEW",
+    "per_min": 24.2,
+    "traders": 70,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "RUSH",
+    "per_min": 21.6,
+    "traders": 27,
+    "top10": 0.65,
+    "flags": []
+   },
+   {
+    "symbol": "ARCTIS",
+    "per_min": 21.2,
+    "traders": 41,
+    "top10": 0.3,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 18.6,
+    "traders": 43,
+    "top10": 0.48,
+    "flags": []
+   },
+   {
+    "symbol": "Marvin",
+    "per_min": 11.2,
+    "traders": 33,
+    "top10": 0.17,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ORE",
+    "per_min": 9.2,
+    "traders": 19,
+    "top10": 0.28,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "FSF",
+    "per_min": 9.2,
+    "traders": 10,
+    "top10": 0.5,
+    "flags": [
+     "sellers lead"
+    ]
+   }
+  ]
  }
 ]
