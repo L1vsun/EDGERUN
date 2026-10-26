@@ -7044,5 +7044,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-26T20:05:20+00:00",
+  "block": 461793066,
+  "mode": "rules",
+  "call": "Kane is the one to watch - buyers lead, heating",
+  "focus": "Kane",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "CATTLEAXE",
+    "per_min": 146.0,
+    "traders": 235,
+    "top10": 0.02,
+    "flags": []
+   },
+   {
+    "symbol": "QQQx",
+    "per_min": 80.4,
+    "traders": 104,
+    "top10": 0.82,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "tOpenAI",
+    "per_min": 65.2,
+    "traders": 49,
+    "top10": 0.28,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 58.4,
+    "traders": 68,
+    "top10": 0.73,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "NFLX",
+    "per_min": 48.4,
+    "traders": 65,
+    "top10": 0.14,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 43.8,
+    "traders": 15,
+    "top10": 0.91,
+    "flags": []
+   },
+   {
+    "symbol": "JLP",
+    "per_min": 43.4,
+    "traders": 59,
+    "top10": 0.5,
+    "flags": []
+   },
+   {
+    "symbol": "LP",
+    "per_min": 35.2,
+    "traders": 91,
+    "top10": 0.27,
+    "flags": [
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
