@@ -6968,5 +6968,81 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-26T07:25:54+00:00",
+  "block": 461578588,
+  "mode": "rules",
+  "call": "HARMONIC is the one to watch - buyers lead, new holders",
+  "focus": "HARMONIC",
+  "confidence": 0.49,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 904.4,
+    "traders": 1026,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "CATTLEAXE",
+    "per_min": 152.8,
+    "traders": 322,
+    "top10": 0.01,
+    "flags": []
+   },
+   {
+    "symbol": "RAYPAD",
+    "per_min": 98.2,
+    "traders": 209,
+    "top10": 0.19,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 72.2,
+    "traders": 13,
+    "top10": 0.91,
+    "flags": []
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 59.4,
+    "traders": 90,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SPYx",
+    "per_min": 59.4,
+    "traders": 68,
+    "top10": 0.69,
+    "flags": []
+   },
+   {
+    "symbol": "HARMONIC",
+    "per_min": 57.2,
+    "traders": 119,
+    "top10": 0.06,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ANTHROPIC",
+    "per_min": 55.4,
+    "traders": 57,
+    "top10": 0.36,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
