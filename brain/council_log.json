@@ -7121,5 +7121,78 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-26T23:58:46+00:00",
+  "block": 461858928,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "DJT",
+    "per_min": 532.6,
+    "traders": 512,
+    "top10": 0.17,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 446.0,
+    "traders": 320,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 206.2,
+    "traders": 149,
+    "top10": 0.1,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 130.4,
+    "traders": 149,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "CATTLEAXE",
+    "per_min": 130.0,
+    "traders": 166,
+    "top10": 0.02,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 60.2,
+    "traders": 131,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "TREMP",
+    "per_min": 53.8,
+    "traders": 140,
+    "top10": 0.26,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 47.0,
+    "traders": 53,
+    "top10": 0.73,
+    "flags": []
+   }
+  ]
  }
 ]
