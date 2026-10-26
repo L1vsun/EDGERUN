@@ -6889,5 +6889,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-26T01:31:16+00:00",
+  "block": 461478412,
+  "mode": "rules",
+  "call": "SI276 is the one to watch - buyers lead, heating",
+  "focus": "SI276",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "BTC",
+    "per_min": 335.8,
+    "traders": 381,
+    "top10": 0.68,
+    "flags": [
+     "top-heavy",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 122.6,
+    "traders": 164,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "NFLX",
+    "per_min": 45.2,
+    "traders": 77,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "Kimchi",
+    "per_min": 39.8,
+    "traders": 80,
+    "top10": 0.79,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 29.4,
+    "traders": 20,
+    "top10": 0.55,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "QQQx",
+    "per_min": 29.2,
+    "traders": 45,
+    "top10": 0.82,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SI276",
+    "per_min": 24.6,
+    "traders": 122,
+    "top10": 0.23,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPYx",
+    "per_min": 16.8,
+    "traders": 28,
+    "top10": 0.69,
+    "flags": []
+   }
+  ]
  }
 ]
