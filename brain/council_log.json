@@ -7194,5 +7194,79 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-27T04:48:34+00:00",
+  "block": 461940760,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.03,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "STONK",
+    "per_min": 131.8,
+    "traders": 165,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 56.6,
+    "traders": 89,
+    "top10": 0.21,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "\ud83e\uddf2",
+    "per_min": 40.2,
+    "traders": 101,
+    "top10": 0.3,
+    "flags": []
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 39.2,
+    "traders": 40,
+    "top10": 0.11,
+    "flags": []
+   },
+   {
+    "symbol": "ELON2028",
+    "per_min": 33.4,
+    "traders": 74,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "$PennyPump",
+    "per_min": 28.2,
+    "traders": 13,
+    "top10": 0.51,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "BTC",
+    "per_min": 22.4,
+    "traders": 47,
+    "top10": 0.69,
+    "flags": [
+     "top-heavy",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 20.6,
+    "traders": 43,
+    "top10": 0.51,
+    "flags": []
+   }
+  ]
  }
 ]
