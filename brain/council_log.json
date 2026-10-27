@@ -7268,5 +7268,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-27T10:12:34+00:00",
+  "block": 462032190,
+  "mode": "rules",
+  "call": "KING is the one to watch - buyers lead, heating, new holders",
+  "focus": "KING",
+  "confidence": 0.57,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "MU",
+    "per_min": 152.0,
+    "traders": 25,
+    "top10": 0.2,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Nothing",
+    "per_min": 81.4,
+    "traders": 208,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 55.2,
+    "traders": 49,
+    "top10": 0.27,
+    "flags": []
+   },
+   {
+    "symbol": "SPCXx",
+    "per_min": 32.8,
+    "traders": 59,
+    "top10": 0.77,
+    "flags": []
+   },
+   {
+    "symbol": "GOOGLx",
+    "per_min": 27.6,
+    "traders": 31,
+    "top10": 0.77,
+    "flags": []
+   },
+   {
+    "symbol": "AVGOx",
+    "per_min": 22.0,
+    "traders": 18,
+    "top10": 0.78,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "KING",
+    "per_min": 20.0,
+    "traders": 53,
+    "top10": 0.3,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "Pickles",
+    "per_min": 18.6,
+    "traders": 10,
+    "top10": 0.52,
+    "flags": [
+     "top-heavy",
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
