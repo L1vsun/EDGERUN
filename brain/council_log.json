@@ -7425,5 +7425,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-27T20:30:59+00:00",
+  "block": 462206561,
+  "mode": "rules",
+  "call": "CARDS is the one to watch - buyers lead, heating",
+  "focus": "CARDS",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "DJT",
+    "per_min": 3035.4,
+    "traders": 2465,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Frongus",
+    "per_min": 580.6,
+    "traders": 889,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "MEAT",
+    "per_min": 270.8,
+    "traders": 452,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 215.0,
+    "traders": 369,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "mini",
+    "per_min": 199.2,
+    "traders": 413,
+    "top10": 0.24,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Frongus",
+    "per_min": 94.8,
+    "traders": 243,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 84.0,
+    "traders": 70,
+    "top10": 0.79,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PEPE",
+    "per_min": 63.2,
+    "traders": 83,
+    "top10": 0.19,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
