@@ -7347,5 +7347,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-27T15:57:18+00:00",
+  "block": 462129437,
+  "mode": "rules",
+  "call": "Grokbot is the one to watch - heating, new holders",
+  "focus": "Grokbot",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "BEZOGE",
+    "per_min": 841.4,
+    "traders": 1285,
+    "top10": 0.24,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "Grokbot",
+    "per_min": 280.4,
+    "traders": 445,
+    "top10": 0.28,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 165.4,
+    "traders": 261,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "SPYx",
+    "per_min": 158.6,
+    "traders": 22,
+    "top10": 0.69,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 67.0,
+    "traders": 93,
+    "top10": 0.09,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Nothing",
+    "per_min": 66.0,
+    "traders": 174,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "DICTATOR",
+    "per_min": 48.4,
+    "traders": 155,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "paws",
+    "per_min": 48.2,
+    "traders": 123,
+    "top10": 0.29,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
