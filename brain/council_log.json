@@ -7584,5 +7584,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-28T06:01:40+00:00",
+  "block": 462367350,
+  "mode": "rules",
+  "call": "EMBER is the one to watch - buyers lead, heating, new holders",
+  "focus": "EMBER",
+  "confidence": 0.58,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "TSLAx",
+    "per_min": 278.6,
+    "traders": 335,
+    "top10": 0.58,
+    "flags": []
+   },
+   {
+    "symbol": "raycat",
+    "per_min": 135.6,
+    "traders": 312,
+    "top10": 0.0,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 83.0,
+    "traders": 137,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 72.6,
+    "traders": 19,
+    "top10": 0.9,
+    "flags": []
+   },
+   {
+    "symbol": "EMBER",
+    "per_min": 67.2,
+    "traders": 101,
+    "top10": 0.19,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "SKR",
+    "per_min": 33.4,
+    "traders": 65,
+    "top10": 0.6,
+    "flags": [
+     "sellers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 32.0,
+    "traders": 58,
+    "top10": 0.52,
+    "flags": []
+   },
+   {
+    "symbol": "INVERSE",
+    "per_min": 31.0,
+    "traders": 73,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
