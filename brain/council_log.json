@@ -7663,5 +7663,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-28T13:21:29+00:00",
+  "block": 462491300,
+  "mode": "rules",
+  "call": "ZEREBRO is the one to watch - buyers lead, heating",
+  "focus": "ZEREBRO",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 195.4,
+    "traders": 112,
+    "top10": 0.09,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 161.8,
+    "traders": 193,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "QUBIT",
+    "per_min": 118.0,
+    "traders": 291,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SQQQ",
+    "per_min": 95.2,
+    "traders": 116,
+    "top10": 0.12,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 63.0,
+    "traders": 10,
+    "top10": 0.91,
+    "flags": []
+   },
+   {
+    "symbol": "Grokbot",
+    "per_min": 56.8,
+    "traders": 141,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "HEDGE",
+    "per_min": 50.6,
+    "traders": 131,
+    "top10": 0.02,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ZEREBRO",
+    "per_min": 41.2,
+    "traders": 50,
+    "top10": 0.71,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
