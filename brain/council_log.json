@@ -7740,5 +7740,76 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-28T18:58:44+00:00",
+  "block": 462586322,
+  "mode": "rules",
+  "call": "SNARKS is the one to watch - buyers lead, heating, new holders",
+  "focus": "SNARKS",
+  "confidence": 0.59,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "ZEC",
+    "per_min": 406.8,
+    "traders": 459,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 398.2,
+    "traders": 493,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 290.2,
+    "traders": 311,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 270.4,
+    "traders": 195,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "SPYx",
+    "per_min": 229.2,
+    "traders": 49,
+    "top10": 0.69,
+    "flags": []
+   },
+   {
+    "symbol": "RETARDIO",
+    "per_min": 202.8,
+    "traders": 203,
+    "top10": 0.43,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 165.6,
+    "traders": 215,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 143.2,
+    "traders": 122,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
