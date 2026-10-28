@@ -7500,5 +7500,89 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-28T00:15:03+00:00",
+  "block": 462269643,
+  "mode": "rules",
+  "call": "Rape is the one to watch - buyers lead, heating",
+  "focus": "Rape",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "BTC",
+    "per_min": 166.2,
+    "traders": 181,
+    "top10": 0.69,
+    "flags": [
+     "top-heavy",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "KIMCHI",
+    "per_min": 85.0,
+    "traders": 190,
+    "top10": 0.29,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 63.4,
+    "traders": 117,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "SKR",
+    "per_min": 47.6,
+    "traders": 27,
+    "top10": 0.6,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 42.8,
+    "traders": 86,
+    "top10": 0.52,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Rape",
+    "per_min": 35.6,
+    "traders": 90,
+    "top10": 0.33,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Retard",
+    "per_min": 34.2,
+    "traders": 79,
+    "top10": 0.28,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "teledrop",
+    "per_min": 26.4,
+    "traders": 56,
+    "top10": 0.23,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
