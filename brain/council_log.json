@@ -7811,5 +7811,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-28T23:05:09+00:00",
+  "block": 462655454,
+  "mode": "rules",
+  "call": "munity is the one to watch - buyers lead, heating, new holders",
+  "focus": "munity",
+  "confidence": 0.6,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "SPYx",
+    "per_min": 966.0,
+    "traders": 689,
+    "top10": 0.69,
+    "flags": []
+   },
+   {
+    "symbol": "FLOATER",
+    "per_min": 245.6,
+    "traders": 421,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 239.0,
+    "traders": 205,
+    "top10": 0.16,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "munity",
+    "per_min": 209.6,
+    "traders": 424,
+    "top10": 0.28,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "CLUTCH",
+    "per_min": 154.2,
+    "traders": 242,
+    "top10": 0.13,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PEPE",
+    "per_min": 151.4,
+    "traders": 217,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "HOUSECOIN",
+    "per_min": 139.0,
+    "traders": 296,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "NACRE",
+    "per_min": 88.6,
+    "traders": 221,
+    "top10": 0.25,
+    "flags": []
+   }
+  ]
  }
 ]
