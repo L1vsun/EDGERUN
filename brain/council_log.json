@@ -8041,5 +8041,80 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-29T16:20:24+00:00",
+  "block": 462946103,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "xHYPE",
+    "per_min": 733.6,
+    "traders": 792,
+    "top10": 0.3,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 561.4,
+    "traders": 897,
+    "top10": 0.11,
+    "flags": [
+     "sellers lead"
+    ]
+   },
+   {
+    "symbol": "PTIE",
+    "per_min": 259.6,
+    "traders": 459,
+    "top10": 0.13,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 137.0,
+    "traders": 146,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "DEGENS",
+    "per_min": 53.6,
+    "traders": 149,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 52.8,
+    "traders": 48,
+    "top10": 0.58,
+    "flags": []
+   },
+   {
+    "symbol": "FLOAT",
+    "per_min": 46.0,
+    "traders": 129,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SPYx",
+    "per_min": 44.8,
+    "traders": 57,
+    "top10": 0.69,
+    "flags": []
+   }
+  ]
  }
 ]
