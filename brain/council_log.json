@@ -8116,5 +8116,78 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-29T21:18:47+00:00",
+  "block": 463029674,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "HYPE",
+    "per_min": 1272.4,
+    "traders": 1042,
+    "top10": 0.27,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 775.0,
+    "traders": 606,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 530.4,
+    "traders": 317,
+    "top10": 0.35,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 481.0,
+    "traders": 541,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 197.4,
+    "traders": 183,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 178.4,
+    "traders": 248,
+    "top10": 0.15,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "wNEAR",
+    "per_min": 170.4,
+    "traders": 98,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "USELESS",
+    "per_min": 166.6,
+    "traders": 98,
+    "top10": 0.32,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
