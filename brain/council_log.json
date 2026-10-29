@@ -7886,5 +7886,85 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-29T02:38:37+00:00",
+  "block": 462715358,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.08,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "COTUS",
+    "per_min": 443.6,
+    "traders": 1174,
+    "top10": 0.02,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 284.4,
+    "traders": 195,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "42",
+    "per_min": 65.0,
+    "traders": 80,
+    "top10": 0.24,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "PerpPad",
+    "per_min": 59.4,
+    "traders": 93,
+    "top10": 0.27,
+    "flags": []
+   },
+   {
+    "symbol": "Bonk",
+    "per_min": 38.6,
+    "traders": 47,
+    "top10": 0.3,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "FLOAT",
+    "per_min": 34.0,
+    "traders": 78,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "CPU",
+    "per_min": 22.4,
+    "traders": 38,
+    "top10": 0.19,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "Kimchi",
+    "per_min": 19.8,
+    "traders": 45,
+    "top10": 0.8,
+    "flags": [
+     "top-heavy",
+     "sellers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
