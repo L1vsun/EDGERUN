@@ -7966,5 +7966,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-29T09:22:39+00:00",
+  "block": 462828916,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.11,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 176.4,
+    "traders": 273,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "GTA6",
+    "per_min": 149.8,
+    "traders": 222,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "PLTRx",
+    "per_min": 109.4,
+    "traders": 96,
+    "top10": 0.98,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 81.6,
+    "traders": 87,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 80.8,
+    "traders": 115,
+    "top10": 0.18,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Viclate",
+    "per_min": 60.8,
+    "traders": 93,
+    "top10": 0.19,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SCREAM",
+    "per_min": 59.6,
+    "traders": 169,
+    "top10": 0.02,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "PENGU",
+    "per_min": 36.4,
+    "traders": 48,
+    "top10": 0.36,
+    "flags": []
+   }
+  ]
  }
 ]
