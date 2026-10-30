@@ -8413,5 +8413,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-30T19:50:54+00:00",
+  "block": 463409222,
+  "mode": "rules",
+  "call": "RAY is the one to watch - buyers lead, heating",
+  "focus": "RAY",
+  "confidence": 0.52,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 2768.2,
+    "traders": 2582,
+    "top10": 0.59,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GMEx",
+    "per_min": 431.8,
+    "traders": 479,
+    "top10": 0.94,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 187.0,
+    "traders": 198,
+    "top10": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 172.4,
+    "traders": 169,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 134.4,
+    "traders": 94,
+    "top10": 0.35,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 113.4,
+    "traders": 93,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PENGU",
+    "per_min": 111.2,
+    "traders": 92,
+    "top10": 0.36,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 109.6,
+    "traders": 159,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
