@@ -8264,5 +8264,78 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-30T07:31:53+00:00",
+  "block": 463201821,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "HYPE",
+    "per_min": 686.8,
+    "traders": 699,
+    "top10": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 310.2,
+    "traders": 286,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 298.8,
+    "traders": 361,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "MONEKO",
+    "per_min": 154.2,
+    "traders": 192,
+    "top10": 0.02,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 116.0,
+    "traders": 151,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 112.2,
+    "traders": 218,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "MPLX",
+    "per_min": 84.8,
+    "traders": 44,
+    "top10": 0.7,
+    "flags": [
+     "sellers lead"
+    ]
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 82.2,
+    "traders": 27,
+    "top10": 0.89,
+    "flags": []
+   }
+  ]
  }
 ]
