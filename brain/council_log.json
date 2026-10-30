@@ -8189,5 +8189,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-30T01:14:58+00:00",
+  "block": 463095871,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "HYPE",
+    "per_min": 462.4,
+    "traders": 586,
+    "top10": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 241.8,
+    "traders": 226,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "MPLX",
+    "per_min": 205.8,
+    "traders": 92,
+    "top10": 0.7,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 196.8,
+    "traders": 198,
+    "top10": 0.17,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 110.6,
+    "traders": 127,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "Fartcoin",
+    "per_min": 98.4,
+    "traders": 78,
+    "top10": 0.33,
+    "flags": []
+   },
+   {
+    "symbol": "SWAN",
+    "per_min": 95.8,
+    "traders": 174,
+    "top10": 0.02,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "SQUID",
+    "per_min": 91.2,
+    "traders": 69,
+    "top10": 0.34,
+    "flags": [
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
