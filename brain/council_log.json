@@ -8337,5 +8337,81 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-30T14:50:36+00:00",
+  "block": 463325103,
+  "mode": "rules",
+  "call": "OPENAI is the one to watch - heating, new holders",
+  "focus": "OPENAI",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "HYPE",
+    "per_min": 570.0,
+    "traders": 705,
+    "top10": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 382.8,
+    "traders": 274,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 321.0,
+    "traders": 223,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "NEURALINK",
+    "per_min": 189.4,
+    "traders": 231,
+    "top10": 0.43,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "INTC",
+    "per_min": 163.8,
+    "traders": 210,
+    "top10": 0.64,
+    "flags": []
+   },
+   {
+    "symbol": "OPENAI",
+    "per_min": 154.6,
+    "traders": 169,
+    "top10": 0.42,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 142.8,
+    "traders": 221,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "USELESS",
+    "per_min": 112.2,
+    "traders": 106,
+    "top10": 0.32,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
