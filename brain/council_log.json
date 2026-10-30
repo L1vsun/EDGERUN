@@ -8491,5 +8491,79 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-30T23:28:27+00:00",
+  "block": 463470065,
+  "mode": "rules",
+  "call": "SNARKS is the one to watch - buyers lead, heating, new holders",
+  "focus": "SNARKS",
+  "confidence": 0.58,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 517.0,
+    "traders": 761,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "DOGE",
+    "per_min": 306.8,
+    "traders": 267,
+    "top10": 0.23,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 294.8,
+    "traders": 298,
+    "top10": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "HYPERCHAN",
+    "per_min": 282.0,
+    "traders": 228,
+    "top10": 0.01,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 148.8,
+    "traders": 148,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 109.6,
+    "traders": 32,
+    "top10": 0.89,
+    "flags": []
+   },
+   {
+    "symbol": "TUSK",
+    "per_min": 51.4,
+    "traders": 118,
+    "top10": 0.24,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 46.8,
+    "traders": 106,
+    "top10": 0.15,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
