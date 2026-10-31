@@ -8641,5 +8641,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-31T09:18:23+00:00",
+  "block": 463635240,
+  "mode": "rules",
+  "call": "ANON is the one to watch - buyers lead, heating",
+  "focus": "ANON",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "BIRB",
+    "per_min": 107.2,
+    "traders": 22,
+    "top10": 0.89,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 78.2,
+    "traders": 101,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "LUMI",
+    "per_min": 31.8,
+    "traders": 91,
+    "top10": 0.17,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "\u53d1\u53d1\u732b",
+    "per_min": 28.8,
+    "traders": 70,
+    "top10": 0.13,
+    "flags": []
+   },
+   {
+    "symbol": "KIMSEEKR1",
+    "per_min": 23.4,
+    "traders": 64,
+    "top10": 0.05,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ANON",
+    "per_min": 20.0,
+    "traders": 50,
+    "top10": 0.42,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "kingBird",
+    "per_min": 19.4,
+    "traders": 9,
+    "top10": 0.56,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "FaFaCat",
+    "per_min": 18.6,
+    "traders": 53,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
