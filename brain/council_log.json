@@ -8721,5 +8721,86 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-31T15:27:28+00:00",
+  "block": 463738690,
+  "mode": "rules",
+  "call": "VVV is the one to watch - heating, new holders",
+  "focus": "VVV",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "billy",
+    "per_min": 488.0,
+    "traders": 782,
+    "top10": 0.2,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 85.2,
+    "traders": 158,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "PENGU",
+    "per_min": 73.8,
+    "traders": 82,
+    "top10": 0.36,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "KIMJONGUN",
+    "per_min": 73.8,
+    "traders": 110,
+    "top10": 0.01,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 73.2,
+    "traders": 104,
+    "top10": 0.11,
+    "flags": []
+   },
+   {
+    "symbol": "GTA6",
+    "per_min": 65.6,
+    "traders": 111,
+    "top10": 0.16,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "VVV",
+    "per_min": 37.0,
+    "traders": 47,
+    "top10": 0.21,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "PYTH",
+    "per_min": 36.6,
+    "traders": 30,
+    "top10": 0.45,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
