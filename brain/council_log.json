@@ -8875,5 +8875,87 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-10-31T22:45:25+00:00",
+  "block": 463861340,
+  "mode": "rules",
+  "call": "PepeWeen is the one to watch - buyers lead, new holders",
+  "focus": "PepeWeen",
+  "confidence": 0.49,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "RDDT",
+    "per_min": 378.6,
+    "traders": 298,
+    "top10": 0.21,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 207.2,
+    "traders": 177,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 137.2,
+    "traders": 214,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "PepeWeen",
+    "per_min": 69.6,
+    "traders": 254,
+    "top10": 0.22,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "BLZE",
+    "per_min": 68.4,
+    "traders": 44,
+    "top10": 0.26,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "AAPLx",
+    "per_min": 45.8,
+    "traders": 96,
+    "top10": 0.93,
+    "flags": []
+   },
+   {
+    "symbol": "anon",
+    "per_min": 45.8,
+    "traders": 148,
+    "top10": 0.1,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "anon",
+    "per_min": 42.8,
+    "traders": 163,
+    "top10": 0.08,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
