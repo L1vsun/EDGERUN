@@ -8565,5 +8565,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-31T02:40:07+00:00",
+  "block": 463523703,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "DJT",
+    "per_min": 731.4,
+    "traders": 723,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "LUMI",
+    "per_min": 537.6,
+    "traders": 787,
+    "top10": 0.17,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "AAPLx",
+    "per_min": 372.8,
+    "traders": 383,
+    "top10": 0.93,
+    "flags": []
+   },
+   {
+    "symbol": "BTC",
+    "per_min": 153.0,
+    "traders": 190,
+    "top10": 0.71,
+    "flags": [
+     "top-heavy",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 133.2,
+    "traders": 151,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 101.4,
+    "traders": 125,
+    "top10": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "iCoin",
+    "per_min": 86.4,
+    "traders": 198,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "MSFTx",
+    "per_min": 52.0,
+    "traders": 61,
+    "top10": 0.96,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
