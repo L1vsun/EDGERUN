@@ -8802,5 +8802,78 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-10-31T19:29:01+00:00",
+  "block": 463806332,
+  "mode": "rules",
+  "call": "MeiMei is the one to watch - buyers lead, heating",
+  "focus": "MeiMei",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 1901.6,
+    "traders": 2317,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 141.4,
+    "traders": 208,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 119.2,
+    "traders": 152,
+    "top10": 0.27,
+    "flags": []
+   },
+   {
+    "symbol": "MeiMei",
+    "per_min": 53.4,
+    "traders": 77,
+    "top10": 0.23,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 42.6,
+    "traders": 77,
+    "top10": 0.11,
+    "flags": []
+   },
+   {
+    "symbol": "DAVID",
+    "per_min": 39.6,
+    "traders": 101,
+    "top10": 0.73,
+    "flags": [
+     "top-heavy",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 39.0,
+    "traders": 80,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "HUSS",
+    "per_min": 30.6,
+    "traders": 97,
+    "top10": 0.26,
+    "flags": []
+   }
+  ]
  }
 ]
