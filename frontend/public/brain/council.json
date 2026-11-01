@@ -1,31 +1,31 @@
 {
  "mode": "rules",
- "generated_at": "2026-11-01T15:46:12+00:00",
+ "generated_at": "2026-11-01T20:12:18+00:00",
  "model": "rule-based",
- "block": 464147462,
+ "block": 464221958,
  "window_seconds": 300,
  "chain": {
-  "trades_total": 17570,
-  "traders_total": 4404,
-  "tokens_moving": 75
+  "trades_total": 12575,
+  "traders_total": 3695,
+  "tokens_moving": 60
  },
  "tokens": [
   {
-   "address": "DJTu7vi8norVzdVAffgvb39VP7wjKeTsgaMBJrzfxvoF",
-   "symbol": "DJT",
-   "trades": 6627,
-   "per_min": 1325.4,
-   "traders": 1074,
-   "new_holders": 106,
-   "buys": 3370,
-   "sells": 3257,
-   "top10": 0.22,
+   "address": "DRAMjSWR7HRfJKjRkvQWYL2bcaejaVhuxEcjf4pAY4Cw",
+   "symbol": "DRAM",
+   "trades": 2873,
+   "per_min": 574.6,
+   "traders": 447,
+   "new_holders": 56,
+   "buys": 1423,
+   "sells": 1450,
+   "top10": 0.42,
    "mint_open": false,
    "verified": true,
-   "accel": 9.99,
+   "accel": 11.84,
    "quote_asset": false,
    "is_new": false,
-   "age_min": 76188,
+   "age_min": 186575,
    "launchpad": null,
    "flags": [
     "heating"
@@ -34,96 +34,101 @@
   {
    "address": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
    "symbol": "PUMP",
-   "trades": 2934,
-   "per_min": 586.8,
-   "traders": 842,
-   "new_holders": 0,
-   "buys": 1564,
-   "sells": 1370,
+   "trades": 2105,
+   "per_min": 421.0,
+   "traders": 575,
+   "new_holders": 91,
+   "buys": 1110,
+   "sells": 995,
    "top10": 0.59,
    "mint_open": false,
    "verified": true,
-   "accel": 1.78,
+   "accel": 0.48,
    "quote_asset": false,
    "is_new": false,
-   "age_min": 686915,
+   "age_min": 687181,
    "launchpad": null,
    "flags": []
   },
   {
-   "address": "GYKnd6jGUSQoBUnj6LdGCBtCWYDgr2Zd6QwNPcy5pump",
-   "symbol": "AAPLCAT",
-   "trades": 1323,
-   "per_min": 264.6,
-   "traders": 209,
-   "new_holders": 0,
-   "buys": 659,
-   "sells": 664,
-   "top10": 0.02,
+   "address": "7fg42Xdvh58sVGYrZpDoV9gd1SkZcCKmt6ANTLbGpump",
+   "symbol": "RAM ALTMAN",
+   "trades": 1208,
+   "per_min": 241.6,
+   "traders": 455,
+   "new_holders": 317,
+   "buys": 694,
+   "sells": 514,
+   "top10": 0.26,
    "mint_open": false,
    "verified": false,
-   "accel": 0.98,
+   "accel": 11.65,
    "quote_asset": false,
    "is_new": false,
-   "age_min": 1261,
+   "age_min": 205,
    "launchpad": "pump.fun",
+   "flags": [
+    "heating",
+    "new holders"
+   ]
+  },
+  {
+   "address": "WXMRyRZhsa19ety5erZhHg4N3xj3EVN92u94422teJp",
+   "symbol": "XMR",
+   "trades": 1099,
+   "per_min": 219.8,
+   "traders": 395,
+   "new_holders": 0,
+   "buys": 646,
+   "sells": 453,
+   "top10": 0.17,
+   "mint_open": false,
+   "verified": true,
+   "accel": 1.62,
+   "quote_asset": false,
+   "is_new": false,
+   "age_min": 404297,
+   "launchpad": null,
    "flags": []
   },
   {
-   "address": "Ay7GZ155aCkj7kxvsV3h5NPKuSLV8dberuEeDqaYpump",
-   "symbol": "APPLE",
-   "trades": 1311,
-   "per_min": 262.2,
-   "traders": 536,
-   "new_holders": 264,
-   "buys": 719,
-   "sells": 592,
-   "top10": 0.05,
+   "address": "9suZrSsAAwWdm9UFyht8EgAouuQvgp9VCAmsKFuQRqBk",
+   "symbol": "RAM",
+   "trades": 1075,
+   "per_min": 215.0,
+   "traders": 232,
+   "new_holders": 57,
+   "buys": 625,
+   "sells": 450,
+   "top10": 0.23,
    "mint_open": false,
    "verified": false,
-   "accel": 1.0,
+   "accel": 11.9,
    "quote_asset": false,
-   "is_new": true,
-   "age_min": 5,
+   "is_new": false,
+   "age_min": 233,
    "launchpad": "pump.fun",
-   "flags": []
+   "flags": [
+    "heating"
+   ]
   },
   {
-   "address": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN",
-   "symbol": "TRUMP",
-   "trades": 783,
-   "per_min": 156.6,
-   "traders": 212,
-   "new_holders": 0,
-   "buys": 397,
-   "sells": 386,
-   "top10": 0.81,
+   "address": "6QUHcqYuiPRHxhnYZoygewXtNQr9kUrhc9Tmwgtbpump",
+   "symbol": "RAM",
+   "trades": 764,
+   "per_min": 152.8,
+   "traders": 295,
+   "new_holders": 44,
+   "buys": 438,
+   "sells": 326,
+   "top10": 0.27,
    "mint_open": false,
-   "verified": true,
-   "accel": 1.03,
+   "verified": false,
+   "accel": 10.16,
    "quote_asset": false,
    "is_new": false,
-   "age_min": 940407,
-   "launchpad": null,
-   "flags": []
-  },
-  {
-   "address": "oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp",
-   "symbol": "ORE",
-   "trades": 705,
-   "per_min": 141.0,
-   "traders": 131,
-   "new_holders": 21,
-   "buys": 370,
-   "sells": 335,
-   "top10": 0.29,
-   "mint_open": false,
-   "verified": true,
-   "accel": 2.9,
-   "quote_asset": false,
-   "is_new": false,
-   "age_min": 1181787,
-   "launchpad": null,
+   "age_min": 2424,
+   "launchpad": "pump.fun",
    "flags": [
     "heating"
    ]
@@ -131,128 +136,122 @@
   {
    "address": "HiMSSzzwkZkrXJ4PGVJRdtfLaANeAztjjcgk5Dxe7Lwx",
    "symbol": "HIMS",
-   "trades": 474,
-   "per_min": 94.8,
-   "traders": 115,
-   "new_holders": 13,
-   "buys": 249,
-   "sells": 225,
+   "trades": 725,
+   "per_min": 145.0,
+   "traders": 142,
+   "new_holders": 18,
+   "buys": 378,
+   "sells": 347,
    "top10": 0.15,
    "mint_open": false,
    "verified": true,
-   "accel": 7.69,
+   "accel": 3.63,
    "quote_asset": false,
    "is_new": false,
-   "age_min": 76185,
+   "age_min": 76452,
    "launchpad": null,
    "flags": [
     "heating"
    ]
   },
   {
-   "address": "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh",
-   "symbol": "NVDAx",
-   "trades": 347,
-   "per_min": 69.4,
-   "traders": 84,
-   "new_holders": 0,
-   "buys": 172,
-   "sells": 175,
-   "top10": 0.69,
-   "mint_open": false,
-   "verified": true,
-   "accel": 0.22,
-   "quote_asset": false,
-   "is_new": false,
-   "age_min": 708811,
-   "launchpad": null,
-   "flags": [
-    "cooling"
-   ]
-  },
-  {
-   "address": "27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4",
-   "symbol": "JLP",
-   "trades": 282,
-   "per_min": 56.4,
-   "traders": 41,
-   "new_holders": 0,
-   "buys": 147,
-   "sells": 135,
-   "top10": 0.5,
-   "mint_open": false,
-   "verified": true,
-   "accel": 0.06,
-   "quote_asset": false,
-   "is_new": false,
-   "age_min": 1418368,
-   "launchpad": null,
-   "flags": [
-    "cooling"
-   ]
-  },
-  {
-   "address": "G2GxKvH4sLdQLTZSnqnonpt8V3A3w6rQbfrrfM5Vpump",
-   "symbol": "VETO",
-   "trades": 262,
-   "per_min": 52.4,
-   "traders": 86,
-   "new_holders": 43,
-   "buys": 149,
-   "sells": 113,
-   "top10": 0.21,
+   "address": "BN4Z5NtntHhu6p3atEqkeAVi8Bn9Ri2QTv8FD7iupump",
+   "symbol": "CRIME",
+   "trades": 598,
+   "per_min": 119.6,
+   "traders": 180,
+   "new_holders": 80,
+   "buys": 301,
+   "sells": 297,
+   "top10": 0.57,
    "mint_open": false,
    "verified": false,
-   "accel": 1.0,
+   "accel": 1.43,
    "quote_asset": false,
-   "is_new": true,
-   "age_min": 1,
+   "is_new": false,
+   "age_min": 3573,
+   "launchpad": "pump.fun",
+   "flags": [
+    "top-heavy"
+   ]
+  },
+  {
+   "address": "MAXXib7SQAQn4ymrwhhR9qMRUcYv8BNhbQxizJn5CCk",
+   "symbol": "Maxxmas",
+   "trades": 244,
+   "per_min": 48.8,
+   "traders": 112,
+   "new_holders": 15,
+   "buys": 137,
+   "sells": 107,
+   "top10": 0.2,
+   "mint_open": false,
+   "verified": false,
+   "accel": 0.93,
+   "quote_asset": false,
+   "is_new": false,
+   "age_min": 125,
    "launchpad": "pump.fun",
    "flags": []
   },
   {
    "address": "ExxzYBTt3jwU5MUxuw2F4toYbTLdFwThSjyaCn6Xpump",
    "symbol": "Anakin",
-   "trades": 243,
-   "per_min": 48.6,
-   "traders": 154,
-   "new_holders": 76,
-   "buys": 92,
-   "sells": 151,
-   "top10": 0.19,
+   "trades": 219,
+   "per_min": 43.8,
+   "traders": 135,
+   "new_holders": 9,
+   "buys": 106,
+   "sells": 113,
+   "top10": 0.18,
    "mint_open": false,
    "verified": false,
-   "accel": 4.68,
+   "accel": 0.5,
    "quote_asset": false,
    "is_new": false,
-   "age_min": 4200,
+   "age_min": 4466,
    "launchpad": "pump.fun",
+   "flags": []
+  },
+  {
+   "address": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+   "symbol": "JUP",
+   "trades": 210,
+   "per_min": 42.0,
+   "traders": 90,
+   "new_holders": 0,
+   "buys": 112,
+   "sells": 98,
+   "top10": 0.15,
+   "mint_open": false,
+   "verified": true,
+   "accel": 2.0,
+   "quote_asset": false,
+   "is_new": false,
+   "age_min": 1450239,
+   "launchpad": null,
    "flags": [
-    "sellers lead",
     "heating"
    ]
   },
   {
-   "address": "6v8FawcsLivxAwRJXoQiThrK6a86v8YoJnQ9qinmi2b8",
-   "symbol": "CHAD",
-   "trades": 181,
-   "per_min": 36.2,
-   "traders": 86,
-   "new_holders": 50,
-   "buys": 121,
-   "sells": 60,
-   "top10": 0.06,
+   "address": "Pmfm2RprxQRKZH1XWVsBUc2KgCTyzeDTSFbT1vJmogz",
+   "symbol": "MOGZ",
+   "trades": 161,
+   "per_min": 32.2,
+   "traders": 30,
+   "new_holders": 8,
+   "buys": 88,
+   "sells": 73,
+   "top10": 0.24,
    "mint_open": false,
    "verified": false,
-   "accel": 1.0,
+   "accel": 1.05,
    "quote_asset": false,
-   "is_new": true,
-   "age_min": 1,
-   "launchpad": null,
-   "flags": [
-    "buyers lead",
-    "new holders"
-   ]
+   "is_new": false,
+   "age_min": 7503,
+   "launchpad": "met-dbc",
+   "flags": []
   }
  ],
  "regions": [
@@ -261,19 +260,19 @@
    "name": "Scout",
    "region": "sensory cortex",
    "says": {
-    "headline": "75 tokens moving \u00b7 7 showing something worth a look",
+    "headline": "60 tokens moving \u00b7 7 showing something worth a look",
     "tokens": [
      {
-      "symbol": "DJT",
-      "what": "1325 trades/min and running 10.0x its own hourly average"
+      "symbol": "DRAM",
+      "what": "575 trades/min and running 11.8x its own hourly average"
      },
      {
-      "symbol": "ORE",
-      "what": "141 trades/min and running 2.9x its own hourly average"
+      "symbol": "RAM ALTMAN",
+      "what": "242 trades/min and running 11.7x its own hourly average"
      },
      {
-      "symbol": "HIMS",
-      "what": "95 trades/min and running 7.7x its own hourly average"
+      "symbol": "RAM",
+      "what": "215 trades/min and running 11.9x its own hourly average"
      }
     ],
     "quiet": false
@@ -287,15 +286,15 @@
     "verdict": "1 of the 12 busiest are top-heavy, printable or being sold",
     "traps": [
      {
-      "symbol": "Anakin",
-      "why": "151 sells against 92 buys in five minutes - more leaving than arriving"
+      "symbol": "CRIME",
+      "why": "the ten largest wallets hold 57% of supply - that is a handful of holders, not demand"
      }
     ],
     "clean": [
-     "DJT",
-     "AAPLCAT",
-     "APPLE",
-     "ORE",
+     "RAM ALTMAN",
+     "XMR",
+     "RAM",
+     "RAM",
      "HIMS"
     ]
    }
@@ -308,17 +307,17 @@
     "precedent": "3 of today's flagged tokens resemble something already logged",
     "matches": [
      {
-      "now": "DJT",
+      "now": "DRAM",
       "before": "RAY",
       "what_followed": "RAY carried the same flags at 584/min and its flow fell to 113/min over 15 rounds"
      },
      {
-      "now": "ORE",
-      "before": "RAY",
-      "what_followed": "RAY carried the same flags at 584/min and its flow fell to 113/min over 15 rounds"
+      "now": "RAM ALTMAN",
+      "before": "ORE",
+      "what_followed": "ORE carried the same flags at 32/min and its flow rose to 141/min over 5 rounds"
      },
      {
-      "now": "HIMS",
+      "now": "RAM",
       "before": "RAY",
       "what_followed": "RAY carried the same flags at 584/min and its flow fell to 113/min over 15 rounds"
      }
@@ -331,17 +330,17 @@
    "name": "Synthesis",
    "region": "association cortex",
    "says": {
-    "call": "nothing in this window is worth acting on",
-    "focus": null,
-    "reason": "1 of the busiest tokens tripped a trap pattern; the rest are trading normally or are too small to read.",
-    "confidence": 0.15,
+    "call": "RAM ALTMAN is the one to watch - heating, new holders",
+    "focus": "RAM ALTMAN",
+    "reason": "242 trades/min across 455 wallets, 11.7x its own hourly average, top ten hold 26%, 694 buys against 514 sells.",
+    "confidence": 0.53,
     "overruled": ""
    }
   }
  ],
  "gate": {
   "action": "SILENCE",
-  "why": "confidence 0.15 is under the 0.55 bar"
+  "why": "confidence 0.53 is under the 0.55 bar"
  },
  "usage": {
   "in": 0,

@@ -9186,5 +9186,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-01T20:12:18+00:00",
+  "block": 464221958,
+  "mode": "rules",
+  "call": "RAM ALTMAN is the one to watch - heating, new holders",
+  "focus": "RAM ALTMAN",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "DRAM",
+    "per_min": 574.6,
+    "traders": 447,
+    "top10": 0.42,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 421.0,
+    "traders": 575,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "RAM ALTMAN",
+    "per_min": 241.6,
+    "traders": 455,
+    "top10": 0.26,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 219.8,
+    "traders": 395,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "RAM",
+    "per_min": 215.0,
+    "traders": 232,
+    "top10": 0.23,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "RAM",
+    "per_min": 152.8,
+    "traders": 295,
+    "top10": 0.27,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HIMS",
+    "per_min": 145.0,
+    "traders": 142,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CRIME",
+    "per_min": 119.6,
+    "traders": 180,
+    "top10": 0.57,
+    "flags": [
+     "top-heavy"
+    ]
+   }
+  ]
  }
 ]
