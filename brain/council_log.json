@@ -9035,5 +9035,81 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-01T08:43:59+00:00",
+  "block": 464029123,
+  "mode": "rules",
+  "call": "COOL is the one to watch - buyers lead, new holders",
+  "focus": "COOL",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "NKE",
+    "per_min": 192.4,
+    "traders": 249,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 173.2,
+    "traders": 239,
+    "top10": 0.59,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 146.0,
+    "traders": 177,
+    "top10": 0.27,
+    "flags": []
+   },
+   {
+    "symbol": "AAPLx",
+    "per_min": 122.4,
+    "traders": 155,
+    "top10": 0.93,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "COOL",
+    "per_min": 104.8,
+    "traders": 277,
+    "top10": 0.07,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 91.2,
+    "traders": 126,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "niketyson",
+    "per_min": 68.2,
+    "traders": 164,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 57.4,
+    "traders": 70,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
