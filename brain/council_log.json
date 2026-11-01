@@ -9111,5 +9111,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-01T15:46:12+00:00",
+  "block": 464147462,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "DJT",
+    "per_min": 1325.4,
+    "traders": 1074,
+    "top10": 0.22,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 586.8,
+    "traders": 842,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "AAPLCAT",
+    "per_min": 264.6,
+    "traders": 209,
+    "top10": 0.02,
+    "flags": []
+   },
+   {
+    "symbol": "APPLE",
+    "per_min": 262.2,
+    "traders": 536,
+    "top10": 0.05,
+    "flags": []
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 156.6,
+    "traders": 212,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "ORE",
+    "per_min": 141.0,
+    "traders": 131,
+    "top10": 0.29,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HIMS",
+    "per_min": 94.8,
+    "traders": 115,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 69.4,
+    "traders": 84,
+    "top10": 0.69,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
