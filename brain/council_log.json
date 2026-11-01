@@ -8957,5 +8957,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-01T01:51:47+00:00",
+  "block": 463913625,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "DJT",
+    "per_min": 277.8,
+    "traders": 294,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 256.0,
+    "traders": 205,
+    "top10": 0.53,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "NNN",
+    "per_min": 136.2,
+    "traders": 87,
+    "top10": 0.16,
+    "flags": [
+     "sellers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GLDx",
+    "per_min": 103.4,
+    "traders": 103,
+    "top10": 0.9,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "inut",
+    "per_min": 96.2,
+    "traders": 222,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "BROT",
+    "per_min": 41.6,
+    "traders": 28,
+    "top10": 0.62,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "OTTER",
+    "per_min": 34.2,
+    "traders": 12,
+    "top10": 0.56,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "ORE",
+    "per_min": 31.4,
+    "traders": 54,
+    "top10": 0.29,
+    "flags": []
+   }
+  ]
  }
 ]
