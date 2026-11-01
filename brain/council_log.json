@@ -9266,5 +9266,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-01T23:45:23+00:00",
+  "block": 464281576,
+  "mode": "rules",
+  "call": "FATCOIN is the one to watch - buyers lead, heating",
+  "focus": "FATCOIN",
+  "confidence": 0.52,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 548.6,
+    "traders": 769,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "FATCOIN",
+    "per_min": 112.8,
+    "traders": 246,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "DIH",
+    "per_min": 78.2,
+    "traders": 163,
+    "top10": 0.27,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 72.2,
+    "traders": 115,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "FLOAT",
+    "per_min": 64.0,
+    "traders": 130,
+    "top10": 0.22,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 39.8,
+    "traders": 70,
+    "top10": 0.12,
+    "flags": []
+   },
+   {
+    "symbol": "CHAD",
+    "per_min": 39.0,
+    "traders": 76,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "Tombstone",
+    "per_min": 33.8,
+    "traders": 70,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
