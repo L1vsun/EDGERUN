@@ -9343,5 +9343,78 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-02T04:33:57+00:00",
+  "block": 464362401,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "cbBTC",
+    "per_min": 149.4,
+    "traders": 123,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 85.6,
+    "traders": 97,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "HIMS",
+    "per_min": 65.6,
+    "traders": 82,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "AMD",
+    "per_min": 51.4,
+    "traders": 127,
+    "top10": 0.16,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "QUANT",
+    "per_min": 44.6,
+    "traders": 89,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "GOONER",
+    "per_min": 36.4,
+    "traders": 41,
+    "top10": 0.26,
+    "flags": [
+     "sellers lead"
+    ]
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 32.6,
+    "traders": 47,
+    "top10": 0.53,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 30.8,
+    "traders": 63,
+    "top10": 0.16,
+    "flags": []
+   }
+  ]
  }
 ]
