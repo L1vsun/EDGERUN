@@ -9497,5 +9497,79 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-02T22:24:33+00:00",
+  "block": 464662081,
+  "mode": "rules",
+  "call": "CCAT is the one to watch - buyers lead, new holders",
+  "focus": "CCAT",
+  "confidence": 0.49,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "cbBTC",
+    "per_min": 162.6,
+    "traders": 195,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 130.0,
+    "traders": 168,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "iNu",
+    "per_min": 99.4,
+    "traders": 222,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "FLOAT",
+    "per_min": 83.8,
+    "traders": 185,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 83.6,
+    "traders": 122,
+    "top10": 0.1,
+    "flags": []
+   },
+   {
+    "symbol": "\u1453\u0b39\ua6a1\u0908",
+    "per_min": 68.6,
+    "traders": 155,
+    "top10": 0.25,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "MAMESUKE",
+    "per_min": 63.4,
+    "traders": 143,
+    "top10": 0.13,
+    "flags": []
+   },
+   {
+    "symbol": "CCAT",
+    "per_min": 57.8,
+    "traders": 146,
+    "top10": 0.23,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
