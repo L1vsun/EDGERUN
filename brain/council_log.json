@@ -9416,5 +9416,86 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-02T13:06:33+00:00",
+  "block": 464506051,
+  "mode": "rules",
+  "call": "AAPLx is the one to watch - buyers lead, heating",
+  "focus": "AAPLx",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "STONK",
+    "per_min": 390.4,
+    "traders": 323,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "MAMESUKE",
+    "per_min": 254.2,
+    "traders": 318,
+    "top10": 0.1,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 121.4,
+    "traders": 173,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 107.0,
+    "traders": 120,
+    "top10": 0.35,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 57.8,
+    "traders": 58,
+    "top10": 0.73,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "AAPLx",
+    "per_min": 38.2,
+    "traders": 42,
+    "top10": 0.93,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CRCLx",
+    "per_min": 37.8,
+    "traders": 14,
+    "top10": 0.44,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HUMA",
+    "per_min": 36.4,
+    "traders": 24,
+    "top10": 0.77,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
