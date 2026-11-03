@@ -9571,5 +9571,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-03T03:36:17+00:00",
+  "block": 464749535,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.14,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "XMR",
+    "per_min": 662.0,
+    "traders": 648,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 101.2,
+    "traders": 118,
+    "top10": 0.35,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 92.6,
+    "traders": 85,
+    "top10": 0.27,
+    "flags": []
+   },
+   {
+    "symbol": "MPLX",
+    "per_min": 84.0,
+    "traders": 76,
+    "top10": 0.69,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "GATO",
+    "per_min": 44.4,
+    "traders": 158,
+    "top10": 0.13,
+    "flags": []
+   },
+   {
+    "symbol": "GTA6",
+    "per_min": 41.6,
+    "traders": 37,
+    "top10": 0.15,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "CATE",
+    "per_min": 38.2,
+    "traders": 66,
+    "top10": 0.16,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 30.8,
+    "traders": 54,
+    "top10": 0.15,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
