@@ -9729,5 +9729,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-03T19:05:00+00:00",
+  "block": 465009747,
+  "mode": "rules",
+  "call": "\u2588\u2588\u2588 is the one to watch - buyers lead, heating, new holders",
+  "focus": "\u2588\u2588\u2588",
+  "confidence": 0.58,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "cbBTC",
+    "per_min": 282.8,
+    "traders": 264,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 226.4,
+    "traders": 237,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 183.6,
+    "traders": 258,
+    "top10": 0.1,
+    "flags": []
+   },
+   {
+    "symbol": "long",
+    "per_min": 132.8,
+    "traders": 152,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 102.8,
+    "traders": 72,
+    "top10": 0.53,
+    "flags": []
+   },
+   {
+    "symbol": "PEPECOIN",
+    "per_min": 55.0,
+    "traders": 159,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "MAMESUKE",
+    "per_min": 54.2,
+    "traders": 106,
+    "top10": 0.15,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "\u2588\u2588\u2588",
+    "per_min": 46.8,
+    "traders": 97,
+    "top10": 0.26,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
