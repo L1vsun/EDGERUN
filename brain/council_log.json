@@ -9648,5 +9648,86 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-03T11:38:16+00:00",
+  "block": 464884845,
+  "mode": "rules",
+  "call": "FLOAT is the one to watch - buyers lead, heating",
+  "focus": "FLOAT",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "HIMS",
+    "per_min": 79.6,
+    "traders": 85,
+    "top10": 0.12,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "1WIN",
+    "per_min": 40.2,
+    "traders": 108,
+    "top10": 0.85,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 34.4,
+    "traders": 41,
+    "top10": 0.57,
+    "flags": []
+   },
+   {
+    "symbol": "RICO",
+    "per_min": 31.4,
+    "traders": 55,
+    "top10": 0.22,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "CATO",
+    "per_min": 28.2,
+    "traders": 48,
+    "top10": 0.3,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "FLOAT",
+    "per_min": 26.6,
+    "traders": 59,
+    "top10": 0.22,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "\u7eb8\u72d7",
+    "per_min": 24.8,
+    "traders": 62,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "PEPE",
+    "per_min": 21.8,
+    "traders": 23,
+    "top10": 0.21,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
