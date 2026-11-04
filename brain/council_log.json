@@ -9955,5 +9955,80 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-04T15:06:54+00:00",
+  "block": 465346274,
+  "mode": "rules",
+  "call": "MET is the one to watch - buyers lead, heating",
+  "focus": "MET",
+  "confidence": 0.52,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Donkey",
+    "per_min": 540.2,
+    "traders": 821,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 284.4,
+    "traders": 193,
+    "top10": 0.79,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 273.2,
+    "traders": 298,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "CRCLx",
+    "per_min": 167.4,
+    "traders": 70,
+    "top10": 0.52,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "Bonk",
+    "per_min": 160.8,
+    "traders": 158,
+    "top10": 0.3,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 128.8,
+    "traders": 141,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 114.4,
+    "traders": 80,
+    "top10": 0.58,
+    "flags": []
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 112.4,
+    "traders": 103,
+    "top10": 0.53,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
