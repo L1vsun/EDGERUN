@@ -9804,5 +9804,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-04T00:04:44+00:00",
+  "block": 465093629,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "E",
+    "per_min": 970.6,
+    "traders": 1235,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 343.6,
+    "traders": 249,
+    "top10": 0.16,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "POLYMARKET",
+    "per_min": 294.8,
+    "traders": 239,
+    "top10": 0.46,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 260.6,
+    "traders": 213,
+    "top10": 0.11,
+    "flags": []
+   },
+   {
+    "symbol": "PREDICTOOR",
+    "per_min": 175.6,
+    "traders": 347,
+    "top10": 0.25,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 111.4,
+    "traders": 85,
+    "top10": 0.73,
+    "flags": []
+   },
+   {
+    "symbol": "Predih",
+    "per_min": 85.8,
+    "traders": 207,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "JLP",
+    "per_min": 67.8,
+    "traders": 80,
+    "top10": 0.5,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
