@@ -10030,5 +10030,78 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-04T21:24:28+00:00",
+  "block": 465451565,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "$WIF",
+    "per_min": 306.4,
+    "traders": 380,
+    "top10": 0.32,
+    "flags": []
+   },
+   {
+    "symbol": "XMR",
+    "per_min": 295.2,
+    "traders": 362,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "PHIL",
+    "per_min": 229.2,
+    "traders": 400,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 163.8,
+    "traders": 106,
+    "top10": 0.19,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "higher",
+    "per_min": 142.8,
+    "traders": 243,
+    "top10": 0.22,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 139.6,
+    "traders": 169,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "AMD",
+    "per_min": 112.4,
+    "traders": 253,
+    "top10": 0.12,
+    "flags": []
+   },
+   {
+    "symbol": "GATO",
+    "per_min": 73.4,
+    "traders": 295,
+    "top10": 0.14,
+    "flags": [
+     "sellers lead"
+    ]
+   }
+  ]
  }
 ]
