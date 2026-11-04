@@ -9883,5 +9883,77 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-04T06:51:05+00:00",
+  "block": 465207546,
+  "mode": "rules",
+  "call": "MET is the one to watch - buyers lead, heating",
+  "focus": "MET",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 312.4,
+    "traders": 381,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "STARMIND",
+    "per_min": 224.8,
+    "traders": 454,
+    "top10": 0.23,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 214.4,
+    "traders": 139,
+    "top10": 0.34,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 179.4,
+    "traders": 207,
+    "top10": 0.16,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 112.0,
+    "traders": 114,
+    "top10": 0.79,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 101.6,
+    "traders": 101,
+    "top10": 0.27,
+    "flags": []
+   },
+   {
+    "symbol": "wNEAR",
+    "per_min": 92.0,
+    "traders": 33,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "RAM",
+    "per_min": 66.8,
+    "traders": 123,
+    "top10": 0.21,
+    "flags": []
+   }
+  ]
  }
 ]
