@@ -10103,5 +10103,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-05T01:38:41+00:00",
+  "block": 465522657,
+  "mode": "rules",
+  "call": "PIRATE is the one to watch - buyers lead, heating, new holders",
+  "focus": "PIRATE",
+  "confidence": 0.6,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "MSFTx",
+    "per_min": 2742.2,
+    "traders": 1836,
+    "top10": 0.96,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PIRATE",
+    "per_min": 297.2,
+    "traders": 541,
+    "top10": 0.19,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 209.6,
+    "traders": 200,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "inu",
+    "per_min": 180.6,
+    "traders": 276,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "PNH",
+    "per_min": 80.8,
+    "traders": 171,
+    "top10": 0.11,
+    "flags": []
+   },
+   {
+    "symbol": "GLDx",
+    "per_min": 72.6,
+    "traders": 48,
+    "top10": 0.91,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "MPLX",
+    "per_min": 61.8,
+    "traders": 59,
+    "top10": 0.69,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 51.2,
+    "traders": 59,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
