@@ -10264,5 +10264,79 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-05T17:17:16+00:00",
+  "block": 465786576,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TRUMP",
+    "per_min": 320.8,
+    "traders": 219,
+    "top10": 0.81,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "BenBen",
+    "per_min": 214.8,
+    "traders": 444,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 211.6,
+    "traders": 124,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 208.4,
+    "traders": 222,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "SPYx",
+    "per_min": 115.8,
+    "traders": 63,
+    "top10": 0.65,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "AMD",
+    "per_min": 96.6,
+    "traders": 180,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "MSTRx",
+    "per_min": 76.0,
+    "traders": 41,
+    "top10": 0.72,
+    "flags": []
+   },
+   {
+    "symbol": "IT",
+    "per_min": 73.4,
+    "traders": 129,
+    "top10": 0.16,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
