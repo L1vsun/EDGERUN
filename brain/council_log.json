@@ -10183,5 +10183,86 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-05T08:58:37+00:00",
+  "block": 465646367,
+  "mode": "rules",
+  "call": "GIF is the one to watch - buyers lead, new holders",
+  "focus": "GIF",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "d/acc",
+    "per_min": 227.6,
+    "traders": 373,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "GIF",
+    "per_min": 134.0,
+    "traders": 283,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 82.4,
+    "traders": 96,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "GIF",
+    "per_min": 75.2,
+    "traders": 204,
+    "top10": 0.0,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 59.0,
+    "traders": 40,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 33.0,
+    "traders": 44,
+    "top10": 0.26,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "stonkdown",
+    "per_min": 29.4,
+    "traders": 13,
+    "top10": 0.52,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "$BWIZ",
+    "per_min": 26.8,
+    "traders": 16,
+    "top10": 0.53,
+    "flags": [
+     "top-heavy"
+    ]
+   }
+  ]
  }
 ]
