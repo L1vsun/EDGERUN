@@ -10338,5 +10338,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-05T22:45:49+00:00",
+  "block": 465878628,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "cbBTC",
+    "per_min": 227.2,
+    "traders": 202,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 90.4,
+    "traders": 114,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 56.6,
+    "traders": 71,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "VETO",
+    "per_min": 54.0,
+    "traders": 136,
+    "top10": 0.17,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 50.0,
+    "traders": 78,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "ClaudiaGI",
+    "per_min": 49.8,
+    "traders": 116,
+    "top10": 0.31,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 49.4,
+    "traders": 56,
+    "top10": 0.65,
+    "flags": []
+   },
+   {
+    "symbol": "COGE",
+    "per_min": 44.0,
+    "traders": 114,
+    "top10": 0.17,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
