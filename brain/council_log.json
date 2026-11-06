@@ -10413,5 +10413,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-06T03:12:01+00:00",
+  "block": 465953274,
+  "mode": "rules",
+  "call": "callinu is the one to watch - buyers lead, new holders",
+  "focus": "callinu",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "BIRB",
+    "per_min": 247.2,
+    "traders": 50,
+    "top10": 0.88,
+    "flags": []
+   },
+   {
+    "symbol": "callinu",
+    "per_min": 179.0,
+    "traders": 331,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "Diamond",
+    "per_min": 132.8,
+    "traders": 290,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "SKR",
+    "per_min": 60.6,
+    "traders": 78,
+    "top10": 0.6,
+    "flags": [
+     "sellers lead"
+    ]
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 60.4,
+    "traders": 82,
+    "top10": 0.53,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 59.4,
+    "traders": 88,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "2Z",
+    "per_min": 39.6,
+    "traders": 23,
+    "top10": 0.43,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "dikdik",
+    "per_min": 36.4,
+    "traders": 94,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
