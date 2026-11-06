@@ -10647,5 +10647,89 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-06T23:23:24+00:00",
+  "block": 466292518,
+  "mode": "rules",
+  "call": "FUSE is the one to watch - buyers lead, heating, new holders",
+  "focus": "FUSE",
+  "confidence": 0.59,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 559.0,
+    "traders": 689,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "COGE",
+    "per_min": 237.4,
+    "traders": 305,
+    "top10": 0.09,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PRIVACY",
+    "per_min": 200.0,
+    "traders": 290,
+    "top10": 0.34,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 161.2,
+    "traders": 159,
+    "top10": 0.8,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 96.6,
+    "traders": 129,
+    "top10": 0.17,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "MNST",
+    "per_min": 82.2,
+    "traders": 101,
+    "top10": 0.1,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "FUSE",
+    "per_min": 80.0,
+    "traders": 122,
+    "top10": 0.19,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "HATCH",
+    "per_min": 74.2,
+    "traders": 148,
+    "top10": 0.24,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
