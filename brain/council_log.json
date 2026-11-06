@@ -10572,5 +10572,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-06T18:13:37+00:00",
+  "block": 466206006,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Pooh",
+    "per_min": 1084.4,
+    "traders": 1367,
+    "top10": 0.21,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "Pooh",
+    "per_min": 730.4,
+    "traders": 1009,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 317.2,
+    "traders": 80,
+    "top10": 0.88,
+    "flags": []
+   },
+   {
+    "symbol": "LAURA",
+    "per_min": 204.8,
+    "traders": 460,
+    "top10": 0.19,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Diamond",
+    "per_min": 198.6,
+    "traders": 302,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "AAPLx",
+    "per_min": 174.8,
+    "traders": 211,
+    "top10": 0.93,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Pooh",
+    "per_min": 154.6,
+    "traders": 276,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "BABA",
+    "per_min": 115.4,
+    "traders": 100,
+    "top10": 0.17,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
