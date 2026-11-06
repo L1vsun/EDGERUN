@@ -10493,5 +10493,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-06T11:19:36+00:00",
+  "block": 466090201,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "BIRB",
+    "per_min": 237.6,
+    "traders": 52,
+    "top10": 0.89,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 200.8,
+    "traders": 238,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "APPLEPAID",
+    "per_min": 116.0,
+    "traders": 273,
+    "top10": 0.19,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "three",
+    "per_min": 50.0,
+    "traders": 235,
+    "top10": 0.13,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "JLP",
+    "per_min": 47.8,
+    "traders": 72,
+    "top10": 0.5,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 46.0,
+    "traders": 74,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "APPLEPAID",
+    "per_min": 44.4,
+    "traders": 143,
+    "top10": 0.12,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ROBLOX",
+    "per_min": 41.4,
+    "traders": 114,
+    "top10": 0.27,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
