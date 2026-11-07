@@ -10731,5 +10731,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-07T03:01:45+00:00",
+  "block": 466353594,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 916.6,
+    "traders": 1269,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 300.8,
+    "traders": 273,
+    "top10": 0.2,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GEOD",
+    "per_min": 296.6,
+    "traders": 122,
+    "top10": 0.48,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 184.6,
+    "traders": 140,
+    "top10": 0.59,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 88.6,
+    "traders": 106,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 73.2,
+    "traders": 108,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "coin",
+    "per_min": 60.4,
+    "traders": 106,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "BTC",
+    "per_min": 44.2,
+    "traders": 73,
+    "top10": 0.72,
+    "flags": [
+     "top-heavy"
+    ]
+   }
+  ]
  }
 ]
