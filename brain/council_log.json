@@ -10881,5 +10881,83 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-07T16:44:49+00:00",
+  "block": 466584106,
+  "mode": "rules",
+  "call": "Diamond is the one to watch - buyers lead, heating",
+  "focus": "Diamond",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "piLL",
+    "per_min": 228.8,
+    "traders": 438,
+    "top10": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 176.8,
+    "traders": 311,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Elysion Pad",
+    "per_min": 103.4,
+    "traders": 145,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "COGE",
+    "per_min": 93.8,
+    "traders": 219,
+    "top10": 0.09,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 76.8,
+    "traders": 138,
+    "top10": 0.17,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Diamond",
+    "per_min": 53.0,
+    "traders": 88,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 52.4,
+    "traders": 67,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "Pepe69",
+    "per_min": 43.0,
+    "traders": 131,
+    "top10": 0.22,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
