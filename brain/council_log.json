@@ -10959,5 +10959,76 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-07T20:40:17+00:00",
+  "block": 466649873,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "SHAW",
+    "per_min": 378.2,
+    "traders": 620,
+    "top10": 0.24,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "MUSK4",
+    "per_min": 353.8,
+    "traders": 358,
+    "top10": 0.07,
+    "flags": []
+   },
+   {
+    "symbol": "Jose",
+    "per_min": 184.4,
+    "traders": 338,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "FLOAT",
+    "per_min": 176.4,
+    "traders": 294,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "ONE",
+    "per_min": 171.0,
+    "traders": 251,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "COGE",
+    "per_min": 95.4,
+    "traders": 155,
+    "top10": 0.09,
+    "flags": []
+   },
+   {
+    "symbol": "CLAUDIA",
+    "per_min": 75.6,
+    "traders": 159,
+    "top10": 0.17,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 59.2,
+    "traders": 95,
+    "top10": 0.26,
+    "flags": []
+   }
+  ]
  }
 ]
