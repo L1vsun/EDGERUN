@@ -10806,5 +10806,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-07T10:33:56+00:00",
+  "block": 466480289,
+  "mode": "rules",
+  "call": "LI is the one to watch - buyers lead, new holders",
+  "focus": "LI",
+  "confidence": 0.49,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "XMR",
+    "per_min": 206.4,
+    "traders": 256,
+    "top10": 0.19,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 106.4,
+    "traders": 133,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 75.2,
+    "traders": 127,
+    "top10": 0.66,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 72.8,
+    "traders": 65,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "LI",
+    "per_min": 66.6,
+    "traders": 171,
+    "top10": 0.11,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "PI",
+    "per_min": 56.4,
+    "traders": 159,
+    "top10": 0.02,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 51.8,
+    "traders": 14,
+    "top10": 0.89,
+    "flags": []
+   },
+   {
+    "symbol": "SombraPAD",
+    "per_min": 44.6,
+    "traders": 149,
+    "top10": 0.01,
+    "flags": []
+   }
+  ]
  }
 ]
