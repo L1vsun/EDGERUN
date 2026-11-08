@@ -11343,5 +11343,76 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-08T22:41:53+00:00",
+  "block": 467086482,
+  "mode": "rules",
+  "call": "Bobina is the one to watch - buyers lead, new holders",
+  "focus": "Bobina",
+  "confidence": 0.49,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "cbBTC",
+    "per_min": 388.2,
+    "traders": 331,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 345.0,
+    "traders": 313,
+    "top10": 0.66,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 264.0,
+    "traders": 237,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Fartcoin",
+    "per_min": 153.0,
+    "traders": 131,
+    "top10": 0.35,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 149.6,
+    "traders": 108,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "ANSEM",
+    "per_min": 131.2,
+    "traders": 182,
+    "top10": 0.66,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 115.0,
+    "traders": 94,
+    "top10": 0.72,
+    "flags": []
+   },
+   {
+    "symbol": "iCoin",
+    "per_min": 86.4,
+    "traders": 174,
+    "top10": 0.28,
+    "flags": []
+   }
+  ]
  }
 ]
