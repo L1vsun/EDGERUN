@@ -11191,5 +11191,79 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-08T14:04:50+00:00",
+  "block": 466942038,
+  "mode": "rules",
+  "call": "HATCH is the one to watch - buyers lead, heating",
+  "focus": "HATCH",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "DV",
+    "per_min": 147.2,
+    "traders": 357,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "CLAUDIA",
+    "per_min": 120.0,
+    "traders": 268,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "MAGGIE",
+    "per_min": 107.6,
+    "traders": 179,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "CAMUPEPIMU",
+    "per_min": 96.8,
+    "traders": 394,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 94.6,
+    "traders": 140,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 84.2,
+    "traders": 141,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "MRNA",
+    "per_min": 71.0,
+    "traders": 81,
+    "top10": 0.22,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 69.8,
+    "traders": 134,
+    "top10": 0.2,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
