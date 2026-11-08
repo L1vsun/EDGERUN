@@ -11030,5 +11030,86 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-08T00:12:48+00:00",
+  "block": 466709272,
+  "mode": "rules",
+  "call": "Ash is the one to watch - buyers lead, new holders",
+  "focus": "Ash",
+  "confidence": 0.49,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PTN",
+    "per_min": 453.6,
+    "traders": 364,
+    "top10": 0.24,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "COGE",
+    "per_min": 201.2,
+    "traders": 235,
+    "top10": 0.09,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "TAOLF",
+    "per_min": 116.6,
+    "traders": 178,
+    "top10": 0.13,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 114.8,
+    "traders": 141,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "MAGGIE",
+    "per_min": 93.6,
+    "traders": 213,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "APU",
+    "per_min": 89.4,
+    "traders": 127,
+    "top10": 0.21,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 59.2,
+    "traders": 79,
+    "top10": 0.16,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Ash",
+    "per_min": 57.4,
+    "traders": 142,
+    "top10": 0.07,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
