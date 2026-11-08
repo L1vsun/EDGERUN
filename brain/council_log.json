@@ -11265,5 +11265,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-08T18:56:43+00:00",
+  "block": 467023583,
+  "mode": "rules",
+  "call": "BART is the one to watch - buyers lead, new holders",
+  "focus": "BART",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "CCC",
+    "per_min": 557.6,
+    "traders": 672,
+    "top10": 0.43,
+    "flags": []
+   },
+   {
+    "symbol": "CCC",
+    "per_min": 295.8,
+    "traders": 153,
+    "top10": 0.37,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ANSEM",
+    "per_min": 175.0,
+    "traders": 207,
+    "top10": 0.66,
+    "flags": []
+   },
+   {
+    "symbol": "GIGAHUG",
+    "per_min": 97.6,
+    "traders": 62,
+    "top10": 0.02,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "BART",
+    "per_min": 86.0,
+    "traders": 188,
+    "top10": 0.16,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "UODF",
+    "per_min": 77.4,
+    "traders": 53,
+    "top10": 0.0,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 62.6,
+    "traders": 74,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 61.8,
+    "traders": 113,
+    "top10": 0.2,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
