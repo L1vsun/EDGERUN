@@ -11111,5 +11111,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-08T06:30:14+00:00",
+  "block": 466814853,
+  "mode": "rules",
+  "call": "MI is the one to watch - buyers lead, new holders",
+  "focus": "MI",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TRUMP",
+    "per_min": 143.4,
+    "traders": 130,
+    "top10": 0.81,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "MI",
+    "per_min": 92.4,
+    "traders": 247,
+    "top10": 0.09,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 53.4,
+    "traders": 70,
+    "top10": 0.16,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "CLAUDIA",
+    "per_min": 28.6,
+    "traders": 74,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "$VAULT",
+    "per_min": 28.2,
+    "traders": 8,
+    "top10": 0.58,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "ANTFUN",
+    "per_min": 26.6,
+    "traders": 57,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 22.4,
+    "traders": 8,
+    "top10": 0.89,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "BTC",
+    "per_min": 21.0,
+    "traders": 42,
+    "top10": 0.72,
+    "flags": [
+     "top-heavy"
+    ]
+   }
+  ]
  }
 ]
