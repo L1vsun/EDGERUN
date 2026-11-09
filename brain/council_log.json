@@ -11572,5 +11572,76 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-09T20:56:27+00:00",
+  "block": 467459546,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TAPCAT",
+    "per_min": 955.0,
+    "traders": 1172,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 529.8,
+    "traders": 516,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 373.6,
+    "traders": 209,
+    "top10": 0.61,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 168.2,
+    "traders": 192,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 136.6,
+    "traders": 148,
+    "top10": 0.08,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 121.4,
+    "traders": 141,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 50.2,
+    "traders": 93,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "PTN",
+    "per_min": 49.4,
+    "traders": 56,
+    "top10": 0.06,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
