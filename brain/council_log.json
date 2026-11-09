@@ -11492,5 +11492,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-09T10:04:35+00:00",
+  "block": 467277300,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "NVDAx",
+    "per_min": 216.2,
+    "traders": 160,
+    "top10": 0.65,
+    "flags": []
+   },
+   {
+    "symbol": "STANK",
+    "per_min": 123.6,
+    "traders": 212,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPCXx",
+    "per_min": 37.2,
+    "traders": 29,
+    "top10": 0.7,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SPYx",
+    "per_min": 34.0,
+    "traders": 37,
+    "top10": 0.67,
+    "flags": []
+   },
+   {
+    "symbol": "CYPH",
+    "per_min": 28.8,
+    "traders": 32,
+    "top10": 0.3,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "$PANIC",
+    "per_min": 28.8,
+    "traders": 12,
+    "top10": 0.52,
+    "flags": [
+     "top-heavy",
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "QQQx",
+    "per_min": 28.6,
+    "traders": 14,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "Pepetide",
+    "per_min": 27.2,
+    "traders": 90,
+    "top10": 0.08,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
