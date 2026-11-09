@@ -11414,5 +11414,83 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-09T02:22:51+00:00",
+  "block": 467148277,
+  "mode": "rules",
+  "call": "UNLUCKY is the one to watch - buyers lead, new holders",
+  "focus": "UNLUCKY",
+  "confidence": 0.49,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "NVDA",
+    "per_min": 334.2,
+    "traders": 265,
+    "top10": 0.09,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 289.2,
+    "traders": 255,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 260.6,
+    "traders": 161,
+    "top10": 0.66,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 183.0,
+    "traders": 221,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "QUINN",
+    "per_min": 161.6,
+    "traders": 348,
+    "top10": 0.19,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "PIRATE",
+    "per_min": 161.2,
+    "traders": 163,
+    "top10": 0.24,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "AVGOx",
+    "per_min": 107.0,
+    "traders": 118,
+    "top10": 0.88,
+    "flags": []
+   },
+   {
+    "symbol": "ANSEM",
+    "per_min": 76.8,
+    "traders": 125,
+    "top10": 0.66,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
