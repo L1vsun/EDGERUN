@@ -11801,5 +11801,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-10T19:20:45+00:00",
+  "block": 467835878,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "JENSEN",
+    "per_min": 1474.6,
+    "traders": 1284,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 362.8,
+    "traders": 405,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "MARS",
+    "per_min": 200.2,
+    "traders": 305,
+    "top10": 0.25,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 93.0,
+    "traders": 106,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "mihao",
+    "per_min": 92.2,
+    "traders": 164,
+    "top10": 0.28,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "BOXCAT",
+    "per_min": 82.6,
+    "traders": 199,
+    "top10": 0.19,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "MARS",
+    "per_min": 71.6,
+    "traders": 136,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "LC",
+    "per_min": 60.6,
+    "traders": 62,
+    "top10": 0.32,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
