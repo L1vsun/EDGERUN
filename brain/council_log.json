@@ -11643,5 +11643,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-10T03:17:07+00:00",
+  "block": 467565970,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "AICoin",
+    "per_min": 82.2,
+    "traders": 167,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 77.4,
+    "traders": 141,
+    "top10": 0.59,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 73.8,
+    "traders": 104,
+    "top10": 0.8,
+    "flags": []
+   },
+   {
+    "symbol": "BTC",
+    "per_min": 62.0,
+    "traders": 84,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 61.2,
+    "traders": 77,
+    "top10": 0.26,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "AAPL",
+    "per_min": 25.6,
+    "traders": 34,
+    "top10": 0.06,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "MPLX",
+    "per_min": 17.6,
+    "traders": 32,
+    "top10": 0.68,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "GATO",
+    "per_min": 16.2,
+    "traders": 76,
+    "top10": 0.14,
+    "flags": []
+   }
+  ]
  }
 ]
