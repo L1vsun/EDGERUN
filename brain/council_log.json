@@ -11722,5 +11722,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-10T11:31:23+00:00",
+  "block": 467704520,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "JUP",
+    "per_min": 203.2,
+    "traders": 175,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 110.2,
+    "traders": 194,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "X",
+    "per_min": 92.4,
+    "traders": 170,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "MCDx",
+    "per_min": 67.8,
+    "traders": 94,
+    "top10": 0.95,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "AMZNx",
+    "per_min": 57.0,
+    "traders": 20,
+    "top10": 0.92,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "DJT",
+    "per_min": 55.2,
+    "traders": 75,
+    "top10": 0.3,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "XSHAMA",
+    "per_min": 47.0,
+    "traders": 130,
+    "top10": 0.07,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "GOONVIDIA",
+    "per_min": 25.6,
+    "traders": 12,
+    "top10": 0.56,
+    "flags": [
+     "top-heavy"
+    ]
+   }
+  ]
  }
 ]
