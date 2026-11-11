@@ -11953,5 +11953,83 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-11T06:55:26+00:00",
+  "block": 468030279,
+  "mode": "rules",
+  "call": "\u5e01\u5b89\u4e8c\u5723 is the one to watch - buyers lead, new holders",
+  "focus": "\u5e01\u5b89\u4e8c\u5723",
+  "confidence": 0.49,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ZEC",
+    "per_min": 144.4,
+    "traders": 148,
+    "top10": 0.34,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 136.4,
+    "traders": 163,
+    "top10": 0.59,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "LAUREN",
+    "per_min": 104.2,
+    "traders": 233,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "ANSEM",
+    "per_min": 92.6,
+    "traders": 120,
+    "top10": 0.66,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 72.2,
+    "traders": 121,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 61.4,
+    "traders": 89,
+    "top10": 0.17,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "\u5e01\u5b89\u4e8c\u5723",
+    "per_min": 57.6,
+    "traders": 207,
+    "top10": 0.38,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "VEYL",
+    "per_min": 49.2,
+    "traders": 143,
+    "top10": 0.15,
+    "flags": []
+   }
+  ]
  }
 ]
