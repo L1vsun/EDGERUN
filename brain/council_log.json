@@ -11876,5 +11876,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-11T00:09:37+00:00",
+  "block": 467916836,
+  "mode": "rules",
+  "call": "PYTH is the one to watch - buyers lead, heating",
+  "focus": "PYTH",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "JLP",
+    "per_min": 199.2,
+    "traders": 42,
+    "top10": 0.5,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 79.0,
+    "traders": 130,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "SPX",
+    "per_min": 70.4,
+    "traders": 56,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "PYTH",
+    "per_min": 59.6,
+    "traders": 43,
+    "top10": 0.45,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "STONK",
+    "per_min": 59.2,
+    "traders": 90,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 52.2,
+    "traders": 12,
+    "top10": 0.88,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ORE",
+    "per_min": 51.0,
+    "traders": 69,
+    "top10": 0.28,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 50.6,
+    "traders": 103,
+    "top10": 0.8,
+    "flags": []
+   }
+  ]
  }
 ]
