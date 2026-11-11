@@ -12100,5 +12100,88 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-11T21:47:29+00:00",
+  "block": 468279391,
+  "mode": "rules",
+  "call": "ChainChomp131 is the one to watch - heating, new holders",
+  "focus": "ChainChomp131",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Max",
+    "per_min": 3699.4,
+    "traders": 4331,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "Max",
+    "per_min": 247.4,
+    "traders": 399,
+    "top10": 0.28,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "ChainChomp131",
+    "per_min": 67.0,
+    "traders": 109,
+    "top10": 0.25,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 40.4,
+    "traders": 82,
+    "top10": 0.8,
+    "flags": []
+   },
+   {
+    "symbol": "CHNCHMP131",
+    "per_min": 34.0,
+    "traders": 75,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Saxon",
+    "per_min": 31.6,
+    "traders": 95,
+    "top10": 0.78,
+    "flags": [
+     "top-heavy",
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "BUFFET",
+    "per_min": 31.0,
+    "traders": 79,
+    "top10": 0.02,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "Credits",
+    "per_min": 29.6,
+    "traders": 77,
+    "top10": 0.22,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
