@@ -12031,5 +12031,74 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-11T14:56:15+00:00",
+  "block": 468164630,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 722.4,
+    "traders": 814,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 469.4,
+    "traders": 124,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 282.4,
+    "traders": 110,
+    "top10": 0.53,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 187.6,
+    "traders": 250,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "MU",
+    "per_min": 122.6,
+    "traders": 53,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "SNDK",
+    "per_min": 121.8,
+    "traders": 59,
+    "top10": 0.6,
+    "flags": []
+   },
+   {
+    "symbol": "DacityCoin",
+    "per_min": 118.8,
+    "traders": 246,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "NVDA",
+    "per_min": 89.8,
+    "traders": 44,
+    "top10": 0.12,
+    "flags": []
+   }
+  ]
  }
 ]
