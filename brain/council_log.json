@@ -12411,5 +12411,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-12T23:57:54+00:00",
+  "block": 468717473,
+  "mode": "rules",
+  "call": "HYPE is the one to watch - buyers lead, heating",
+  "focus": "HYPE",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "SPCX",
+    "per_min": 1371.2,
+    "traders": 1091,
+    "top10": 0.26,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "FOOD",
+    "per_min": 646.8,
+    "traders": 1013,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "S42",
+    "per_min": 430.8,
+    "traders": 707,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 430.4,
+    "traders": 633,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 379.4,
+    "traders": 531,
+    "top10": 0.42,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 192.0,
+    "traders": 119,
+    "top10": 0.26,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 154.2,
+    "traders": 128,
+    "top10": 0.34,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "OPNW",
+    "per_min": 82.2,
+    "traders": 103,
+    "top10": 0.19,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
