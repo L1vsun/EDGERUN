@@ -12254,5 +12254,83 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-12T10:39:46+00:00",
+  "block": 468494969,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "JUP",
+    "per_min": 124.0,
+    "traders": 145,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Shiqi",
+    "per_min": 106.8,
+    "traders": 239,
+    "top10": 0.22,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 94.4,
+    "traders": 156,
+    "top10": 0.12,
+    "flags": []
+   },
+   {
+    "symbol": "mihao",
+    "per_min": 87.6,
+    "traders": 197,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "GOOGLx",
+    "per_min": 71.4,
+    "traders": 83,
+    "top10": 0.68,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CallCat",
+    "per_min": 49.0,
+    "traders": 113,
+    "top10": 0.04,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 48.6,
+    "traders": 77,
+    "top10": 0.73,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 42.0,
+    "traders": 41,
+    "top10": 0.26,
+    "flags": []
+   }
+  ]
  }
 ]
