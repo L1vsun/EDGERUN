@@ -12332,5 +12332,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-12T18:41:52+00:00",
+  "block": 468629422,
+  "mode": "rules",
+  "call": "NEVERDOOM is the one to watch - heating, new holders",
+  "focus": "NEVERDOOM",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 1847.4,
+    "traders": 1644,
+    "top10": 0.1,
+    "flags": []
+   },
+   {
+    "symbol": "DOGE",
+    "per_min": 110.2,
+    "traders": 127,
+    "top10": 0.25,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ANTHROPIC",
+    "per_min": 100.8,
+    "traders": 69,
+    "top10": 0.53,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GATO",
+    "per_min": 75.8,
+    "traders": 282,
+    "top10": 0.17,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 42.2,
+    "traders": 64,
+    "top10": 0.8,
+    "flags": []
+   },
+   {
+    "symbol": "CATE",
+    "per_min": 42.0,
+    "traders": 58,
+    "top10": 0.17,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Pois",
+    "per_min": 42.0,
+    "traders": 86,
+    "top10": 0.24,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMPFUN",
+    "per_min": 37.4,
+    "traders": 102,
+    "top10": 0.37,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
