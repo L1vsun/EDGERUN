@@ -12642,5 +12642,76 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-13T21:11:25+00:00",
+  "block": 469072046,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "NVDAx",
+    "per_min": 1694.2,
+    "traders": 1509,
+    "top10": 0.45,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 720.2,
+    "traders": 907,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 583.4,
+    "traders": 854,
+    "top10": 0.12,
+    "flags": []
+   },
+   {
+    "symbol": "PPA",
+    "per_min": 273.8,
+    "traders": 437,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 193.2,
+    "traders": 202,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 186.4,
+    "traders": 270,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "mihao",
+    "per_min": 166.4,
+    "traders": 256,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 163.8,
+    "traders": 145,
+    "top10": 0.26,
+    "flags": []
+   }
+  ]
  }
 ]
