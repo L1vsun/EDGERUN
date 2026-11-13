@@ -12491,5 +12491,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-13T06:06:08+00:00",
+  "block": 468819883,
+  "mode": "rules",
+  "call": "364 is the one to watch - buyers lead, heating, new holders",
+  "focus": "364",
+  "confidence": 0.6,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "MSFTx",
+    "per_min": 483.8,
+    "traders": 399,
+    "top10": 0.96,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 456.2,
+    "traders": 236,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 404.8,
+    "traders": 237,
+    "top10": 0.34,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 264.6,
+    "traders": 278,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "364",
+    "per_min": 212.6,
+    "traders": 311,
+    "top10": 0.24,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 107.0,
+    "traders": 113,
+    "top10": 0.15,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 84.2,
+    "traders": 115,
+    "top10": 0.8,
+    "flags": []
+   },
+   {
+    "symbol": "wNEAR",
+    "per_min": 84.2,
+    "traders": 75,
+    "top10": 0.28,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
