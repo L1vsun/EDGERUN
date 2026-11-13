@@ -12570,5 +12570,77 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-13T14:47:13+00:00",
+  "block": 468965072,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "NVDAx",
+    "per_min": 649.2,
+    "traders": 382,
+    "top10": 0.43,
+    "flags": []
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 427.8,
+    "traders": 452,
+    "top10": 0.13,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 279.2,
+    "traders": 330,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 232.6,
+    "traders": 315,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 186.0,
+    "traders": 60,
+    "top10": 0.61,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "BTC",
+    "per_min": 129.2,
+    "traders": 132,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "PIRATE",
+    "per_min": 126.8,
+    "traders": 235,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "CRCLx",
+    "per_min": 71.2,
+    "traders": 38,
+    "top10": 0.5,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
