@@ -12948,5 +12948,78 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-14T20:25:51+00:00",
+  "block": 469461058,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.08,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "bill",
+    "per_min": 587.4,
+    "traders": 900,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 98.6,
+    "traders": 85,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "DOGCOIN",
+    "per_min": 98.0,
+    "traders": 228,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "Catcoin",
+    "per_min": 43.2,
+    "traders": 102,
+    "top10": 0.27,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "PENGU",
+    "per_min": 36.2,
+    "traders": 50,
+    "top10": 0.37,
+    "flags": []
+   },
+   {
+    "symbol": "mihao",
+    "per_min": 34.8,
+    "traders": 78,
+    "top10": 0.22,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "GATO",
+    "per_min": 33.0,
+    "traders": 132,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "WASTED",
+    "per_min": 30.0,
+    "traders": 54,
+    "top10": 0.27,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
