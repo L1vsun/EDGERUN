@@ -12793,5 +12793,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-14T08:37:41+00:00",
+  "block": 469263427,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "SCRAP",
+    "per_min": 138.2,
+    "traders": 269,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "FUND",
+    "per_min": 50.6,
+    "traders": 116,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "\u732b\u4ed9\u4eba",
+    "per_min": 49.6,
+    "traders": 204,
+    "top10": 0.02,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ASSHOLE",
+    "per_min": 42.2,
+    "traders": 16,
+    "top10": 0.55,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "100001",
+    "per_min": 30.6,
+    "traders": 19,
+    "top10": 0.06,
+    "flags": []
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 28.6,
+    "traders": 50,
+    "top10": 0.72,
+    "flags": []
+   },
+   {
+    "symbol": "EMBERLINE",
+    "per_min": 27.8,
+    "traders": 18,
+    "top10": 0.52,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "cap",
+    "per_min": 19.2,
+    "traders": 12,
+    "top10": 0.59,
+    "flags": [
+     "top-heavy"
+    ]
+   }
+  ]
  }
 ]
