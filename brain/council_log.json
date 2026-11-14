@@ -12871,5 +12871,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-14T15:34:34+00:00",
+  "block": 469379824,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "cbBTC",
+    "per_min": 513.6,
+    "traders": 272,
+    "top10": 0.18,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HI",
+    "per_min": 403.6,
+    "traders": 714,
+    "top10": 0.04,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "Snoopy",
+    "per_min": 327.2,
+    "traders": 620,
+    "top10": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "JENSEN",
+    "per_min": 144.4,
+    "traders": 59,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "AMC",
+    "per_min": 127.6,
+    "traders": 193,
+    "top10": 0.08,
+    "flags": [
+     "sellers lead"
+    ]
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 108.8,
+    "traders": 60,
+    "top10": 0.53,
+    "flags": []
+   },
+   {
+    "symbol": "neet",
+    "per_min": 76.4,
+    "traders": 86,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "\u661f\u8fb0\u5927\u6d77",
+    "per_min": 75.6,
+    "traders": 139,
+    "top10": 0.05,
+    "flags": [
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
