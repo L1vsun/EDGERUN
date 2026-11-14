@@ -12713,5 +12713,85 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-14T01:34:39+00:00",
+  "block": 469145448,
+  "mode": "rules",
+  "call": "Benton is the one to watch - buyers lead, new holders",
+  "focus": "Benton",
+  "confidence": 0.49,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "NVDAx",
+    "per_min": 375.4,
+    "traders": 417,
+    "top10": 0.48,
+    "flags": []
+   },
+   {
+    "symbol": "COCO",
+    "per_min": 138.6,
+    "traders": 231,
+    "top10": 0.22,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Christmax",
+    "per_min": 131.0,
+    "traders": 23,
+    "top10": 0.2,
+    "flags": [
+     "sellers lead"
+    ]
+   },
+   {
+    "symbol": "mihao",
+    "per_min": 85.8,
+    "traders": 138,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "Benton",
+    "per_min": 51.2,
+    "traders": 138,
+    "top10": 0.0,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 27.2,
+    "traders": 12,
+    "top10": 0.88,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SCRVAN",
+    "per_min": 26.2,
+    "traders": 17,
+    "top10": 0.65,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "PEACEFROG",
+    "per_min": 25.8,
+    "traders": 91,
+    "top10": 0.12,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
