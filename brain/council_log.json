@@ -13249,5 +13249,87 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-15T20:08:55+00:00",
+  "block": 469858094,
+  "mode": "rules",
+  "call": "LMAO! is the one to watch - heating, new holders",
+  "focus": "LMAO!",
+  "confidence": 0.52,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 953.2,
+    "traders": 1189,
+    "top10": 0.12,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 592.8,
+    "traders": 688,
+    "top10": 0.51,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "rockstar",
+    "per_min": 179.0,
+    "traders": 361,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "DYC",
+    "per_min": 125.6,
+    "traders": 258,
+    "top10": 0.2,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "VERIFIED",
+    "per_min": 113.0,
+    "traders": 282,
+    "top10": 0.26,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "LMAO!",
+    "per_min": 103.2,
+    "traders": 188,
+    "top10": 0.19,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 86.0,
+    "traders": 80,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "HENSEN",
+    "per_min": 74.4,
+    "traders": 171,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
