@@ -13021,5 +13021,82 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-15T00:04:47+00:00",
+  "block": 469521969,
+  "mode": "rules",
+  "call": "MPLX is the one to watch - buyers lead, heating",
+  "focus": "MPLX",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "wNEAR",
+    "per_min": 361.2,
+    "traders": 324,
+    "top10": 0.28,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Bear",
+    "per_min": 266.6,
+    "traders": 443,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 169.4,
+    "traders": 156,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "bill",
+    "per_min": 124.4,
+    "traders": 223,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 119.2,
+    "traders": 46,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SANC",
+    "per_min": 102.4,
+    "traders": 82,
+    "top10": 0.73,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 99.6,
+    "traders": 91,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 96.8,
+    "traders": 151,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
