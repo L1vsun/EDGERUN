@@ -13098,5 +13098,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-15T06:57:09+00:00",
+  "block": 469637057,
+  "mode": "rules",
+  "call": "PROXIMO is the one to watch - buyers lead, new holders",
+  "focus": "PROXIMO",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Chick",
+    "per_min": 260.8,
+    "traders": 461,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 93.6,
+    "traders": 69,
+    "top10": 0.18,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "PROXIMO",
+    "per_min": 76.6,
+    "traders": 234,
+    "top10": 0.04,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "jellyjelly",
+    "per_min": 65.4,
+    "traders": 33,
+    "top10": 0.73,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ELIZABETH",
+    "per_min": 36.8,
+    "traders": 19,
+    "top10": 0.52,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 33.0,
+    "traders": 52,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "UODF",
+    "per_min": 26.0,
+    "traders": 110,
+    "top10": 0.06,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "CHAIRDIORSEM",
+    "per_min": 21.4,
+    "traders": 61,
+    "top10": 0.16,
+    "flags": []
+   }
+  ]
  }
 ]
