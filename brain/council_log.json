@@ -13484,5 +13484,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-16T17:16:03+00:00",
+  "block": 470211994,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Lemon",
+    "per_min": 651.4,
+    "traders": 995,
+    "top10": 0.17,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Mask",
+    "per_min": 273.8,
+    "traders": 651,
+    "top10": 0.04,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "GTA6",
+    "per_min": 256.2,
+    "traders": 256,
+    "top10": 0.09,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 201.2,
+    "traders": 122,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 120.4,
+    "traders": 169,
+    "top10": 0.15,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "MooManao",
+    "per_min": 116.4,
+    "traders": 232,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "GTA",
+    "per_min": 109.4,
+    "traders": 161,
+    "top10": 0.2,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SNUT",
+    "per_min": 108.4,
+    "traders": 223,
+    "top10": 0.2,
+    "flags": []
+   }
+  ]
  }
 ]
