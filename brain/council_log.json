@@ -13331,5 +13331,84 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-16T00:10:19+00:00",
+  "block": 469925443,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "SKR",
+    "per_min": 775.0,
+    "traders": 148,
+    "top10": 0.6,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "plumber",
+    "per_min": 150.2,
+    "traders": 305,
+    "top10": 0.22,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Max",
+    "per_min": 142.2,
+    "traders": 232,
+    "top10": 0.24,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "nma",
+    "per_min": 118.8,
+    "traders": 262,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "spamcat",
+    "per_min": 69.0,
+    "traders": 147,
+    "top10": 0.16,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "JLP",
+    "per_min": 47.2,
+    "traders": 73,
+    "top10": 0.5,
+    "flags": []
+   },
+   {
+    "symbol": "ANTHROPIC",
+    "per_min": 44.6,
+    "traders": 96,
+    "top10": 0.52,
+    "flags": []
+   },
+   {
+    "symbol": "CATE",
+    "per_min": 42.0,
+    "traders": 71,
+    "top10": 0.14,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
