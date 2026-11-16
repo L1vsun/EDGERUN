@@ -13410,5 +13410,79 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-16T07:02:07+00:00",
+  "block": 470040402,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.03,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "cbBTC",
+    "per_min": 169.0,
+    "traders": 118,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "schrodinger",
+    "per_min": 123.2,
+    "traders": 158,
+    "top10": 0.04,
+    "flags": []
+   },
+   {
+    "symbol": "best one",
+    "per_min": 61.2,
+    "traders": 36,
+    "top10": 0.86,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "MPLX",
+    "per_min": 51.6,
+    "traders": 26,
+    "top10": 0.69,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 51.2,
+    "traders": 66,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "TITIES",
+    "per_min": 27.2,
+    "traders": 16,
+    "top10": 0.5,
+    "flags": []
+   },
+   {
+    "symbol": "VINE",
+    "per_min": 23.8,
+    "traders": 38,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "DOOYET",
+    "per_min": 22.8,
+    "traders": 6,
+    "top10": 0.53,
+    "flags": [
+     "top-heavy"
+    ]
+   }
+  ]
  }
 ]
