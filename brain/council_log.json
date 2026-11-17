@@ -13559,5 +13559,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-17T00:56:48+00:00",
+  "block": 470340585,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 662.6,
+    "traders": 872,
+    "top10": 0.12,
+    "flags": []
+   },
+   {
+    "symbol": "CHIMP",
+    "per_min": 492.8,
+    "traders": 757,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "mihao",
+    "per_min": 109.2,
+    "traders": 150,
+    "top10": 0.22,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 62.2,
+    "traders": 111,
+    "top10": 0.26,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Mikol",
+    "per_min": 52.0,
+    "traders": 118,
+    "top10": 0.34,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "WASTED",
+    "per_min": 41.2,
+    "traders": 75,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "Smoke",
+    "per_min": 36.0,
+    "traders": 80,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "Blackout",
+    "per_min": 31.0,
+    "traders": 85,
+    "top10": 0.23,
+    "flags": [
+     "sellers lead",
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
