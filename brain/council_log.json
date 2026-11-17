@@ -13719,5 +13719,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-17T18:09:51+00:00",
+  "block": 470629044,
+  "mode": "rules",
+  "call": "Rocco is the one to watch - heating, new holders",
+  "focus": "Rocco",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "AVGOx",
+    "per_min": 207.4,
+    "traders": 227,
+    "top10": 0.92,
+    "flags": []
+   },
+   {
+    "symbol": "Juan",
+    "per_min": 162.2,
+    "traders": 329,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "Rocco",
+    "per_min": 146.6,
+    "traders": 218,
+    "top10": 0.21,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "CSI",
+    "per_min": 115.8,
+    "traders": 208,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "TPBF",
+    "per_min": 112.6,
+    "traders": 163,
+    "top10": 0.66,
+    "flags": [
+     "top-heavy",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 105.4,
+    "traders": 138,
+    "top10": 0.47,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "GTA6",
+    "per_min": 101.6,
+    "traders": 148,
+    "top10": 0.09,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 93.0,
+    "traders": 143,
+    "top10": 0.15,
+    "flags": []
+   }
+  ]
  }
 ]
