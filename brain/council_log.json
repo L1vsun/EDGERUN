@@ -14028,5 +14028,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-18T23:54:13+00:00",
+  "block": 471125454,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "DCTY",
+    "per_min": 264.2,
+    "traders": 438,
+    "top10": 0.13,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 205.2,
+    "traders": 196,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "CHEDDAR",
+    "per_min": 192.8,
+    "traders": 341,
+    "top10": 0.25,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 137.6,
+    "traders": 107,
+    "top10": 0.53,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "NASDUCK",
+    "per_min": 136.2,
+    "traders": 300,
+    "top10": 0.27,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "GTA6",
+    "per_min": 133.8,
+    "traders": 141,
+    "top10": 0.09,
+    "flags": []
+   },
+   {
+    "symbol": "DCTY",
+    "per_min": 106.6,
+    "traders": 145,
+    "top10": 0.3,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "MET",
+    "per_min": 48.8,
+    "traders": 36,
+    "top10": 0.29,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
