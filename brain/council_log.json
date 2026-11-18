@@ -13797,5 +13797,80 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-18T01:08:16+00:00",
+  "block": 470745461,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.03,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Spud",
+    "per_min": 428.2,
+    "traders": 684,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": ":3",
+    "per_min": 165.6,
+    "traders": 313,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 121.8,
+    "traders": 118,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "FRANCE",
+    "per_min": 71.8,
+    "traders": 141,
+    "top10": 0.28,
+    "flags": []
+   },
+   {
+    "symbol": "pig",
+    "per_min": 57.0,
+    "traders": 118,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "BANDANA",
+    "per_min": 56.4,
+    "traders": 149,
+    "top10": 0.54,
+    "flags": [
+     "top-heavy",
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "GLDx",
+    "per_min": 33.6,
+    "traders": 37,
+    "top10": 0.92,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "OMFG",
+    "per_min": 28.8,
+    "traders": 38,
+    "top10": 0.35,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
