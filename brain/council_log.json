@@ -13948,5 +13948,85 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-18T17:47:08+00:00",
+  "block": 471023240,
+  "mode": "rules",
+  "call": "APCY is the one to watch - buyers lead, heating",
+  "focus": "APCY",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "JUP",
+    "per_min": 219.0,
+    "traders": 246,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "APCY",
+    "per_min": 216.8,
+    "traders": 367,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GTA6",
+    "per_min": 187.6,
+    "traders": 302,
+    "top10": 0.09,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 148.4,
+    "traders": 186,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "pippin",
+    "per_min": 74.6,
+    "traders": 57,
+    "top10": 0.54,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "DCTY",
+    "per_min": 72.4,
+    "traders": 173,
+    "top10": 0.18,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "GTA6",
+    "per_min": 71.4,
+    "traders": 120,
+    "top10": 0.51,
+    "flags": []
+   },
+   {
+    "symbol": "goon",
+    "per_min": 58.0,
+    "traders": 150,
+    "top10": 0.07,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
