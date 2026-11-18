@@ -13872,5 +13872,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-18T08:52:42+00:00",
+  "block": 470874762,
+  "mode": "rules",
+  "call": "USELESS is the one to watch - buyers lead, heating",
+  "focus": "USELESS",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "pippin",
+    "per_min": 141.2,
+    "traders": 101,
+    "top10": 0.56,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 66.0,
+    "traders": 84,
+    "top10": 0.17,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Poopcoin",
+    "per_min": 63.8,
+    "traders": 118,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "controller",
+    "per_min": 41.2,
+    "traders": 113,
+    "top10": 0.27,
+    "flags": []
+   },
+   {
+    "symbol": "FAILE",
+    "per_min": 39.4,
+    "traders": 78,
+    "top10": 0.17,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 35.2,
+    "traders": 59,
+    "top10": 0.35,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "USELESS",
+    "per_min": 30.6,
+    "traders": 42,
+    "top10": 0.38,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GTAVI",
+    "per_min": 26.0,
+    "traders": 70,
+    "top10": 0.12,
+    "flags": []
+   }
+  ]
  }
 ]
