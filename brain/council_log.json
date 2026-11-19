@@ -14260,5 +14260,84 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-19T22:54:32+00:00",
+  "block": 471510250,
+  "mode": "rules",
+  "call": "QUATS is the one to watch - heating, new holders",
+  "focus": "QUATS",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "BUNCOIN",
+    "per_min": 777.8,
+    "traders": 292,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "DCTY",
+    "per_min": 135.4,
+    "traders": 202,
+    "top10": 0.13,
+    "flags": []
+   },
+   {
+    "symbol": "\u6211\u7684\u5200\u76fe",
+    "per_min": 87.0,
+    "traders": 67,
+    "top10": 0.17,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 47.6,
+    "traders": 71,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "mihao",
+    "per_min": 43.2,
+    "traders": 104,
+    "top10": 0.22,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "QUATS",
+    "per_min": 35.8,
+    "traders": 97,
+    "top10": 0.29,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "HIPPOTATO",
+    "per_min": 25.8,
+    "traders": 87,
+    "top10": 0.02,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "WIGGLES",
+    "per_min": 21.8,
+    "traders": 52,
+    "top10": 0.27,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
