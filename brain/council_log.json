@@ -14106,5 +14106,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-19T05:59:12+00:00",
+  "block": 471227308,
+  "mode": "rules",
+  "call": "phubber is the one to watch - buyers lead, heating, new holders",
+  "focus": "phubber",
+  "confidence": 0.58,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 273.0,
+    "traders": 317,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "WhatUp",
+    "per_min": 191.4,
+    "traders": 326,
+    "top10": 0.22,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "DCTY",
+    "per_min": 187.6,
+    "traders": 305,
+    "top10": 0.13,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 183.8,
+    "traders": 212,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 75.2,
+    "traders": 107,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "phubber",
+    "per_min": 42.6,
+    "traders": 115,
+    "top10": 0.24,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "FNDR",
+    "per_min": 40.4,
+    "traders": 63,
+    "top10": 0.22,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 35.0,
+    "traders": 44,
+    "top10": 0.55,
+    "flags": []
+   }
+  ]
  }
 ]
