@@ -14184,5 +14184,81 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-19T15:38:13+00:00",
+  "block": 471388735,
+  "mode": "rules",
+  "call": "AI is the one to watch - buyers lead, heating, new holders",
+  "focus": "AI",
+  "confidence": 0.6,
+  "action": "SPEAK",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 3741.8,
+    "traders": 3051,
+    "top10": 0.21,
+    "flags": []
+   },
+   {
+    "symbol": "mihao",
+    "per_min": 821.2,
+    "traders": 934,
+    "top10": 0.22,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "DCTY",
+    "per_min": 455.2,
+    "traders": 774,
+    "top10": 0.13,
+    "flags": []
+   },
+   {
+    "symbol": "AI",
+    "per_min": 233.4,
+    "traders": 337,
+    "top10": 0.24,
+    "flags": [
+     "buyers lead",
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "GTA6",
+    "per_min": 141.6,
+    "traders": 114,
+    "top10": 0.09,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 104.2,
+    "traders": 91,
+    "top10": 0.25,
+    "flags": []
+   },
+   {
+    "symbol": "CHINO",
+    "per_min": 90.6,
+    "traders": 204,
+    "top10": 0.08,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "BTC",
+    "per_min": 58.6,
+    "traders": 53,
+    "top10": 0.2,
+    "flags": []
+   }
+  ]
  }
 ]
