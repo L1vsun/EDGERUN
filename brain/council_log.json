@@ -14417,5 +14417,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-20T12:30:32+00:00",
+  "block": 471737922,
+  "mode": "rules",
+  "call": "Alouatta is the one to watch - buyers lead, new holders",
+  "focus": "Alouatta",
+  "confidence": 0.49,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "JUP",
+    "per_min": 291.8,
+    "traders": 200,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 199.6,
+    "traders": 113,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "OGTA",
+    "per_min": 173.6,
+    "traders": 270,
+    "top10": 0.02,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 90.2,
+    "traders": 68,
+    "top10": 0.25,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "JLP",
+    "per_min": 80.8,
+    "traders": 80,
+    "top10": 0.53,
+    "flags": []
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 76.4,
+    "traders": 46,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "COINx",
+    "per_min": 73.0,
+    "traders": 118,
+    "top10": 0.7,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Alouatta",
+    "per_min": 66.8,
+    "traders": 152,
+    "top10": 0.04,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
