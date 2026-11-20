@@ -14497,5 +14497,77 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-20T20:55:11+00:00",
+  "block": 471878710,
+  "mode": "rules",
+  "call": "Trader is the one to watch - buyers lead, new holders",
+  "focus": "Trader",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 1456.8,
+    "traders": 1196,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "ANT",
+    "per_min": 611.0,
+    "traders": 228,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "Trader",
+    "per_min": 431.2,
+    "traders": 788,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "Singularity",
+    "per_min": 247.8,
+    "traders": 450,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "FLOAT",
+    "per_min": 216.8,
+    "traders": 248,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "SQQQ",
+    "per_min": 126.2,
+    "traders": 164,
+    "top10": 0.43,
+    "flags": []
+   },
+   {
+    "symbol": "GMEx",
+    "per_min": 115.6,
+    "traders": 66,
+    "top10": 0.96,
+    "flags": []
+   },
+   {
+    "symbol": "PAID",
+    "per_min": 51.4,
+    "traders": 65,
+    "top10": 0.16,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
