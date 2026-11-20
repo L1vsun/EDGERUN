@@ -14339,5 +14339,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-20T03:52:12+00:00",
+  "block": 471593146,
+  "mode": "rules",
+  "call": "AudaCity is the one to watch - buyers lead, new holders",
+  "focus": "AudaCity",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "TTWO",
+    "per_min": 896.8,
+    "traders": 729,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "GOOGLx",
+    "per_min": 683.6,
+    "traders": 533,
+    "top10": 0.67,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "NIO",
+    "per_min": 472.2,
+    "traders": 546,
+    "top10": 0.17,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "COGE",
+    "per_min": 333.2,
+    "traders": 490,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "TSLAx",
+    "per_min": 197.8,
+    "traders": 241,
+    "top10": 0.62,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "ANT",
+    "per_min": 185.2,
+    "traders": 161,
+    "top10": 0.11,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 180.2,
+    "traders": 139,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "AudaCity",
+    "per_min": 90.2,
+    "traders": 208,
+    "top10": 0.04,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
