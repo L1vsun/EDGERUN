@@ -14649,5 +14649,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-21T09:32:15+00:00",
+  "block": 472089814,
+  "mode": "rules",
+  "call": "pointless is the one to watch - buyers lead, new holders",
+  "focus": "pointless",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 206.6,
+    "traders": 224,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "pointless",
+    "per_min": 128.2,
+    "traders": 310,
+    "top10": 0.09,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ANT",
+    "per_min": 82.0,
+    "traders": 79,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "CCat",
+    "per_min": 46.6,
+    "traders": 178,
+    "top10": 0.07,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 44.8,
+    "traders": 59,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 43.6,
+    "traders": 64,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "DCTY",
+    "per_min": 38.0,
+    "traders": 76,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "CALLPAD",
+    "per_min": 38.0,
+    "traders": 54,
+    "top10": 0.29,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
