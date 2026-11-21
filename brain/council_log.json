@@ -14569,5 +14569,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-21T01:58:20+00:00",
+  "block": 471963214,
+  "mode": "rules",
+  "call": "THUG is the one to watch - buyers lead, heating",
+  "focus": "THUG",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "cbBTC",
+    "per_min": 163.0,
+    "traders": 132,
+    "top10": 0.16,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 132.0,
+    "traders": 148,
+    "top10": 0.36,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "Rings",
+    "per_min": 101.8,
+    "traders": 136,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 63.0,
+    "traders": 114,
+    "top10": 0.59,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SKR",
+    "per_min": 50.8,
+    "traders": 70,
+    "top10": 0.61,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "RACIST",
+    "per_min": 49.6,
+    "traders": 118,
+    "top10": 0.06,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 41.2,
+    "traders": 74,
+    "top10": 0.24,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "META",
+    "per_min": 37.6,
+    "traders": 38,
+    "top10": 0.43,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
