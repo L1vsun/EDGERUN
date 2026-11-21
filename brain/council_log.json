@@ -14807,5 +14807,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-21T22:16:01+00:00",
+  "block": 472303011,
+  "mode": "rules",
+  "call": "HODL is the one to watch - buyers lead, heating",
+  "focus": "HODL",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "cbBTC",
+    "per_min": 284.2,
+    "traders": 311,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "HODL",
+    "per_min": 181.2,
+    "traders": 424,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 104.4,
+    "traders": 133,
+    "top10": 0.59,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SIDOOR",
+    "per_min": 76.0,
+    "traders": 199,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "FIONA",
+    "per_min": 74.0,
+    "traders": 197,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "wXRP",
+    "per_min": 66.4,
+    "traders": 83,
+    "top10": 0.11,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 58.8,
+    "traders": 67,
+    "top10": 0.36,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SPYx",
+    "per_min": 53.2,
+    "traders": 41,
+    "top10": 0.67,
+    "flags": []
+   }
+  ]
  }
 ]
