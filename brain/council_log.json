@@ -14725,5 +14725,87 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-21T17:06:37+00:00",
+  "block": 472216647,
+  "mode": "rules",
+  "call": "Singularity is the one to watch - heating, new holders",
+  "focus": "Singularity",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Singularity",
+    "per_min": 415.0,
+    "traders": 587,
+    "top10": 0.19,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 167.6,
+    "traders": 245,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "SHIT",
+    "per_min": 138.4,
+    "traders": 222,
+    "top10": 0.09,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 137.0,
+    "traders": 110,
+    "top10": 0.36,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 109.2,
+    "traders": 147,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 88.2,
+    "traders": 64,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 48.2,
+    "traders": 40,
+    "top10": 0.53,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "wNEAR",
+    "per_min": 35.6,
+    "traders": 42,
+    "top10": 0.28,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
