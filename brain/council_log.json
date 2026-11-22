@@ -15125,5 +15125,80 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-22T23:29:15+00:00",
+  "block": 472725244,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.08,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ANT",
+    "per_min": 111.8,
+    "traders": 98,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "AMC",
+    "per_min": 70.8,
+    "traders": 171,
+    "top10": 0.06,
+    "flags": []
+   },
+   {
+    "symbol": "Rings",
+    "per_min": 45.0,
+    "traders": 67,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "MCAT",
+    "per_min": 32.6,
+    "traders": 92,
+    "top10": 0.2,
+    "flags": []
+   },
+   {
+    "symbol": "FLOYD",
+    "per_min": 30.6,
+    "traders": 83,
+    "top10": 0.3,
+    "flags": []
+   },
+   {
+    "symbol": "ZOL",
+    "per_min": 30.2,
+    "traders": 81,
+    "top10": 0.23,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SI",
+    "per_min": 27.4,
+    "traders": 41,
+    "top10": 0.17,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "P",
+    "per_min": 22.8,
+    "traders": 66,
+    "top10": 0.53,
+    "flags": [
+     "top-heavy",
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
