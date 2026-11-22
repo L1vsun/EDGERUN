@@ -14964,5 +14964,85 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-22T10:11:09+00:00",
+  "block": 472502566,
+  "mode": "rules",
+  "call": "GIFTER is the one to watch - heating, new holders",
+  "focus": "GIFTER",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "JUP",
+    "per_min": 360.8,
+    "traders": 222,
+    "top10": 0.15,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HIPPO",
+    "per_min": 293.8,
+    "traders": 492,
+    "top10": 0.22,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 252.0,
+    "traders": 110,
+    "top10": 0.36,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 172.8,
+    "traders": 117,
+    "top10": 0.24,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Bonk",
+    "per_min": 162.6,
+    "traders": 80,
+    "top10": 0.3,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "GIFTER",
+    "per_min": 158.4,
+    "traders": 336,
+    "top10": 0.21,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 156.0,
+    "traders": 118,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 105.0,
+    "traders": 54,
+    "top10": 0.79,
+    "flags": []
+   }
+  ]
  }
 ]
