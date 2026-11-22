@@ -15044,5 +15044,86 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-22T17:58:10+00:00",
+  "block": 472632930,
+  "mode": "rules",
+  "call": "OpenIndex is the one to watch - heating, new holders",
+  "focus": "OpenIndex",
+  "confidence": 0.53,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "MCAT",
+    "per_min": 148.8,
+    "traders": 300,
+    "top10": 0.21,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "OpenIndex",
+    "per_min": 141.0,
+    "traders": 286,
+    "top10": 0.32,
+    "flags": [
+     "heating",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 137.6,
+    "traders": 202,
+    "top10": 0.27,
+    "flags": []
+   },
+   {
+    "symbol": "Lucky",
+    "per_min": 90.0,
+    "traders": 143,
+    "top10": 0.04,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ANT",
+    "per_min": 83.0,
+    "traders": 56,
+    "top10": 0.2,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Mini",
+    "per_min": 55.4,
+    "traders": 114,
+    "top10": 0.02,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "ANTx",
+    "per_min": 52.4,
+    "traders": 12,
+    "top10": 1.0,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "snowball",
+    "per_min": 49.8,
+    "traders": 135,
+    "top10": 0.15,
+    "flags": []
+   }
+  ]
  }
 ]
