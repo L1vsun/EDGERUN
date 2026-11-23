@@ -15200,5 +15200,80 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-23T03:56:06+00:00",
+  "block": 472799614,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 1090.2,
+    "traders": 745,
+    "top10": 0.59,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 243.0,
+    "traders": 234,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 106.2,
+    "traders": 89,
+    "top10": 0.36,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 84.6,
+    "traders": 121,
+    "top10": 0.15,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "cCAT",
+    "per_min": 58.6,
+    "traders": 122,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "JLP",
+    "per_min": 32.8,
+    "traders": 46,
+    "top10": 0.52,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "SANC",
+    "per_min": 28.6,
+    "traders": 41,
+    "top10": 0.72,
+    "flags": []
+   },
+   {
+    "symbol": "TAILINU",
+    "per_min": 25.8,
+    "traders": 51,
+    "top10": 0.11,
+    "flags": []
+   }
+  ]
  }
 ]
