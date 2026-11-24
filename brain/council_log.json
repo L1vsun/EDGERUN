@@ -15354,5 +15354,76 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-24T01:47:02+00:00",
+  "block": 473165424,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "CLAUDIO",
+    "per_min": 830.4,
+    "traders": 328,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "DOGE",
+    "per_min": 255.4,
+    "traders": 205,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "Bonk",
+    "per_min": 123.8,
+    "traders": 138,
+    "top10": 0.3,
+    "flags": []
+   },
+   {
+    "symbol": "UCASH",
+    "per_min": 95.8,
+    "traders": 89,
+    "top10": 0.07,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "CARDS",
+    "per_min": 90.0,
+    "traders": 60,
+    "top10": 0.73,
+    "flags": [
+     "sellers lead"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 64.6,
+    "traders": 99,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "ROCKET",
+    "per_min": 31.8,
+    "traders": 82,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "gOATED",
+    "per_min": 30.0,
+    "traders": 58,
+    "top10": 0.13,
+    "flags": []
+   }
+  ]
  }
 ]
