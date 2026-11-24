@@ -15425,5 +15425,87 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-24T12:00:27+00:00",
+  "block": 473336568,
+  "mode": "rules",
+  "call": "CATE is the one to watch - buyers lead, new holders",
+  "focus": "CATE",
+  "confidence": 0.5,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "JENSEN",
+    "per_min": 164.2,
+    "traders": 133,
+    "top10": 0.26,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 139.6,
+    "traders": 116,
+    "top10": 0.36,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 102.2,
+    "traders": 91,
+    "top10": 0.14,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "CATE",
+    "per_min": 92.2,
+    "traders": 270,
+    "top10": 0.37,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "DUVAL",
+    "per_min": 44.2,
+    "traders": 112,
+    "top10": 0.04,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "JENSEN",
+    "per_min": 27.0,
+    "traders": 53,
+    "top10": 0.0,
+    "flags": []
+   },
+   {
+    "symbol": "2Z",
+    "per_min": 26.8,
+    "traders": 25,
+    "top10": 0.43,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "wNEAR",
+    "per_min": 22.2,
+    "traders": 28,
+    "top10": 0.28,
+    "flags": []
+   }
+  ]
  }
 ]
