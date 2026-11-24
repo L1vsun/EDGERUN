@@ -15507,5 +15507,86 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-24T22:40:03+00:00",
+  "block": 473515094,
+  "mode": "rules",
+  "call": "RAY is the one to watch - buyers lead, heating",
+  "focus": "RAY",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ZEC",
+    "per_min": 364.2,
+    "traders": 174,
+    "top10": 0.36,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 342.4,
+    "traders": 371,
+    "top10": 0.6,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "DONJENSEN",
+    "per_min": 258.6,
+    "traders": 254,
+    "top10": 0.11,
+    "flags": []
+   },
+   {
+    "symbol": "Slingoor",
+    "per_min": 82.2,
+    "traders": 159,
+    "top10": 0.3,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 77.4,
+    "traders": 107,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "JLP",
+    "per_min": 64.0,
+    "traders": 81,
+    "top10": 0.52,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "CHARITY",
+    "per_min": 52.8,
+    "traders": 130,
+    "top10": 0.51,
+    "flags": [
+     "top-heavy",
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 51.0,
+    "traders": 43,
+    "top10": 0.79,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
