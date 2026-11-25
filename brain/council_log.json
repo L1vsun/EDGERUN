@@ -15735,5 +15735,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-25T23:59:10+00:00",
+  "block": 473939037,
+  "mode": "rules",
+  "call": "HYPE is the one to watch - buyers lead, heating",
+  "focus": "HYPE",
+  "confidence": 0.52,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ZEC",
+    "per_min": 363.0,
+    "traders": 130,
+    "top10": 0.35,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 151.2,
+    "traders": 132,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "Amend",
+    "per_min": 144.2,
+    "traders": 147,
+    "top10": 0.27,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "RAY",
+    "per_min": 119.6,
+    "traders": 86,
+    "top10": 0.79,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 90.8,
+    "traders": 81,
+    "top10": 0.24,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "Copyinu",
+    "per_min": 66.8,
+    "traders": 128,
+    "top10": 0.23,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 65.0,
+    "traders": 85,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 58.4,
+    "traders": 72,
+    "top10": 0.61,
+    "flags": []
+   }
+  ]
  }
 ]
