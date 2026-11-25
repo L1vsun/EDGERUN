@@ -15664,5 +15664,76 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-25T15:54:33+00:00",
+  "block": 473803893,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Kate",
+    "per_min": 471.6,
+    "traders": 747,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "ANT",
+    "per_min": 371.2,
+    "traders": 179,
+    "top10": 0.29,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "GRIMACE",
+    "per_min": 370.0,
+    "traders": 736,
+    "top10": 0.17,
+    "flags": []
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 356.6,
+    "traders": 279,
+    "top10": 0.6,
+    "flags": []
+   },
+   {
+    "symbol": "MCDx",
+    "per_min": 259.6,
+    "traders": 303,
+    "top10": 0.93,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 195.4,
+    "traders": 117,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 164.4,
+    "traders": 157,
+    "top10": 0.6,
+    "flags": []
+   },
+   {
+    "symbol": "KMNO",
+    "per_min": 92.8,
+    "traders": 64,
+    "top10": 0.53,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
