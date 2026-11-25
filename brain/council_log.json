@@ -15588,5 +15588,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-25T05:13:40+00:00",
+  "block": 473625002,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.12,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "FUCKCANCER",
+    "per_min": 389.2,
+    "traders": 530,
+    "top10": 0.47,
+    "flags": []
+   },
+   {
+    "symbol": "MOODENG",
+    "per_min": 256.8,
+    "traders": 99,
+    "top10": 0.46,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "NVDAx",
+    "per_min": 88.0,
+    "traders": 99,
+    "top10": 0.59,
+    "flags": []
+   },
+   {
+    "symbol": "PERRO",
+    "per_min": 68.6,
+    "traders": 130,
+    "top10": 0.18,
+    "flags": []
+   },
+   {
+    "symbol": "RDDT",
+    "per_min": 65.0,
+    "traders": 86,
+    "top10": 0.19,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "PENGU",
+    "per_min": 57.4,
+    "traders": 54,
+    "top10": 0.37,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "TRUMP",
+    "per_min": 43.6,
+    "traders": 52,
+    "top10": 0.81,
+    "flags": []
+   },
+   {
+    "symbol": "HNT",
+    "per_min": 36.4,
+    "traders": 36,
+    "top10": 0.28,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   }
+  ]
  }
 ]
