@@ -15813,5 +15813,88 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-26T07:59:59+00:00",
+  "block": 474073276,
+  "mode": "rules",
+  "call": "three is the one to watch - buyers lead, heating",
+  "focus": "three",
+  "confidence": 0.51,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ATX",
+    "per_min": 300.8,
+    "traders": 1007,
+    "top10": 0.0,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "DARKCAT",
+    "per_min": 70.2,
+    "traders": 225,
+    "top10": 0.08,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "MOODENG",
+    "per_min": 40.8,
+    "traders": 49,
+    "top10": 0.46,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "three",
+    "per_min": 31.6,
+    "traders": 113,
+    "top10": 0.14,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "SCRVAN",
+    "per_min": 27.0,
+    "traders": 24,
+    "top10": 0.07,
+    "flags": []
+   },
+   {
+    "symbol": "nudge",
+    "per_min": 25.8,
+    "traders": 26,
+    "top10": 0.69,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "PUSS",
+    "per_min": 23.8,
+    "traders": 24,
+    "top10": 0.56,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "Bonk",
+    "per_min": 23.4,
+    "traders": 38,
+    "top10": 0.3,
+    "flags": [
+     "heating"
+    ]
+   }
+  ]
  }
 ]
