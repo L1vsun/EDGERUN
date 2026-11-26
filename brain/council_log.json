@@ -15896,5 +15896,83 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-26T18:20:28+00:00",
+  "block": 474246341,
+  "mode": "rules",
+  "call": "George is the one to watch - buyers lead, heating",
+  "focus": "George",
+  "confidence": 0.52,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 880.0,
+    "traders": 894,
+    "top10": 0.6,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "George",
+    "per_min": 664.2,
+    "traders": 951,
+    "top10": 0.24,
+    "flags": [
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "NORFEATH",
+    "per_min": 223.8,
+    "traders": 287,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "PAIR",
+    "per_min": 113.2,
+    "traders": 230,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "George",
+    "per_min": 102.4,
+    "traders": 194,
+    "top10": 0.24,
+    "flags": [
+     "buyers lead",
+     "heating"
+    ]
+   },
+   {
+    "symbol": "DOG3",
+    "per_min": 98.2,
+    "traders": 190,
+    "top10": 0.06,
+    "flags": []
+   },
+   {
+    "symbol": "PICKLES",
+    "per_min": 77.2,
+    "traders": 205,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 74.6,
+    "traders": 72,
+    "top10": 0.14,
+    "flags": [
+     "cooling"
+    ]
+   }
+  ]
  }
 ]
