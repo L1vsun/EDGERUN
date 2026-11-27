@@ -16121,5 +16121,86 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-27T19:47:56+00:00",
+  "block": 474672969,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.11,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "rice",
+    "per_min": 102.8,
+    "traders": 218,
+    "top10": 0.25,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "QUBT",
+    "per_min": 74.8,
+    "traders": 90,
+    "top10": 0.16,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "QTC",
+    "per_min": 37.4,
+    "traders": 73,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "SPCX",
+    "per_min": 25.6,
+    "traders": 53,
+    "top10": 0.27,
+    "flags": [
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "QTC",
+    "per_min": 20.0,
+    "traders": 84,
+    "top10": 0.39,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "67",
+    "per_min": 18.6,
+    "traders": 50,
+    "top10": 0.21,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "TIT",
+    "per_min": 17.6,
+    "traders": 38,
+    "top10": 0.0,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "GLDx",
+    "per_min": 16.4,
+    "traders": 19,
+    "top10": 0.91,
+    "flags": [
+     "buyers lead"
+    ]
+   }
+  ]
  }
 ]
