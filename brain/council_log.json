@@ -15974,5 +15974,81 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-27T01:51:30+00:00",
+  "block": 474372269,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.15,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "PUMP",
+    "per_min": 158.6,
+    "traders": 155,
+    "top10": 0.6,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "BIRB",
+    "per_min": 78.6,
+    "traders": 10,
+    "top10": 0.88,
+    "flags": []
+   },
+   {
+    "symbol": "fine",
+    "per_min": 75.4,
+    "traders": 177,
+    "top10": 0.23,
+    "flags": []
+   },
+   {
+    "symbol": "ATX",
+    "per_min": 49.0,
+    "traders": 218,
+    "top10": 0.0,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "Mogmas",
+    "per_min": 40.2,
+    "traders": 85,
+    "top10": 0.29,
+    "flags": [
+     "heating"
+    ]
+   },
+   {
+    "symbol": "TTWO",
+    "per_min": 37.8,
+    "traders": 65,
+    "top10": 0.33,
+    "flags": []
+   },
+   {
+    "symbol": "MPLX",
+    "per_min": 30.6,
+    "traders": 33,
+    "top10": 0.69,
+    "flags": []
+   },
+   {
+    "symbol": "cap",
+    "per_min": 26.8,
+    "traders": 76,
+    "top10": 0.01,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   }
+  ]
  }
 ]
