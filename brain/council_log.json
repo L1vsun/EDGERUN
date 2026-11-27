@@ -16050,5 +16050,76 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-27T10:32:23+00:00",
+  "block": 474517735,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.1,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "WOOPY",
+    "per_min": 535.0,
+    "traders": 340,
+    "top10": 0.1,
+    "flags": []
+   },
+   {
+    "symbol": "ZEC",
+    "per_min": 109.2,
+    "traders": 75,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 89.6,
+    "traders": 105,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "PUMP",
+    "per_min": 87.2,
+    "traders": 126,
+    "top10": 0.6,
+    "flags": []
+   },
+   {
+    "symbol": "rice",
+    "per_min": 71.2,
+    "traders": 154,
+    "top10": 0.22,
+    "flags": []
+   },
+   {
+    "symbol": "HYPE",
+    "per_min": 65.0,
+    "traders": 50,
+    "top10": 0.24,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "cbBTC",
+    "per_min": 60.4,
+    "traders": 69,
+    "top10": 0.14,
+    "flags": []
+   },
+   {
+    "symbol": "$PILLY",
+    "per_min": 48.8,
+    "traders": 29,
+    "top10": 0.67,
+    "flags": [
+     "top-heavy"
+    ]
+   }
+  ]
  }
 ]
