@@ -16272,5 +16272,83 @@
     "flags": []
    }
   ]
+ },
+ {
+  "at": "2026-11-28T10:47:46+00:00",
+  "block": 474924713,
+  "mode": "rules",
+  "call": "nothing in this window is worth acting on",
+  "focus": null,
+  "confidence": 0.09,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "Barron",
+    "per_min": 89.2,
+    "traders": 190,
+    "top10": 0.2,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "MoonBoy",
+    "per_min": 48.2,
+    "traders": 98,
+    "top10": 0.13,
+    "flags": [
+     "buyers lead"
+    ]
+   },
+   {
+    "symbol": "JLP",
+    "per_min": 43.2,
+    "traders": 53,
+    "top10": 0.54,
+    "flags": []
+   },
+   {
+    "symbol": "JUP",
+    "per_min": 29.4,
+    "traders": 42,
+    "top10": 0.15,
+    "flags": [
+     "buyers lead",
+     "cooling"
+    ]
+   },
+   {
+    "symbol": "FIONA",
+    "per_min": 26.2,
+    "traders": 56,
+    "top10": 0.15,
+    "flags": []
+   },
+   {
+    "symbol": "cap",
+    "per_min": 24.6,
+    "traders": 11,
+    "top10": 0.56,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "fries",
+    "per_min": 24.0,
+    "traders": 14,
+    "top10": 0.52,
+    "flags": [
+     "top-heavy"
+    ]
+   },
+   {
+    "symbol": "BTC",
+    "per_min": 23.8,
+    "traders": 27,
+    "top10": 0.21,
+    "flags": []
+   }
+  ]
  }
 ]
