@@ -16202,5 +16202,75 @@
     ]
    }
   ]
+ },
+ {
+  "at": "2026-11-28T02:29:02+00:00",
+  "block": 474785105,
+  "mode": "rules",
+  "call": "Hypeball is the one to watch - buyers lead, new holders",
+  "focus": "Hypeball",
+  "confidence": 0.49,
+  "action": "SILENCE",
+  "tokens": [
+   {
+    "symbol": "ZEC",
+    "per_min": 119.4,
+    "traders": 91,
+    "top10": 0.35,
+    "flags": []
+   },
+   {
+    "symbol": "Midcurve",
+    "per_min": 113.6,
+    "traders": 228,
+    "top10": 0.32,
+    "flags": []
+   },
+   {
+    "symbol": "HYPEBALL",
+    "per_min": 84.4,
+    "traders": 163,
+    "top10": 0.06,
+    "flags": []
+   },
+   {
+    "symbol": "BITGOIN",
+    "per_min": 75.4,
+    "traders": 121,
+    "top10": 0.24,
+    "flags": []
+   },
+   {
+    "symbol": "Hypeball",
+    "per_min": 72.0,
+    "traders": 188,
+    "top10": 0.03,
+    "flags": [
+     "buyers lead",
+     "new holders"
+    ]
+   },
+   {
+    "symbol": "DAW",
+    "per_min": 63.4,
+    "traders": 151,
+    "top10": 0.26,
+    "flags": []
+   },
+   {
+    "symbol": "Snowball",
+    "per_min": 56.6,
+    "traders": 128,
+    "top10": 0.19,
+    "flags": []
+   },
+   {
+    "symbol": "MoonBoy",
+    "per_min": 52.6,
+    "traders": 120,
+    "top10": 0.14,
+    "flags": []
+   }
+  ]
  }
 ]
